@@ -4,7 +4,7 @@
  * @package         Kunena.Site
  * @subpackage      Controller.Search
  *
- * @copyright       Copyright (C) 2008 - 2018 Kunena Team. All rights reserved.
+ * @copyright       Copyright (C) 2008 - 2019 Kunena Team. All rights reserved.
  * @license         https://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link            https://www.kunena.org
  **/
@@ -12,6 +12,7 @@ defined('_JEXEC') or die;
 
 use Joomla\CMS\Factory;
 use Joomla\CMS\Language\Text;
+use Joomla\CMS\MVC\Controller\BaseController;
 
 /**
  * Class ComponentKunenaControllerSearchFormDisplay
@@ -69,7 +70,7 @@ class ComponentKunenaControllerSearchFormDisplay extends KunenaControllerDisplay
 				$itemidfix = KunenaRoute::fixMissingItemID();
 			}
 
-			$controller = JControllerLegacy::getInstance("kunena");
+			$controller = BaseController::getInstance("kunena");
 			$controller->setRedirect(KunenaRoute::_("index.php?option=com_kunena&view=search&Itemid={$itemidfix}", false));
 			$controller->redirect();
 		}
@@ -89,8 +90,7 @@ class ComponentKunenaControllerSearchFormDisplay extends KunenaControllerDisplay
 	 */
 	protected function prepareDocument()
 	{
-		$app       = Factory::getApplication();
-		$menu_item = $app->getMenu()->getActive();
+		$menu_item = $this->app->getMenu()->getActive();
 
 		$config = Factory::getConfig();
 		$robots = $config->get('robots');

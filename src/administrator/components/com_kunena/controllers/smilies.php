@@ -5,7 +5,7 @@
  * @package         Kunena.Administrator
  * @subpackage      Controllers
  *
- * @copyright       Copyright (C) 2008 - 2018 Kunena Team. All rights reserved.
+ * @copyright       Copyright (C) 2008 - 2019 Kunena Team. All rights reserved.
  * @license         https://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link            https://www.kunena.org
  **/
@@ -13,6 +13,7 @@ defined('_JEXEC') or die();
 
 use Joomla\CMS\Factory;
 use Joomla\CMS\Language\Text;
+use Joomla\CMS\Router\Route;
 use Joomla\CMS\Session\Session;
 use Joomla\Utilities\ArrayHelper;
 
@@ -32,10 +33,10 @@ class KunenaAdminControllerSmilies extends KunenaController
 	/**
 	 * Construct
 	 *
-	 * @param   array $config config
+	 * @param   array  $config  config
 	 *
-	 * @throws Exception
 	 * @since    2.0
+	 * @throws Exception
 	 */
 	public function __construct($config = array())
 	{
@@ -48,8 +49,8 @@ class KunenaAdminControllerSmilies extends KunenaController
 	 *
 	 * @return void
 	 *
-	 * @throws Exception
 	 * @since    2.0
+	 * @throws Exception
 	 * @throws null
 	 */
 	public function add()
@@ -62,7 +63,7 @@ class KunenaAdminControllerSmilies extends KunenaController
 			return;
 		}
 
-		$this->setRedirect(JRoute::_('index.php?option=com_kunena&view=smiley&layout=add', false));
+		$this->setRedirect(Route::_('index.php?option=com_kunena&view=smiley&layout=add', false));
 	}
 
 	/**
@@ -71,8 +72,8 @@ class KunenaAdminControllerSmilies extends KunenaController
 	 * @return void
 	 *
 	 * @since    2.0
-	 * @throws Exception
 	 * @since    Kunena
+	 * @throws Exception
 	 * @throws null
 	 */
 	public function edit()
@@ -98,17 +99,17 @@ class KunenaAdminControllerSmilies extends KunenaController
 			return;
 		}
 
-		$this->setRedirect(JRoute::_("index.php?option=com_kunena&view=smiley&layout=edit&id={$id}", false));
+		$this->setRedirect(Route::_("index.php?option=com_kunena&view=smiley&layout=edit&id={$id}", false));
 	}
 
 	/**
 	 * Save
 	 *
-	 * @throws Exception
-	 *
 	 * @return void
 	 *
 	 * @since    2.0
+	 * @throws Exception
+	 *
 	 * @throws null
 	 */
 	public function save()
@@ -130,12 +131,10 @@ class KunenaAdminControllerSmilies extends KunenaController
 
 		if (!$smileyid)
 		{
-			$db->setQuery(
-				"INSERT INTO #__kunena_smileys SET
-					code={$db->quote($smiley_code)},
-					location={$db->quote($smiley_location)},
-					emoticonbar={$db->quote($smiley_emoticonbar)}"
-			);
+			$query = $db->getQuery(true)
+				->insert("{$db->quoteName('#__kunena_smileys')}")->set("code={$db->quote($smiley_code)}, location={$db->quote($smiley_location)}, emoticonbar={$db->quote($smiley_emoticonbar)}");
+
+			$db->setQuery($query);
 
 			try
 			{
@@ -150,13 +149,11 @@ class KunenaAdminControllerSmilies extends KunenaController
 		}
 		else
 		{
-			$db->setQuery(
-				"UPDATE #__kunena_smileys SET
-					code={$db->quote($smiley_code)},
-					location={$db->quote($smiley_location)},
-					emoticonbar={$db->quote($smiley_emoticonbar)}
-				WHERE id = '$smileyid'"
-			);
+			$query = $db->getQuery(true)
+				->update("{$db->quoteName('#__kunena_smileys')}")->set("code={$db->quote($smiley_code)}, location={$db->quote($smiley_location)}, emoticonbar={$db->quote($smiley_emoticonbar)}")
+				->where("id = {$db->quote($smileyid)}");
+
+			$db->setQuery($query);
 
 			try
 			{
@@ -177,11 +174,11 @@ class KunenaAdminControllerSmilies extends KunenaController
 	/**
 	 * Smiley upload
 	 *
-	 * @throws Exception
-	 *
 	 * @return void
 	 *
 	 * @since    2.0
+	 * @throws Exception
+	 *
 	 * @throws null
 	 */
 	public function smileyupload()
@@ -214,11 +211,11 @@ class KunenaAdminControllerSmilies extends KunenaController
 	/**
 	 * Remove
 	 *
-	 * @throws Exception
-	 *
 	 * @return void
 	 *
 	 * @since    2.0
+	 * @throws Exception
+	 *
 	 * @throws null
 	 */
 	public function remove()
@@ -241,7 +238,10 @@ class KunenaAdminControllerSmilies extends KunenaController
 
 		if ($cids)
 		{
-			$db->setQuery("DELETE FROM #__kunena_smileys WHERE id IN ($cids)");
+			$query = $db->getQuery(true)
+				->delete()->from("{$db->quoteName('#__kunena_smileys')}")->where("id IN ($cids)");
+
+			$db->setQuery($query);
 
 			try
 			{
@@ -264,8 +264,8 @@ class KunenaAdminControllerSmilies extends KunenaController
 	 *
 	 * @return void
 	 *
-	 * @throws Exception
 	 * @since K4.0
+	 * @throws Exception
 	 * @throws null
 	 */
 	public function cancel()

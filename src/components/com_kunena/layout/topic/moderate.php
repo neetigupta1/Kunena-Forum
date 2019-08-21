@@ -5,7 +5,7 @@
  * @package         Kunena.Site
  * @subpackage      Layout.Topic
  *
- * @copyright       Copyright (C) 2008 - 2018 Kunena Team. All rights reserved.
+ * @copyright       Copyright (C) 2008 - 2019 Kunena Team. All rights reserved.
  * @license         https://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link            https://www.kunena.org
  **/
@@ -50,7 +50,7 @@ class KunenaLayoutTopicModerate extends KunenaLayout
 		$db     = Factory::getDbo();
 		$params = array(
 			'orderby' => 'tt.last_post_time DESC',
-			'where'   => " AND tt.id != {$db->Quote($this->topic->id)} ",);
+			'where'   => " AND tt.id != {$db->quote($this->topic->id)} ", );
 		list($total, $topics) = KunenaForumTopicHelper::getLatestTopics($this->category->id, 0, 30, $params);
 
 		foreach ($topics as $topic)

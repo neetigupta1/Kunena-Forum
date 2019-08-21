@@ -5,13 +5,15 @@
  * @package         Kunena.Administrator
  * @subpackage      Views
  *
- * @copyright       Copyright (C) 2008 - 2018 Kunena Team. All rights reserved.
+ * @copyright       Copyright (C) 2008 - 2019 Kunena Team. All rights reserved.
  * @license         https://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link            https://www.kunena.org
  **/
 defined('_JEXEC') or die();
 
 use Joomla\CMS\Language\Text;
+use Joomla\CMS\Filesystem\File;
+use Joomla\CMS\Filesystem\Folder;
 
 /**
  * Templates view for Kunena backend
@@ -85,13 +87,13 @@ class KunenaAdminViewTemplates extends KunenaView
 		$this->form         = $this->get('Form');
 		$this->params       = $this->get('editparams');
 		$this->details      = $this->get('templatedetails');
-		$this->templatename = $this->app->getUserState('kunena.edit.template');
+		$this->templatename = $this->app->getUserState('kunena.edit.templatename');
 		$template           = KunenaTemplate::getInstance($this->templatename);
 		$template->initializeBackend();
 
 		$this->templatefile = KPATH_SITE . '/template/' . $this->templatename . '/config/params.ini';
 
-		if (!JFile::exists($this->templatefile))
+		if (!File::exists($this->templatefile))
 		{
 			$ourFileHandle = @fopen($this->templatefile, 'w');
 
@@ -142,7 +144,7 @@ class KunenaAdminViewTemplates extends KunenaView
 		}
 
 		$this->dir   = KPATH_SITE . '/template/' . $this->templatename . '/assets/less';
-		$this->files = JFolder::files($this->dir, '\.less$', false, false);
+		$this->files = Folder::files($this->dir, '\.less$', false, false);
 
 		$this->display();
 	}
@@ -205,14 +207,18 @@ class KunenaAdminViewTemplates extends KunenaView
 
 		if (!file_exists($file))
 		{
+			if (!Folder::exists(KPATH_SITE . '/template/' . $this->templatename . '/assets/css/'))
+			{
+				Folder::create(KPATH_SITE . '/template/' . $this->templatename . '/assets/css/');
+			}
+
 			$fp = fopen($file, "w");
 			fwrite($fp, "");
 			fclose($fp);
 		}
 
 		$this->dir = KPATH_SITE . '/template/' . $this->templatename . '/assets/css';
-		jimport('joomla.filesystem.folder');
-		$this->files = JFolder::files($this->dir, '\.css$', false, false);
+		$this->files = Folder::files($this->dir, '\.css$', false, false);
 		$this->display();
 	}
 

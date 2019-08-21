@@ -4,7 +4,7 @@
  *
  * @package        Kunena.Site
  *
- * @copyright      Copyright (C) 2008 - 2018 Kunena Team. All rights reserved.
+ * @copyright      Copyright (C) 2008 - 2019 Kunena Team. All rights reserved.
  * @license        https://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link           https://www.kunena.org
  **/
@@ -14,6 +14,7 @@ use Joomla\CMS\Factory;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\Uri\Uri;
 use Joomla\CMS\Log\Log;
+use Joomla\CMS\Plugin\PluginHelper;
 
 // Display offline message if Kunena hasn't been fully installed.
 if (!class_exists('KunenaForum') || !KunenaForum::isCompatible('4.0') || !KunenaForum::installed())
@@ -92,7 +93,7 @@ $subview = $input->getWord('layout', 'default');
 $task    = $input->getCmd('task', 'display');
 
 // Import plugins and event listeners.
-\Joomla\CMS\Plugin\PluginHelper::importPlugin('kunena');
+Joomla\CMS\Plugin\PluginHelper::importPlugin('kunena');
 
 // Get HMVC controller and if exists, execute it.
 $controller = KunenaControllerApplication::getInstance($view, $subview, $task, $input, $app);
@@ -136,7 +137,7 @@ $params       = new stdClass;
 $params->text = '';
 $topics       = new stdClass;
 $topics->text = '';
-JPluginHelper::importPlugin('content');
+PluginHelper::importPlugin('content');
 Factory::getApplication()->triggerEvent('onContentPrepare', array("com_kunena.{$view}", &$topics, &$params, 0));
 Factory::getApplication()->triggerEvent('onKunenaBeforeRender', array("com_kunena.{$view}", &$contents));
 $contents = (string) $contents;
@@ -147,10 +148,10 @@ echo $contents;
 KunenaError::cleanup();
 
 // Display profiler information.
-$kunena_time = $kunena_profiler->stop('Total Time');
-
 if (KUNENA_PROFILER)
 {
+	$kunena_profiler->stop('Total Time');
+
 	echo '<div class="kprofiler">';
 	echo "<h3>Kunena Profile Information</h3>";
 

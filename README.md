@@ -1,4 +1,4 @@
-[![Kunena](https://www.kunena.org/images/logo.png)](https://www.kunena.org)  [![Build Status](https://travis-ci.org/Kunena/Kunena-Forum.svg?branch=K5.1)](https://travis-ci.org/Kunena/Kunena-Forum)
+[![Kunena](https://www.kunena.org/images/logo.png)](https://www.kunena.org)[![GitHub release](https://img.shields.io/github/release/Kunena/Kunena-Forum.svg)](https://github.com/Kunena/Kunena-Forum/releases)[![GitHub All Releases](https://img.shields.io/github/downloads/Kunena/Kunena-Forum/total.svg)](https://github.com/Kunena/Kunena-Forum/releases)[![GitHub issues](https://img.shields.io/github/issues/Kunena/Kunena-Forum.svg)](https://github.com/Kunena/Kunena-Forum/issues)[![GitHub contributors](https://img.shields.io/github/contributors/Kunena/Kunena-Forum.svg)](https://github.com/Kunena/Kunena-Forum/graphs/contributors)[![Build Status](https://travis-ci.org/Kunena/Kunena-Forum.svg?branch=K5.1)](https://travis-ci.org/Kunena/Kunena-Forum)[![GitHub license](https://img.shields.io/badge/License-GNU-blue.svg)](https://raw.githubusercontent.com/Kunena/Kunena-Forum/K5.1/LICENSE.txt)[![Twitter Follow](https://img.shields.io/twitter/follow/bsdatepicker.svg?style=social&label=Follow)](https://twitter.com/kunena)
 
 ## ABOUT
 
@@ -9,9 +9,9 @@
 
 *Kunena* 6.0 requires
 
-    Joomla: version 3.8.0 or greater (>= 3.8.0 recommended)
-    PHP: version 5.6.8 or greater (>= 7.1.9 recommended)
-    MySQL: version 5.1 or greater (>= 5.5 recommended)
+    Joomla: version 4.0.0 or greater (>= 4.0.0 recommended)
+    PHP: version 7.2.0 or greater (>= 7.2.0 recommended)
+    MySQL: version 5.6.0 or greater (>= 5.6.0 recommended)
 
 Our installer will check for minimal version requirements and will abort the install if they are no met.
 
@@ -20,13 +20,13 @@ In addition we recommend the following PHP settings:
     max_execution_time     >= 30
     memory_limit           >= 32M  (>= 64M recommended) - depends on other Joomla extensions used
     safe_mode               = off
-    allow_url_fopen		   = on
-    upload_max_filesize    >= 3M
-    GD, DOM, Mbstring, JSON support installed and OpenSSL only to embedded tweets
+    allow_url_fopen         = on
+    upload_max_filesize    >= 12M
+    GD Library (>=2.0), fileinfo, DOM, Mbstring, JSON support installed and OpenSSL only to embedded tweets
 
 *Kunena* requires the following Joomla settings:
 
-    * Bootstrap 2 compatible template (Crypsis Template)
+    * Bootstrap 4 compatible template
     * Upgraded to latest versions all extensions that claim to integrate with Kunena 6.0
     * No plugins or modules that were developed for previous versions of Kunena or Fireboard
 

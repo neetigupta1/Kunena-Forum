@@ -5,7 +5,7 @@
  * @package    Kunena.Framework
  * @subpackage Icons
  *
- * @copyright  Copyright (C) 2008 - 2018 Kunena Team. All rights reserved.
+ * @copyright  Copyright (C) 2008 - 2019 Kunena Team. All rights reserved.
  * @license    https://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link       https://www.kunena.org
  **/
@@ -492,15 +492,15 @@ class KunenaIcons
 
 		if ($topicicontype == 'B2')
 		{
-			return 'b2';
+			return '<span class="icon icon-compress" aria-hidden="true"></span>';
 		}
 
 		if ($topicicontype == 'B3')
 		{
-			return 'b3';
+			return '<span class="glyphicon glyphicon-sort" aria-hidden="true"></span>';
 		}
 
-		return 'b3';
+		return '<span class="icon icon-compress" aria-hidden="true"></span>';
 	}
 
 	/**
@@ -963,27 +963,32 @@ class KunenaIcons
 	 * @throws Exception
 	 * @since K5.0
 	 */
-	public static function picture()
+	public static function picture($big = false)
 	{
 		$ktemplate     = KunenaFactory::getTemplate();
 		$topicicontype = $ktemplate->params->get('topicicontype');
 
+		if ($big)
+		{
+			$big = ' icon-big';
+		}
+
 		if ($topicicontype == 'fa')
 		{
-			return '<i class="far fa-image fa-3x" aria-hidden="true"></i>';
+			return '<i class="far fa-image fa-3x' . $big . '" aria-hidden="true"></i>';
 		}
 
 		if ($topicicontype == 'B2')
 		{
-			return '<i class="large-kicon icon icon-picture" aria-hidden="true"></i>';
+			return '<i class="large-kicon icon icon-picture' . $big . '" aria-hidden="true"></i>';
 		}
 
 		if ($topicicontype == 'B3')
 		{
-			return '<span class="large-kicon glyphicon glyphicon-picture" aria-hidden="true"></span>';
+			return '<span class="large-kicon glyphicon glyphicon-picture' . $big . '" aria-hidden="true"></span>';
 		}
 
-		return '<i class="large-kicon icon icon-picture" aria-hidden="true"></i>';
+		return '<i class="large-kicon icon icon-picture' . $big . '" aria-hidden="true"></i>';
 	}
 
 	/**
@@ -994,27 +999,32 @@ class KunenaIcons
 	 * @throws Exception
 	 * @since K5.0
 	 */
-	public static function file()
+	public static function file($big = false)
 	{
 		$ktemplate     = KunenaFactory::getTemplate();
 		$topicicontype = $ktemplate->params->get('topicicontype');
 
+		if ($big)
+		{
+			$big = ' icon-big';
+		}
+
 		if ($topicicontype == 'fa')
 		{
-			return '<i class="fa fa-file fa-3x" aria-hidden="true"></i>';
+			return '<i class="fa fa-file fa-3x' . $big . '" aria-hidden="true"></i>';
 		}
 
 		if ($topicicontype == 'B2')
 		{
-			return '<i class="large-kicon icon icon-file" aria-hidden="true"></i>';
+			return '<i class="large-kicon icon icon-file' . $big . '" aria-hidden="true"></i>';
 		}
 
 		if ($topicicontype == 'B3')
 		{
-			return '<span class="large-kicon glyphicon glyphicon-file" aria-hidden="true"></span>';
+			return '<span class="large-kicon glyphicon glyphicon-file' . $big . '" aria-hidden="true"></span>';
 		}
 
-		return '<i class="large-kicon icon icon-file" aria-hidden="true"></i>';
+		return '<i class="large-kicon icon icon-file' . $big . '" aria-hidden="true"></i>';
 	}
 
 	/**
@@ -1204,7 +1214,7 @@ class KunenaIcons
 
 		if ($categoryicon == ' ')
 		{
-			$categoryicon = null;
+			$categoryicon = $caticon;
 		}
 
 		if ($new)

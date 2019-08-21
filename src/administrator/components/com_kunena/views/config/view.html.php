@@ -5,7 +5,7 @@
  * @package         Kunena.Administrator
  * @subpackage      Views
  *
- * @copyright       Copyright (C) 2008 - 2018 Kunena Team. All rights reserved.
+ * @copyright       Copyright (C) 2008 - 2019 Kunena Team. All rights reserved.
  * @license         https://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link            https://www.kunena.org
  **/
@@ -42,7 +42,7 @@ class KunenaAdminViewConfig extends KunenaView
 	 */
 	protected function setToolBarDefault()
 	{
-		$bar = \Joomla\CMS\Toolbar\Toolbar::getInstance('toolbar');
+		$bar = Joomla\CMS\Toolbar\Toolbar::getInstance('toolbar');
 
 		JToolbarHelper::spacer();
 		JToolbarHelper::apply();
@@ -50,14 +50,7 @@ class KunenaAdminViewConfig extends KunenaView
 		JToolbarHelper::divider();
 		JToolbarHelper::title(Text::_('COM_KUNENA') . ': ' . Text::_('COM_KUNENA_CONFIGURATION'), 'wrench');
 
-		if (version_compare(JVERSION, '4.0', '>'))
-		{
-			HTMLHelper::_('bootstrap.renderModal', 'settingModal');
-		}
-		else
-		{
-			HTMLHelper::_('bootstrap.modal', 'settingModal');
-		}
+		HTMLHelper::_('bootstrap.renderModal', 'settingModal');
 
 		$title = Text::_('COM_KUNENA_RESET_CONFIG');
 		$dhtml = "<button data-toggle=\"modal\" data-target=\"#settingModal\" class=\"btn btn-small\">

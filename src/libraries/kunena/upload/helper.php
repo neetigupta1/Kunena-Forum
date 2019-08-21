@@ -4,11 +4,14 @@
  * @package       Kunena.Framework
  * @subpackage    Upload
  *
- * @copyright (C) 2008 - 2014 Kunena Team. All rights reserved.
+ * @copyright (C) 2008 - 2019 Kunena Team. All rights reserved.
  * @license       https://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link          https://www.kunena.org
  **/
 defined('_JEXEC') or die();
+
+use Joomla\CMS\Filesystem\File;
+use Joomla\CMS\Filesystem\Folder;
 
 /**
  * Kunena Upload Backend Helper Class
@@ -34,30 +37,24 @@ class KunenaUploadHelper
 	 * @param   string $uploadfolder upload
 	 * @param   string $format       format
 	 *
-	 * @return mixed
+	 * @return mixed|void
 	 * @since Kunena
 	 */
 	public static function upload($file, $uploadfolder, $format)
 	{
-		jimport('joomla.filesystem.folder');
-		require_once JPATH_ADMINISTRATOR . '/components/com_media/helpers/media.php';
-
-		$err = null;
-
 		// Set FTP credentials, if given
 		jimport('joomla.client.helper');
-		\Joomla\CMS\Client\ClientHelper::setCredentialsFromRequest('ftp');
+		Joomla\CMS\Client\ClientHelper::setCredentialsFromRequest('ftp');
 
 		// Make the filename safe
-		jimport('joomla.filesystem.file');
-		$file['name'] = JFile::makeSafe($file['name']);
+		$file['name'] = File::makeSafe($file['name']);
 
 		if (empty($file['tmp_name']) || !is_uploaded_file($file['tmp_name']) || !empty($file['error']))
 		{
 			return false;
 		}
 
-		if (!JFolder::exists($uploadfolder))
+		if (!Folder::exists($uploadfolder))
 		{
 			return false;
 		}
@@ -66,7 +63,7 @@ class KunenaUploadHelper
 		{
 			$filepath = JPath::clean($uploadfolder . '/' . strtolower($file['name']));
 
-			if (JFile::exists($filepath))
+			if (File::exists($filepath))
 			{
 				if ($format == 'json')
 				{
@@ -75,8 +72,8 @@ class KunenaUploadHelper
 				}
 				else
 				{
-					$ext         = JFile::getExt($file['name']);
-					$name        = JFile::stripExt($file['name']);
+					$ext         = File::getExt($file['name']);
+					$name        = File::stripExt($file['name']);
 					$newFileName = '';
 
 					for ($i = 2; file_exists("{$uploadfolder}/{$newFileName}"); $i++)
@@ -88,7 +85,7 @@ class KunenaUploadHelper
 				}
 			}
 
-			if (!JFile::upload($file['tmp_name'], $filepath))
+			if (!File::upload($file['tmp_name'], $filepath))
 			{
 				if ($format == 'json')
 				{

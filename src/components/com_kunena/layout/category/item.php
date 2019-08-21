@@ -5,7 +5,7 @@
  * @package         Kunena.Site
  * @subpackage      Layout.Category.Item
  *
- * @copyright       Copyright (C) 2008 - 2018 Kunena Team. All rights reserved.
+ * @copyright       Copyright (C) 2008 - 2019 Kunena Team. All rights reserved.
  * @license         https://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link            https://www.kunena.org
  **/
@@ -83,21 +83,21 @@ class KunenaLayoutCategoryItem extends KunenaLayout
 			{
 				$actions['create'] = $this->subLayout('Widget/Button')
 					->setProperties(array('url'  => $url, 'name' => 'create', 'scope' => 'topic', 'type' => 'communication', 'success' => true,
-										  'icon' => 'glyphicon glyphicon-edit glyphicon-white',)
+										  'icon' => 'glyphicon glyphicon-edit glyphicon-white', )
 					);
 			}
 			elseif ($url && $topicicontype == 'fa')
 			{
 				$actions['create'] = $this->subLayout('Widget/Button')
 					->setProperties(array('url'  => $url, 'name' => 'create', 'scope' => 'topic', 'type' => 'communication', 'success' => true,
-										  'icon' => 'fa fa-pencil-alt',)
+										  'icon' => 'fa fa-pencil-alt', )
 					);
 			}
 			else
 			{
 				$actions['create'] = $this->subLayout('Widget/Button')
 					->setProperties(array('url'  => $url, 'name' => 'create', 'scope' => 'topic', 'type' => 'communication', 'success' => true,
-										  'icon' => 'icon-edit icon-white',)
+										  'icon' => 'icon-edit icon-white', )
 					);
 			}
 		}
@@ -113,7 +113,7 @@ class KunenaLayoutCategoryItem extends KunenaLayout
 				{
 					$actions['markread'] = $this->subLayout('Widget/Button')
 						->setProperties(array('url'  => $url, 'name' => 'markread', 'scope' => 'category', 'type' => 'user',
-											  'icon' => 'glyphicon glyphicon-check',)
+											  'icon' => 'glyphicon glyphicon-check', )
 						);
 				}
 				elseif ($url && $topicicontype == 'fa')
@@ -141,7 +141,7 @@ class KunenaLayoutCategoryItem extends KunenaLayout
 					$url                  = "index.php?option=com_kunena&view=category&task=subscribe&catid={$category->id}{$token}";
 					$actions['subscribe'] = $this->subLayout('Widget/Button')
 						->setProperties(array('url'  => $url, 'name' => 'subscribe', 'scope' => 'category', 'type' => 'user',
-											  'icon' => 'glyphicon glyphicon-envelope',)
+											  'icon' => 'glyphicon glyphicon-envelope', )
 						);
 				}
 				else
@@ -149,7 +149,7 @@ class KunenaLayoutCategoryItem extends KunenaLayout
 					$url                    = "index.php?option=com_kunena&view=category&task=unsubscribe&catid={$category->id}{$token}";
 					$actions['unsubscribe'] = $this->subLayout('Widget/Button')
 						->setProperties(array('url'  => $url, 'name' => 'unsubscribe', 'scope' => 'category', 'type' => 'user',
-											  'icon' => 'glyphicon glyphicon-envelope',)
+											  'icon' => 'glyphicon glyphicon-envelope', )
 						);
 				}
 			}
@@ -160,7 +160,7 @@ class KunenaLayoutCategoryItem extends KunenaLayout
 					$url                  = "index.php?option=com_kunena&view=category&task=subscribe&catid={$category->id}{$token}";
 					$actions['subscribe'] = $this->subLayout('Widget/Button')
 						->setProperties(array('url'  => $url, 'name' => 'subscribe', 'scope' => 'category', 'type' => 'user',
-											  'icon' => 'fa fa-envelope',)
+											  'icon' => 'fa fa-envelope', )
 						);
 				}
 				else
@@ -168,7 +168,7 @@ class KunenaLayoutCategoryItem extends KunenaLayout
 					$url                    = "index.php?option=com_kunena&view=category&task=unsubscribe&catid={$category->id}{$token}";
 					$actions['unsubscribe'] = $this->subLayout('Widget/Button')
 						->setProperties(array('url'  => $url, 'name' => 'unsubscribe', 'scope' => 'category', 'type' => 'user',
-											  'icon' => 'fas fa-envelope-open',)
+											  'icon' => 'fas fa-envelope-open', )
 						);
 				}
 			}
@@ -179,7 +179,7 @@ class KunenaLayoutCategoryItem extends KunenaLayout
 					$url                  = "index.php?option=com_kunena&view=category&task=subscribe&catid={$category->id}{$token}";
 					$actions['subscribe'] = $this->subLayout('Widget/Button')
 						->setProperties(array('url'  => $url, 'name' => 'subscribe', 'scope' => 'category', 'type' => 'user',
-											  'icon' => 'icon-envelope',)
+											  'icon' => 'icon-envelope', )
 						);
 				}
 				else
@@ -187,7 +187,7 @@ class KunenaLayoutCategoryItem extends KunenaLayout
 					$url                    = "index.php?option=com_kunena&view=category&task=unsubscribe&catid={$category->id}{$token}";
 					$actions['unsubscribe'] = $this->subLayout('Widget/Button')
 						->setProperties(array('url'  => $url, 'name' => 'unsubscribe', 'scope' => 'category', 'type' => 'user',
-											  'icon' => 'icon-envelope-opened',)
+											  'icon' => 'icon-envelope-opened', )
 						);
 				}
 			}
@@ -215,7 +215,7 @@ class KunenaLayoutCategoryItem extends KunenaLayout
 	 * @see   KunenaLayout::getLastPostLink()
 	 * @since Kunena
 	 */
-	public function getLastPostLink($category, $content = null, $title = null, $class = null, $length = 20, $follow = true, $canonical = false)
+	public function getLastPostLink($category, $content = null, $title = null, $class = null, $length = 30, $follow = true, $canonical = false)
 	{
 		$lastTopic = $category->getLastTopic();
 		$channels  = $category->getChannels();
@@ -229,7 +229,15 @@ class KunenaLayoutCategoryItem extends KunenaLayout
 
 		if (!$content)
 		{
-			$content = KunenaHtmlParser::parseText($category->getLastTopic()->subject, $length);
+			if (KunenaConfig::getInstance()->disable_re)
+			{
+				$content = KunenaHtmlParser::parseText($category->getLastTopic()->subject, $length);
+			}
+			else
+			{
+				$content = $lastTopic->first_post_id != $lastTopic->last_post_id ? Text::_('COM_KUNENA_RE') . ' ' : '';
+				$content .= KunenaHtmlParser::parseText($category->getLastTopic()->subject, $length);
+			}
 		}
 
 		if ($title === null)

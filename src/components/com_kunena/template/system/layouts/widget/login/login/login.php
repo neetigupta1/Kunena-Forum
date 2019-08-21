@@ -1,10 +1,10 @@
 <?php
 /**
  * Kunena Component
- * @package         Kunena.Template.Crypsis
+ * @package         Kunena.Template.Aurelia
  * @subpackage      Layout.Widget
  *
- * @copyright   (C) 2008 - 2018 Kunena Team. All rights reserved.
+ * @copyright   (C) 2008 - 2019 Kunena Team. All rights reserved.
  * @license         https://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link            https://www.kunena.org
  **/
@@ -12,11 +12,12 @@ defined('_JEXEC') or die;
 
 use Joomla\CMS\HTML\HTMLHelper;
 use Joomla\CMS\Language\Text;
+use Joomla\CMS\Router\Route;
 
 ?>
 <div class="kloginform center">
 	<h1><?php echo Text::_('COM_KUNENA_LOGIN_FORUM'); ?></h1>
-	<form action="<?php echo JRoute::_('index.php?option=com_kunena'); ?>" method="post" class="form-inline">
+	<form action="<?php echo Route::_('index.php?option=com_kunena'); ?>" method="post" class="form-inline">
 		<input type="hidden" name="view" value="user"/>
 		<input type="hidden" name="task" value="login"/>
 		<?php echo HTMLHelper::_('form.token'); ?>
@@ -30,8 +31,8 @@ use Joomla\CMS\Language\Text;
 							<?php echo Text::_('JGLOBAL_USERNAME'); ?>
 						</label>
 					</span>
-					<input id="klogin-username" type="text" name="username" class="input-small" tabindex="1"
-					       size="18" placeholder="<?php echo Text::_('JGLOBAL_USERNAME'); ?>"/>
+					<input id="klogin-username-full" type="text" name="username" class="input-small" tabindex="1"
+					       size="18" autocomplete="username" placeholder="<?php echo Text::_('JGLOBAL_USERNAME'); ?>"/>
 				</div>
 			</div>
 		</div>
@@ -45,8 +46,9 @@ use Joomla\CMS\Language\Text;
 							<?php echo Text::_('JGLOBAL_PASSWORD'); ?>
 						</label>
 					</span>
-					<input id="klogin-passwd" type="password" name="password" class="input-small" tabindex="2"
-					       size="18" placeholder="<?php echo Text::_('JGLOBAL_PASSWORD'); ?>"/>
+					<input id="klogin-passwd-full" type="password" name="password" class="input-small" tabindex="2"
+					       size="18" autocomplete="current-password"
+					       placeholder="<?php echo Text::_('JGLOBAL_PASSWORD'); ?>"/>
 				</div>
 			</div>
 		</div>
@@ -74,7 +76,7 @@ use Joomla\CMS\Language\Text;
 
 		<div id="kform-login-submit" class="control-group center">
 			<p>
-				<button type="submit" tabindex="3" name="submit" class="btn btn-primary btn">
+				<button type="submit" tabindex="3" name="submit" class="btn btn-outline-primary btn">
 					<?php echo Text::_('JLOGIN'); ?>
 				</button>
 			</p>

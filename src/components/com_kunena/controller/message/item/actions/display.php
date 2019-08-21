@@ -4,7 +4,7 @@
  * @package         Kunena.Site
  * @subpackage      Controller.Message
  *
- * @copyright       Copyright (C) 2008 - 2018 Kunena Team. All rights reserved.
+ * @copyright       Copyright (C) 2008 - 2019 Kunena Team. All rights reserved.
  * @license         https://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link            https://www.kunena.org
  **/
@@ -12,8 +12,10 @@ defined('_JEXEC') or die;
 
 use Joomla\CMS\Factory;
 use Joomla\CMS\Language\Text;
+use Joomla\CMS\Router\Route;
 use Joomla\CMS\Session\Session;
 use Joomla\CMS\Uri\Uri;
+use Joomla\CMS\Object\CMSObject;
 
 /**
  * Class ComponentKunenaControllerMessageItemActionsDisplay
@@ -72,7 +74,7 @@ class ComponentKunenaControllerMessageItemActionsDisplay extends KunenaControlle
 		$task   = "index.php?option=com_kunena&view=topic&task=%s&catid={$catid}&id={$id}&mesid={$mesid}&{$token}=1";
 		$layout = "index.php?option=com_kunena&view=topic&layout=%s&catid={$catid}&id={$id}&mesid={$mesid}";
 
-		$this->messageButtons = new JObject;
+		$this->messageButtons = new CMSObject;
 		$this->message_closed = null;
 
 		$ktemplate     = KunenaFactory::getTemplate();
@@ -203,7 +205,7 @@ class ComponentKunenaControllerMessageItemActionsDisplay extends KunenaControlle
 			&& !$me->userid && !$this->message->hold && !$config->read_only
 		)
 		{
-			$loginurl  = JRoute::_('index.php?option=com_users&view=login&return=' . base64_encode((string) Uri::getInstance()));
+			$loginurl  = Route::_('index.php?option=com_users&view=login&return=' . base64_encode((string) Uri::getInstance()));
 			$logintext = sprintf('<a class="btn-link" href="%s" rel="nofollow">%s</a>', $loginurl, Text::_('JLOGIN'));
 
 			if ($login->getRegistrationUrl())
@@ -432,7 +434,7 @@ class ComponentKunenaControllerMessageItemActionsDisplay extends KunenaControlle
 				elseif ($topicicontype == 'fa' && !$fullactions)
 				{
 					$this->messageButtons->set('publish',
-						$this->getButton(sprintf($task, 'approve'), 'approve', 'message', 'moderation', 'approve', $button, 'far fa-check-circle')
+						$this->getButton(sprintf($task, 'approve'), 'approve', 'message', 'moderation', 'approve', $button, 'fas fa-check-circle')
 					);
 				}
 				elseif ($topicicontype == 'image' && !$fullactions)
@@ -499,7 +501,7 @@ class ComponentKunenaControllerMessageItemActionsDisplay extends KunenaControlle
 				elseif ($topicicontype == 'fa' && !$fullactions)
 				{
 					$this->messageButtons->set('undelete',
-						$this->getButton(sprintf($task, 'undelete'), 'undelete', 'message', 'moderation', 'undelete', $button, 'far fa-check-circle')
+						$this->getButton(sprintf($task, 'undelete'), 'undelete', 'message', 'moderation', 'undelete', $button, 'fas fa-check-circle')
 					);
 				}
 				elseif ($topicicontype == 'image' && !$fullactions)
@@ -584,7 +586,7 @@ class ComponentKunenaControllerMessageItemActionsDisplay extends KunenaControlle
 			}
 		}
 
-		\Joomla\CMS\Plugin\PluginHelper::importPlugin('kunena');
+		Joomla\CMS\Plugin\PluginHelper::importPlugin('kunena');
 
 		Factory::getApplication()->triggerEvent('onKunenaGetButtons', array('message.action', $this->messageButtons, $this));
 	}
@@ -610,7 +612,7 @@ class ComponentKunenaControllerMessageItemActionsDisplay extends KunenaControlle
 	{
 		return KunenaLayout::factory('Widget/Button')
 			->setProperties(array('url'  => KunenaRoute::_($url), 'name' => $name, 'scope' => $scope,
-								  'type' => $type, 'id' => 'btn_' . $id, 'normal' => $normal, 'icon' => $icon,)
+								  'type' => $type, 'id' => 'btn_' . $id, 'normal' => $normal, 'icon' => $icon, )
 			);
 	}
 }

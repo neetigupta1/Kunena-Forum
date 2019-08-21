@@ -4,7 +4,7 @@
  * @package         Kunena.Site
  * @subpackage      Controller.Search
  *
- * @copyright       Copyright (C) 2008 - 2018 Kunena Team. All rights reserved.
+ * @copyright       Copyright (C) 2008 - 2019 Kunena Team. All rights reserved.
  * @license         https://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link            https://www.kunena.org
  **/
@@ -71,7 +71,7 @@ class ComponentKunenaControllerSearchResultsDisplay extends KunenaControllerDisp
 		$this->total   = $this->model->getTotal();
 		$this->results = $this->model->getResults();
 
-		$doc = Factory::getDocument();
+		$doc = Factory::getApplication()->getDocument();
 		$doc->setMetaData('robots', 'follow, noindex');
 
 		foreach ($doc->_links as $key => $value)
@@ -82,7 +82,7 @@ class ComponentKunenaControllerSearchResultsDisplay extends KunenaControllerDisp
 				{
 					if ($value['relation'] == 'canonical')
 					{
-						$canonicalUrl               = 'index.php?option=com_kunena&view=search';
+						$canonicalUrl               = KunenaRoute::_('index.php?option=com_kunena&view=search');
 						$doc->_links[$canonicalUrl] = $value;
 						unset($doc->_links[$key]);
 						break;
@@ -109,8 +109,7 @@ class ComponentKunenaControllerSearchResultsDisplay extends KunenaControllerDisp
 	 */
 	protected function prepareDocument()
 	{
-		$app       = Factory::getApplication();
-		$menu_item = $app->getMenu()->getActive();
+		$menu_item = $this->app->getMenu()->getActive();
 
 		if ($menu_item)
 		{

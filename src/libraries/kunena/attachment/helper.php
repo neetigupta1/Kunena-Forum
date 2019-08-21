@@ -4,13 +4,14 @@
  * @package       Kunena.Framework
  * @subpackage    Attachment
  *
- * @copyright     Copyright (C) 2008 - 2018 Kunena Team. All rights reserved.
+ * @copyright     Copyright (C) 2008 - 2019 Kunena Team. All rights reserved.
  * @license       https://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link          https://www.kunena.org
  **/
 defined('_JEXEC') or die();
 
 use Joomla\CMS\Factory;
+use Joomla\CMS\Filesystem\File;
 
 /**
  * Kunena Attachment Helper Class
@@ -138,12 +139,15 @@ abstract class KunenaAttachmentHelper
 
 		$idlist = implode(',', $ids);
 		$db     = Factory::getDBO();
-		$query  = "SELECT * FROM #__kunena_attachments WHERE id IN ({$idlist})";
+		$query  = $db->getQuery(true);
+		$query->select('*')
+			->from($db->quoteName('#__kunena_attachments'))
+			->where($db->quoteName('id') . ' IN (' . $idlist . ')');
 		$db->setQuery($query);
 
 		try
 		{
-			$results = (array) $db->loadObjectList('id', 'KunenaAttachment');
+			$results = (array) $db->loadObjectList('id');
 		}
 		catch (RuntimeException $e)
 		{
@@ -154,7 +158,7 @@ abstract class KunenaAttachmentHelper
 		{
 			if (isset($results[$id]))
 			{
-				$instance                               = $results[$id];
+				$instance                               = self::get($id);
 				self::$_instances[$id]                  = $instance;
 				self::$_messages[$instance->mesid][$id] = $instance;
 			}
@@ -208,7 +212,12 @@ abstract class KunenaAttachmentHelper
 		{
 			$id = intval($id);
 
-			if (!$id || isset(self::$_messages [$id]))
+			if (!empty(self::$_messages[$id]))
+			{
+				unset($ids[$i]);
+			}
+
+			if (!$id)
 			{
 				unset($ids[$i]);
 			}
@@ -221,12 +230,15 @@ abstract class KunenaAttachmentHelper
 
 		$idlist = implode(',', $ids);
 		$db     = Factory::getDBO();
-		$query  = "SELECT * FROM #__kunena_attachments WHERE mesid IN ({$idlist})";
+		$query  = $db->getQuery(true);
+		$query->select('*')
+			->from($db->quoteName('#__kunena_attachments'))
+			->where($db->quoteName('mesid') . ' IN (' . $idlist . ')');
 		$db->setQuery($query);
 
 		try
 		{
-			$results = (array) $db->loadObjectList('id', 'KunenaAttachment');
+			$results = (array) $db->loadObjectList('id');
 		}
 		catch (RuntimeException $e)
 		{
@@ -243,6 +255,7 @@ abstract class KunenaAttachmentHelper
 
 		foreach ($results as $id => $instance)
 		{
+			$instance = self::get($id);
 			self::$_instances [$id]                  = $instance;
 			self::$_messages [$instance->mesid][$id] = $instance;
 		}
@@ -300,8 +313,6 @@ abstract class KunenaAttachmentHelper
 			{
 				foreach (self::$_messages [$id] as $instance)
 				{
-					// @var KunenaAttachment $instance
-
 					if ($instance->isAuthorised($authorise))
 					{
 						$list [$instance->id] = $instance;
@@ -346,7 +357,7 @@ abstract class KunenaAttachmentHelper
 		}
 
 		// Lets find out if we need to rename the filename.
-		$basename  = preg_replace('/[[:space:]]/', '', KunenaFile::makeSafe($basename));
+		$basename  = preg_replace('/[[:space:]]/', '', File::makeSafe($basename));
 		$extension = trim($extension, '.');
 
 		if (empty($basename))
@@ -547,10 +558,13 @@ abstract class KunenaAttachmentHelper
 	 */
 	public static function cleanup()
 	{
-		$db = Factory::getDBO();
-
 		// Find up to 50 orphan attachments and delete them
-		$query = "SELECT a.* FROM #__kunena_attachments AS a LEFT JOIN #__kunena_messages AS m ON a.mesid=m.id WHERE m.id IS NULL";
+		$db     = Factory::getDBO();
+		$query  = $db->getQuery(true);
+		$query->select('a.*')
+			->from($db->quoteName('#__kunena_attachments', 'a'))
+			->leftJoin($db->quoteName('#__kunena_messages', 'm') . ' ON a.mesid = m.id')
+			->where($db->quoteName('m.id') . ' IS NULL');
 		$db->setQuery($query, 0, 50);
 
 		try
@@ -577,7 +591,9 @@ abstract class KunenaAttachmentHelper
 
 		$ids = implode(',', array_keys($results));
 		unset($results);
-		$query = "DELETE FROM #__kunena_attachments WHERE id IN ($ids)";
+		$query  = $db->getQuery(true);
+		$query->from($db->quoteName('#__kunena_attachments'))
+			->where($db->quoteName('id') . 'IN (' . $ids . ')');
 		$db->setQuery($query);
 
 		try
@@ -658,7 +674,10 @@ abstract class KunenaAttachmentHelper
 		}
 
 		$db    = Factory::getDBO();
-		$query = "SELECT * FROM #__kunena_attachments WHERE userid='{$user->userid}' $filetype $orderby";
+		$query  = $db->getQuery(true);
+		$query->select('*')
+			->from($db->quoteName('#__kunena_attachments'))
+			->where($db->quoteName('userid') . ' = ' . $db->quote($user->userid . $filetype . $orderby));
 		$db->setQuery($query, 0, $params['limit']);
 
 		try
@@ -697,10 +716,12 @@ abstract class KunenaAttachmentHelper
 	{
 		$attachments = null;
 
-		$db = Factory::getDBO();
-		$db->getQuery(true)
-			->select('*')
+		$db    = Factory::getDBO();
+		$query = $db->getQuery(true);
+		$query
+			->select('COUNT(*)')
 			->from($db->quoteName('#__kunena_attachments'));
+		$db->setQuery($query);
 
 		try
 		{

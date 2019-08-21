@@ -4,13 +4,14 @@
  * @package       Kunena.Framework
  * @subpackage    Path
  *
- * @copyright     Copyright (C) 2008 - 2018 Kunena Team. All rights reserved.
+ * @copyright     Copyright (C) 2008 - 2019 Kunena Team. All rights reserved.
  * @license       https://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link          https://www.kunena.org
  **/
 defined('_JEXEC') or die();
 
 use Joomla\CMS\Factory;
+use Joomla\CMS\Filesystem\File;
 
 jimport('joomla.filesystem.path');
 
@@ -72,7 +73,7 @@ class KunenaPath extends JPath
 	}
 
 	/**
-	 * Checks if path is writeable either by the server or by FTP.
+	 * Checks if path is writable either by the server or by FTP.
 	 *
 	 * @param   string $path paths
 	 *
@@ -108,7 +109,7 @@ class KunenaPath extends JPath
 
 			// Create the test file
 			$content = 'test';
-			$success = KunenaFile::write($test, $content, false);
+			$success = File::write($test, $content, false);
 
 			if (!$success)
 			{
@@ -118,7 +119,7 @@ class KunenaPath extends JPath
 			self::$owner = fileowner($test);
 
 			// Delete the test file
-			KunenaFile::delete($test);
+			File::delete($test);
 		}
 
 		// Test ownership

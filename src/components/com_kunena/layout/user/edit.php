@@ -5,7 +5,7 @@
  * @package         Kunena.Site
  * @subpackage      Layout.User
  *
- * @copyright       Copyright (C) 2008 - 2018 Kunena Team. All rights reserved.
+ * @copyright       Copyright (C) 2008 - 2019 Kunena Team. All rights reserved.
  * @license         https://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link            https://www.kunena.org
  **/
@@ -74,7 +74,7 @@ class KunenaLayoutUserEdit extends KunenaLayout
 			$tabs['settings'] = $tab;
 		}
 
-		\Joomla\CMS\Plugin\PluginHelper::importPlugin('kunena');
+		Joomla\CMS\Plugin\PluginHelper::importPlugin('kunena');
 
 		$plugins = Factory::getApplication()->triggerEvent('onKunenaUserTabsEdit', array($tabs));
 

@@ -1,10 +1,11 @@
 <?php
 /**
  * Kunena Component
+ *
  * @package         Kunena.Framework
  * @subpackage      BBCode
  *
- * @copyright       Copyright (C) 2008 - 2018 Kunena Team. All rights reserved.
+ * @copyright       Copyright (C) 2008 - 2019 Kunena Team. All rights reserved.
  * @license         https://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link            https://www.kunena.org
  **/
@@ -15,8 +16,11 @@ use Joomla\String\StringHelper;
 use Joomla\CMS\HTML\HTMLHelper;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\Uri\Uri;
+use Joomla\CMS\Router\Route;
+use Joomla\CMS\Filesystem\File;
+use Joomla\CMS\Filesystem\Folder;
+use Nbbc\BBCode;
 
-require_once KPATH_FRAMEWORK . '/external/nbbc/nbbc.php';
 jimport('joomla.utilities.string');
 
 // TODO: add possibility to hide contents from these tags:
@@ -25,9 +29,9 @@ jimport('joomla.utilities.string');
 /**
  * Class KunenaBbcode
  *
- * @since   2.0
+ * @since   6.0
  */
-class KunenaBbcode extends NBBC_BBCode
+class KunenaBbcode extends Nbbc\BBCode
 {
 	/**
 	 * @var integer
@@ -44,39 +48,38 @@ class KunenaBbcode extends NBBC_BBCode
 	/**
 	 * Use KunenaBbcode::getInstance() instead.
 	 *
-	 * @param   bool $relative relative
-	 *
 	 * @internal
+	 *
+	 * @param   bool  $relative  relative
+	 *
 	 * @since Kunena
 	 * @throws Exception
 	 */
 	public function __construct($relative = true)
 	{
 		parent::__construct();
-		$this->defaults  = new KunenaBbcodeLibrary;
+		$this->defaults = new KunenaBbcodeLibrary;
+
 		$this->tag_rules = $this->defaults->default_tag_rules;
-
-		$this->smileys = $this->defaults->default_smileys;
-
+		$this->smileys   = $this->defaults->default_smileys;
 		if (empty($this->smileys))
 		{
 			$this->SetEnableSmileys(false);
 		}
-
 		$this->SetSmileyDir(JPATH_ROOT);
 		$this->SetSmileyURL($relative ? Uri::root(true) : rtrim(Uri::root(), '/'));
 		$this->SetDetectURLs(true);
-		$this->SetURLPattern(array($this, 'parseUrl'));
+		$this->SetURLPattern($this->url_pattern);
 		$this->SetURLTarget('_blank');
 
-		\Joomla\CMS\Plugin\PluginHelper::importPlugin('kunena');
+		Joomla\CMS\Plugin\PluginHelper::importPlugin('kunena');
 		Factory::getApplication()->triggerEvent('onKunenaBbcodeConstruct', array($this));
 	}
 
 	/**
 	 * Get global instance from BBCode parser.
 	 *
-	 * @param   bool $relative relative
+	 * @param   bool  $relative  relative
 	 *
 	 * @return mixed
 	 * @since Kunena
@@ -97,11 +100,11 @@ class KunenaBbcode extends NBBC_BBCode
 	}
 
 	/**
-	 * @param   mixed $params params
+	 * @param   mixed  $params  params
 	 *
 	 * @return string
-	 * @throws Exception
 	 * @since Kunena
+	 * @throws Exception
 	 */
 	public function parseUrl($params)
 	{
@@ -174,7 +177,7 @@ class KunenaBbcode extends NBBC_BBCode
 
 			if (strstr($params['host'], 'instagram.') && !empty($path[1]))
 			{
-				return '<div class="embed-container"><iframe src="' . rtrim($params['url'], '/') . '/embed/" frameborder="0" scrolling="no"></iframe></div>';
+				return KunenaBbcodeLibrary::DoInstagram('', '', '', '', '', rtrim($params['url']));
 			}
 		}
 
@@ -215,7 +218,8 @@ class KunenaBbcode extends NBBC_BBCode
 		if ($config->autoembedebay && empty($this->parent->forceMinimal) && isset($params['host']) && strstr($params['host'], '.ebay.'))
 		{
 			parse_str($params['query'], $query);
-			$path = explode('/', $params['path']);
+			$path   = explode('/', $params['path']);
+			$itemid = '';
 
 			if ($path[1] == 'itm')
 			{
@@ -239,28 +243,16 @@ class KunenaBbcode extends NBBC_BBCode
 
 			parse_str($params['query'], $query);
 
-			// FIXME: ebay search and seller listings are not supported.
 			if (isset($path[1]) && $path[1] == 'sch' && !empty($query['_nkw']))
 			{
 				// Convert ebay search to embedded widget
 				KunenaBbcodeLibrary::renderEbayLayout($itemid);
-
-				// TODO: Remove in Kunena 4.0
-				return '<object width="355" height="300"><param name="movie" value="http://togo.ebay.com/togo/togo.swf?2008013100" /><param name="flashvars" value="base=http://togo.ebay.com/togo/&lang=' . $config->ebay_language . '&mode=search&query='
-					. urlencode($query['_nkw']) . '&campid=' . $config->ebay_affiliate_id . '" /><embed src="http://togo.ebay.com/togo/togo.swf?2008013100" type="application/x-shockwave-flash" width="355" height="300" flashvars="base=http://togo.ebay.com/togo/&lang='
-					. $config->ebay_language . '&mode=search&query=' . urlencode($query['_nkw']) . '&campid=' . $config->ebay_affiliate_id . '"> </embed></object>';
 			}
 
 			if (strstr($params['host'], 'myworld.') && !empty($path[1]))
 			{
 				// Convert seller listing to embedded widget
-
 				KunenaBbcodeLibrary::renderEbayLayout($itemid);
-
-				// TODO: Remove in Kunena 4.0
-				return '<object width="355" height="355"><param name="movie" value="http://togo.ebay.com/togo/seller.swf?2008013100" /><param name="flashvars" value="base=http://togo.ebay.com/togo/&lang='
-					. $config->ebay_language . '&seller=' . urlencode($path[1]) . '&campid=' . $config->ebay_affiliate_id . '" /><embed src="http://togo.ebay.com/togo/seller.swf?2008013100" type="application/x-shockwave-flash" width="355" height="355" flashvars="base=http://togo.ebay.com/togo/&lang='
-					. $config->ebay_language . '&seller=' . urlencode($path[1]) . '&campid=' . $config->ebay_affiliate_id . '"> </embed></object>';
 			}
 		}
 
@@ -277,14 +269,14 @@ class KunenaBbcode extends NBBC_BBCode
 		if ($config->autolink)
 		{
 			$internal = false;
-			$layout = KunenaLayout::factory('BBCode/URL');
+			$layout   = KunenaLayout::factory('BBCode/URL');
 
 			if ($config->smartlinking)
 			{
 				$text = $this->get_title($url);
 			}
 
-			$uri = Uri::getInstance($url);
+			$uri  = Uri::getInstance($url);
 			$host = $uri->getHost();
 
 			// The cms will catch most of these well
@@ -319,17 +311,17 @@ class KunenaBbcode extends NBBC_BBCode
 	}
 
 	/**
-	 * @param   mixed $params params
+	 * @param   mixed  $params  params
 	 *
 	 * @return boolean
 	 * @since Kunena
 	 */
 	public function canCloakEmail(&$params)
 	{
-		if (\Joomla\CMS\Plugin\PluginHelper::isEnabled('content', 'emailcloak'))
+		if (Joomla\CMS\Plugin\PluginHelper::isEnabled('content', 'emailcloak'))
 		{
-			$plugin = \Joomla\CMS\Plugin\PluginHelper::getPlugin('content', 'emailcloak');
-			$params = new \Joomla\Registry\Registry($plugin->params);
+			$plugin = Joomla\CMS\Plugin\PluginHelper::getPlugin('content', 'emailcloak');
+			$params = new Joomla\Registry\Registry($plugin->params);
 
 			if ($params->get('mode', 1))
 			{
@@ -341,7 +333,7 @@ class KunenaBbcode extends NBBC_BBCode
 	}
 
 	/**
-	 * @param   string $url url
+	 * @param   string  $url  url
 	 *
 	 * @return string
 	 *
@@ -371,7 +363,7 @@ class KunenaBbcode extends NBBC_BBCode
 	}
 
 	/**
-	 * @param   string $string string
+	 * @param   string  $string  string
 	 *
 	 * @return array
 	 * @since Kunena
@@ -466,9 +458,9 @@ class KunenaBbcode extends NBBC_BBCode
 	 * @see   BBCode::IsValidURL()
 	 * Regular expression taken from https://gist.github.com/729294
 	 *
-	 * @param   string $string    string
-	 * @param   bool   $email_too email
-	 * @param   bool   $local_too local
+	 * @param   string  $string     string
+	 * @param   bool    $email_too  email
+	 * @param   bool    $local_too  local
 	 *
 	 * @return boolean
 	 * @since Kunena
@@ -503,9 +495,10 @@ class KunenaBbcode extends NBBC_BBCode
 
 /**
  * Class KunenaBbcodeLibrary
+ *
  * @since Kunena
  */
-class KunenaBbcodeLibrary extends BBCodeLibrary
+class KunenaBbcodeLibrary extends Nbbc\BBCodeLibrary
 {
 	/**
 	 * The bearer token to get tweet data
@@ -514,12 +507,6 @@ class KunenaBbcodeLibrary extends BBCodeLibrary
 	 * @since  K4.0
 	 */
 	public $token = null;
-
-	/**
-	 * @var array
-	 * @since Kunena
-	 */
-	public $default_smileys = array();
 
 	/**
 	 * @var integer
@@ -531,596 +518,525 @@ class KunenaBbcodeLibrary extends BBCodeLibrary
 	 * @var array
 	 * @since Kunena
 	 */
-	public $default_tag_rules = array(
-		'b' => array(
+	public $default_tag_rules = [
+		'b'            => [
 			'simple_start' => "<b>",
 			'simple_end'   => "</b>",
 			'class'        => 'inline',
-			'allow_in'     => array('listitem', 'block', 'columns', 'inline', 'link'),
+			'allow_in'     => ['listitem', 'block', 'columns', 'inline', 'link'],
 			'plain_start'  => "<b>",
 			'plain_end'    => "</b>",
-		),
-
-		'i' => array(
+			'allow_params' => false,
+		],
+		'i'            => [
 			'simple_start' => "<i>",
 			'simple_end'   => "</i>",
 			'class'        => 'inline',
-			'allow_in'     => array('listitem', 'block', 'columns', 'inline', 'link'),
+			'allow_in'     => ['listitem', 'block', 'columns', 'inline', 'link'],
 			'plain_start'  => "<i>",
 			'plain_end'    => "</i>",
-		),
-
-		'u' => array(
+			'allow_params' => false,
+		],
+		'u'            => [
 			'simple_start' => "<u>",
 			'simple_end'   => "</u>",
 			'class'        => 'inline',
-			'allow_in'     => array('listitem', 'block', 'columns', 'inline', 'link'),
+			'allow_in'     => ['listitem', 'block', 'columns', 'inline', 'link'],
 			'plain_start'  => "<u>",
 			'plain_end'    => "</u>",
-		),
-
-		's' => array(
+			'allow_params' => false,
+		],
+		's'            => [
 			'simple_start' => "<strike>",
 			'simple_end'   => "</strike>",
 			'class'        => 'inline',
-			'allow_in'     => array('listitem', 'block', 'columns', 'inline', 'link'),
+			'allow_in'     => ['listitem', 'block', 'columns', 'inline', 'link'],
 			'plain_start'  => "<i>",
 			'plain_end'    => "</i>",
-		),
-
-		'strike' => array(
+			'allow_params' => false,
+		],
+		'strike'       => [
 			'simple_start' => "<strike>",
 			'simple_end'   => "</strike>",
 			'class'        => 'inline',
-			'allow_in'     => array('listitem', 'block', 'columns', 'inline', 'link'),
+			'allow_in'     => ['listitem', 'block', 'columns', 'inline', 'link'],
 			'plain_start'  => "<i>",
 			'plain_end'    => "</i>",
-		),
-
-		'tt' => array(
+		],
+		'tt'           => [
 			'simple_start' => "<tt>",
 			'simple_end'   => "</tt>",
 			'class'        => 'inline',
-			'allow_in'     => array('listitem', 'block', 'columns', 'inline', 'link'),
+			'allow_in'     => ['listitem', 'block', 'columns', 'inline', 'link'],
 			'plain_start'  => "<i>",
 			'plain_end'    => "</i>",
-		),
-
-		'pre' => array(
+		],
+		'pre'          => [
 			'simple_start' => "<pre>",
 			'simple_end'   => "</pre>",
 			'class'        => 'block',
-			'allow_in'     => array('listitem', 'block', 'columns'),
+			'allow_in'     => ['listitem', 'block', 'columns'],
 			'plain_start'  => "<i>",
 			'plain_end'    => "</i>",
-		),
-
-		'font' => array(
-			'mode'     => BBCODE_MODE_LIBRARY,
-			'allow'    => array('_default' => '/^[a-zA-Z0-9._ -]+$/'),
-			'method'   => 'DoFont',
+		],
+		'font'         => [
+			'mode'     => BBCode::BBCODE_MODE_LIBRARY,
+			'allow'    => ['_default' => '/^[a-zA-Z0-9._ -]+$/'],
+			'method'   => 'doFont',
 			'class'    => 'inline',
-			'allow_in' => array('listitem', 'block', 'columns', 'inline', 'link'),
-		),
-
-		'color' => array(
-			'mode'     => BBCODE_MODE_ENHANCED,
-			'allow'    => array('_default' => '/^#?[a-zA-Z0-9._ -]+$/'),
-			'template' => '<span style="color:{$_default/tw};">{$_content/v}</span>',
+			'allow_in' => ['listitem', 'block', 'columns', 'inline', 'link'],
+		],
+		'color'        => [
+			'mode'     => BBCode::BBCODE_MODE_ENHANCED,
+			'allow'    => ['_default' => '/^#?[a-zA-Z0-9._ -]+$/'],
+			'template' => '<span style="color:{$_default/tw}">{$_content/v}</span>',
 			'class'    => 'inline',
-			'allow_in' => array('listitem', 'block', 'columns', 'inline', 'link'),
-		),
-
-		'size' => array(
-			'mode'     => BBCODE_MODE_LIBRARY,
-			'method'   => 'DoSize',
-			'allow'    => array('_default' => '/^[0-9.]+(px|em|pt|%)?$/D'),
+			'allow_in' => ['listitem', 'block', 'columns', 'inline', 'link'],
+		],
+		'size'         => [
+			'mode'     => BBCode::BBCODE_MODE_LIBRARY,
+			'allow'    => ['_default' => '/^[0-9.]+$/D'],
+			'method'   => 'doSize',
 			'class'    => 'inline',
-			'allow_in' => array('listitem', 'block', 'columns', 'inline', 'link'),
-		),
-
-		'sup' => array(
+			'allow_in' => ['listitem', 'block', 'columns', 'inline', 'link'],
+		],
+		'sup'          => [
 			'simple_start' => "<sup>",
 			'simple_end'   => "</sup>",
 			'class'        => 'inline',
-			'allow_in'     => array('listitem', 'block', 'columns', 'inline', 'link'),
-		),
-
-		'sub' => array(
+			'allow_in'     => ['listitem', 'block', 'columns', 'inline', 'link'],
+			'allow_params' => false,
+		],
+		'sub'          => [
 			'simple_start' => "<sub>",
 			'simple_end'   => "</sub>",
 			'class'        => 'inline',
-			'allow_in'     => array('listitem', 'block', 'columns', 'inline', 'link'),
-		),
-
-		'spoiler' => array(
-			'mode'        => BBCODE_MODE_LIBRARY,
-			'method'      => 'DoSpoiler',
-			'class'       => 'block',
-			'allow_in'    => array('listitem', 'block', 'columns'),
-			'content'     => BBCODE_REQUIRED,
-			'plain_start' => "\nSpoiler:\n<i>",
-			'plain_end'   => "</i>",
-		),
-
-		'hide' => array(
-			'mode'          => BBCODE_MODE_LIBRARY,
+			'allow_in'     => ['listitem', 'block', 'columns', 'inline', 'link'],
+			'allow_params' => false,
+		],
+		'spoiler'      => [
+			'simple_start' => "<span class=\"bbcode_spoiler\">",
+			'simple_end'   => "</span>",
+			'class'        => 'inline',
+			'allow_in'     => ['listitem', 'block', 'columns', 'inline', 'link'],
+		],
+		'hide'         => [
+			'mode'          => BBCode::BBCODE_MODE_LIBRARY,
 			'method'        => 'DoHide',
 			'class'         => 'block',
-			'allow_in'      => array('listitem', 'block', 'columns'),
-			'content'       => BBCODE_REQUIRED,
-			'plain_content' => array(),
-		),
-
-		'confidential' => array(
-			'mode'          => BBCODE_MODE_LIBRARY,
+			'allow_in'      => ['listitem', 'block', 'columns'],
+			'content'       => BBCode::BBCODE_REQUIRED,
+			'plain_content' => [],
+		],
+		'confidential' => [
+			'mode'          => BBCode::BBCODE_MODE_LIBRARY,
 			'method'        => 'DoConfidential',
 			'class'         => 'block',
-			'allow_in'      => array('listitem', 'block', 'columns'),
-			'content'       => BBCODE_REQUIRED,
-			'plain_content' => array(),
-		),
-
-		'map' => array(
-			'mode'     => BBCODE_MODE_LIBRARY,
+			'allow_in'      => ['listitem', 'block', 'columns'],
+			'content'       => BBCode::BBCODE_REQUIRED,
+			'plain_content' => [],
+		],
+		'map'          => [
+			'mode'     => BBCode::BBCODE_MODE_LIBRARY,
 			'method'   => 'DoMap',
 			'class'    => 'block',
-			'allow'    => array('type' => '/^[\w\d.-_]*$/', 'zoom' => '/^\d*$/', 'control' => '/^\d*$/'),
-			'allow_in' => array('listitem', 'block', 'columns'),
-			'content'  => BBCODE_VERBATIM,
-		),
-
-		'ebay' => array(
-			'mode'          => BBCODE_MODE_LIBRARY,
+			'allow'    => ['type' => '/^[\w\d.-_]*$/', 'zoom' => '/^\d*$/', 'control' => '/^\d*$/'],
+			'allow_in' => ['listitem', 'block', 'columns'],
+			'content'  => BBCode::BBCODE_VERBATIM,
+		],
+		'ebay'         => [
+			'mode'          => BBCode::BBCODE_MODE_LIBRARY,
 			'method'        => 'DoEbay',
 			'class'         => 'block',
-			'allow_in'      => array('listitem', 'block', 'columns'),
-			'content'       => BBCODE_VERBATIM,
+			'allow_in'      => ['listitem', 'block', 'columns'],
+			'content'       => BBCode::BBCODE_VERBATIM,
 			'plain_start'   => "[ebay]",
 			'plain_end'     => "",
-			'plain_content' => array(),
-		),
-
-		'article' => array(
-			'mode'          => BBCODE_MODE_LIBRARY,
+			'plain_content' => [],
+		],
+		'article'      => [
+			'mode'          => BBCode::BBCODE_MODE_LIBRARY,
 			'method'        => 'DoArticle',
 			'class'         => 'block',
-			'allow_in'      => array('listitem', 'block', 'columns'),
-			'content'       => BBCODE_REQUIRED,
+			'allow_in'      => ['listitem', 'block', 'columns'],
+			'content'       => BBCode::BBCODE_REQUIRED,
 			'plain_start'   => "\n[article]\n",
 			'plain_end'     => "",
-			'plain_content' => array(),
-		),
-
-		'tableau' => array(
-			'mode'          => BBCODE_MODE_LIBRARY,
+			'plain_content' => [],
+		],
+		'tableau'      => [
+			'mode'          => BBCode::BBCODE_MODE_LIBRARY,
 			'method'        => 'DoTableau',
 			'class'         => 'block',
-			'allow_in'      => array('listitem', 'block', 'columns'),
-			'content'       => BBCODE_VERBATIM,
+			'allow_in'      => ['listitem', 'block', 'columns'],
+			'content'       => BBCode::BBCODE_VERBATIM,
 			'plain_start'   => "\n[tableau]\n",
 			'plain_end'     => "",
-			'plain_content' => array(),
-		),
-
-		'video' => array(
-			'mode'          => BBCODE_MODE_LIBRARY,
+			'plain_content' => [],
+		],
+		'video'        => [
+			'mode'          => BBCode::BBCODE_MODE_LIBRARY,
 			'method'        => 'DoVideo',
-			'allow'         => array('type' => '/^[\w\d.-_]*$/', 'param' => '/^[\w]*$/', 'size' => '/^\d*$/', 'width' => '/^\d*$/', 'height' => '/^\d*$/'),
+			'allow'         => ['type' => '/^[\w\d.-_]*$/', 'param' => '/^[\w]*$/', 'size' => '/^\d*$/', 'width' => '/^\d*$/', 'height' => '/^\d*$/'],
 			'class'         => 'block',
-			'allow_in'      => array('listitem', 'block', 'columns'),
-			'content'       => BBCODE_VERBATIM,
+			'allow_in'      => ['listitem', 'block', 'columns'],
+			'content'       => BBCode::BBCODE_VERBATIM,
 			'plain_start'   => "[video]",
 			'plain_end'     => "",
-			'plain_content' => array(),
-		),
-
-		'img' => array(
-			'mode'          => BBCODE_MODE_LIBRARY,
+			'plain_content' => [],
+		],
+		'img'          => [
+			'mode'          => BBCode::BBCODE_MODE_LIBRARY,
 			'method'        => 'DoImage',
-			'allow'         => array('size' => '/^\d*$/'),
+			'allow'         => ['size' => '/^\d*$/'],
 			'class'         => 'block',
-			'allow_in'      => array('listitem', 'block', 'columns', 'link'),
-			'content'       => BBCODE_VERBATIM,
+			'allow_in'      => ['listitem', 'block', 'columns', 'link'],
+			'content'       => BBCode::BBCODE_VERBATIM,
 			'plain_start'   => "[image]",
 			'plain_end'     => "",
-			'plain_content' => array(),
-		),
-
-		'file' => array(
-			'mode'          => BBCODE_MODE_LIBRARY,
+			'plain_content' => [],
+		],
+		'file'         => [
+			'mode'          => BBCode::BBCODE_MODE_LIBRARY,
 			'method'        => 'DoFile',
-			'allow'         => array('size' => '/^\d*$/'),
+			'allow'         => ['size' => '/^\d*$/'],
 			'class'         => 'block',
-			'allow_in'      => array('listitem', 'block', 'columns'),
-			'content'       => BBCODE_VERBATIM,
+			'allow_in'      => ['listitem', 'block', 'columns'],
+			'content'       => BBCode::BBCODE_VERBATIM,
 			'plain_start'   => "\n[file]\n",
 			'plain_end'     => "",
-			'plain_content' => array(),
-		),
-
-		'attachment' => array(
-			'mode'          => BBCODE_MODE_LIBRARY,
+			'plain_content' => [],
+		],
+		'attachment'   => [
+			'mode'          => BBCode::BBCODE_MODE_LIBRARY,
 			'method'        => 'DoAttachment',
-			'allow'         => array('_default' => '/^\d*$/'),
+			'allow'         => ['_default' => '/^\d*$/'],
 			'class'         => 'block',
-			'allow_in'      => array('listitem', 'block', 'columns'),
-			'content'       => BBCODE_VERBATIM,
+			'allow_in'      => ['listitem', 'block', 'columns'],
+			'content'       => BBCode::BBCODE_VERBATIM,
 			'plain_start'   => "\n[attachment]\n",
 			'plain_end'     => "",
-			'plain_content' => array(),
-		),
-
-		'highlight' => array(
+			'plain_content' => [],
+		],
+		'highlight'    => [
 			'simple_start' => "<span style='font-weight: 700;'>",
 			'simple_end'   => "</span>",
 			'class'        => 'inline',
-			'allow_in'     => array('listitem', 'block', 'columns', 'inline', 'link'),
+			'allow_in'     => ['listitem', 'block', 'columns', 'inline', 'link'],
 			'plain_start'  => "<i>",
 			'plain_end'    => "</i>",
-		),
-
-		'acronym' => array(
-			'mode'     => BBCODE_MODE_ENHANCED,
+		],
+		'acronym'      => [
+			'mode'     => BBCode::BBCODE_MODE_ENHANCED,
 			'template' => '<span class="bbcode_acronym" title="{$_default/e}">{$_content/v}</span>',
 			'class'    => 'inline',
-			'allow_in' => array('listitem', 'block', 'columns', 'inline', 'link'),
-		),
-
-		'url' => array(
-			'mode'          => BBCODE_MODE_LIBRARY,
+			'allow_in' => ['listitem', 'block', 'columns', 'inline', 'link'],
+		],
+		'url'          => [
+			'mode'          => BBCode::BBCODE_MODE_LIBRARY,
 			'method'        => 'DoUrl',
 			'class'         => 'link',
-			'allow_in'      => array('listitem', 'block', 'columns', 'inline'),
-			'content'       => BBCODE_REQUIRED,
-			'plain_start'   => "<a href=\"{\$link}\" rel=\"nofollow\" target=\"_blank\">",
-			'plain_end'     => "</a>",
-			'plain_content' => array('_content', '_default'),
-			'plain_link'    => array('_default', '_content'),
-		),
-
-		'email' => array(
-			'mode'          => BBCODE_MODE_LIBRARY,
-			'method'        => 'DoEmail',
+			'allow_in'      => ['listitem', 'block', 'columns', 'inline'],
+			'content'       => BBCode::BBCODE_REQUIRED,
+			'plain_content' => ['_content', '_default'],
+			'plain_link'    => ['_default', '_content'],
+		],
+		'email'        => [
+			'mode'          => BBCode::BBCODE_MODE_LIBRARY,
+			'method'        => 'doEmail',
 			'class'         => 'link',
-			'allow_in'      => array('listitem', 'block', 'columns', 'inline'),
-			'content'       => BBCODE_VERBATIM,
+			'allow_in'      => ['listitem', 'block', 'columns', 'inline'],
+			'content'       => BBCode::BBCODE_REQUIRED,
 			'plain_start'   => "<a href=\"mailto:{\$link}\">",
 			'plain_end'     => "</a>",
-			'plain_content' => array('_content', '_default'),
-			'plain_link'    => array('_default', '_content'),
-		),
-
-		'wiki' => array(
-			'mode'          => BBCODE_MODE_LIBRARY,
-			'method'        => "DoWiki",
+			'plain_content' => ['_content', '_default'],
+			'plain_link'    => ['_default', '_content'],
+		],
+		'wiki'         => [
+			'mode'          => BBCode::BBCODE_MODE_LIBRARY,
+			'method'        => "doWiki",
 			'class'         => 'link',
-			'allow_in'      => array('listitem', 'block', 'columns', 'inline'),
-			'end_tag'       => BBCODE_PROHIBIT,
-			'content'       => BBCODE_PROHIBIT,
+			'allow_in'      => ['listitem', 'block', 'columns', 'inline'],
+			'end_tag'       => BBCode::BBCODE_PROHIBIT,
+			'content'       => BBCode::BBCODE_PROHIBIT,
 			'plain_start'   => "<b>[",
 			'plain_end'     => "]</b>",
-			'plain_content' => array('title', '_default'),
-			'plain_link'    => array('_default', '_content'),
-		),
-
-		'rule' => array(
-			'mode'          => BBCODE_MODE_LIBRARY,
-			'method'        => "DoRule",
+			'plain_content' => ['title', '_default'],
+			'plain_link'    => ['_default', '_content'],
+		],
+		'rule'         => [
+			'mode'          => BBCode::BBCODE_MODE_LIBRARY,
+			'method'        => "doRule",
 			'class'         => 'block',
-			'allow_in'      => array('listitem', 'block', 'columns'),
-			'end_tag'       => BBCODE_PROHIBIT,
-			'content'       => BBCODE_PROHIBIT,
+			'allow_in'      => ['listitem', 'block', 'columns'],
+			'end_tag'       => BBCode::BBCODE_PROHIBIT,
+			'content'       => BBCode::BBCODE_PROHIBIT,
 			'before_tag'    => "sns",
 			'after_tag'     => "sns",
 			'plain_start'   => "\n-----\n",
 			'plain_end'     => "",
-			'plain_content' => array(),
-		),
-
-		'br' => array(
-			'mode'          => BBCODE_MODE_SIMPLE,
-			'simple_start'  => "<br />\n",
+			'plain_content' => [],
+		],
+		'br'           => [
+			'mode'          => BBCode::BBCODE_MODE_SIMPLE,
+			'simple_start'  => "<br>\n",
 			'simple_end'    => "",
 			'class'         => 'inline',
-			'allow_in'      => array('listitem', 'block', 'columns', 'inline', 'link'),
-			'end_tag'       => BBCODE_PROHIBIT,
-			'content'       => BBCODE_PROHIBIT,
+			'allow_in'      => ['listitem', 'block', 'columns', 'inline', 'link'],
+			'end_tag'       => BBCode::BBCODE_PROHIBIT,
+			'content'       => BBCode::BBCODE_PROHIBIT,
 			'before_tag'    => "s",
 			'after_tag'     => "s",
 			'plain_start'   => "\n",
 			'plain_end'     => "",
-			'plain_content' => array(),
-		),
-
-		'hr' => array(
-			'mode'          => BBCODE_MODE_SIMPLE,
-			'simple_start'  => "<hr />\n",
-			'simple_end'    => "",
-			'class'         => 'inline',
-			'allow_in'      => array('listitem', 'block', 'columns', 'inline', 'link'),
-			'end_tag'       => BBCODE_PROHIBIT,
-			'content'       => BBCODE_PROHIBIT,
-			'before_tag'    => "s",
-			'after_tag'     => "s",
-			'plain_start'   => "\n-----\n",
-			'plain_end'     => "",
-			'plain_content' => array(),
-		),
-
-		'left' => array(
-			'simple_start'  => "\n<div class=\"bbcode_left\" style=\"text-align:left;\">\n",
+			'plain_content' => [],
+		],
+		'left'         => [
+			'simple_start'  => "\n<div class=\"bbcode_left\" style=\"text-align:left\">\n",
 			'simple_end'    => "\n</div>\n",
-			'allow_in'      => array('listitem', 'block', 'columns'),
+			'allow_in'      => ['listitem', 'block', 'columns'],
 			'before_tag'    => "sns",
 			'after_tag'     => "sns",
 			'before_endtag' => "sns",
 			'after_endtag'  => "sns",
 			'plain_start'   => "\n",
 			'plain_end'     => "\n",
-		),
-
-		'right' => array(
-			'simple_start'  => "\n<div class=\"bbcode_right\" style=\"text-align:right;\">\n",
+		],
+		'right'        => [
+			'simple_start'  => "\n<div class=\"bbcode_right\" style=\"text-align:right\">\n",
 			'simple_end'    => "\n</div>\n",
-			'allow_in'      => array('listitem', 'block', 'columns'),
+			'allow_in'      => ['listitem', 'block', 'columns'],
 			'before_tag'    => "sns",
 			'after_tag'     => "sns",
 			'before_endtag' => "sns",
 			'after_endtag'  => "sns",
 			'plain_start'   => "\n",
 			'plain_end'     => "\n",
-		),
-
-		'center' => array(
-			'simple_start'  => "\n<div class=\"bbcode_center\" style=\"text-align:center;\">\n",
+		],
+		'center'       => [
+			'simple_start'  => "\n<div class=\"bbcode_center\" style=\"text-align:center\">\n",
 			'simple_end'    => "\n</div>\n",
-			'allow_in'      => array('listitem', 'block', 'columns'),
+			'allow_in'      => ['listitem', 'block', 'columns'],
 			'before_tag'    => "sns",
 			'after_tag'     => "sns",
 			'before_endtag' => "sns",
 			'after_endtag'  => "sns",
 			'plain_start'   => "\n",
 			'plain_end'     => "\n",
-		),
-
-		'indent' => array(
-			'simple_start'  => "\n<div class=\"bbcode_indent\" style=\"margin-left:4em;\">\n",
+		],
+		'rtl'          => [
+			'simple_start' => '<div style="direction:rtl;">',
+			'simple_end'   => '</div>',
+			'class'        => 'inline',
+			'allow_in'     => ['listitem', 'block', 'columns', 'inline', 'link'],
+		],
+		'indent'       => [
+			'simple_start'  => "\n<div class=\"bbcode_indent\" style=\"margin-left:4em\">\n",
 			'simple_end'    => "\n</div>\n",
-			'allow_in'      => array('listitem', 'block', 'columns'),
+			'allow_in'      => ['listitem', 'block', 'columns'],
 			'before_tag'    => "sns",
 			'after_tag'     => "sns",
 			'before_endtag' => "sns",
 			'after_endtag'  => "sns",
 			'plain_start'   => "\n",
 			'plain_end'     => "\n",
-		),
-
-		'table' => array(
+		],
+		'table'        => [
 			'simple_start'  => "\n<table>",
 			'simple_end'    => "</table>\n",
 			'class'         => 'table',
-			'allow_in'      => array('listitem', 'block', 'columns'),
-			'end_tag'       => BBCODE_REQUIRED,
-			'content'       => BBCODE_REQUIRED,
+			'allow_in'      => ['listitem', 'block', 'columns'],
+			'end_tag'       => BBCode::BBCODE_REQUIRED,
+			'content'       => BBCode::BBCODE_REQUIRED,
 			'before_tag'    => "sns",
 			'after_tag'     => "sns",
 			'before_endtag' => "sns",
 			'after_endtag'  => "sns",
 			'plain_start'   => "\n",
 			'plain_end'     => "\n",
-		),
-
-		'tr' => array(
+		],
+		'tr'           => [
 			'simple_start'  => "\n<tr>",
 			'simple_end'    => "</tr>\n",
 			'class'         => 'tr',
-			'allow_in'      => array('table'),
-			'end_tag'       => BBCODE_REQUIRED,
-			'content'       => BBCODE_REQUIRED,
+			'allow_in'      => ['table'],
+			'end_tag'       => BBCode::BBCODE_REQUIRED,
+			'content'       => BBCode::BBCODE_REQUIRED,
 			'before_tag'    => "sns",
 			'after_tag'     => "sns",
 			'before_endtag' => "sns",
 			'after_endtag'  => "sns",
 			'plain_start'   => "\n",
 			'plain_end'     => "\n",
-		),
-
-		'th' => array(
+		],
+		'th'           => [
 			'simple_start'  => "<th>",
 			'simple_end'    => "</th>",
 			'class'         => 'columns',
-			'allow_in'      => array('tr'),
+			'allow_in'      => ['tr'],
 			'before_tag'    => "sns",
 			'after_tag'     => "sns",
 			'before_endtag' => "sns",
 			'after_endtag'  => "sns",
 			'plain_start'   => "\n",
 			'plain_end'     => "\n",
-		),
-
-		'td' => array(
+		],
+		'td'           => [
 			'simple_start'  => "<td>",
 			'simple_end'    => "</td>",
 			'class'         => 'columns',
-			'allow_in'      => array('tr'),
+			'allow_in'      => ['tr'],
 			'before_tag'    => "sns",
 			'after_tag'     => "sns",
 			'before_endtag' => "sns",
 			'after_endtag'  => "sns",
 			'plain_start'   => "\n",
 			'plain_end'     => "\n",
-		),
-
-		'columns' => array(
+		],
+		'columns'      => [
 			'simple_start'  => "\n<table class=\"bbcode_columns\"><tbody><tr><td class=\"bbcode_column bbcode_firstcolumn\">\n",
 			'simple_end'    => "\n</td></tr></tbody></table>\n",
 			'class'         => 'columns',
-			'allow_in'      => array('listitem', 'block', 'columns'),
-			'end_tag'       => BBCODE_REQUIRED,
-			'content'       => BBCODE_REQUIRED,
+			'allow_in'      => ['listitem', 'block', 'columns'],
+			'end_tag'       => BBCode::BBCODE_REQUIRED,
+			'content'       => BBCode::BBCODE_REQUIRED,
 			'before_tag'    => "sns",
 			'after_tag'     => "sns",
 			'before_endtag' => "sns",
 			'after_endtag'  => "sns",
 			'plain_start'   => "\n",
 			'plain_end'     => "\n",
-		),
-
-		'nextcol' => array(
+		],
+		'nextcol'      => [
 			'simple_start'  => "\n</td><td class=\"bbcode_column\">\n",
 			'class'         => 'nextcol',
-			'allow_in'      => array('columns'),
-			'end_tag'       => BBCODE_PROHIBIT,
-			'content'       => BBCODE_PROHIBIT,
+			'allow_in'      => ['columns'],
+			'end_tag'       => BBCode::BBCODE_PROHIBIT,
+			'content'       => BBCode::BBCODE_PROHIBIT,
 			'before_tag'    => "sns",
 			'after_tag'     => "sns",
 			'before_endtag' => "sns",
 			'after_endtag'  => "sns",
 			'plain_start'   => "\n",
 			'plain_end'     => "",
-		),
-
-		'code' => array(
-			'mode'          => BBCODE_MODE_LIBRARY,
-			'method'        => 'DoCode',
-			'allow'         => array('type' => '/^[\w]*$/'),
+		],
+		'code'         => [
+			'mode'          => BBCode::BBCODE_MODE_ENHANCED,
+			'template'      => "\n<div class=\"bbcode_code\">\n<div class=\"bbcode_code_head\">Code:</div>\n<div class=\"bbcode_code_body\" style=\"white-space:pre\">{\$_content/v}</div>\n</div>\n",
 			'class'         => 'code',
-			'allow_in'      => array('listitem', 'block', 'columns'),
-			'content'       => BBCODE_VERBATIM,
+			'allow_in'      => ['listitem', 'block', 'columns'],
+			'content'       => BBCode::BBCODE_VERBATIM,
 			'before_tag'    => "sns",
 			'after_tag'     => "sn",
 			'before_endtag' => "sn",
 			'after_endtag'  => "sns",
-			'plain_start'   => "\n",
+			'plain_start'   => "\n<b>Code:</b>\n",
 			'plain_end'     => "\n",
-		),
-
-		'quote' => array(
-			'mode'          => BBCODE_MODE_LIBRARY,
-			'method'        => 'DoQuote',
-			'allow_in'      => array('listitem', 'block', 'columns'),
+		],
+		'quote'        => [
+			'mode'          => BBCode::BBCODE_MODE_LIBRARY,
+			'method'        => "DoQuote",
+			'allow_in'      => ['listitem', 'block', 'columns'],
 			'before_tag'    => "sns",
 			'after_tag'     => "sns",
 			'before_endtag' => "sns",
 			'after_endtag'  => "sns",
-			'plain_start'   => "\nQuote:\n",
+			'plain_start'   => "\n<b>Quote:</b>\n",
 			'plain_end'     => "\n",
-		),
-
-		'list' => array(
-			'mode'          => BBCODE_MODE_LIBRARY,
-			'method'        => 'DoList',
+		],
+		'list'         => [
+			'mode'          => BBCode::BBCODE_MODE_LIBRARY,
+			'method'        => 'doList',
 			'class'         => 'list',
-			'allow_in'      => array('listitem', 'block', 'columns'),
+			'allow_in'      => ['listitem', 'block', 'columns'],
 			'before_tag'    => "sns",
 			'after_tag'     => "sns",
 			'before_endtag' => "sns",
 			'after_endtag'  => "sns",
 			'plain_start'   => "\n",
 			'plain_end'     => "\n",
-		),
-
-		'ul' => array(
-			'mode'          => BBCODE_MODE_LIBRARY,
-			'method'        => 'DoList',
-			'default'       => array('_default' => 'disc'),
+		],
+		'ul'           => [
+			'mode'          => BBcode::BBCODE_MODE_LIBRARY,
+			'method'        => 'doUl',
+			'default'       => ['_default' => 'disc'],
 			'class'         => 'list',
-			'allow_in'      => array('listitem', 'block', 'columns'),
+			'allow_in'      => ['listitem', 'block', 'columns'],
 			'before_tag'    => "sns",
 			'after_tag'     => "sns",
 			'before_endtag' => "sns",
 			'after_endtag'  => "sns",
 			'plain_start'   => "\n",
 			'plain_end'     => "\n",
-		),
-
-		'ol' => array(
-			'mode'          => BBCODE_MODE_LIBRARY,
-			'method'        => 'DoList',
-			'allow'         => array('_default' => '/^[\d\w]*$/'),
-			'default'       => array('_default' => '1'),
+		],
+		'ol'           => [
+			'mode'          => BBcode::BBCODE_MODE_LIBRARY,
+			'method'        => 'doOl',
+			'allow'         => ['_default' => '/^[\d\w]*$/'],
+			'default'       => ['_default' => '1'],
 			'class'         => 'list',
-			'allow_in'      => array('listitem', 'block', 'columns'),
+			'allow_in'      => ['listitem', 'block', 'columns'],
 			'before_tag'    => "sns",
 			'after_tag'     => "sns",
 			'before_endtag' => "sns",
 			'after_endtag'  => "sns",
 			'plain_start'   => "\n",
 			'plain_end'     => "\n",
-		),
-
-		'*' => array(
+		],
+		'*'            => [
 			'simple_start'  => "<li>",
 			'simple_end'    => "</li>\n",
 			'class'         => 'listitem',
-			'allow_in'      => array('list'),
-			'end_tag'       => BBCODE_OPTIONAL,
+			'allow_in'      => ['list'],
+			'end_tag'       => BBCode::BBCODE_OPTIONAL,
 			'before_tag'    => "s",
 			'after_tag'     => "s",
 			'before_endtag' => "sns",
 			'after_endtag'  => "sns",
 			'plain_start'   => "\n * ",
 			'plain_end'     => "\n",
-		),
-
-		'li' => array(
-			'simple_start'  => "<li>",
-			'simple_end'    => "</li>\n",
-			'class'         => 'listitem',
-			'allow_in'      => array('listitem', 'block', 'columns', 'list'),
-			'before_tag'    => "s",
-			'after_tag'     => "s",
-			'before_endtag' => "sns",
-			'after_endtag'  => "sns",
-			'plain_start'   => "\n * ",
-			'plain_end'     => "\n",
-		),
-
-		'terminal' => array(
-			'mode'          => BBCODE_MODE_LIBRARY,
+		],
+		'terminal'     => [
+			'mode'          => BBCode::BBCODE_MODE_LIBRARY,
 			'method'        => 'DoTerminal',
-			'allow_in'      => array('listitem', 'block', 'columns'),
+			'allow_in'      => ['listitem', 'block', 'columns'],
 			'class'         => 'code',
-			'allow'         => array('colortext' => '/^|#[0-9a-fA-F]+|[a-zA-Z]+$/'),
+			'allow'         => ['colortext' => '/^|#[0-9a-fA-F]+|[a-zA-Z]+$/'],
 			'before_tag'    => "sns",
 			'after_tag'     => "sn",
 			'before_endtag' => "ns",
 			'after_endtag'  => "sns",
-			'content'       => BBCODE_VERBATIM,
+			'content'       => BBCode::BBCODE_VERBATIM,
 			'plain_start'   => "\nTerminal:\n",
 			'plain_end'     => "\n",
-		),
-
-		'tweet' => array(
-			'mode'          => BBCODE_MODE_LIBRARY,
+		],
+		'tweet'        => [
+			'mode'          => BBCode::BBCODE_MODE_LIBRARY,
 			'method'        => 'DoTweet',
 			'class'         => 'block',
-			'allow_in'      => array('listitem', 'block', 'columns'),
-			'content'       => BBCODE_REQUIRED,
-			'plain_content' => array(),
-		),
-
-		'soundcloud' => array(
-			'mode'          => BBCODE_MODE_LIBRARY,
+			'allow_in'      => ['listitem', 'block', 'columns'],
+			'content'       => BBCode::BBCODE_REQUIRED,
+			'plain_content' => [],
+		],
+		'soundcloud'   => [
+			'mode'          => BBCode::BBCODE_MODE_LIBRARY,
 			'method'        => 'DoSoundcloud',
 			'class'         => 'block',
-			'allow_in'      => array('listitem', 'block', 'columns'),
-			'content'       => BBCODE_VERBATIM,
+			'allow_in'      => ['listitem', 'block', 'columns'],
+			'content'       => BBCode::BBCODE_VERBATIM,
 			'plain_start'   => "[soundcloud]",
 			'plain_end'     => "",
-			'plain_content' => array(),
-		),
-
-		'instagram' => array(
-			'mode'     => BBCODE_MODE_LIBRARY,
+			'plain_content' => [],
+		],
+		'instagram'    => [
+			'mode'     => BBCode::BBCODE_MODE_LIBRARY,
 			'method'   => 'DoInstagram',
-			'allow_in' => array('listitem', 'block', 'columns'),
+			'allow_in' => ['listitem', 'block', 'columns'],
 			'class'    => 'block',
-			'allow'    => array('colortext' => '/^[\w\d.-_]*$/'),
-			'content'  => BBCODE_PROHIBIT,
-		),
-	);
+			'allow'    => ['colortext' => '/^[\w\d.-_]*$/'],
+			'content'  => BBCode::BBCODE_PROHIBIT,
+		],
+	];
 
 	/**
 	 * @since Kunena
@@ -1131,7 +1047,9 @@ class KunenaBbcodeLibrary extends BBCodeLibrary
 		if (!KunenaFactory::getConfig()->disemoticons)
 		{
 			$db    = Factory::getDBO();
-			$query = "SELECT code, location FROM #__kunena_smileys";
+			$query = $db->getQuery(true);
+			$query->select(array($db->quoteName('code'), $db->quoteName('location')))
+				->from($db->quoteName('#__kunena_smileys'));
 			$db->setQuery($query);
 			$smileys = $db->loadObjectList();
 
@@ -1144,17 +1062,17 @@ class KunenaBbcodeLibrary extends BBCodeLibrary
 		}
 
 		// Translate plain text "Quote:"
-		$this->default_tag_rules['quote']['plain_start'] = "\n" . Text::_('COM_KUNENA_LIB_BBCODE_QUOTE_TITLE') . "\n";
+		$this->default_tag_rules['quote']['plain_start'] = Text::_('COM_KUNENA_LIB_BBCODE_QUOTE_TITLE');
 	}
 
 	/**
 	 * Query from eBay API the JSON stream of item id given to render
 	 *
-	 * @param   int $ItemID The eBay ID of object to query
+	 * @param   int  $ItemID  The eBay ID of object to query
 	 *
 	 * @return string
-	 * @throws Exception
 	 * @since Kunena
+	 * @throws Exception
 	 */
 	public static function getEbayItem($ItemID)
 	{
@@ -1162,12 +1080,12 @@ class KunenaBbcodeLibrary extends BBCodeLibrary
 
 		if (is_numeric($ItemID) && $config->ebay_api_key && ini_get('allow_url_fopen'))
 		{
-			$options = new \Joomla\Registry\Registry;
+			$options = new Joomla\Registry\Registry;
 
-			$transport = new \Joomla\CMS\Http\Transport\StreamTransport($options);
+			$transport = new Joomla\CMS\Http\Transport\StreamTransport($options);
 
 			// Create a 'stream' transport.
-			$http = new \Joomla\CMS\Http\Http($options, $transport);
+			$http = new Joomla\CMS\Http\Http($options, $transport);
 
 			$response = $http->get('http://open.api.ebay.com/shopping?callname=GetSingleItem&appid=' . $config->ebay_api_key . '&siteid=' . $config->ebay_language . '&responseencoding=JSON&ItemID=' . $ItemID . '&version=889&trackingid=' . $config->ebay_affiliate_id . '&trackingpartnercode=9', null, '10');
 
@@ -1183,20 +1101,84 @@ class KunenaBbcodeLibrary extends BBCodeLibrary
 	}
 
 	/**
-	 * @param   mixed $bbcode  bbcode
-	 * @param   mixed $action  action
-	 * @param   mixed $name    name
-	 * @param   mixed $default default
-	 * @param   mixed $params  params
-	 * @param   mixed $content content
+	 * @param   mixed  $bbcode   bbcode
+	 * @param   mixed  $action   action
+	 * @param   mixed  $name     name
+	 * @param   mixed  $default  default
+	 * @param   mixed  $params   params
+	 * @param   mixed  $content  content
+	 *
+	 * @return boolean|string|void
+	 * @since Kunena
+	 */
+	public static function DoInstagram($bbcode, $action, $name, $default, $params, $content)
+	{
+		if ($action == BBCode::BBCODE_CHECK)
+		{
+			return true;
+		}
+
+		if (!empty($content))
+		{
+			// Display tag in activity streams etc..
+			if (!empty($bbcode->parent->forceMinimal))
+			{
+				return "<a href=\"" . $content . "\" rel=\"nofollow\" target=\"_blank\">" . $content . '</a>';
+			}
+
+			$before  = $content;
+			$content = strip_tags($content);
+
+			$content = trim($content);
+
+			$url_parsed = parse_url($content);
+
+			if ($url_parsed['scheme'] == 'https' || $url_parsed['scheme'] == 'http')
+			{
+				$content = $url_parsed['host'] . $url_parsed['path'];
+			}
+			else
+			{
+				$content = $url_parsed['path'];
+			}
+
+			if (preg_match('/(?:(?:http|https):\/\/)?(?:www.)?(?:instagram.com|instagr.am)\/([A-Za-z0-9-_]+)/im', $content, $matches))
+			{
+				if (!preg_match('#^(/|https?:|ftp:)#ui', $content))
+				{
+					// Add scheme to raw domain URLs.
+					$url = "https://{$content}";
+				}
+
+				return '<div class="embed-container"><iframe src="' . rtrim($url, '/') . '/embed/" frameborder="0" scrolling="no"></iframe></div>';
+			}
+
+			if (!empty($content))
+			{
+				return '<div class="embed-container"><iframe src="https://www.instagram.com/p/' . $content . '/embed/" frameborder="0" scrolling="no"></iframe></div>';
+			}
+			else
+			{
+				return $before;
+			}
+		}
+	}
+
+	/**
+	 * @param   mixed  $bbcode   bbcode
+	 * @param   mixed  $action   action
+	 * @param   mixed  $name     name
+	 * @param   mixed  $default  default
+	 * @param   mixed  $params   params
+	 * @param   mixed  $content  content
 	 *
 	 * @return boolean|mixed|string
-	 * @throws Exception
 	 * @since Kunena
+	 * @throws Exception
 	 */
 	public function DoEmail($bbcode, $action, $name, $default, $params, $content)
 	{
-		if ($action == BBCODE_CHECK)
+		if ($action == BBCode::BBCODE_CHECK)
 		{
 			return true;
 		}
@@ -1228,26 +1210,28 @@ class KunenaBbcodeLibrary extends BBCodeLibrary
 		}
 	}
 
+	// Format a [size] tag by producing a <span> with a style with a different font-size.
+
 	/**
 	 * Format a [url] tag by producing an <a>...</a> element.
 	 * The URL only allows http, https, mailto, and ftp protocols for safety.
 	 *
-	 * @param   mixed $bbcode  bbcode
-	 * @param   mixed $action  action
-	 * @param   mixed $name    name
-	 * @param   mixed $default default
-	 * @param   mixed $params  params
-	 * @param   mixed $content content
+	 * @param   mixed  $bbcode   bbcode
+	 * @param   mixed  $action   action
+	 * @param   mixed  $name     name
+	 * @param   mixed  $default  default
+	 * @param   mixed  $params   params
+	 * @param   mixed  $content  content
 	 *
 	 * @return boolean|string
-	 * @throws Exception
 	 * @since Kunena
+	 * @throws Exception
 	 */
 	public function DoURL($bbcode, $action, $name, $default, $params, $content)
 	{
 		// We can't check this with BBCODE_CHECK because we may have no URL before the content
 		// Has been processed.
-		if ($action == BBCODE_CHECK)
+		if ($action == BBCode::BBCODE_CHECK)
 		{
 			$bbcode->autolink_disable++;
 
@@ -1255,19 +1239,19 @@ class KunenaBbcodeLibrary extends BBCodeLibrary
 		}
 
 		$bbcode->autolink_disable--;
-		$url = $default ? $default : strip_tags($bbcode->UnHTMLEncode($content));
-		$url = preg_replace('# #u', '%20', $url);
+		$url      = $default ? $default : strip_tags($bbcode->UnHTMLEncode($content));
+		$url      = preg_replace('# #u', '%20', $url);
 		$internal = false;
 
 		if (preg_match('#^(index.php?)#uim', $url))
 		{
-			$url = JRoute::_($url, false);
+			$url = Route::_($url, false);
 		}
 
 		if (preg_match('#^(/index.php?)#uim', $url))
 		{
 			$str = substr($url, 1);
-			$url = JRoute::_($str, false);
+			$url = Route::_($str, false);
 		}
 
 		if (!preg_match('#^(/|https?:|ftp:)#uim', $url))
@@ -1280,12 +1264,7 @@ class KunenaBbcodeLibrary extends BBCodeLibrary
 			return htmlspecialchars($params['_tag'], ENT_COMPAT, 'UTF-8') . $content . htmlspecialchars($params['_endtag'], ENT_COMPAT, 'UTF-8');
 		}
 
-		if ($bbcode->url_targetable !== false && isset($params['target']))
-		{
-			$target = $params['target'];
-			$class  = $params['class'];
-		}
-		elseif ($bbcode->url_target !== false)
+		if (isset($params['target']))
 		{
 			$target = $bbcode->url_target;
 			$class  = $params['class'];
@@ -1296,7 +1275,7 @@ class KunenaBbcodeLibrary extends BBCodeLibrary
 			$class  = null;
 		}
 
-		$uri = Uri::getInstance($url);
+		$uri  = Uri::getInstance($url);
 		$host = $uri->getHost();
 
 		// The cms will catch most of these well
@@ -1310,6 +1289,10 @@ class KunenaBbcodeLibrary extends BBCodeLibrary
 		if ($smart && $bbcode->get_title($url))
 		{
 			$content = $bbcode->get_title($url);
+		}
+		else
+		{
+			$content = $url;
 		}
 
 		$layout = KunenaLayout::factory('BBCode/URL');
@@ -1325,23 +1308,37 @@ class KunenaBbcodeLibrary extends BBCodeLibrary
 		}
 	}
 
-	// Format a [size] tag by producing a <span> with a style with a different font-size.
+	// Format a [list] tag, which is complicated by the number of different
+	// ways a list can be started.  The following parameters are allowed:
+	//
+	//   [list]           Unordered list, using default marker
+	//   [list=circle]    Unordered list, using circle marker
+	//   [list=disc]      Unordered list, using disc marker
+	//   [list=square]    Unordered list, using square marker
+	//
+	//   [list=1]         Ordered list, numeric, starting at 1
+	//   [list=A]         Ordered list, capital letters, starting at A
+	//   [list=a]         Ordered list, lowercase letters, starting at a
+	//   [list=I]         Ordered list, capital Roman numerals, starting at I
+	//   [list=i]         Ordered list, lowercase Roman numerals, starting at i
+	//   [list=greek]     Ordered list, lowercase Greek letters, starting at alpha
+	//   [list=01]        Ordered list, two-digit numeric with 0-padding, starting at 01
 
 	/**
-	 * @param   mixed $bbcode  bbcode
-	 * @param   mixed $action  action
-	 * @param   mixed $name    name
-	 * @param   mixed $default default
-	 * @param   mixed $params  params
-	 * @param   mixed $content content
+	 * @param   mixed  $bbcode   bbcode
+	 * @param   mixed  $action   action
+	 * @param   mixed  $name     name
+	 * @param   mixed  $default  default
+	 * @param   mixed  $params   params
+	 * @param   mixed  $content  content
 	 *
 	 * @return boolean|string
-	 * @throws Exception
 	 * @since Kunena
+	 * @throws Exception
 	 */
 	public function DoSize($bbcode, $action, $name, $default, $params, $content)
 	{
-		if ($action == BBCODE_CHECK)
+		if ($action == BBCode::BBCODE_CHECK)
 		{
 			return true;
 		}
@@ -1377,29 +1374,13 @@ class KunenaBbcodeLibrary extends BBCodeLibrary
 		}
 	}
 
-	// Format a [list] tag, which is complicated by the number of different
-	// ways a list can be started.  The following parameters are allowed:
-	//
-	//   [list]           Unordered list, using default marker
-	//   [list=circle]    Unordered list, using circle marker
-	//   [list=disc]      Unordered list, using disc marker
-	//   [list=square]    Unordered list, using square marker
-	//
-	//   [list=1]         Ordered list, numeric, starting at 1
-	//   [list=A]         Ordered list, capital letters, starting at A
-	//   [list=a]         Ordered list, lowercase letters, starting at a
-	//   [list=I]         Ordered list, capital Roman numerals, starting at I
-	//   [list=i]         Ordered list, lowercase Roman numerals, starting at i
-	//   [list=greek]     Ordered list, lowercase Greek letters, starting at alpha
-	//   [list=01]        Ordered list, two-digit numeric with 0-padding, starting at 01
-
 	/**
-	 * @param   mixed $bbcode  bbcode
-	 * @param   mixed $action  action
-	 * @param   mixed $name    name
-	 * @param   mixed $default default
-	 * @param   mixed $params  params
-	 * @param   mixed $content content
+	 * @param   mixed  $bbcode   bbcode
+	 * @param   mixed  $action   action
+	 * @param   mixed  $name     name
+	 * @param   mixed  $default  default
+	 * @param   mixed  $params   params
+	 * @param   mixed  $content  content
 	 *
 	 * @return boolean|string
 	 * @since Kunena
@@ -1418,7 +1399,7 @@ class KunenaBbcodeLibrary extends BBCodeLibrary
 			$default = $bbcode->tag_rules [$name] ['default'] ['_default'];
 		}
 
-		if ($action == BBCODE_CHECK)
+		if ($action == BBCode::BBCODE_CHECK)
 		{
 			if (!is_string($default) || strlen($default) == "")
 			{
@@ -1483,20 +1464,20 @@ class KunenaBbcodeLibrary extends BBCodeLibrary
 	}
 
 	/**
-	 * @param   mixed $bbcode  bbcode
-	 * @param   mixed $action  action
-	 * @param   mixed $name    name
-	 * @param   mixed $default default
-	 * @param   mixed $params  params
-	 * @param   mixed $content content
+	 * @param   mixed  $bbcode   bbcode
+	 * @param   mixed  $action   action
+	 * @param   mixed  $name     name
+	 * @param   mixed  $default  default
+	 * @param   mixed  $params   params
+	 * @param   mixed  $content  content
 	 *
 	 * @return boolean|string
-	 * @throws Exception
 	 * @since Kunena
+	 * @throws Exception
 	 */
 	public function DoSpoiler($bbcode, $action, $name, $default, $params, $content)
 	{
-		if ($action == BBCODE_CHECK)
+		if ($action == BBCode::BBCODE_CHECK)
 		{
 			return true;
 		}
@@ -1512,37 +1493,37 @@ class KunenaBbcodeLibrary extends BBCodeLibrary
 			return '[' . ($default ? $default : Text::_('COM_KUNENA_BBCODE_SPOILER')) . ']';
 		}
 
-		$document = Factory::getDocument();
+		$document = Factory::getApplication()->getDocument();
 		$title    = $default ? $default : Text::_('COM_KUNENA_BBCODE_SPOILER');
-		$hidden   = ($document instanceof \Joomla\CMS\Document\HtmlDocument);
+		$hidden   = ($document instanceof Joomla\CMS\Document\HtmlDocument);
 
 		$layout = KunenaLayout::factory('BBCode/Spoiler');
 
 		if ($layout->getPath())
 		{
 			return (string) $layout
-				->set('title', $title)
-				->set('hidden', $hidden)
-				->set('content', $content)
-				->set('params', $params);
+				->set('title', htmlspecialchars($title, ENT_COMPAT, 'UTF-8'))
+				->set('hidden', htmlspecialchars($hidden, ENT_COMPAT, 'UTF-8'))
+				->set('content', htmlspecialchars($content, ENT_COMPAT, 'UTF-8'))
+				->set('params', htmlspecialchars($params, ENT_COMPAT, 'UTF-8'));
 		}
 	}
 
 	/**
-	 * @param   mixed $bbcode  bbcode
-	 * @param   mixed $action  action
-	 * @param   mixed $name    name
-	 * @param   mixed $default default
-	 * @param   mixed $params  params
-	 * @param   mixed $content content
+	 * @param   mixed  $bbcode   bbcode
+	 * @param   mixed  $action   action
+	 * @param   mixed  $name     name
+	 * @param   mixed  $default  default
+	 * @param   mixed  $params   params
+	 * @param   mixed  $content  content
 	 *
 	 * @return boolean|string
-	 * @throws Exception
 	 * @since Kunena
+	 * @throws Exception
 	 */
 	public function DoHide($bbcode, $action, $name, $default, $params, $content)
 	{
-		if ($action == BBCODE_CHECK)
+		if ($action == BBCode::BBCODE_CHECK)
 		{
 			return true;
 		}
@@ -1560,7 +1541,7 @@ class KunenaBbcodeLibrary extends BBCodeLibrary
 
 		$me = KunenaUserHelper::getMyself();
 
-		if (!Factory::getUser()->guest)
+		if (!Factory::getApplication()->getIdentity()->guest)
 		{
 			$layout = KunenaLayout::factory('BBCode/Hide');
 
@@ -1579,20 +1560,20 @@ class KunenaBbcodeLibrary extends BBCodeLibrary
 	}
 
 	/**
-	 * @param   mixed $bbcode  bbcode
-	 * @param   mixed $action  action
-	 * @param   mixed $name    name
-	 * @param   mixed $default default
-	 * @param   mixed $params  params
-	 * @param   mixed $content content
+	 * @param   mixed  $bbcode   bbcode
+	 * @param   mixed  $action   action
+	 * @param   mixed  $name     name
+	 * @param   mixed  $default  default
+	 * @param   mixed  $params   params
+	 * @param   mixed  $content  content
 	 *
 	 * @return boolean|string
-	 * @throws Exception
 	 * @since Kunena
+	 * @throws Exception
 	 */
 	public function DoConfidential($bbcode, $action, $name, $default, $params, $content)
 	{
-		if ($action == BBCODE_CHECK)
+		if ($action == BBCode::BBCODE_CHECK)
 		{
 			return true;
 		}
@@ -1669,20 +1650,20 @@ class KunenaBbcodeLibrary extends BBCodeLibrary
 	}
 
 	/**
-	 * @param   mixed $bbcode  bbcode
-	 * @param   mixed $action  action
-	 * @param   mixed $name    name
-	 * @param   mixed $default default
-	 * @param   mixed $params  params
-	 * @param   mixed $content content
+	 * @param   mixed  $bbcode   bbcode
+	 * @param   mixed  $action   action
+	 * @param   mixed  $name     name
+	 * @param   mixed  $default  default
+	 * @param   mixed  $params   params
+	 * @param   mixed  $content  content
 	 *
 	 * @return mixed
-	 * @throws Exception
 	 * @since Kunena
+	 * @throws Exception
 	 */
 	public function DoMap($bbcode, $action, $name, $default, $params, $content)
 	{
-		if ($action == BBCODE_CHECK)
+		if ($action == BBCode::BBCODE_CHECK)
 		{
 			return true;
 		}
@@ -1698,10 +1679,10 @@ class KunenaBbcodeLibrary extends BBCodeLibrary
 
 		$config = KunenaFactory::getTemplate()->params;
 
-		$document = Factory::getDocument();
+		$document = Factory::getApplication()->getDocument();
 
 		// Display only link in activity streams etc..
-		if (!empty($bbcode->parent->forceMinimal) || !($document instanceof \Joomla\CMS\Document\HtmlDocument) || KunenaFactory::getTemplate()->isHmvc() && !$config->get('maps'))
+		if (!empty($bbcode->parent->forceMinimal) || !($document instanceof Joomla\CMS\Document\HtmlDocument) || KunenaFactory::getTemplate()->isHmvc() && !$config->get('maps'))
 		{
 			$url = 'https://maps.google.com/?q=' . urlencode($bbcode->UnHTMLEncode($content));
 
@@ -1725,20 +1706,20 @@ class KunenaBbcodeLibrary extends BBCodeLibrary
 	}
 
 	/**
-	 * @param   mixed $bbcode  bbcode
-	 * @param   mixed $action  action
-	 * @param   mixed $name    name
-	 * @param   mixed $default default
-	 * @param   mixed $params  params
-	 * @param   mixed $content content
+	 * @param   mixed  $bbcode   bbcode
+	 * @param   mixed  $action   action
+	 * @param   mixed  $name     name
+	 * @param   mixed  $default  default
+	 * @param   mixed  $params   params
+	 * @param   mixed  $content  content
 	 *
 	 * @return boolean|string
-	 * @throws Exception
 	 * @since Kunena
+	 * @throws Exception
 	 */
 	public function DoEbay($bbcode, $action, $name, $default, $params, $content)
 	{
-		if ($action == BBCODE_CHECK)
+		if ($action == BBCode::BBCODE_CHECK)
 		{
 			return true;
 		}
@@ -1764,11 +1745,11 @@ class KunenaBbcodeLibrary extends BBCodeLibrary
 	/**
 	 * Render eBay layout from template
 	 *
-	 * @param   integer $ItemID id
+	 * @param   integer  $ItemID  id
 	 *
 	 * @return boolean|string
-	 * @throws Exception
 	 * @since Kunena
+	 * @throws Exception
 	 */
 	public static function renderEbayLayout($ItemID)
 	{
@@ -1811,11 +1792,11 @@ class KunenaBbcodeLibrary extends BBCodeLibrary
 	/**
 	 * Load eBay object item from cache
 	 *
-	 * @param   int $ItemID The eBay ID of object to query
+	 * @param   int  $ItemID  The eBay ID of object to query
 	 *
 	 * @return string
-	 * @throws Exception
 	 * @since Kunena
+	 * @throws Exception
 	 */
 	public static function getEbayItemFromCache($ItemID)
 	{
@@ -1828,20 +1809,20 @@ class KunenaBbcodeLibrary extends BBCodeLibrary
 	}
 
 	/**
-	 * @param   mixed $bbcode  bbcode
-	 * @param   mixed $action  action
-	 * @param   mixed $name    name
-	 * @param   mixed $default default
-	 * @param   mixed $params  params
-	 * @param   mixed $content content
+	 * @param   mixed  $bbcode   bbcode
+	 * @param   mixed  $action   action
+	 * @param   mixed  $name     name
+	 * @param   mixed  $default  default
+	 * @param   mixed  $params   params
+	 * @param   mixed  $content  content
 	 *
 	 * @return boolean|string
-	 * @throws Exception
 	 * @since Kunena
+	 * @throws Exception
 	 */
 	public function DoArticle($bbcode, $action, $name, $default, $params, $content)
 	{
-		if ($action == BBCODE_CHECK)
+		if ($action == BBCode::BBCODE_CHECK)
 		{
 			return true;
 		}
@@ -1852,16 +1833,17 @@ class KunenaBbcodeLibrary extends BBCodeLibrary
 		$articleid = intval($content);
 
 		$config = KunenaFactory::getConfig();
-		$user   = Factory::getUser();
-		$db     = Factory::getDBO();
+		$user   = Factory::getApplication()->getIdentity();
 		$site   = Factory::getApplication('site');
 
-		$query = 'SELECT a.*, u.name AS author, cc.title AS category,
-			0 AS sec_pub, 0 AS sectionid, cc.published AS cat_pub, cc.access AS cat_access
-			FROM #__content AS a
-			LEFT JOIN #__categories AS cc ON cc.id = a.catid
-			LEFT JOIN #__users AS u ON u.id = a.created_by
-			WHERE a.id=' . $db->quote($articleid);
+		$db    = Factory::getDBO();
+		$query = $db->getQuery(true);
+		$query->select('a.*, u.name AS author, cc.title AS category,
+			0 AS sec_pub, 0 AS sectionid, cc.published AS cat_pub, cc.access AS cat_access')
+			->from($db->quoteName('#__content', 'a'))
+			->leftJoin($db->quoteName('#__categories', 'cc') . ' ON cc.id = a.catid')
+			->leftJoin($db->quoteName('#__users', 'u') . ' ON u.id = a.created_by')
+			->where('a.id = ' . $db->quote($articleid));
 		$db->setQuery($query);
 		$article = $db->loadObject();
 
@@ -1869,7 +1851,7 @@ class KunenaBbcodeLibrary extends BBCodeLibrary
 		{
 			// Get credentials to check if the user has right to see the article
 			$params   = $site->getParams('com_content');
-			$registry = new \Joomla\Registry\Registry;
+			$registry = new Joomla\Registry\Registry;
 			$registry->loadString($article->attribs);
 			$article->params = clone $params;
 			$article->params->merge($registry);
@@ -1898,7 +1880,7 @@ class KunenaBbcodeLibrary extends BBCodeLibrary
 			require_once JPATH_ROOT . '/components/com_content/helpers/route.php';
 			$article->slug    = !empty($article->alias) ? ($article->id . ':' . $article->alias) : $article->id;
 			$article->catslug = !empty($article->category_alias) ? ($article->catid . ':' . $article->category_alias) : $article->catid;
-			$url              = JRoute::_(ContentHelperRoute::getArticleRoute($article->slug, $article->catslug));
+			$url              = Route::_(ContentHelperRoute::getArticleRoute($article->slug, $article->catslug));
 
 			if (!$default)
 			{
@@ -1955,7 +1937,7 @@ class KunenaBbcodeLibrary extends BBCodeLibrary
 				// Identify the source of the event to be Kunena itself
 				// this is important to avoid recursive event behaviour with our own plugins
 				$params->set('ksource', 'kunena');
-				\Joomla\CMS\Plugin\PluginHelper::importPlugin('content');
+				Joomla\CMS\Plugin\PluginHelper::importPlugin('content');
 
 				Factory::getApplication()->triggerEvent('onContentPrepare', array('text', &$article, &$params, 0));
 				$article->text       = HTMLHelper::_('string.truncate', $article->text, $bbcode->output_limit - $bbcode->text_length);
@@ -1973,19 +1955,19 @@ class KunenaBbcodeLibrary extends BBCodeLibrary
 	}
 
 	/**
-	 * @param   mixed $bbcode  bbcode
-	 * @param   mixed $action  action
-	 * @param   mixed $name    name
-	 * @param   mixed $default default
-	 * @param   mixed $params  params
-	 * @param   mixed $content content
+	 * @param   mixed  $bbcode   bbcode
+	 * @param   mixed  $action   action
+	 * @param   mixed  $name     name
+	 * @param   mixed  $default  default
+	 * @param   mixed  $params   params
+	 * @param   mixed  $content  content
 	 *
 	 * @return boolean|string
 	 * @since Kunena
 	 */
 	public function DoQuote($bbcode, $action, $name, $default, $params, $content)
 	{
-		if ($action == BBCODE_CHECK)
+		if ($action == BBCode::BBCODE_CHECK)
 		{
 			return true;
 		}
@@ -1998,26 +1980,26 @@ class KunenaBbcodeLibrary extends BBCodeLibrary
 			$wrote = $user . " " . Text::_('COM_KUNENA_POST_WROTE') . ': ';
 		}
 
-		$html = '<blockquote><p class="kmsgtext-quote">' . $wrote . $content . '</p></blockquote>';
+		$html = '<blockquote class="Quote UserQuote">' . $user . '<div class="QuoteText">' . $wrote . $content . '</div></blockquote><blockquote>';
 
 		return $html;
 	}
 
 	/**
-	 * @param   mixed $bbcode  bbcode
-	 * @param   mixed $action  action
-	 * @param   mixed $name    name
-	 * @param   mixed $default default
-	 * @param   mixed $params  params
-	 * @param   mixed $content content
+	 * @param   mixed  $bbcode   bbcode
+	 * @param   mixed  $action   action
+	 * @param   mixed  $name     name
+	 * @param   mixed  $default  default
+	 * @param   mixed  $params   params
+	 * @param   mixed  $content  content
 	 *
 	 * @return boolean|string
-	 * @throws Exception
 	 * @since Kunena
+	 * @throws Exception
 	 */
 	public function DoCode($bbcode, $action, $name, $default, $params, $content)
 	{
-		if ($action == BBCODE_CHECK)
+		if ($action == BBCode::BBCODE_CHECK)
 		{
 			return true;
 		}
@@ -2072,20 +2054,20 @@ class KunenaBbcodeLibrary extends BBCodeLibrary
 	}
 
 	/**
-	 * @param   mixed $bbcode  bbcode
-	 * @param   mixed $action  action
-	 * @param   mixed $name    name
-	 * @param   mixed $default default
-	 * @param   mixed $params  params
-	 * @param   mixed $content content
+	 * @param   mixed  $bbcode   bbcode
+	 * @param   mixed  $action   action
+	 * @param   mixed  $name     name
+	 * @param   mixed  $default  default
+	 * @param   mixed  $params   params
+	 * @param   mixed  $content  content
 	 *
 	 * @return boolean|string
-	 * @throws Exception
 	 * @since Kunena
+	 * @throws Exception
 	 */
 	public function doTableau($bbcode, $action, $name, $default, $params, $content)
 	{
-		if ($action == BBCODE_CHECK)
+		if ($action == BBCode::BBCODE_CHECK)
 		{
 			$bbcode->autolink_disable++;
 
@@ -2134,20 +2116,20 @@ class KunenaBbcodeLibrary extends BBCodeLibrary
 	}
 
 	/**
-	 * @param   mixed $bbcode  bbcode
-	 * @param   mixed $action  action
-	 * @param   mixed $name    name
-	 * @param   mixed $default default
-	 * @param   mixed $params  params
-	 * @param   mixed $content content
+	 * @param   mixed  $bbcode   bbcode
+	 * @param   mixed  $action   action
+	 * @param   mixed  $name     name
+	 * @param   mixed  $default  default
+	 * @param   mixed  $params   params
+	 * @param   mixed  $content  content
 	 *
 	 * @return boolean|string
-	 * @throws Exception
 	 * @since Kunena
+	 * @throws Exception
 	 */
 	public function DoVideo($bbcode, $action, $name, $default, $params, $content)
 	{
-		if ($action == BBCODE_CHECK)
+		if ($action == BBCode::BBCODE_CHECK)
 		{
 			$bbcode->autolink_disable++;
 
@@ -2416,21 +2398,21 @@ class KunenaBbcodeLibrary extends BBCodeLibrary
 	}
 
 	/**
-	 * @param   mixed $bbcode  bbcode
-	 * @param   mixed $action  action
-	 * @param   mixed $name    name
-	 * @param   mixed $default default
-	 * @param   mixed $params  params
-	 * @param   mixed $content content
+	 * @param   mixed  $bbcode   bbcode
+	 * @param   mixed  $action   action
+	 * @param   mixed  $name     name
+	 * @param   mixed  $default  default
+	 * @param   mixed  $params   params
+	 * @param   mixed  $content  content
 	 *
 	 * @return boolean|string
+	 * @since Kunena
 	 * @throws Exception
 	 * @throws null
-	 * @since Kunena
 	 */
 	public function DoAttachment($bbcode, $action, $name, $default, $params, $content)
 	{
-		if ($action == BBCODE_CHECK)
+		if ($action == BBCode::BBCODE_CHECK)
 		{
 			return true;
 		}
@@ -2451,9 +2433,6 @@ class KunenaBbcodeLibrary extends BBCodeLibrary
 		{
 			$attachments = &$bbcode->parent->attachments;
 		}
-
-		/** @var KunenaAttachment $att */
-		/** @var KunenaAttachment $attachment */
 
 		$attachment = null;
 
@@ -2484,7 +2463,7 @@ class KunenaBbcodeLibrary extends BBCodeLibrary
 		{
 			if ($attachment->isImage())
 			{
-				$hide = KunenaFactory::getConfig()->showimgforguest == 0 && Factory::getUser()->id == 0;
+				$hide = KunenaFactory::getConfig()->showimgforguest == 0 && Factory::getApplication()->getIdentity()->id == 0;
 
 				if (!$hide)
 				{
@@ -2493,7 +2472,7 @@ class KunenaBbcodeLibrary extends BBCodeLibrary
 			}
 			elseif ($attachment->isVideo())
 			{
-				$hide = KunenaFactory::getConfig()->showfileforguest == 0 && Factory::getUser()->id == 0;
+				$hide = KunenaFactory::getConfig()->showfileforguest == 0 && Factory::getApplication()->getIdentity()->id == 0;
 
 				if (!$hide)
 				{
@@ -2502,7 +2481,7 @@ class KunenaBbcodeLibrary extends BBCodeLibrary
 			}
 			else
 			{
-				$hide = KunenaFactory::getConfig()->showfileforguest == 0 && Factory::getUser()->id == 0;
+				$hide = KunenaFactory::getConfig()->showfileforguest == 0 && Factory::getApplication()->getIdentity()->id == 0;
 
 				if (!$hide)
 				{
@@ -2532,13 +2511,13 @@ class KunenaBbcodeLibrary extends BBCodeLibrary
 	}
 
 	/**
-	 * @param   KunenaAttachment $attachment
-	 * @param                    $bbcode
-	 * @param   bool             $displayImage
+	 * @param   KunenaAttachment  $attachment
+	 * @param                     $bbcode
+	 * @param   bool              $displayImage
 	 *
 	 * @return string
-	 * @throws Exception
 	 * @since Kunena
+	 * @throws Exception
 	 * @throws null
 	 */
 	protected function renderAttachment(KunenaAttachment $attachment, $bbcode, $displayImage = true)
@@ -2577,21 +2556,21 @@ class KunenaBbcodeLibrary extends BBCodeLibrary
 	}
 
 	/**
-	 * @param   mixed $bbcode  bbcode
-	 * @param   mixed $action  action
-	 * @param   mixed $name    name
-	 * @param   mixed $default default
-	 * @param   mixed $params  params
-	 * @param   mixed $content content
+	 * @param   mixed  $bbcode   bbcode
+	 * @param   mixed  $action   action
+	 * @param   mixed  $name     name
+	 * @param   mixed  $default  default
+	 * @param   mixed  $params   params
+	 * @param   mixed  $content  content
 	 *
 	 * @return boolean|string
+	 * @since Kunena
 	 * @throws Exception
 	 * @throws null
-	 * @since Kunena
 	 */
 	public function DoFile($bbcode, $action, $name, $default, $params, $content)
 	{
-		if ($action == BBCODE_CHECK)
+		if ($action == BBCode::BBCODE_CHECK)
 		{
 			return true;
 		}
@@ -2619,7 +2598,6 @@ class KunenaBbcodeLibrary extends BBCodeLibrary
 		// Legacy attachments support.
 		if (isset($bbcode->parent->attachments))
 		{
-			/** @var array|KunenaAttachment[] $attachments */
 			$attachments = &$bbcode->parent->attachments;
 
 			foreach ($attachments as $id => $attachment)
@@ -2639,7 +2617,7 @@ class KunenaBbcodeLibrary extends BBCodeLibrary
 			->set('size', 0)
 			->set('canLink', $bbcode->autolink_disable == 0);
 
-		if (Factory::getUser()->id == 0 && KunenaFactory::getConfig()->showfileforguest == 0)
+		if (Factory::getApplication()->getIdentity()->id == 0 && KunenaFactory::getConfig()->showfileforguest == 0)
 		{
 			// Hide between content from non registered users
 			return (string) $layout
@@ -2669,21 +2647,21 @@ class KunenaBbcodeLibrary extends BBCodeLibrary
 	}
 
 	/**
-	 * @param   mixed $bbcode  bbcode
-	 * @param   mixed $action  action
-	 * @param   mixed $name    name
-	 * @param   mixed $default default
-	 * @param   mixed $params  params
-	 * @param   mixed $content content
+	 * @param   mixed  $bbcode   bbcode
+	 * @param   mixed  $action   action
+	 * @param   mixed  $name     name
+	 * @param   mixed  $default  default
+	 * @param   mixed  $params   params
+	 * @param   mixed  $content  content
 	 *
 	 * @return boolean|string
+	 * @since Kunena
 	 * @throws Exception
 	 * @throws null
-	 * @since Kunena
 	 */
 	public function DoImage($bbcode, $action, $name, $default, $params, $content)
 	{
-		if ($action == BBCODE_CHECK)
+		if ($action == BBCode::BBCODE_CHECK)
 		{
 			return true;
 		}
@@ -2707,7 +2685,6 @@ class KunenaBbcodeLibrary extends BBCodeLibrary
 		if (isset($bbcode->parent->attachments) && strpos($fileurl, '/media/kunena/attachments/legacy/images/'))
 		{
 			// Remove attachment from the attachments list and show it if it exists.
-			/** @var array|KunenaAttachment[] $attachments */
 			$attachments = &$bbcode->parent->attachments;
 
 			foreach ($attachments as $id => $attachment)
@@ -2730,7 +2707,7 @@ class KunenaBbcodeLibrary extends BBCodeLibrary
 			->set('alt', isset($params['alt']) ? $params['alt'] : 0)
 			->set('canLink', $bbcode->autolink_disable == 0);
 
-		if (Factory::getUser()->id == 0 && $config->showimgforguest == 0)
+		if (Factory::getApplication()->getIdentity()->id == 0 && $config->showimgforguest == 0)
 		{
 			// Hide between content from non registered users.
 			return (string) $layout->set('title', Text::_('COM_KUNENA_SHOWIMGFORGUEST_HIDEIMG'))->setLayout('unauthorised');
@@ -2763,20 +2740,20 @@ class KunenaBbcodeLibrary extends BBCodeLibrary
 	}
 
 	/**
-	 * @param   mixed $bbcode  bbcode
-	 * @param   mixed $action  action
-	 * @param   mixed $name    name
-	 * @param   mixed $default default
-	 * @param   mixed $params  params
-	 * @param   mixed $content content
+	 * @param   mixed  $bbcode   bbcode
+	 * @param   mixed  $action   action
+	 * @param   mixed  $name     name
+	 * @param   mixed  $default  default
+	 * @param   mixed  $params   params
+	 * @param   mixed  $content  content
 	 *
 	 * @return boolean|string
-	 * @throws Exception
 	 * @since Kunena
+	 * @throws Exception
 	 */
 	public function DoTerminal($bbcode, $action, $name, $default, $params, $content)
 	{
-		if ($action == BBCODE_CHECK)
+		if ($action == BBCode::BBCODE_CHECK)
 		{
 			return true;
 		}
@@ -2792,20 +2769,20 @@ class KunenaBbcodeLibrary extends BBCodeLibrary
 	}
 
 	/**
-	 * @param   mixed $bbcode  bbcode
-	 * @param   mixed $action  action
-	 * @param   mixed $name    name
-	 * @param   mixed $default default
-	 * @param   mixed $params  params
-	 * @param   mixed $content content
+	 * @param   mixed  $bbcode   bbcode
+	 * @param   mixed  $action   action
+	 * @param   mixed  $name     name
+	 * @param   mixed  $default  default
+	 * @param   mixed  $params   params
+	 * @param   mixed  $content  content
 	 *
 	 * @return boolean|string
-	 * @throws Exception
 	 * @since Kunena
+	 * @throws Exception
 	 */
 	public function DoTweet($bbcode, $action, $name, $default, $params, $content)
 	{
-		if ($action == BBCODE_CHECK)
+		if ($action == BBCode::BBCODE_CHECK)
 		{
 			return true;
 		}
@@ -2836,11 +2813,11 @@ class KunenaBbcodeLibrary extends BBCodeLibrary
 	/**
 	 * Render the tweet by loading the right layout
 	 *
-	 * @param   int $tweetid The tweet id to render in layout
+	 * @param   int  $tweetid  The tweet id to render in layout
 	 *
 	 * @return string
-	 * @throws Exception
 	 * @since Kunena
+	 * @throws Exception
 	 */
 	public function renderTweet($tweetid)
 	{
@@ -2875,11 +2852,11 @@ class KunenaBbcodeLibrary extends BBCodeLibrary
 	/**
 	 * Get JSON tweet data by using OAuth 2.0 authentification
 	 *
-	 * @param   int $tweetid The tweet ID to query against twitter API
+	 * @param   int  $tweetid  The tweet ID to query against twitter API
 	 *
 	 * @return string
-	 * @throws Exception
 	 * @since Kunena
+	 * @throws Exception
 	 */
 	protected function getTweet($tweetid)
 	{
@@ -2890,7 +2867,7 @@ class KunenaBbcodeLibrary extends BBCodeLibrary
 		$consumer_key    = trim($config->twitter_consumer_key);
 		$consumer_secret = trim($config->twitter_consumer_secret);
 
-		if (JFile::exists(JPATH_CACHE . '/kunena_tweet/kunenatweetdisplay-' . $tweetid . '.json'))
+		if (File::exists(JPATH_CACHE . '/kunena_tweet/kunenatweetdisplay-' . $tweetid . '.json'))
 		{
 			$tweet_data = file_get_contents(JPATH_CACHE . '/kunena_tweet/kunenatweetdisplay-' . $tweetid . '.json');
 
@@ -2907,12 +2884,12 @@ class KunenaBbcodeLibrary extends BBCodeLibrary
 
 			$url = 'https://api.twitter.com/oauth2/token';
 
-			$options = new \Joomla\Registry\Registry;
+			$options = new Joomla\Registry\Registry;
 
-			$transport = new \Joomla\CMS\Http\Transport\StreamTransport($options);
+			$transport = new Joomla\CMS\Http\Transport\StreamTransport($options);
 
 			// Create a 'stream' transport.
-			$http = new \Joomla\CMS\Http\Http($options, $transport);
+			$http = new Joomla\CMS\Http\Http($options, $transport);
 
 			$headers = array(
 				'Authorization' => "Basic " . $b64_bearer_token_credentials,
@@ -2945,12 +2922,12 @@ class KunenaBbcodeLibrary extends BBCodeLibrary
 		{
 			$url = 'https://api.twitter.com/1.1/statuses/show.json?id=' . $tweetid;
 
-			$options = new \Joomla\Registry\Registry;
+			$options = new Joomla\Registry\Registry;
 
-			$transport = new \Joomla\CMS\Http\Transport\StreamTransport($options);
+			$transport = new Joomla\CMS\Http\Transport\StreamTransport($options);
 
 			// Create a 'stream' transport.
-			$http = new \Joomla\CMS\Http\Http($options, $transport);
+			$http = new Joomla\CMS\Http\Http($options, $transport);
 
 			$headers = array(
 				'Authorization' => "Bearer " . $this->token,
@@ -3056,9 +3033,9 @@ class KunenaBbcodeLibrary extends BBCodeLibrary
 					}
 				}
 
-				if (!JFolder::exists(JPATH_CACHE . '/kunena_tweet'))
+				if (!Folder::exists(JPATH_CACHE . '/kunena_tweet'))
 				{
-					JFolder::create(JPATH_CACHE . '/kunena_tweet');
+					Folder::create(JPATH_CACHE . '/kunena_tweet');
 				}
 
 				$tweet_data->error = false;
@@ -3078,19 +3055,19 @@ class KunenaBbcodeLibrary extends BBCodeLibrary
 	}
 
 	/**
-	 * @param   mixed $bbcode  bbcode
-	 * @param   mixed $action  action
-	 * @param   mixed $name    name
-	 * @param   mixed $default default
-	 * @param   mixed $params  params
-	 * @param   mixed $content content
+	 * @param   mixed  $bbcode   bbcode
+	 * @param   mixed  $action   action
+	 * @param   mixed  $name     name
+	 * @param   mixed  $default  default
+	 * @param   mixed  $params   params
+	 * @param   mixed  $content  content
 	 *
 	 * @return boolean|string
 	 * @since Kunena
 	 */
 	public function DoSoundcloud($bbcode, $action, $name, $default, $params, $content)
 	{
-		if ($action == BBCODE_CHECK)
+		if ($action == BBCode::BBCODE_CHECK)
 		{
 			return true;
 		}
@@ -3118,70 +3095,6 @@ class KunenaBbcodeLibrary extends BBCodeLibrary
 			if ($url_parsed['host'] == 'soundcloud.com')
 			{
 				return '<iframe allowtransparency="true" width="100%" height="350" scrolling="no" frameborder="no" src="https://w.soundcloud.com/player/?url=' . $content . '&amp;auto_play=false&amp;visual=true"></iframe><br />';
-			}
-		}
-	}
-
-	/**
-	 * @param   mixed $bbcode  bbcode
-	 * @param   mixed $action  action
-	 * @param   mixed $name    name
-	 * @param   mixed $default default
-	 * @param   mixed $params  params
-	 * @param   mixed $content content
-	 *
-	 * @return boolean|string
-	 * @since Kunena
-	 */
-	public function DoInstagram($bbcode, $action, $name, $default, $params, $content)
-	{
-		if ($action == BBCODE_CHECK)
-		{
-			return true;
-		}
-
-		if (!empty($content))
-		{
-			// Display tag in activity streams etc..
-			if (!empty($bbcode->parent->forceMinimal))
-			{
-				return "<a href=\"" . $content . "\" rel=\"nofollow\" target=\"_blank\">" . $content . '</a>';
-			}
-
-			$before = $content;
-			$content = strip_tags($content);
-
-			$content = trim($content);
-
-			$url_parsed = parse_url($content);
-
-			if ($url_parsed['scheme'] == 'https' || $url_parsed['scheme'] == 'http')
-			{
-				$content = $url_parsed['host'] . $url_parsed['path'];
-			}
-			else
-			{
-				$content = $url_parsed['path'];
-			}
-
-			if (preg_match('/(?:(?:http|https):\/\/)?(?:www.)?(?:instagram.com|instagr.am)\/([A-Za-z0-9-_]+)/im', $content, $matches))
-			{
-				if (!preg_match('#^(/|https?:|ftp:)#ui', $content))
-				{
-					// Add scheme to raw domain URLs.
-					$url = "https://{$content}";
-				}
-
-				return '<div class="embed-container"><iframe src="' . rtrim($url, '/') . '/embed/" frameborder="0" scrolling="no"></iframe></div>';
-			}
-
-			if (!empty($content))
-			{
-				return '<div class="embed-container"><iframe src="https://www.instagram.com/p/' . $content . '/embed/" frameborder="0" scrolling="no"></iframe></div>';
-			}
-			else
-			{
-				return $before;
 			}
 		}
 	}

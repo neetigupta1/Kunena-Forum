@@ -4,7 +4,7 @@
  * @package       Kunena.Framework
  * @subpackage    BBCode
  *
- * @copyright     Copyright (C) 2008 - 2018 Kunena Team. All rights reserved.
+ * @copyright     Copyright (C) 2008 - 2019 Kunena Team. All rights reserved.
  * @license       https://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link          https://www.kunena.org
  **/
@@ -24,16 +24,16 @@ use Joomla\CMS\Language\Text;
 class KunenaBbcodeEditor
 {
 	/**
-	 * @var array
 	 * @since Kunena
+	 * @var array
 	 */
 	public $editor_elements = array();
 
 	/**
 	 * @param   array $config config
 	 *
-	 * @throws Exception
 	 * @since Kunena
+	 * @throws Exception
 	 */
 	public function __construct($config = array())
 	{
@@ -143,8 +143,8 @@ class KunenaBbcodeEditor
 	 *
 	 *
 	 * @return void
-	 * @throws Exception
 	 * @since Kunena
+	 * @throws Exception
 	 */
 	public function initialize()
 	{
@@ -156,18 +156,18 @@ class KunenaBbcodeEditor
 	 * Initialize HMVC editor
 	 *
 	 * @return void
-	 * @throws Exception
 	 * @since Kunena
+	 * @throws Exception
 	 */
 	public function initializeHMVC()
 	{
-		$xml_file = simplexml_load_file(dirname(__FILE__) . '/crypsis_editor.xml');
+		$xml_file = simplexml_load_file(dirname(__FILE__) . '/aurelia_editor.xml');
 
 		$this->editor_elements = self::parseXML($xml_file, 'parseHMVCXML');
 
 		// Hook to manipulate the Editor XML like adding buttons
 
-		\Joomla\CMS\Plugin\PluginHelper::importPlugin('kunena');
+		Joomla\CMS\Plugin\PluginHelper::importPlugin('kunena');
 		Factory::getApplication()->triggerEvent('onKunenaBbcodeEditorInit', array($this));
 
 		$js = "bbcodeSettings = {
@@ -198,8 +198,8 @@ class KunenaBbcodeEditor
 	 * @param   string           $parseMethod The parse method name to call
 	 *
 	 * @return array
-	 * @throws Exception
 	 * @since Kunena
+	 * @throws Exception
 	 */
 	public static function parseXML(SimpleXMLElement $xml, $parseMethod)
 	{
@@ -241,8 +241,8 @@ class KunenaBbcodeEditor
 abstract class KunenaBbcodeEditorElement
 {
 	/**
-	 * @var string
 	 * @since Kunena
+	 * @var string
 	 */
 	public $name;
 
@@ -282,38 +282,38 @@ abstract class KunenaBbcodeEditorElement
 class KunenaBbcodeEditorButton extends KunenaBbcodeEditorElement
 {
 	/**
-	 * @var string
 	 * @since Kunena
+	 * @var string
 	 */
 	protected $tag;
 
 	/**
-	 * @var string
 	 * @since Kunena
+	 * @var string
 	 */
 	protected $config;
 
 	/**
-	 * @var string
 	 * @since Kunena
+	 * @var string
 	 */
 	protected $title;
 
 	/**
-	 * @var string
 	 * @since Kunena
+	 * @var string
 	 */
 	protected $alt;
 
 	/**
-	 * @var string
 	 * @since Kunena
+	 * @var string
 	 */
 	protected $class;
 
 	/**
-	 * @var array
 	 * @since Kunena
+	 * @var array
 	 */
 	protected $actions = array();
 
@@ -342,8 +342,8 @@ class KunenaBbcodeEditorButton extends KunenaBbcodeEditorElement
 	 * @param   SimpleXMLElement $xml xml
 	 *
 	 * @return KunenaBbcodeEditorButton
-	 * @throws Exception
 	 * @since Kunena
+	 * @throws Exception
 	 */
 	public static function parseHMVCXML(SimpleXMLElement $xml)
 	{
@@ -758,8 +758,8 @@ class KunenaBbcodeEditorButton extends KunenaBbcodeEditorElement
 	 * @param   string $class     class
 	 * @param   null   $tag       tag
 	 *
-	 * @since Kunena
 	 * @return void
+	 * @since Kunena
 	 */
 	public function addDisplayAction($selection, $class, $tag = null)
 	{
@@ -814,8 +814,8 @@ class KunenaBbcodeEditorButton extends KunenaBbcodeEditorElement
 	 *
 	 * @param   string $url url
 	 *
-	 * @since Kunena
 	 * @return void
+	 * @since Kunena
 	 */
 	public function addUrlAction($url)
 	{

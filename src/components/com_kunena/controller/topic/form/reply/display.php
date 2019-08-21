@@ -4,7 +4,7 @@
  * @package         Kunena.Site
  * @subpackage      Controller.Topic
  *
- * @copyright       Copyright (C) 2008 - 2018 Kunena Team. All rights reserved.
+ * @copyright       Copyright (C) 2008 - 2019 Kunena Team. All rights reserved.
  * @license         https://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link            https://www.kunena.org
  **/
@@ -71,7 +71,7 @@ class ComponentKunenaControllerTopicFormReplyDisplay extends KunenaControllerDis
 			throw new KunenaExceptionAuthorise(Text::_('COM_KUNENA_NO_ACCESS'), '401');
 		}
 
-		$doc = Factory::getDocument();
+		$doc = Factory::getApplication()->getDocument();
 
 		foreach ($doc->_links as $key => $value)
 		{
@@ -90,7 +90,8 @@ class ComponentKunenaControllerTopicFormReplyDisplay extends KunenaControllerDis
 			}
 		}
 
-		$doc->addHeadLink($this->topic->getUrl(), 'canonical');
+		$uri = trim(strtok($this->topic->getUrl(), '?'));
+		$doc->addHeadLink($uri, 'canonical');
 
 		$this->category = $this->topic->getCategory();
 
@@ -106,15 +107,20 @@ class ComponentKunenaControllerTopicFormReplyDisplay extends KunenaControllerDis
 
 		$parent->tryAuthorise('reply');
 
+		$arraypollcatid    = array();
+		KunenaTemplate::getInstance()->addScriptOptions('com_kunena.pollcategoriesid', json_encode($arraypollcatid));
+
 		// Run event.
-		$params = new \Joomla\Registry\Registry;
+		$params = new Joomla\Registry\Registry;
 		$params->set('ksource', 'kunena');
 		$params->set('kunena_view', 'topic');
 		$params->set('kunena_layout', 'reply');
 
-		\Joomla\CMS\Plugin\PluginHelper::importPlugin('kunena');
+		Joomla\CMS\Plugin\PluginHelper::importPlugin('kunena');
 
 		Factory::getApplication()->triggerEvent('onKunenaPrepare', array('kunena.topic', &$this->topic, &$params, 0));
+
+		$this->headerText   = Text::_('COM_KUNENA_BUTTON_MESSAGE_REPLY') . ': ' . $this->topic->subject;
 
 		// Can user edit topic icons?
 		if ($this->config->topicicons && $this->topic->isAuthorised('edit'))
@@ -132,7 +138,6 @@ class ComponentKunenaControllerTopicFormReplyDisplay extends KunenaControllerDis
 		$this->app->setUserState('com_kunena.postfields', null);
 
 		$this->canSubscribe = $this->canSubscribe();
-		$this->headerText   = Text::_('COM_KUNENA_BUTTON_MESSAGE_REPLY') . ': ' . $this->topic->subject;
 	}
 
 	/**
@@ -144,8 +149,7 @@ class ComponentKunenaControllerTopicFormReplyDisplay extends KunenaControllerDis
 	 */
 	protected function prepareDocument()
 	{
-		$app       = Factory::getApplication();
-		$menu_item = $app->getMenu()->getActive();
+		$menu_item = $this->app->getMenu()->getActive();
 
 		$this->setMetaData('robots', 'nofollow, noindex');
 

@@ -4,7 +4,7 @@
  * @package       Kunena.Framework
  * @subpackage    Tables
  *
- * @copyright     Copyright (C) 2008 - 2018 Kunena Team. All rights reserved.
+ * @copyright     Copyright (C) 2008 - 2019 Kunena Team. All rights reserved.
  * @license       https://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link          https://www.kunena.org
  **/
@@ -275,10 +275,10 @@ class TableKunenaCategories extends KunenaTable
 		}
 
 		// Load the data.
-		$query = $this->_db->getQuery(true);
-		$query->select('*');
-		$query->from($this->_db->quoteName('#__kunena_categories'));
-		$query->where($this->_db->quoteName('id') . '=' . $this->$k);
+		$query = $this->_db->getQuery(true)
+			->select('*')
+			->from($this->_db->quoteName('#__kunena_categories'))
+			->where($this->_db->quoteName('id') . ' = ' . $this->_db->quote($this->$k));
 		$this->_db->setQuery($query);
 
 		try
@@ -323,18 +323,18 @@ class TableKunenaCategories extends KunenaTable
 
 		if (isset($array['params']) && !is_string($array['params']))
 		{
-			if ($array['params'] instanceof \Joomla\Registry\Registry)
+			if ($array['params'] instanceof Joomla\Registry\Registry)
 			{
 				$registry = $array['params'];
 			}
 			elseif (is_array($array['params']))
 			{
-				$registry = new \Joomla\Registry\Registry;
+				$registry = new Joomla\Registry\Registry;
 				$registry->loadArray($array['params']);
 			}
 			else
 			{
-				$registry = new \Joomla\Registry\Registry;
+				$registry = new Joomla\Registry\Registry;
 			}
 
 			$array['params'] = (string) $registry;
@@ -354,11 +354,11 @@ class TableKunenaCategories extends KunenaTable
 		{
 			if ($this->id == $this->parent_id)
 			{
-				$this->setError(Text::_('COM_KUNENA_FORUM_SAME_ERR'));
+				throw new RuntimeException(Text::_('COM_KUNENA_FORUM_SAME_ERR'));
 			}
 			elseif ($this->isChild($this->parent_id))
 			{
-				$this->setError(Text::_('COM_KUNENA_FORUM_OWNCHILD_ERR'));
+				throw new RuntimeException(Text::_('COM_KUNENA_FORUM_OWNCHILD_ERR'));
 			}
 		}
 
@@ -366,15 +366,15 @@ class TableKunenaCategories extends KunenaTable
 
 		if (!$this->name)
 		{
-			$this->setError(Text::_('COM_KUNENA_LIB_TABLE_CATEGORIES_ERROR_NO_NAME'));
+			throw new UnexpectedValueException(Text::_('COM_KUNENA_LIB_TABLE_CATEGORIES_ERROR_NO_NAME'));
 		}
 
-		if ($this->params instanceof \Joomla\Registry\Registry)
+		if ($this->params instanceof Joomla\Registry\Registry)
 		{
 			$this->params = $this->params->toString();
 		}
 
-		return $this->getError() == '';
+		return true;
 	}
 
 	// Check if given forum is one of its own childs
@@ -391,9 +391,9 @@ class TableKunenaCategories extends KunenaTable
 		// FIXME: when we have category cache, replace this code
 		if ($id > 0)
 		{
-			$query = $this->_db->getQuery(true);
-			$query->select($this->_db->quoteName(array('id', 'parent_id')));
-			$query->from($this->_db->quoteName('#__kunena_categories'));
+			$query = $this->_db->getQuery(true)
+				->select(array('id', 'parent_id'))
+				->from($this->_db->quoteName('#__kunena_categories'));
 			$this->_db->setQuery($query);
 
 			try
@@ -449,10 +449,10 @@ class TableKunenaCategories extends KunenaTable
 	{
 		if (!$where)
 		{
-			$query = $this->_db->getQuery(true);
-			$query->select($this->_db->quoteName('parent_id'));
-			$query->from($this->_db->quoteName('#__kunena_categories'));
-			$query->group($this->_db->quoteName('parent_id'));
+			$query = $this->_db->getQuery(true)
+				->select($this->_db->quoteName('parent_id'))
+				->from($this->_db->quoteName('#__kunena_categories'))
+				->group($this->_db->quoteName('parent_id'));
 			$this->_db->setQuery($query);
 
 			$parents = $this->_db->loadColumn();
@@ -472,10 +472,11 @@ class TableKunenaCategories extends KunenaTable
 	}
 
 	/**
-	 * @param   bool $updateNulls update
+	 * @param   bool  $updateNulls  update
 	 *
 	 * @return boolean
 	 * @since Kunena
+	 * @throws Exception
 	 */
 	public function store($updateNulls = false)
 	{

@@ -5,7 +5,7 @@
  * @package         Kunena.Framework
  * @subpackage      Forum.Topic
  *
- * @copyright       Copyright (C) 2008 - 2018 Kunena Team. All rights reserved.
+ * @copyright       Copyright (C) 2008 - 2019 Kunena Team. All rights reserved.
  * @license         https://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link            https://www.kunena.org
  **/
@@ -62,7 +62,7 @@ abstract class KunenaForumTopicRateHelper
 	}
 
 	/**
-	 * Return sum of all rates gived to a topics by all users
+	 * Return sum of all rates given to a topics by all users
 	 *
 	 * @param   integer $id id
 	 *
@@ -73,16 +73,16 @@ abstract class KunenaForumTopicRateHelper
 	{
 		$db    = Factory::getDbo();
 		$query = $db->getQuery(true);
-		$query->select("(SUM(rate)/COUNT(rate)) AS selected")
-			->from('#__kunena_rate')
-			->where('topic_id = ' . $db->escape($id));
+		$query->select('(SUM(' . $db->quoteName('rate') . ')/COUNT(' . $db->quoteName('rate') . ')) AS ' . $db->quoteName('selected'))
+			->from($db->quoteName('#__kunena_rate'))
+			->where($db->quoteName('topic_id') . ' = ' . $db->quote($id));
 		$db->setQuery($query);
 
 		return round($db->loadResult());
 	}
 
 	/**
-	 * Return sum of all rates gived to a topics by all users
+	 * Return sum of all rates given to a topics by all users
 	 *
 	 * @param   integer $id id
 	 *
@@ -93,9 +93,9 @@ abstract class KunenaForumTopicRateHelper
 	{
 		$db    = Factory::getDbo();
 		$query = $db->getQuery(true);
-		$query->select("(COUNT(rate)) AS selected")
-			->from('#__kunena_rate')
-			->where('topic_id = ' . $db->escape($id));
+		$query->select('(COUNT(' . $db->quoteName('rate') . ')) AS ' . $db->quoteName('selected'))
+			->from($db->quoteName('#__kunena_rate'))
+			->where($db->quoteName('topic_id') . ' = ' . $db->quote($id));
 		$db->setQuery($query);
 
 		return round($db->loadResult());
@@ -115,10 +115,10 @@ abstract class KunenaForumTopicRateHelper
 	{
 		$db    = Factory::getDbo();
 		$query = $db->getQuery(true);
-		$query->select("rate")
-			->from('#__kunena_rate')
-			->where('topic_id = ' . $db->escape($id))
-			->andWhere('userid = ' . $db->escape($userid));
+		$query->select($db->quoteName('rate'))
+			->from($db->quoteName('#__kunena_rate'))
+			->where($db->quoteName('topic_id') . ' = ' . $db->quote($id))
+			->andWhere($db->quoteName('userid') . ' = ' . $db->quote($userid));
 		$db->setQuery($query);
 
 		return round($db->loadResult());

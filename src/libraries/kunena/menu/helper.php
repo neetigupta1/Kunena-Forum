@@ -4,7 +4,7 @@
  * @package       Kunena.Framework
  * @subpackage    Forum.Menu
  *
- * @copyright     Copyright (C) 2008 - 2018 Kunena Team. All rights reserved.
+ * @copyright     Copyright (C) 2008 - 2019 Kunena Team. All rights reserved.
  * @copyright     Copyright (C) 2005 - 2012 Open Source Matters, Inc. All rights reserved.
  * @license       https://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link          https://www.kunena.org
@@ -12,6 +12,8 @@
 defined('_JEXEC') or die();
 
 use Joomla\CMS\Factory;
+use Joomla\CMS\Router\Route;
+use Joomla\CMS\Language\Multilanguage;
 
 /**
  * Class KunenaMenuHelper
@@ -33,7 +35,7 @@ abstract class KunenaMenuHelper
 	 * Get a list of the menu items (taken from Joomla 2.5.1).
 	 * This only method need to be used only in frontend part
 	 *
-	 * @param   \Joomla\Registry\Registry $params The module options.
+	 * @param   Joomla\Registry\Registry $params The module options.
 	 *
 	 * @return    array
 	 * @throws Exception
@@ -47,7 +49,7 @@ abstract class KunenaMenuHelper
 
 		// Get active menu item
 		$base   = self::getBase($params);
-		$user   = Factory::getUser();
+		$user   = Factory::getApplication()->getIdentity();
 		$levels = $user->getAuthorisedViewLevels();
 		asort($levels);
 		$key   = 'menu_items' . $params . implode(',', $levels) . '.' . $base->id;
@@ -139,11 +141,11 @@ abstract class KunenaMenuHelper
 
 					if ((strpos($item->flink, 'index.php?') !== false) && strcasecmp(substr($item->flink, 0, 4), 'http'))
 					{
-						$item->flink = JRoute::_($item->flink, true, $item->params->get('secure'));
+						$item->flink = Route::_($item->flink, true, $item->params->get('secure'));
 					}
 					else
 					{
-						$item->flink = JRoute::_($item->flink);
+						$item->flink = Route::_($item->flink);
 					}
 
 					// We prevent the double encoding because for some reason the $item is shared for menu modules and we get double encoding
@@ -174,7 +176,7 @@ abstract class KunenaMenuHelper
 	/**
 	 * Get base menu item.
 	 *
-	 * @param   \Joomla\Registry\Registry &$params The module options.
+	 * @param   Joomla\Registry\Registry &$params The module options.
 	 *
 	 * @return  object
 	 *
@@ -205,7 +207,7 @@ abstract class KunenaMenuHelper
 	/**
 	 * Get active menu item.
 	 *
-	 * @param   \Joomla\Registry\Registry &$params The module options.
+	 * @param   Joomla\Registry\Registry &$params The module options.
 	 *
 	 * @return  object
 	 *
@@ -233,7 +235,7 @@ abstract class KunenaMenuHelper
 		$lang = Factory::getLanguage();
 
 		// Look for the home menu
-		if (JLanguageMultilang::isEnabled())
+		if (Multilanguage::isEnabled())
 		{
 			return $menu->getDefault($lang->getTag());
 		}

@@ -5,7 +5,7 @@
  * @package         Kunena.Administrator
  * @subpackage      Controllers
  *
- * @copyright       Copyright (C) 2008 - 2018 Kunena Team. All rights reserved.
+ * @copyright       Copyright (C) 2008 - 2019 Kunena Team. All rights reserved.
  * @license         https://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link            https://www.kunena.org
  **/
@@ -31,10 +31,10 @@ class KunenaAdminControllerTrash extends KunenaController
 	/**
 	 * Construct
 	 *
-	 * @param   array $config config
+	 * @param   array  $config  config
 	 *
-	 * @throws Exception
 	 * @since    2.0
+	 * @throws Exception
 	 */
 	public function __construct($config = array())
 	{
@@ -47,9 +47,9 @@ class KunenaAdminControllerTrash extends KunenaController
 	 *
 	 * @return void
 	 *
-	 * @throws Exception
-	 * @throws null
 	 * @since    2.0
+	 * @throws null
+	 * @throws Exception
 	 */
 	public function purge()
 	{
@@ -64,7 +64,7 @@ class KunenaAdminControllerTrash extends KunenaController
 		$cid = $this->input->get('cid', array(), 'array');
 		$cid = ArrayHelper::toInteger($cid, array());
 
-		$type = $this->input->getCmd('type', 'topics', 'post');
+		$type = $this->input->getCmd('type', 'topics');
 		$md5  = $this->input->getString('md5', null);
 
 		if (!empty($cid))
@@ -165,9 +165,9 @@ class KunenaAdminControllerTrash extends KunenaController
 	 *
 	 * @return void
 	 *
-	 * @throws Exception
-	 * @throws null
 	 * @since    2.0
+	 * @throws null
+	 * @throws Exception
 	 */
 	public function restore()
 	{
@@ -257,8 +257,8 @@ class KunenaAdminControllerTrash extends KunenaController
 	 *
 	 * @return void
 	 *
-	 * @throws Exception
 	 * @since    2.0
+	 * @throws Exception
 	 * @throws null
 	 */
 	public function cancel()

@@ -4,7 +4,7 @@
  *
  * @package        Kunena.Installer
  *
- * @copyright      Copyright (C) 2008 - 2018 Kunena Team. All rights reserved.
+ * @copyright      Copyright (C) 2008 - 2019 Kunena Team. All rights reserved.
  * @license        https://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link           https://www.kunena.org
  **/
@@ -104,7 +104,7 @@ function kunena_200_2012_05_30_configuration($parent)
 
 			if ($plugin)
 			{
-				$params            = new \Joomla\Registry\Registry($plugin->params);
+				$params            = new Joomla\Registry\Registry($plugin->params);
 				$plugin->params    = $params;
 				$plugins[$cfgname] = $plugin;
 			}

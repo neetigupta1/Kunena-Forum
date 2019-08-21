@@ -4,7 +4,7 @@
  * @package         Kunena.Site
  * @subpackage      Controller.Topic
  *
- * @copyright       Copyright (C) 2008 - 2018 Kunena Team. All rights reserved.
+ * @copyright       Copyright (C) 2008 - 2019 Kunena Team. All rights reserved.
  * @license         https://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link            https://www.kunena.org
  **/
@@ -14,6 +14,9 @@ use Joomla\CMS\Factory;
 use Joomla\CMS\HTML\HTMLHelper;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\Uri\Uri;
+use Joomla\CMS\MVC\Controller\BaseController;
+use Joomla\CMS\Object\CMSObject;
+use Joomla\CMS\Filesystem\File;
 
 /**
  * Class ComponentKunenaControllerTopicItemDisplay
@@ -82,7 +85,7 @@ class ComponentKunenaControllerTopicItemDisplay extends KunenaControllerDisplay
 		if (!$Itemid && $format != 'feed' && KunenaConfig::getInstance()->sef_redirect)
 		{
 			$itemid     = KunenaRoute::fixMissingItemID();
-			$controller = JControllerLegacy::getInstance("kunena");
+			$controller = BaseController::getInstance("kunena");
 			$controller->setRedirect(KunenaRoute::_("index.php?option=com_kunena&view=topic&catid={$catid}&id={$id}&Itemid={$itemid}", false));
 			$controller->redirect();
 		}
@@ -106,7 +109,7 @@ class ComponentKunenaControllerTopicItemDisplay extends KunenaControllerDisplay
 		$options            = array();
 		$options []         = HTMLHelper::_('select.option', '0', Text::_('COM_KUNENA_FORUM_TOP'));
 		$cat_params         = array('sections' => 1, 'catid' => 0);
-		$this->categorylist = HTMLHelper::_('kunenaforum.categorylist', 'catid', 0, $options, $cat_params, 'class="inputbox fbs" size="1" onchange = "this.form.submit()"', 'value', 'text');
+		$this->categorylist = HTMLHelper::_('kunenaforum.categorylist', 'catid', 0, $options, $cat_params, 'class="form-control fbs" size="1" onchange = "this.form.submit()"', 'value', 'text');
 
 		// Load topic and message.
 		if ($mesid)
@@ -166,7 +169,7 @@ class ComponentKunenaControllerTopicItemDisplay extends KunenaControllerDisplay
 			->find();
 
 		$this->prepareMessages($mesid);
-		$doc = Factory::getDocument();
+		$doc = Factory::getApplication()->getDocument();
 
 		if ($this->topic->unread)
 		{
@@ -194,12 +197,12 @@ class ComponentKunenaControllerTopicItemDisplay extends KunenaControllerDisplay
 		}
 
 		// Run events.
-		$params = new \Joomla\Registry\Registry;
+		$params = new Joomla\Registry\Registry;
 		$params->set('ksource', 'kunena');
 		$params->set('kunena_view', 'topic');
 		$params->set('kunena_layout', 'default');
 
-		\Joomla\CMS\Plugin\PluginHelper::importPlugin('kunena');
+		Joomla\CMS\Plugin\PluginHelper::importPlugin('kunena');
 		KunenaHtmlParser::prepareContent($content, 'topic_top');
 		Factory::getApplication()->triggerEvent('onKunenaPrepare', array('kunena.topic', &$this->topic, &$params, 0));
 		Factory::getApplication()->triggerEvent('onKunenaPrepare', array('kunena.messages', &$this->messages, &$params, 0));
@@ -208,30 +211,47 @@ class ComponentKunenaControllerTopicItemDisplay extends KunenaControllerDisplay
 		$this->userTopic  = $this->topic->getUserTopic();
 		$this->quickReply = $this->topic->isAuthorised('reply') && $this->me->exists() && KunenaConfig::getInstance()->quickreply;
 
-		$this->headerText = html_entity_decode($this->topic->displayField('subject'));
+		$this->headerText = KunenaHtmlParser::parseBBCode($this->topic->displayField('subject'));
 
-		$data                           = new JObject;
+		$data                           = new CMSObject;
 		$data->{'@context'}             = "http://schema.org";
 		$data->{'@type'}                = "DiscussionForumPosting";
 		$data->{'id'}                   = Joomla\CMS\Uri\Uri::getInstance()->toString(array('scheme', 'host', 'port')) . $this->topic->getPermaUrl();
+		$data->{'discussionUrl'}        = $this->topic->getPermaUrl();
 		$data->{'headline'}             = $this->headerText;
 		$data->{'image'}                = $this->docImage();
+		$data->{'datePublished'}        = $this->topic->getFirstPostTime()->toISO8601();
+		$data->{'dateModified'}         = Factory::getDate($this->message->modified_time)->toISO8601();
 		$data->author                   = array();
-		$tmp                            = new JObject;
+		$tmp                            = new CMSObject;
 		$tmp->{'@type'}                 = "Person";
 		$tmp->{'name'}                  = $this->topic->getLastPostAuthor()->username;
 		$data->author                   = $tmp;
 		$data->interactionStatistic     = array();
-		$tmp2                           = new JObject;
+		$tmp2                           = new CMSObject;
 		$tmp2->{'@type'}                = "InteractionCounter";
 		$tmp2->{'interactionType'}      = "InteractionCounter";
 		$tmp2->{'userInteractionCount'} = $this->topic->getReplies();
 		$data->interactionStatistic     = $tmp2;
+		$tmp3                           = new CMSObject;
+		$tmp3->{'@type'}                = "ImageObject";
+		$tmp3->{'url'}                  = $this->docImage();
+		$data->publisher                = array();
+		$tmp4                           = new CMSObject;
+		$tmp4->{'@type'}                = "Organization";
+		$tmp4->{'name'}                 = $this->config->board_title;
+		$tmp4->{'logo'}                 = $tmp3;
+		$data->publisher                = $tmp4;
+		$data->mainEntityOfPage         = array();
+		$tmp5                           = new CMSObject;
+		$tmp5->{'@type'}                = "WebPage";
+		$tmp5->{'name'}                 = Joomla\CMS\Uri\Uri::getInstance()->toString(array('scheme', 'host', 'port')) . $this->topic->getPermaUrl();
+		$data->mainEntityOfPage         = $tmp5;
 
-		if ($this->category->allow_ratings && KunenaConfig::getInstance()->ratingenabled && KunenaForumTopicRateHelper::getCount($this->topic->id) > 0)
+		if ($this->category->allow_ratings && $this->config->ratingenabled && KunenaForumTopicRateHelper::getCount($this->topic->id) > 0)
 		{
 			$data->aggregateRating  = array();
-			$tmp3                   = new JObject;
+			$tmp3                   = new CMSObject;
 			$tmp3->{'@type'}        = "AggregateRating";
 			$tmp3->{'itemReviewed'} = $this->headerText;
 			$tmp3->{'ratingValue'}  = KunenaForumTopicRateHelper::getSelected($this->topic->id) > 0 ? KunenaForumTopicRateHelper::getSelected($this->topic->id) : 5;
@@ -445,11 +465,11 @@ class ComponentKunenaControllerTopicItemDisplay extends KunenaControllerDisplay
 	protected function prepareDocument()
 	{
 		$image = '';
-		$doc   = Factory::getDocument();
+		$doc   = Factory::getApplication()->getDocument();
 		$this->setMetaData('og:url', Uri::current(), 'property');
 		$this->setMetaData('og:type', 'article', 'property');
 		$this->setMetaData('og:title', $this->topic->displayField('subject'), 'property');
-		$this->setMetaData('og:author', $this->topic->getAuthor()->username, 'property');
+		$this->setMetaData('profile:username', $this->topic->getAuthor()->username, 'property');
 
 		$image = $this->docImage();
 
@@ -480,7 +500,7 @@ class ComponentKunenaControllerTopicItemDisplay extends KunenaControllerDisplay
 
 			if ($attach)
 			{
-				if (JFile::exists(JPATH_SITE . '/' . $attach->folder . '/' . $attach->filename))
+				if (File::exists(JPATH_SITE . '/' . $attach->folder . '/' . $attach->filename))
 				{
 					if ($attach->image)
 					{
@@ -572,14 +592,13 @@ class ComponentKunenaControllerTopicItemDisplay extends KunenaControllerDisplay
 			}
 		}
 
-		$app       = Factory::getApplication();
-		$menu_item = $app->getMenu()->getActive();
+		$menu_item = $this->app->getMenu()->getActive();
 
 		if ($menu_item)
 		{
 			$params          = $menu_item->params;
 			$params_keywords = $params->get('menu-meta_keywords');
-
+			$headerText = KunenaHtmlParser::stripBBCode($this->topic->subject, 0, true);
 			$this->setTitle($headerText);
 
 			if (!empty($params_keywords))
@@ -595,7 +614,7 @@ class ComponentKunenaControllerTopicItemDisplay extends KunenaControllerDisplay
 
 			if ($total > 1 && $page > 1)
 			{
-				$small = KunenaHtmlParser::stripBBCode($this->topic->first_post_message, 140);
+				$small = KunenaHtmlParser::stripBBCode($this->topic->first_post_message, 130);
 
 				if (empty($small))
 				{
@@ -629,13 +648,13 @@ class ComponentKunenaControllerTopicItemDisplay extends KunenaControllerDisplay
 	{
 		$image = '';
 
-		if (JFile::exists(JPATH_SITE . '/media/kunena/avatars/' . KunenaFactory::getUser($this->topic->getAuthor()->id)->avatar))
+		if (File::exists(JPATH_SITE . '/media/kunena/avatars/' . KunenaFactory::getUser($this->topic->getAuthor()->id)->avatar))
 		{
 			$image = Uri::root() . 'media/kunena/avatars/' . KunenaFactory::getUser($this->topic->getAuthor()->id)->avatar;
 		}
 		elseif ($this->topic->getAuthor()->avatar == null)
 		{
-			if (JFile::exists(JPATH_SITE . '/' . KunenaConfig::getInstance()->emailheader))
+			if (File::exists(JPATH_SITE . '/' . KunenaConfig::getInstance()->emailheader))
 			{
 				$image = Uri::base() . KunenaConfig::getInstance()->emailheader;
 			}

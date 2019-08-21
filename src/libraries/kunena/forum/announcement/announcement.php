@@ -4,7 +4,7 @@
  * @package         Kunena.Framework
  * @subpackage      Forum.Announcement
  *
- * @copyright       Copyright (C) 2008 - 2018 Kunena Team. All rights reserved.
+ * @copyright       Copyright (C) 2008 - 2019 Kunena Team. All rights reserved.
  * @license         https://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link            https://www.kunena.org
  **/
@@ -17,6 +17,7 @@ use Joomla\CMS\Session\Session;
 /**
  * Class KunenaForumAnnouncement
  *
+ * @since Kunena
  * @property int    $id
  * @property string $title
  * @property int    $created_by
@@ -28,7 +29,6 @@ use Joomla\CMS\Session\Session;
  * @property int    $publish_down
  * @property int    $ordering
  * @property int    $showdate
- * @since Kunena
  */
 class KunenaForumAnnouncement extends KunenaDatabaseObject
 {
@@ -75,7 +75,7 @@ class KunenaForumAnnouncement extends KunenaDatabaseObject
 	protected $_authfcache = null;
 
 	/**
-	 * @param   mixed $properties properties
+	 * @param   mixed  $properties  properties
 	 *
 	 * @since Kunena
 	 */
@@ -97,8 +97,8 @@ class KunenaForumAnnouncement extends KunenaDatabaseObject
 	/**
 	 * Returns the global KunenaForumAnnouncement object.
 	 *
-	 * @param   null $identifier Announcement id to load.
-	 * @param   bool $reload     reload
+	 * @param   null  $identifier  Announcement id to load.
+	 * @param   bool  $reload      reload
 	 *
 	 * @return KunenaForumAnnouncement
 	 * @since Kunena
@@ -111,12 +111,12 @@ class KunenaForumAnnouncement extends KunenaDatabaseObject
 	/**
 	 * Return URL pointing to the Announcement layout.
 	 *
-	 * @param   string $layout layout
-	 * @param   bool   $xhtml  xhtml
+	 * @param   string  $layout  layout
+	 * @param   bool    $xhtml   xhtml
 	 *
 	 * @return boolean
-	 * @throws Exception
 	 * @since Kunena
+	 * @throws Exception
 	 * @throws null
 	 */
 	public function getUrl($layout = 'default', $xhtml = true)
@@ -127,16 +127,16 @@ class KunenaForumAnnouncement extends KunenaDatabaseObject
 	}
 
 	/**
-	 * Return \Joomla\CMS\Uri\Uri object pointing to the Announcement layout.
+	 * return Joomla\CMS\Uri\Uri object pointing to the Announcement layout.
 	 *
-	 * @param   string $layout layout
+	 * @param   string  $layout  layout
 	 *
-	 * @return \Joomla\CMS\Uri\Uri
+	 * @return Joomla\CMS\Uri\Uri
 	 * @since Kunena
 	 */
 	public function getUri($layout = 'default')
 	{
-		$uri = new \Joomla\CMS\Uri\Uri('index.php?option=com_kunena&view=announcement');
+		$uri = new Joomla\CMS\Uri\Uri('index.php?option=com_kunena&view=announcement');
 
 		if ($layout)
 		{
@@ -154,12 +154,12 @@ class KunenaForumAnnouncement extends KunenaDatabaseObject
 	/**
 	 * Return URL pointing to the Announcement task.
 	 *
-	 * @param   string $task  task
-	 * @param   bool   $xhtml xhtml
+	 * @param   string  $task   task
+	 * @param   bool    $xhtml  xhtml
 	 *
 	 * @return boolean
-	 * @throws Exception
 	 * @since Kunena
+	 * @throws Exception
 	 * @throws null
 	 */
 	public function getTaskUrl($task = null, $xhtml = true)
@@ -170,16 +170,16 @@ class KunenaForumAnnouncement extends KunenaDatabaseObject
 	}
 
 	/**
-	 * Return \Joomla\CMS\Uri\Uri object pointing to the Announcement task.
+	 * return Joomla\CMS\Uri\Uri object pointing to the Announcement task.
 	 *
-	 * @param   string $task task
+	 * @param   string  $task  task
 	 *
-	 * @return \Joomla\CMS\Uri\Uri
+	 * @return Joomla\CMS\Uri\Uri
 	 * @since Kunena
 	 */
 	public function getTaskUri($task = null)
 	{
-		$uri = new \Joomla\CMS\Uri\Uri('index.php?option=com_kunena&view=announcement');
+		$uri = new Joomla\CMS\Uri\Uri('index.php?option=com_kunena&view=announcement');
 
 		if ($task)
 		{
@@ -200,12 +200,12 @@ class KunenaForumAnnouncement extends KunenaDatabaseObject
 	}
 
 	/**
-	 * @param   string $field field
-	 * @param   string $mode  mode
+	 * @param   string  $field  field
+	 * @param   string  $mode   mode
 	 *
 	 * @return integer|string
-	 * @throws Exception
 	 * @since Kunena
+	 * @throws Exception
 	 */
 	public function displayField($field, $mode = null)
 	{
@@ -249,8 +249,8 @@ class KunenaForumAnnouncement extends KunenaDatabaseObject
 
 	/**
 	 * @return KunenaUser
-	 * @throws Exception
 	 * @since Kunena
+	 * @throws Exception
 	 */
 	public function getAuthor()
 	{
@@ -279,8 +279,8 @@ class KunenaForumAnnouncement extends KunenaDatabaseObject
 	/**
 	 * Returns true if user is authorised to do the action.
 	 *
-	 * @param   string     $action action
-	 * @param   KunenaUser $user   user
+	 * @param   string      $action  action
+	 * @param   KunenaUser  $user    user
 	 *
 	 * @return boolean
 	 *
@@ -294,15 +294,15 @@ class KunenaForumAnnouncement extends KunenaDatabaseObject
 	/**
 	 * Throws an exception if user isn't authorised to do the action.
 	 *
-	 * @param   string     $action action
-	 * @param   KunenaUser $user   user
-	 * @param   bool       $throw  trow
+	 * @param   string      $action  action
+	 * @param   KunenaUser  $user    user
+	 * @param   bool        $throw   trow
 	 *
 	 * @return mixed
-	 * @throws KunenaExceptionAuthorise
+	 * @since  K4.0
 	 * @throws InvalidArgumentException
 	 *
-	 * @since  K4.0
+	 * @throws KunenaExceptionAuthorise
 	 */
 	public function tryAuthorise($action = 'read', KunenaUser $user = null, $throw = true)
 	{
@@ -369,8 +369,8 @@ class KunenaForumAnnouncement extends KunenaDatabaseObject
 	}
 
 	/**
-	 * @since Kunena
 	 * @return void
+	 * @since Kunena
 	 */
 	protected function saveInternal()
 	{
@@ -379,7 +379,7 @@ class KunenaForumAnnouncement extends KunenaDatabaseObject
 	}
 
 	/**
-	 * @param   KunenaUser $user user
+	 * @param   KunenaUser  $user  user
 	 *
 	 * @return KunenaExceptionAuthorise|null
 	 * @since Kunena
@@ -395,11 +395,11 @@ class KunenaForumAnnouncement extends KunenaDatabaseObject
 	}
 
 	/**
-	 * @param   KunenaUser $user user
+	 * @param   KunenaUser  $user  user
 	 *
 	 * @return KunenaExceptionAuthorise|null
-	 * @throws Exception
 	 * @since Kunena
+	 * @throws Exception
 	 */
 	protected function authoriseRead(KunenaUser $user)
 	{
@@ -417,11 +417,11 @@ class KunenaForumAnnouncement extends KunenaDatabaseObject
 	}
 
 	/**
-	 * @param   KunenaUser $user user
+	 * @param   KunenaUser  $user  user
 	 *
 	 * @return KunenaExceptionAuthorise|null
-	 * @throws Exception
 	 * @since Kunena
+	 * @throws Exception
 	 */
 	protected function authoriseNotBanned(KunenaUser $user)
 	{
@@ -445,11 +445,11 @@ class KunenaForumAnnouncement extends KunenaDatabaseObject
 	}
 
 	/**
-	 * @param   KunenaUser $user user
+	 * @param   KunenaUser  $user  user
 	 *
 	 * @return KunenaExceptionAuthorise|null
-	 * @throws Exception
 	 * @since Kunena
+	 * @throws Exception
 	 */
 	protected function authoriseWrite(KunenaUser $user)
 	{

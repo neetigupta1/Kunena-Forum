@@ -3,7 +3,7 @@
  * Kunena Component
  * @package        Kunena.Framework
  *
- * @copyright      Copyright (C) 2008 - 2018 Kunena Team. All rights reserved.
+ * @copyright      Copyright (C) 2008 - 2019 Kunena Team. All rights reserved.
  * @license        https://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link           https://www.kunena.org
  **/
@@ -12,77 +12,78 @@ defined('_JEXEC') or die();
 use Joomla\CMS\Factory;
 use Joomla\CMS\HTML\HTMLHelper;
 use Joomla\CMS\Language\Text;
+use Joomla\CMS\MVC\View\HtmlView;
 
 /**
  * Kunena View Class
  * @since Kunena
  */
-class KunenaView extends \Joomla\CMS\MVC\View\HtmlView
+class KunenaView extends HtmlView
 {
 	/**
-	 * @var \Joomla\CMS\Document\Document|null
 	 * @since Kunena
+	 * @var Joomla\CMS\Document\Document|null
 	 */
 	public $document = null;
 
 	/**
-	 * @var \Joomla\CMS\Application\CMSApplication|null
 	 * @since Kunena
+	 * @var Joomla\CMS\Application\CMSApplication|null
 	 */
 	public $app = null;
 
 	/**
-	 * @var KunenaUser|null
 	 * @since Kunena
+	 * @var KunenaUser|null
 	 */
 	public $me = null;
 
 	/**
-	 * @var KunenaConfig|null
 	 * @since Kunena
+	 * @var KunenaConfig|null
 	 */
 	public $config = null;
 
 	/**
-	 * @var boolean
 	 * @since Kunena
+	 * @var boolean
 	 */
 	public $embedded = false;
 
 	/**
-	 * @var array
 	 * @since Kunena
+	 * @var array
 	 */
 	public $templatefiles = array();
 
 	/**
-	 * @var null
 	 * @since Kunena
+	 * @var null
 	 */
 	public $teaser = null;
 
 	/**
-	 * @var integer
 	 * @since Kunena
+	 * @var integer
 	 */
 	protected $inLayout = 0;
 
 	/**
-	 * @var integer
 	 * @since Kunena
+	 * @var integer
 	 */
 	protected $_row = 0;
 
 	/**
 	 * @param   array $config config
 	 *
-	 * @throws Exception
 	 * @since Kunena
+	 * @throws Exception
 	 */
 	public function __construct($config = array())
 	{
 		$name           = isset($config['name']) ? $config['name'] : $this->getName();
-		$this->document = Factory::getDocument();
+		$this->document = Factory::getApplication()->getDocument();
 		$this->document->setBase('');
 		$this->profiler  = KunenaProfiler::instance('Kunena');
 		$this->app       = Factory::getApplication();
@@ -122,9 +123,9 @@ class KunenaView extends \Joomla\CMS\MVC\View\HtmlView
 	}
 
 	/**
-	 * @throws Exception
-	 * @since Kunena
 	 * @return void
+	 * @since Kunena
+	 * @throws Exception
 	 */
 	public function displayAll()
 	{
@@ -140,9 +141,9 @@ class KunenaView extends \Joomla\CMS\MVC\View\HtmlView
 	 * @param   null $layout layout
 	 * @param   null $tpl    tmpl
 	 *
-	 * @return mixed
-	 * @throws Exception
+	 * @return mixed|void
 	 * @since Kunena
+	 * @throws Exception
 	 */
 	public function displayLayout($layout = null, $tpl = null)
 	{
@@ -227,9 +228,9 @@ class KunenaView extends \Joomla\CMS\MVC\View\HtmlView
 	 * @param   array $messages messages
 	 * @param   int   $code     code
 	 *
-	 * @throws Exception
-	 * @since Kunena
 	 * @return void
+	 * @since Kunena
+	 * @throws Exception
 	 */
 	public function displayError($messages = array(), $code = 404)
 	{
@@ -288,9 +289,9 @@ class KunenaView extends \Joomla\CMS\MVC\View\HtmlView
 	 *
 	 * @param   string $title Show the title on the browser
 	 *
-	 * @throws Exception
-	 * @since Kunena
 	 * @return void
+	 * @since Kunena
+	 * @throws Exception
 	 */
 	public function setTitle($title)
 	{
@@ -331,9 +332,9 @@ class KunenaView extends \Joomla\CMS\MVC\View\HtmlView
 	/**
 	 * @param   array $errors errors
 	 *
+	 * @return void
 	 * @since Kunena
 	 * @throws Exception
-	 * @return void
 	 */
 	public function displayNoAccess($errors = array())
 	{
@@ -349,8 +350,8 @@ class KunenaView extends \Joomla\CMS\MVC\View\HtmlView
 	/**
 	 * @param   mixed $position position
 	 *
-	 * @since Kunena
 	 * @return void
+	 * @since Kunena
 	 */
 	public function displayModulePosition($position)
 	{
@@ -366,7 +367,7 @@ class KunenaView extends \Joomla\CMS\MVC\View\HtmlView
 	public function getModulePosition($position)
 	{
 		$html     = '';
-		$document = Factory::getDocument();
+		$document = Factory::getApplication()->getDocument();
 
 		if (method_exists($document, 'countModules') && $document->countModules($position))
 		{
@@ -388,7 +389,7 @@ class KunenaView extends \Joomla\CMS\MVC\View\HtmlView
 	 */
 	public function isModulePosition($position)
 	{
-		$document = Factory::getDocument();
+		$document = Factory::getApplication()->getDocument();
 
 		return method_exists($document, 'countModules') ? $document->countModules($position) : 0;
 	}
@@ -399,8 +400,8 @@ class KunenaView extends \Joomla\CMS\MVC\View\HtmlView
 	 * @param   mixed  $parent parent
 	 *
 	 * @return mixed
-	 * @throws Exception
 	 * @since Kunena
+	 * @throws Exception
 	 */
 	public function parse($text, $len = 0, $parent)
 	{
@@ -423,10 +424,10 @@ class KunenaView extends \Joomla\CMS\MVC\View\HtmlView
 	 * @param   string $tpl        tmpl
 	 * @param   array  $hmvcParams params
 	 *
-	 * @throws LogicException
+	 * @return void
 	 * @since Kunena
 	 * @throws Exception
-	 * @return void
+	 * @throws LogicException
 	 */
 	public function render($layout, $tpl, array $hmvcParams = array())
 	{
@@ -485,9 +486,9 @@ class KunenaView extends \Joomla\CMS\MVC\View\HtmlView
 	 * @param   string $layout   layout
 	 * @param   null   $template template
 	 *
-	 * @return KunenaLayout|KunenaView
-	 * @throws Exception
+	 * @return KunenaLayout|KunenaView|void
 	 * @since Kunena
+	 * @throws Exception
 	 */
 	public function displayTemplateFile($view, $layout, $template = null)
 	{
@@ -545,9 +546,9 @@ class KunenaView extends \Joomla\CMS\MVC\View\HtmlView
 	 *                             automatically searches the template paths and compiles as needed.
 	 * @param   array  $hmvcParams Extra parameters for HMVC.
 	 *
-	 * @return string The output of the the template script.
-	 * @throws Exception
+	 * @return string|void The output of the the template script.
 	 * @since Kunena
+	 * @throws Exception
 	 */
 	public function loadTemplateFile($tpl = null, $hmvcParams = null)
 	{
@@ -674,8 +675,8 @@ class KunenaView extends \Joomla\CMS\MVC\View\HtmlView
 	 * @param   KunenaForumCategory|null $category category
 	 *
 	 * @return mixed
-	 * @throws Exception
 	 * @since Kunena
+	 * @throws Exception
 	 * @throws null
 	 */
 	public function getTopicLink(KunenaForumTopic $topic, $action = null, $content = null, $title = null, $class = null, KunenaForumCategory $category = null)

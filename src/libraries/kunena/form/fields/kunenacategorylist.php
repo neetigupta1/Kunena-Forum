@@ -4,7 +4,7 @@
  * @package       Kunena.Framework
  * @subpackage    Form
  *
- * @copyright     Copyright (C) 2008 - 2018 Kunena Team. All rights reserved.
+ * @copyright     Copyright (C) 2008 - 2019 Kunena Team. All rights reserved.
  * @license       https://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link          https://www.kunena.org
  **/
@@ -16,10 +16,10 @@ use Joomla\CMS\Language\Text;
 jimport('joomla.form.formfield');
 
 /**
- * Class \Joomla\CMS\Form\FormField|KunenaCategoryList
+ * Class Joomla\CMS\Form\FormField|KunenaCategoryList
  * @since Kunena
  */
-class JFormFieldKunenaCategoryList extends \Joomla\CMS\Form\FormField
+class JFormFieldKunenaCategoryList extends Joomla\CMS\Form\FormField
 {
 	/**
 	 * @var string
@@ -29,8 +29,8 @@ class JFormFieldKunenaCategoryList extends \Joomla\CMS\Form\FormField
 
 	/**
 	 * @return string
-	 * @throws Exception
 	 * @since Kunena
+	 * @throws Exception
 	 */
 	protected function getInput()
 	{
@@ -59,7 +59,7 @@ class JFormFieldKunenaCategoryList extends \Joomla\CMS\Form\FormField
 		}
 		else
 		{
-			$attribs .= 'class="inputbox"';
+			$attribs .= 'class="inputbox form-control"';
 		}
 
 		if (!empty($this->element['multiple']))

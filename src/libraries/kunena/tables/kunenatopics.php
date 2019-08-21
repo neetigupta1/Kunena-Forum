@@ -4,7 +4,7 @@
  * @package       Kunena.Framework
  * @subpackage    Tables
  *
- * @copyright     Copyright (C) 2008 - 2018 Kunena Team. All rights reserved.
+ * @copyright     Copyright (C) 2008 - 2019 Kunena Team. All rights reserved.
  * @license       https://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link          https://www.kunena.org
  **/
@@ -203,10 +203,10 @@ class TableKunenaTopics extends KunenaTable
 		}
 
 		// Load the user data.
-		$query = $this->_db->getQuery(true);
-		$query->select('*');
-		$query->from($this->_db->quoteName('#__kunena_topics'));
-		$query->where($this->_db->quoteName('id') . '=' . $this->$k);
+		$query = $this->_db->getQuery(true)
+			->select('*')
+			->from($this->_db->quoteName('#__kunena_topics'))
+			->where($this->_db->quoteName('id') . ' = ' . $this->_db->quote($this->$k));
 		$this->_db->setQuery($query);
 
 		try
@@ -238,6 +238,7 @@ class TableKunenaTopics extends KunenaTable
 	/**
 	 * @return boolean
 	 * @since Kunena
+	 * @throws Exception
 	 */
 	public function check()
 	{
@@ -245,7 +246,7 @@ class TableKunenaTopics extends KunenaTable
 
 		if (!$category->exists())
 		{
-			$this->setError(Text::sprintf('COM_KUNENA_LIB_TABLE_TOPICS_ERROR_CATEGORY_INVALID', $category->id));
+			throw new RuntimeException(Text::sprintf('COM_KUNENA_LIB_TABLE_TOPICS_ERROR_CATEGORY_INVALID', $category->id));
 		}
 		else
 		{
@@ -256,9 +257,9 @@ class TableKunenaTopics extends KunenaTable
 
 		if (!$this->subject)
 		{
-			$this->setError(Text::sprintf('COM_KUNENA_LIB_TABLE_TOPICS_ERROR_NO_SUBJECT'));
+			throw new UnexpectedValueException(Text::sprintf('COM_KUNENA_LIB_TABLE_TOPICS_ERROR_NO_SUBJECT'));
 		}
 
-		return $this->getError() == '';
+		return true;
 	}
 }

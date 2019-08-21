@@ -4,7 +4,7 @@
  * @package       Kunena.Framework
  * @subpackage    Forum.Message
  *
- * @copyright     Copyright (C) 2008 - 2018 Kunena Team. All rights reserved.
+ * @copyright     Copyright (C) 2008 - 2019 Kunena Team. All rights reserved.
  * @license       https://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link          https://www.kunena.org
  **/
@@ -13,6 +13,7 @@ defined('_JEXEC') or die();
 use Joomla\CMS\Factory;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\Uri\Uri;
+use Joomla\CMS\Filesystem\File;
 
 /**
  * Class KunenaForumMessage
@@ -130,10 +131,12 @@ class KunenaForumMessage extends KunenaDatabaseObject
 	protected $_authfcache = array();
 
 	/**
-	 * @param   mixed $properties properties
-	 *
 	 * @internal
+	 *
+	 * @param   mixed  $properties  properties
+	 *
 	 * @since Kunena
+	 * @throws Exception
 	 */
 	public function __construct($properties = null)
 	{
@@ -208,6 +211,7 @@ class KunenaForumMessage extends KunenaDatabaseObject
 	/**
 	 * @return KunenaForumCategory
 	 * @since Kunena
+	 * @throws Exception
 	 */
 	public function getCategory()
 	{
@@ -284,7 +288,7 @@ class KunenaForumMessage extends KunenaDatabaseObject
 	/**
 	 * @param   null|KunenaForumCategory $category Fake category if needed. Used for aliases.
 	 *
-	 * @return \Joomla\CMS\Uri\Uri
+	 * @return Joomla\CMS\Uri\Uri
 	 * @throws Exception
 	 * @since Kunena
 	 * @throws null
@@ -317,15 +321,20 @@ class KunenaForumMessage extends KunenaDatabaseObject
 		$message->name    = $user->getName('');
 		$message->userid  = $user->userid;
 		$message->subject = $this->subject;
-		$message->ip      = $_SERVER ["REMOTE_ADDR"];
+		$message->ip      = KunenaUserHelper::getUserIp();
 
 		// Add IP to user.
 		if (KunenaConfig::getInstance()->iptracking)
 		{
 			if (empty($user->ip))
 			{
-				$user->ip = $_SERVER ["REMOTE_ADDR"];
+				$user->ip = KunenaUserHelper::getUserIp();
 			}
+		}
+
+		if (KunenaConfig::getInstance()->allow_change_subject && $topic->first_post_userid == $message->userid || KunenaUserHelper::getMyself()->isModerator())
+		{
+			$topic->subject = $fields['subject'];
 		}
 
 		if ($topic->hold)
@@ -450,7 +459,7 @@ class KunenaForumMessage extends KunenaDatabaseObject
 
 				return false;
 			}
-			elseif (!\Joomla\CMS\Mail\MailHelper::isEmailAddress($config->getEmail()))
+			elseif (!Joomla\CMS\Mail\MailHelper::isEmailAddress($config->getEmail()))
 			{
 				KunenaError::warning(Text::_('COM_KUNENA_EMAIL_INVALID'));
 
@@ -465,7 +474,7 @@ class KunenaForumMessage extends KunenaDatabaseObject
 
 			foreach ($emailToList as $emailTo)
 			{
-				if (!$emailTo->email || !\Joomla\CMS\Mail\MailHelper::isEmailAddress($emailTo->email))
+				if (!$emailTo->email || !Joomla\CMS\Mail\MailHelper::isEmailAddress($emailTo->email))
 				{
 					continue;
 				}
@@ -474,12 +483,12 @@ class KunenaForumMessage extends KunenaDatabaseObject
 				$sentusers[]                         = $emailTo->id;
 			}
 
-			$mailsender  = \Joomla\CMS\Mail\MailHelper::cleanAddress($config->board_title);
-			$mailsubject = \Joomla\CMS\Mail\MailHelper::cleanSubject($topic->subject . " (" . $this->getCategory()->name . ")");
+			$mailsender  = Joomla\CMS\Mail\MailHelper::cleanAddress($config->board_title);
+			$mailsubject = Joomla\CMS\Mail\MailHelper::cleanSubject($topic->subject . " (" . $this->getCategory()->name . ")");
 			$subject     = $this->subject ? $this->subject : $topic->subject;
 
 			// Create email.
-			$mail = \Joomla\CMS\Factory::getMailer();
+			$mail = Joomla\CMS\Factory::getMailer();
 			$mail->setSubject($mailsubject);
 			$mail->setSender(array($config->getEmail(), $mailsender));
 
@@ -503,12 +512,11 @@ class KunenaForumMessage extends KunenaDatabaseObject
 				$sentusers = implode(',', $sentusers);
 				$db        = Factory::getDbo();
 				$query     = $db->getQuery(true)
-					->update('#__kunena_user_topics')
-					->set('subscribed=2')
-					->where("topic_id={$this->thread}")
-					->where("user_id IN ({$sentusers})")
-					->where('subscribed=1');
-
+					->update($db->quoteName('#__kunena_user_topics'))
+					->set($db->quoteName('subscribed') . ' = 2')
+					->where($db->quoteName('topic_id') . ' = ' . $db->quote($this->thread))
+					->where($db->quoteName('user_id') . ' IN (' . $sentusers . ')')
+					->where($db->quoteName('subscribed') . ' = 1');
 				$db->setQuery($query);
 
 				try
@@ -547,10 +555,11 @@ class KunenaForumMessage extends KunenaDatabaseObject
 	}
 
 	/**
-	 * @param   null|KunenaForumCategory $category category
+	 * @param   null|KunenaForumCategory  $category  category
 	 *
-	 * @return \Joomla\CMS\Uri\Uri
+	 * @return Joomla\CMS\Uri\Uri|boolean
 	 * @since Kunena
+	 * @throws Exception
 	 */
 	public function getPermaUri($category = null)
 	{
@@ -567,7 +576,7 @@ class KunenaForumMessage extends KunenaDatabaseObject
 	}
 
 	/**
-	 * @param   \Joomla\CMS\Mail\Mail $mail         mail
+	 * @param   Joomla\CMS\Mail\Mail $mail         mail
 	 * @param   int                   $subscription subscription
 	 * @param   string                $subject      subject
 	 * @param   string                $url          url
@@ -581,6 +590,7 @@ class KunenaForumMessage extends KunenaDatabaseObject
 	{
 		$layout = KunenaLayout::factory('Email/Subscription')->debug(false)
 			->set('mail', $mail)
+			->set('subject', $subject)
 			->set('message', $this)
 			->set('messageUrl', $url)
 			->set('once', $once);
@@ -620,7 +630,7 @@ class KunenaForumMessage extends KunenaDatabaseObject
 	/**
 	 * Method to save the KunenaForumMessage object to the database.
 	 *
-	 * @return    boolean True on success
+	 * @return    boolean|KunenaExceptionAuthorise
 	 * @throws Exception
 	 * @since Kunena
 	 * @throws null
@@ -724,42 +734,54 @@ class KunenaForumMessage extends KunenaDatabaseObject
 	{
 		// Save new attachments and update message text
 		$message = $this->message;
+		$app = Factory::getApplication();
 
 		foreach ($this->_attachments_add as $tmpid => $attachment)
 		{
 			if ($attachment->exists() && $attachment->mesid)
 			{
-				// Attachment exists and already belongs to a message => update.
-				if (!$attachment->save())
+				try
 				{
-					$this->setError($attachment->getError());
-					continue;
+					$attachment->save();
 				}
-
-				continue;
+				catch (\Exception $e)
+				{
+					$app->enqueueMessage($e->getMessage(), 'error');
+				}
 			}
 
 			$attachment->mesid = $this->id;
 
 			if ($attachment->IsImage())
 			{
-				$exception = $attachment->tryAuthorise('createimage', null, false);
+				try
+				{
+					$attachment->tryAuthorise('createimage', null, false);
+				}
+				catch (\Exception $e)
+				{
+					$app->enqueueMessage($e->getMessage(), 'error');
+				}
 			}
 			else
 			{
-				$exception = $attachment->tryAuthorise('createfile', null, false);
+				try
+				{
+					$attachment->tryAuthorise('createfile', null, false);
+				}
+				catch (\Exception $e)
+				{
+					$app->enqueueMessage($e->getMessage(), 'error');
+				}
 			}
 
-			if ($exception)
+			try
 			{
-				$this->setError($exception->getMessage());
-				continue;
+				$attachment->save();
 			}
-
-			if (!$attachment->save())
+			catch (\Exception $e)
 			{
-				$this->setError($attachment->getError());
-				continue;
+				$app->enqueueMessage($e->getMessage(), 'error');
 			}
 
 			// Update attachments count and fix attachment name inside message
@@ -831,7 +853,7 @@ class KunenaForumMessage extends KunenaDatabaseObject
 		foreach ($attachments as $attachment)
 		{
 			$file = Uri::root() . $attachment->filename;
-			KunenaFile::delete($file);
+			File::delete($file);
 
 			if (!$attachment->delete())
 			{
@@ -943,8 +965,8 @@ class KunenaForumMessage extends KunenaDatabaseObject
 		}
 
 		// Activity integration
-
-		\Joomla\CMS\Plugin\PluginHelper::importPlugin('finder');
+		// FIXME : load the plugin finder produce a fatal error
+		// Joomla\CMS\Plugin\PluginHelper::importPlugin('finder');
 		$activity = KunenaFactory::getActivityIntegration();
 
 		if ($postDelta < 0)
@@ -1347,10 +1369,11 @@ class KunenaForumMessage extends KunenaDatabaseObject
 	/**
 	 * Method to load a KunenaForumMessage object by id.
 	 *
-	 * @param   mixed $id The message id to be loaded
+	 * @param   mixed  $id  The message id to be loaded
 	 *
 	 * @return boolean    True on success
 	 * @since Kunena
+	 * @throws Exception
 	 */
 	public function load($id = null)
 	{
@@ -1377,7 +1400,7 @@ class KunenaForumMessage extends KunenaDatabaseObject
 			$this->name = trim($this->name);
 
 			// Unregistered or anonymous users: Do not allow existing username
-			$nicktaken = \Joomla\CMS\User\UserHelper::getUserId($this->name);
+			$nicktaken = Joomla\CMS\User\UserHelper::getUserId($this->name);
 
 			if (empty($this->name) || $nicktaken)
 			{
@@ -1395,7 +1418,7 @@ class KunenaForumMessage extends KunenaDatabaseObject
 		if ($this->email)
 		{
 			// Email address must be valid
-			if (!\Joomla\CMS\Mail\MailHelper::isEmailAddress($this->email))
+			if (!Joomla\CMS\Mail\MailHelper::isEmailAddress($this->email))
 			{
 				$this->setError(Text::sprintf('COM_KUNENA_LIB_MESSAGE_ERROR_EMAIL_INVALID'));
 
@@ -1485,12 +1508,15 @@ class KunenaForumMessage extends KunenaDatabaseObject
 		{
 			// Ignore identical messages (posted within 5 minutes)
 			$duplicatetimewindow = Factory::getDate()->toUnix() - 5 * 60;
-			$this->_db->setQuery("SELECT m.id FROM #__kunena_messages AS m INNER JOIN #__kunena_messages_text AS t ON m.id=t.mesid
-				WHERE m.userid={$this->_db->quote($this->userid)}
-				AND m.ip={$this->_db->quote($this->ip)}
-				AND t.message={$this->_db->quote($this->message)}
-				AND m.time>={$this->_db->quote($duplicatetimewindow)}"
-			);
+			$query  = $this->_db->getQuery(true);
+			$query->select('m.id')
+				->from($this->_db->quoteName('#__kunena_messages', 'm'))
+				->innerJoin($this->_db->quoteName('#__kunena_messages_text', 't') . ' ON m.id = t.mesid')
+				->where($this->_db->quoteName('m.userid') . ' = ' . $this->_db->quote($this->userid))
+				->andWhere($this->_db->quoteName('m.ip') . ' = ' . $this->_db->quote($this->ip))
+				->andWhere($this->_db->quoteName('t.message') . ' = ' . $this->_db->quote($this->message))
+				->andWhere($this->_db->quoteName('m.time') . ' >= ' . $this->_db->quote($duplicatetimewindow));
+			$this->_db->setQuery($query);
 
 			try
 			{
@@ -1550,7 +1576,7 @@ class KunenaForumMessage extends KunenaDatabaseObject
 	/**
 	 * @param   KunenaUser $user user
 	 *
-	 * @return KunenaExceptionAuthorise|null
+	 * @return KunenaExceptionAuthorise|void
 	 * @throws Exception
 	 * @since Kunena
 	 */
@@ -1579,7 +1605,7 @@ class KunenaForumMessage extends KunenaDatabaseObject
 	/**
 	 * @param   KunenaUser $user user
 	 *
-	 * @return KunenaExceptionAuthorise|null
+	 * @return KunenaExceptionAuthorise|void
 	 * @since Kunena
 	 */
 	protected function authoriseNotHold(KunenaUser $user)
@@ -1596,7 +1622,7 @@ class KunenaForumMessage extends KunenaDatabaseObject
 	/**
 	 * @param   KunenaUser $user user
 	 *
-	 * @return KunenaExceptionAuthorise|null
+	 * @return KunenaExceptionAuthorise|void
 	 * @throws Exception
 	 * @since Kunena
 	 */
@@ -1621,7 +1647,7 @@ class KunenaForumMessage extends KunenaDatabaseObject
 	/**
 	 * @param   KunenaUser $user user
 	 *
-	 * @return KunenaExceptionAuthorise|null
+	 * @return KunenaExceptionAuthorise|void
 	 * @throws Exception
 	 * @since Kunena
 	 */
@@ -1653,7 +1679,7 @@ class KunenaForumMessage extends KunenaDatabaseObject
 	 *
 	 * @param   KunenaUser $user user
 	 *
-	 * @return KunenaExceptionAuthorise|null
+	 * @return KunenaExceptionAuthorise|boolean|void
 	 * @throws Exception
 	 * @since Kunena
 	 */
@@ -1716,7 +1742,7 @@ class KunenaForumMessage extends KunenaDatabaseObject
 	/**
 	 * @param   KunenaUser $user user
 	 *
-	 * @return KunenaExceptionAuthorise|null
+	 * @return KunenaExceptionAuthorise|void
 	 * @throws Exception
 	 * @since Kunena
 	 */
@@ -1783,7 +1809,7 @@ class KunenaForumMessage extends KunenaDatabaseObject
 	 *
 	 * @param   KunenaUser $user user
 	 *
-	 * @return KunenaExceptionAuthorise|NULL
+	 * @return KunenaExceptionAuthorise|void
 	 * @throws Exception
 	 * @since Kunena
 	 */
@@ -1828,7 +1854,7 @@ class KunenaForumMessage extends KunenaDatabaseObject
 	 *
 	 * @param   KunenaUser $user user
 	 *
-	 * @return KunenaExceptionAuthorise|NULL
+	 * @return KunenaExceptionAuthorise|void
 	 * @throws Exception
 	 * @since Kunena
 	 */
@@ -1871,7 +1897,7 @@ class KunenaForumMessage extends KunenaDatabaseObject
 	/**
 	 * @param   KunenaUser $user user
 	 *
-	 * @return KunenaExceptionAuthorise|null
+	 * @return KunenaExceptionAuthorise|void
 	 * @throws Exception
 	 * @since Kunena
 	 */

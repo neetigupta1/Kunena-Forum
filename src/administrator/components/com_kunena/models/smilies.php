@@ -5,13 +5,14 @@
  * @package         Kunena.Administrator
  * @subpackage      Models
  *
- * @copyright       Copyright (C) 2008 - 2018 Kunena Team. All rights reserved.
+ * @copyright       Copyright (C) 2008 - 2019 Kunena Team. All rights reserved.
  * @license         https://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link            https://www.kunena.org
  **/
 defined('_JEXEC') or die();
 
 use Joomla\CMS\Factory;
+use Joomla\Database\QueryInterface;
 
 jimport('joomla.application.component.modellist');
 
@@ -20,12 +21,13 @@ jimport('joomla.application.component.modellist');
  *
  * @since  3.0
  */
-class KunenaAdminModelSmilies extends \Joomla\CMS\MVC\Model\ListModel
+class KunenaAdminModelSmilies extends Joomla\CMS\MVC\Model\ListModel
 {
 	/**
-	 * @param   array $config config
+	 * @param   array  $config  config
 	 *
 	 * @since Kunena
+	 * @throws Exception
 	 */
 	public function __construct($config = array())
 	{
@@ -46,12 +48,12 @@ class KunenaAdminModelSmilies extends \Joomla\CMS\MVC\Model\ListModel
 	/**
 	 * Method to auto-populate the model state.
 	 *
-	 * @param   string $ordering  ordering
-	 * @param   string $direction direction
+	 * @param   string  $ordering   ordering
+	 * @param   string  $direction  direction
 	 *
 	 * @return    void
-	 * @throws Exception
 	 * @since Kunena
+	 * @throws Exception
 	 */
 	protected function populateState($ordering = null, $direction = null)
 	{
@@ -86,7 +88,7 @@ class KunenaAdminModelSmilies extends \Joomla\CMS\MVC\Model\ListModel
 	}
 
 	/**
-	 * @param   string $id id
+	 * @param   string  $id  id
 	 *
 	 * @return string
 	 * @since Kunena
@@ -101,7 +103,7 @@ class KunenaAdminModelSmilies extends \Joomla\CMS\MVC\Model\ListModel
 	}
 
 	/**
-	 * @return JDatabaseQuery
+	 * @return QueryInterface
 	 * @since Kunena
 	 */
 	protected function getListQuery()
@@ -122,7 +124,7 @@ class KunenaAdminModelSmilies extends \Joomla\CMS\MVC\Model\ListModel
 
 		if (!empty($filter))
 		{
-			$code = $db->Quote('%' . $db->escape($filter, true) . '%');
+			$code = $db->quote('%' . $db->escape($filter, true) . '%');
 			$query->where('(a.code LIKE ' . $code . ')');
 		}
 
@@ -130,7 +132,7 @@ class KunenaAdminModelSmilies extends \Joomla\CMS\MVC\Model\ListModel
 
 		if (!empty($filter))
 		{
-			$location = $db->Quote('%' . $db->escape($filter, true) . '%');
+			$location = $db->quote('%' . $db->escape($filter, true) . '%');
 			$query->where('(a.location LIKE ' . $location . ')');
 		}
 
@@ -154,6 +156,8 @@ class KunenaAdminModelSmilies extends \Joomla\CMS\MVC\Model\ListModel
 			default:
 				$query->order('a.id ' . $direction);
 		}
+
+		$db->setQuery($query);
 
 		return $query;
 	}

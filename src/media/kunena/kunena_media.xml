@@ -8,7 +8,7 @@
     <author>Kunena Team</author>
     <authorEmail>kunena@kunena.org</authorEmail>
     <authorUrl>https://www.kunena.org</authorUrl>
-    <copyright>(C) 2008 - 2018 Kunena Team. All rights reserved.</copyright>
+    <copyright>(C) 2008 - 2019 Kunena Team. All rights reserved.</copyright>
     <license>GNU/GPLv3 or later</license>
     <description>Kunena media files.</description>
     <fileset>
@@ -16,6 +16,7 @@
             <folder>attachments</folder>
             <folder>avatars</folder>
             <folder>category_images</folder>
+            <folder>core</folder>
             <folder>email</folder>
             <folder>emoticons</folder>
             <folder>images</folder>

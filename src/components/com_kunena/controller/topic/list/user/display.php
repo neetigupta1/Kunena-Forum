@@ -4,7 +4,7 @@
  * @package         Kunena.Site
  * @subpackage      Controller.Topic
  *
- * @copyright       Copyright (C) 2008 - 2018 Kunena Team. All rights reserved.
+ * @copyright       Copyright (C) 2008 - 2019 Kunena Team. All rights reserved.
  * @license         https://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link            https://www.kunena.org
  **/
@@ -13,6 +13,8 @@ defined('_JEXEC') or die;
 use Joomla\CMS\Factory;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\Uri\Uri;
+use Joomla\CMS\MVC\Controller\BaseController;
+use Joomla\CMS\Filesystem\File;
 
 /**
  * Class ComponentKunenaControllerTopicListUserDisplay
@@ -44,7 +46,7 @@ class ComponentKunenaControllerTopicListUserDisplay extends ComponentKunenaContr
 
 		if ($this->embedded)
 		{
-			$this->moreUri = new \Joomla\CMS\Uri\Uri('index.php?option=com_kunena&view=topics&layout=user&mode=' .
+			$this->moreUri = new Joomla\CMS\Uri\Uri('index.php?option=com_kunena&view=topics&layout=user&mode=' .
 				$this->state->get('list.mode') . '&userid=' . $this->state->get('user') . '&limit=' . $this->state->get('list.limit')
 			);
 			$this->moreUri->setVar('Itemid', KunenaRoute::getItemID($this->moreUri));
@@ -62,11 +64,11 @@ class ComponentKunenaControllerTopicListUserDisplay extends ComponentKunenaContr
 		}
 		elseif ($time == 0)
 		{
-			$time = new \Joomla\CMS\Date\Date(KunenaFactory::getSession()->lasttime);
+			$time = new Joomla\CMS\Date\Date(KunenaFactory::getSession()->lasttime);
 		}
 		else
 		{
-			$time = new \Joomla\CMS\Date\Date(Factory::getDate()->toUnix() - ($time * 3600));
+			$time = new Joomla\CMS\Date\Date(Factory::getDate()->toUnix() - ($time * 3600));
 		}
 
 		$holding = $this->getOptions()->get('topics_deletedtopics');
@@ -80,7 +82,7 @@ class ComponentKunenaControllerTopicListUserDisplay extends ComponentKunenaContr
 			$hold = '0';
 		}
 
-		$user = KunenaUserHelper::get($this->state->get('user'));
+		$this->user = KunenaUserHelper::get($this->state->get('user'));
 
 		// Get categories for the filter.
 		$categoryIds = $this->state->get('list.categories');
@@ -98,20 +100,20 @@ class ComponentKunenaControllerTopicListUserDisplay extends ComponentKunenaContr
 		{
 			case 'posted' :
 				$finder
-					->filterByUser($user, 'posted')
+					->filterByUser($this->user, 'posted')
 					->order('last_post_id', -1, 'ut');
 				break;
 
 			case 'started' :
-				$finder->filterByUser($user, 'owner');
+				$finder->filterByUser($this->user, 'owner');
 				break;
 
 			case 'favorites' :
-				$finder->filterByUser($user, 'favorited');
+				$finder->filterByUser($this->user, 'favorited');
 				break;
 
 			case 'subscriptions' :
-				$finder->filterByUser($user, 'subscribed');
+				$finder->filterByUser($this->user, 'subscribed');
 				break;
 
 			case 'plugin':
@@ -122,7 +124,7 @@ class ComponentKunenaControllerTopicListUserDisplay extends ComponentKunenaContr
 
 			default :
 				$finder
-					->filterByUser($user, 'involved')
+					->filterByUser($this->user, 'involved')
 					->order('favorite', -1, 'ut');
 				break;
 		}
@@ -134,7 +136,7 @@ class ComponentKunenaControllerTopicListUserDisplay extends ComponentKunenaContr
 
 		if (!$Itemid && $format != 'feed')
 		{
-			$controller = JControllerLegacy::getInstance("kunena");
+			$controller = BaseController::getInstance("kunena");
 
 			if (KunenaConfig::getInstance()->profile_id)
 			{
@@ -211,32 +213,32 @@ class ComponentKunenaControllerTopicListUserDisplay extends ComponentKunenaContr
 		{
 			case 'posted' :
 				$this->headerText = Text::_('COM_KUNENA_VIEW_TOPICS_USERS_MODE_POSTED');
-				$canonicalUrl     = 'index.php?option=com_kunena&view=topics&layout=user&mode=posted';
+				$canonicalUrl     = KunenaRoute::_('index.php?option=com_kunena&view=topics&layout=user&mode=posted');
 				break;
 			case 'started' :
 				$this->headerText = Text::_('COM_KUNENA_VIEW_TOPICS_USERS_MODE_STARTED');
-				$canonicalUrl     = 'index.php?option=com_kunena&view=topics&layout=user&mode=started';
+				$canonicalUrl     = KunenaRoute::_('index.php?option=com_kunena&view=topics&layout=user&mode=started');
 				break;
 			case 'favorites' :
 				$this->headerText = Text::_('COM_KUNENA_VIEW_TOPICS_USERS_MODE_FAVORITES');
-				$canonicalUrl     = 'index.php?option=com_kunena&view=topics&layout=user&mode=favorites';
+				$canonicalUrl     = KunenaRoute::_('index.php?option=com_kunena&view=topics&layout=user&mode=favorites');
 				$actions          = array('unfavorite');
 				break;
 			case 'subscriptions' :
 				$this->headerText = Text::_('COM_KUNENA_VIEW_TOPICS_USERS_MODE_SUBSCRIPTIONS');
-				$canonicalUrl     = 'index.php?option=com_kunena&view=topics&layout=user&mode=subscriptions';
+				$canonicalUrl     = KunenaRoute::_('index.php?option=com_kunena&view=topics&layout=user&mode=subscriptions');
 				$actions          = array('unsubscribe');
 				break;
 			case 'plugin' :
 				$this->headerText = Text::_('COM_KUNENA_VIEW_TOPICS_USERS_MODE_PLUGIN_' . strtoupper($this->state->get('list.modetype')));
-				$canonicalUrl     = 'index.php?option=com_kunena&view=topics&layout=user&mode=plugin';
+				$canonicalUrl     = KunenaRoute::_('index.php?option=com_kunena&view=topics&layout=user&mode=plugin');
 				break;
 			default :
 				$this->headerText = Text::_('COM_KUNENA_VIEW_TOPICS_USERS_MODE_DEFAULT');
-				$canonicalUrl     = 'index.php?option=com_kunena&view=topics&layout=user&mode=default';
+				$canonicalUrl     = KunenaRoute::_('index.php?option=com_kunena&view=topics&layout=user&mode=default');
 		}
 
-		$doc = Factory::getDocument();
+		$doc = Factory::getApplication()->getDocument();
 
 		if (!$start)
 		{
@@ -248,7 +250,6 @@ class ComponentKunenaControllerTopicListUserDisplay extends ComponentKunenaContr
 					{
 						if ($value['relation'] == 'canonical')
 						{
-							$canonicalUrl               = KunenaRoute::_();
 							$doc->_links[$canonicalUrl] = $value;
 							unset($doc->_links[$key]);
 							break;
@@ -297,10 +298,95 @@ class ComponentKunenaControllerTopicListUserDisplay extends ComponentKunenaContr
 	{
 		$this->setMetaData('og:url', Uri::current(), 'property');
 
-		if (JFile::exists(JPATH_SITE . '/' . KunenaConfig::getInstance()->emailheader))
+		if (File::exists(JPATH_SITE . '/' . KunenaConfig::getInstance()->emailheader))
 		{
 			$image = Uri::base() . KunenaConfig::getInstance()->emailheader;
 			$this->setMetaData('og:image', $image, 'property');
+		}
+
+		$page       = $this->pagination->pagesCurrent;
+		$total      = $this->pagination->pagesTotal;
+		$headerText = $this->headerText . ($total > 1 && $page > 1 ? " - " . Text::_('COM_KUNENA_PAGES') . " {$page}" : '');
+
+		$config    = Factory::getConfig();
+		$robots    = $config->get('robots');
+		$menu_item = $this->app->getMenu()->getActive();
+
+		$this->setMetaData('og:url', Uri::current(), 'property');
+
+		if (File::exists(JPATH_SITE . '/' . KunenaConfig::getInstance()->emailheader))
+		{
+			$image = Uri::base() . KunenaConfig::getInstance()->emailheader;
+			$this->setMetaData('og:image', $image, 'property');
+		}
+
+		if ($robots == '')
+		{
+			$this->setMetaData('robots', 'index, follow');
+		}
+		elseif ($robots == 'noindex, follow')
+		{
+			$this->setMetaData('robots', 'noindex, follow');
+		}
+		elseif ($robots == 'index, nofollow')
+		{
+			$this->setMetaData('robots', 'index, nofollow');
+		}
+		else
+		{
+			$this->setMetaData('robots', 'nofollow, noindex');
+		}
+
+		if ($menu_item)
+		{
+			$params             = $menu_item->params;
+			$params_title       = $params->get('page_title');
+			$params_keywords    = $params->get('menu-meta_keywords');
+			$params_description = $params->get('menu-meta_description');
+			$params_robots      = $params->get('robots');
+
+			if (!empty($params_title))
+			{
+				$title = $params->get('page_title') . ($total > 1 && $page > 1 ? " - " . Text::_('COM_KUNENA_PAGES') . " {$page}" : '');
+				$this->setTitle($title);
+			}
+			else
+			{
+				$this->title = $this->headerText;
+				$this->setTitle($headerText);
+			}
+
+			$this->setMetaData('og:type', 'article', 'property');
+			$this->setMetaData('og:description', $headerText, 'property');
+			$this->setMetaData('og:title', $headerText, 'property');
+
+			if (!empty($params_keywords))
+			{
+				$keywords = $params->get('menu-meta_keywords');
+				$this->setKeywords($keywords);
+			}
+			else
+			{
+				$keywords = $this->config->board_title;
+				$this->setKeywords($keywords);
+			}
+
+			if (!empty($params_description))
+			{
+				$description = $params->get('menu-meta_description') . ($total > 1 && $page > 1 ? " - " . Text::_('COM_KUNENA_PAGES') . " {$page}" : '');
+				$this->setDescription($description);
+			}
+			else
+			{
+				$description = Text::_('COM_KUNENA_ALL_DISCUSSIONS') . ': ' . $this->config->board_title . ($total > 1 && $page > 1 ? " - " . Text::_('COM_KUNENA_PAGES') . " {$page}" : '');
+				$this->setDescription($description);
+			}
+
+			if (!empty($params_robots))
+			{
+				$robots = $params->get('robots');
+				$this->setMetaData('robots', $robots);
+			}
 		}
 	}
 }

@@ -3,7 +3,7 @@
  * Kunena Component
  * @package        Kunena.Framework
  *
- * @copyright      Copyright (C) 2008 - 2018 Kunena Team. All rights reserved.
+ * @copyright      Copyright (C) 2008 - 2019 Kunena Team. All rights reserved.
  * @license        https://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link           https://www.kunena.org
  **/
@@ -13,6 +13,8 @@ use Joomla\CMS\Factory;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\Uri\Uri;
 use Joomla\CMS\Log\Log;
+use Joomla\CMS\Router\Route;
+use Joomla\CMS\Application\CMSApplicationInterface;
 
 jimport('joomla.application.component.helper');
 
@@ -20,13 +22,13 @@ jimport('joomla.application.component.helper');
  * Class KunenaController
  * @since Kunena
  */
-class KunenaController extends \Joomla\CMS\MVC\Controller\BaseController
+class KunenaController extends Joomla\CMS\MVC\Controller\BaseController
 {
 	/**
-	 * @var \Joomla\CMS\Application\CMSApplication|null
+	 * @var CMSApplicationInterface
 	 * @since Kunena
 	 */
-	public $app = null;
+	protected $app;
 
 	/**
 	 * @var KunenaUser|null
@@ -43,14 +45,13 @@ class KunenaController extends \Joomla\CMS\MVC\Controller\BaseController
 	/**
 	 * @param   array $config config
 	 *
-	 * @throws Exception
 	 * @since Kunena
+	 * @throws Exception
 	 */
 	public function __construct($config = array())
 	{
 		parent::__construct($config);
 		$this->profiler = KunenaProfiler::instance('Kunena');
-		$this->app      = Factory::getApplication();
 		$this->config   = KunenaFactory::getConfig();
 		$this->me       = KunenaUserHelper::getMyself();
 
@@ -73,8 +74,8 @@ class KunenaController extends \Joomla\CMS\MVC\Controller\BaseController
 	 * @param   mixed  $config config
 	 *
 	 * @return KunenaController
-	 * @throws Exception
 	 * @since Kunena
+	 * @throws Exception
 	 */
 	public static function getInstance($prefix = 'Kunena', $config = array())
 	{
@@ -157,7 +158,7 @@ class KunenaController extends \Joomla\CMS\MVC\Controller\BaseController
 	 * If response is in HTML, we just redirect and enqueue message if there's an exception.
 	 * NOTE: legacy display task is a special case and reverts to original Joomla behavior.
 	 *
-	 * If response is in JSON, we return JSON response, which follows \Joomla\CMS\Response\JsonResponse with some extra
+	 * If response is in JSON, we return JSON response, which follows Joomla\CMS\Response\JsonResponse with some extra
 	 * data:
 	 *
 	 * Default:   {code, location=null, success, message, messages, data={step, location, html}}
@@ -176,8 +177,8 @@ class KunenaController extends \Joomla\CMS\MVC\Controller\BaseController
 	 * @param   string $task Task to be run.
 	 *
 	 * @return void
-	 * @throws Exception
 	 * @since Kunena
+	 * @throws Exception
 	 * @throws null
 	 */
 	public function execute($task)
@@ -252,7 +253,7 @@ class KunenaController extends \Joomla\CMS\MVC\Controller\BaseController
 				// Only allow internal urls to be used.
 				if ($return && Uri::isInternal($return))
 				{
-					$redirect = JRoute::_($return, false);
+					$redirect = Route::_($return, false);
 				}
 				// Otherwise return back to the referrer.
 				else
@@ -293,9 +294,9 @@ class KunenaController extends \Joomla\CMS\MVC\Controller\BaseController
 	 * @param   string $task task
 	 *
 	 * @return mixed
+	 * @since Kunena
 	 * @throws Exception
 	 *
-	 * @since Kunena
 	 */
 	protected function executeTask($task)
 	{
@@ -328,12 +329,12 @@ class KunenaController extends \Joomla\CMS\MVC\Controller\BaseController
 	 *
 	 * @param   boolean    $cachable  If true, the view output will be cached
 	 * @param   array|bool $urlparams An array of safe url parameters and their variable types, for valid values see
-	 *                                {@link \Joomla\CMS\Filter\InputFilter::clean()}.
+	 *                                {@link Joomla\CMS\Filter\InputFilter::clean()}.
 	 *
-	 * @return  \Joomla\CMS\MVC\Controller\BaseController  A \Joomla\CMS\MVC\Controller\BaseController object to
+	 * @return  Joomla\CMS\MVC\Controller\BaseController  A Joomla\CMS\MVC\Controller\BaseController object to
 	 *                                                     support chaining.
-	 * @throws Exception
 	 * @since Kunena
+	 * @throws Exception
 	 * @throws null
 	 */
 	public function display($cachable = false, $urlparams = false)
@@ -342,7 +343,7 @@ class KunenaController extends \Joomla\CMS\MVC\Controller\BaseController
 		KUNENA_PROFILER ? KunenaProfiler::instance()->start('function ' . __CLASS__ . '::' . __FUNCTION__ . '()') : null;
 
 		// Get the document object.
-		$document = Factory::getDocument();
+		$document = Factory::getApplication()->getDocument();
 
 		// Set the default view name and format from the Request.
 		$vName   = Factory::getApplication()->input->getWord('view', $this->app->isClient('administrator') ? 'cpanel' : 'home');
@@ -358,15 +359,10 @@ class KunenaController extends \Joomla\CMS\MVC\Controller\BaseController
 			// Load last to get deprecated language files to work
 			KunenaFactory::loadLanguage('com_kunena', 'admin');
 
-			// Version warning
+			// Version warning, disable J4 for now.
 			require_once KPATH_ADMIN . '/install/version.php';
 			$version         = new KunenaVersion;
 			$version_warning = $version->getVersionWarning();
-
-			if (!empty($version_warning))
-			{
-				$this->app->enqueueMessage($version_warning, 'notice');
-			}
 		}
 		else
 		{
@@ -397,7 +393,7 @@ class KunenaController extends \Joomla\CMS\MVC\Controller\BaseController
 			/*
 			// FIXME:
 			if (isset($active->language) && $active->language != '*') {
-				$language = Factory::getDocument()->getLanguage();
+				$language = Factory::getApplication()->getDocument()->getLanguage();
 				if (strtolower($active->language) != strtolower($language)) {
 					$route = KunenaRoute::_(null, false);
 					Log::add("Language redirect from ".Uri::getInstance()->toString(array('path', 'query'))." to {$route}", Log::DEBUG, 'kunena');
@@ -435,7 +431,7 @@ class KunenaController extends \Joomla\CMS\MVC\Controller\BaseController
 			// Render the view.
 			if ($vFormat == 'html')
 			{
-				\Joomla\CMS\Plugin\PluginHelper::importPlugin('kunena');
+				Joomla\CMS\Plugin\PluginHelper::importPlugin('kunena');
 				Factory::getApplication()->triggerEvent('onKunenaDisplay', array('start', $view));
 				$view->displayAll();
 				Factory::getApplication()->triggerEvent('onKunenaDisplay', array('end', $view));
@@ -500,10 +496,10 @@ class KunenaController extends \Joomla\CMS\MVC\Controller\BaseController
 	 * @param   string $default default
 	 * @param   string $anchor  anchor
 	 *
-	 * @since Kunena
-	 * @throws Exception
-	 * @throws null
 	 * @return void
+	 * @since Kunena
+	 * @throws null
+	 * @throws Exception
 	 */
 	protected function setRedirectBack($default = null, $anchor = null)
 	{

@@ -5,7 +5,7 @@
  * @package         Kunena.Administrator
  * @subpackage      Views
  *
- * @copyright       Copyright (C) 2008 - 2018 Kunena Team. All rights reserved.
+ * @copyright       Copyright (C) 2008 - 2019 Kunena Team. All rights reserved.
  * @license         https://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link            https://www.kunena.org
  **/
@@ -49,11 +49,6 @@ class KunenaAdminViewUsers extends KunenaView
 		$this->listDirection   = $this->escape($this->state->get('list.direction'));
 		$this->filterIp        = $this->escape($this->state->get('filter.ip'));
 
-		if (KunenaFactory::getTemplate()->params->get('fontawesome'))
-		{
-			Factory::getDocument()->addScript('https://use.fontawesome.com/releases/v5.3.1/js/all.js', array(), array('defer' => true));
-		}
-
 		$this->display();
 	}
 
@@ -66,7 +61,7 @@ class KunenaAdminViewUsers extends KunenaView
 	protected function setToolbar()
 	{
 		// Get the toolbar object instance
-		$bar = \Joomla\CMS\Toolbar\Toolbar::getInstance('toolbar');
+		$bar = Joomla\CMS\Toolbar\Toolbar::getInstance('toolbar');
 
 		// Set the titlebar text
 		JToolbarHelper::title(Text::_('COM_KUNENA') . ': ' . Text::_('COM_KUNENA_USER_MANAGER'), 'users');
@@ -76,14 +71,7 @@ class KunenaAdminViewUsers extends KunenaView
 		JToolbarHelper::divider();
 		JToolbarHelper::custom('move', 'move.png', 'move_f2.png', 'COM_KUNENA_MOVE_USERMESSAGES');
 
-		if (version_compare(JVERSION, '4.0', '>'))
-		{
-			HTMLHelper::_('bootstrap.renderModal', 'moderateModal');
-		}
-		else
-		{
-			HTMLHelper::_('bootstrap.modal', 'moderateModal');
-		}
+		HTMLHelper::_('bootstrap.renderModal', 'moderateModal');
 
 		$title = Text::_('COM_KUNENA_VIEW_USERS_TOOLBAR_ASSIGN_MODERATORS');
 		$dhtml = "<button data-toggle=\"modal\" data-target=\"#moderateModal\" class=\"btn btn-small\">
@@ -99,6 +87,15 @@ class KunenaAdminViewUsers extends KunenaView
 		JToolbarHelper::spacer();
 		JToolbarHelper::custom('removetopicsubscriptions', 'delete.png', 'delete.png', 'COM_KUNENA_REMOVE_TOPICSUBSCRIPTIONS');
 		JToolbarHelper::spacer();
+
+		HTMLHelper::_('bootstrap.renderModal', 'subscribecatsusersModal');
+
+		$title = Text::_('COM_KUNENA_VIEW_USERS_TOOLBAR_SUBSCRIBE_USERS_CATEGORIES');
+		$dhtml = "<button data-toggle=\"modal\" data-target=\"#subscribecatsusersModal\" class=\"btn btn-small\">
+					<i class=\"icon-checkbox-partial\" title=\"$title\"> </i>
+						$title</button>";
+		$bar->appendButton('Custom', $dhtml, 'batch');
+
 		$help_url = 'https://docs.kunena.org/en/manual/backend/users';
 		JToolbarHelper::help('COM_KUNENA', false, $help_url);
 	}

@@ -4,12 +4,13 @@
  * @package       Kunena.Framework
  * @subpackage    Controller
  *
- * @copyright     Copyright (C) 2008 - 2018 Kunena Team. All rights reserved.
+ * @copyright     Copyright (C) 2008 - 2019 Kunena Team. All rights reserved.
  * @license       https://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link          https://www.kunena.org
  **/
 defined('_JEXEC') or die();
 
+use Joomla\CMS\Document\Document;
 use Joomla\CMS\Factory;
 use Joomla\CMS\Language\Text;
 
@@ -32,7 +33,7 @@ abstract class KunenaControllerDisplay extends KunenaControllerBase
 	public $layout = 'default';
 
 	/**
-	 * @var string
+	 * @var KunenaConfig
 	 * @since Kunena
 	 */
 	public $config;
@@ -50,9 +51,15 @@ abstract class KunenaControllerDisplay extends KunenaControllerBase
 	protected $primary = false;
 
 	/**
-	 * @internal
+	 * @var Document
 	 * @since Kunena
+	 */
+	private $document;
+
+	/**
+	 * @internal
 	 * @return mixed
+	 * @since Kunena
 	 */
 	public function setPrimary()
 	{
@@ -65,8 +72,8 @@ abstract class KunenaControllerDisplay extends KunenaControllerBase
 	 * Return view as a string.
 	 *
 	 * @return string
-	 * @throws Exception
 	 * @since Kunena
+	 * @throws Exception
 	 */
 	public function __toString()
 	{
@@ -81,7 +88,7 @@ abstract class KunenaControllerDisplay extends KunenaControllerBase
 				return (string) KunenaLayout::factory('Empty');
 			}
 
-			$document = Factory::getDocument();
+			$document = Factory::getApplication()->getDocument();
 			$document->setTitle($e->getResponseStatus());
 			Factory::getApplication()->setHeader('Status', $e->getResponseStatus(), true);
 			Factory::getApplication()->sendHeaders();
@@ -93,11 +100,11 @@ abstract class KunenaControllerDisplay extends KunenaControllerBase
 		{
 			if (!$this->primary)
 			{
-				return "<b>Exception</b> in layout <b>{$this->name}!</b>" . (!JDEBUG ? $e->getMessage() : '');
+				return "<div class=\"alert alert-danger\" role=\"alert\"><b>Exception</b> in layout <b>{$this->name}!</b>" . (JDEBUG ? '<br>' . $e->getMessage() : '') . '</div>';
 			}
 
 			$title    = '500 Internal Server Error';
-			$document = Factory::getDocument();
+			$document = Factory::getApplication()->getDocument();
 			$document->setTitle($title);
 			Factory::getApplication()->setHeader('Status', $title, true);
 			Factory::getApplication()->sendHeaders();
@@ -111,8 +118,8 @@ abstract class KunenaControllerDisplay extends KunenaControllerBase
 
 	/**
 	 * @see   KunenaControllerBase::execute()
+	 * @return Joomla\CMS\Layout\BaseLayout|KunenaLayout|null
 	 * @since Kunena
-	 * @return \Joomla\CMS\Layout\BaseLayout|KunenaLayout|null
 	 * @throws Exception
 	 */
 	public function execute()
@@ -157,9 +164,9 @@ abstract class KunenaControllerDisplay extends KunenaControllerBase
 
 	/**
 	 * Executed before display.
+	 * @return void
 	 * @since Kunena
 	 * @throws Exception
-	 * @return void
 	 */
 	protected function before()
 	{
@@ -168,16 +175,16 @@ abstract class KunenaControllerDisplay extends KunenaControllerBase
 
 		if ($this->primary)
 		{
-			$this->document = Factory::getDocument();
+			$this->document = Factory::getApplication()->getDocument();
 		}
 	}
 
 	/**
 	 * Initialize and display the layout.
 	 *
-	 * @return \Joomla\CMS\Layout\BaseLayout|KunenaLayout
-	 * @throws Exception
+	 * @return Joomla\CMS\Layout\BaseLayout|KunenaLayout
 	 * @since Kunena
+	 * @throws Exception
 	 */
 	protected function display()
 	{
@@ -213,8 +220,8 @@ abstract class KunenaControllerDisplay extends KunenaControllerBase
 
 	/**
 	 * Executed after display.
-	 * @since Kunena
 	 * @return void
+	 * @since Kunena
 	 * @throws Exception
 	 */
 	protected function after()
@@ -227,8 +234,8 @@ abstract class KunenaControllerDisplay extends KunenaControllerBase
 
 	/**
 	 * Prepare title, description, keywords, breadcrumb etc.
+	 * @return boolean|void
 	 * @since Kunena
-	 * @return boolean
 	 * @throws Exception
 	 */
 	protected function prepareDocument()
@@ -258,7 +265,7 @@ abstract class KunenaControllerDisplay extends KunenaControllerBase
 	/**
 	 * Method to set the view layout.
 	 *
-	 * @param   string $layout The layout name.
+	 * @param   string  $layout  The layout name.
 	 *
 	 * @return KunenaControllerDisplay|KunenaLayout
 	 * @since Kunena
@@ -278,19 +285,20 @@ abstract class KunenaControllerDisplay extends KunenaControllerBase
 	/**
 	 * Set the object properties based on a named array/hash.
 	 *
-	 * @param   mixed $properties Either an associative array or another object.
+	 * @see     set()
+	 *
+	 * @param   mixed  $properties  Either an associative array or another object.
 	 *
 	 * @return  KunenaControllerDisplay  Method supports chaining.
 	 *
-	 * @see     set()
-	 * @throws \InvalidArgumentException
 	 * @since   Kunena
+	 * @throws InvalidArgumentException
 	 */
 	public function setProperties($properties)
 	{
 		if (!is_array($properties) && !is_object($properties))
 		{
-			throw new \InvalidArgumentException('Parameter should be either array or an object.');
+			throw new InvalidArgumentException('Parameter should be either array or an object.');
 		}
 
 		foreach ((array) $properties as $k => $v)
@@ -308,8 +316,8 @@ abstract class KunenaControllerDisplay extends KunenaControllerBase
 	/**
 	 * Shortcut for $this->input->set()
 	 *
-	 * @param   mixed $key   key
-	 * @param   mixed $value value
+	 * @param   mixed  $key    key
+	 * @param   mixed  $value  value
 	 *
 	 * @return $this
 	 * @since Kunena
@@ -322,12 +330,12 @@ abstract class KunenaControllerDisplay extends KunenaControllerBase
 	}
 
 	/**
-	 * @param   mixed $title   title
-	 * @param   bool  $replace replace
+	 * @param   mixed  $title    title
+	 * @param   bool   $replace  replace
 	 *
-	 * @throws Exception
-	 * @since Kunena
 	 * @return void
+	 * @since Kunena
+	 * @throws Exception
 	 */
 	protected function setTitle($title, $replace = false)
 	{
@@ -360,10 +368,10 @@ abstract class KunenaControllerDisplay extends KunenaControllerBase
 	}
 
 	/**
-	 * @param   string $keywords keywords
+	 * @param   string  $keywords  keywords
 	 *
-	 * @since Kunena
 	 * @return void
+	 * @since Kunena
 	 */
 	protected function setKeywords($keywords)
 	{
@@ -371,10 +379,10 @@ abstract class KunenaControllerDisplay extends KunenaControllerBase
 	}
 
 	/**
-	 * @param   string $description description
+	 * @param   string  $description  description
 	 *
-	 * @since Kunena
 	 * @return void
+	 * @since Kunena
 	 */
 	protected function setDescription($description)
 	{
@@ -382,10 +390,10 @@ abstract class KunenaControllerDisplay extends KunenaControllerBase
 	}
 
 	/**
-	 * @param   string $robots robots
+	 * @param   string  $robots  robots
 	 *
-	 * @since Kunena
 	 * @return void
+	 * @since Kunena
 	 */
 	protected function setRobots($robots)
 	{
@@ -393,9 +401,9 @@ abstract class KunenaControllerDisplay extends KunenaControllerBase
 	}
 
 	/**
-	 * @param        $name
-	 * @param        $content
-	 * @param   string $attribute attribute
+	 * @param           $name
+	 * @param           $content
+	 * @param   string  $attribute  attribute
 	 *
 	 * @return void
 	 * @since Kunena

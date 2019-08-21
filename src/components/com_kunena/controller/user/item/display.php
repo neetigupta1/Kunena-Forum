@@ -4,7 +4,7 @@
  * @package         Kunena.Site
  * @subpackage      Controller.User
  *
- * @copyright       Copyright (C) 2008 - 2018 Kunena Team. All rights reserved.
+ * @copyright       Copyright (C) 2008 - 2019 Kunena Team. All rights reserved.
  * @license         https://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link            https://www.kunena.org
  **/
@@ -13,6 +13,9 @@ defined('_JEXEC') or die;
 use Joomla\CMS\Factory;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\Uri\Uri;
+use Joomla\CMS\MVC\Controller\BaseController;
+use Joomla\CMS\Filesystem\File;
+use Joomla\Utilities\ArrayHelper;
 
 /**
  * Class ComponentKunenaControllerUserItemDisplay
@@ -22,19 +25,13 @@ use Joomla\CMS\Uri\Uri;
 class ComponentKunenaControllerUserItemDisplay extends KunenaControllerDisplay
 {
 	/**
-	 * @var string
-	 * @since Kunena
-	 */
-	protected $name = 'User/Item';
-
-	/**
 	 * @var KunenaUser
 	 * @since Kunena
 	 */
 	public $me;
 
 	/**
-	 * @var \Joomla\CMS\User\User
+	 * @var Joomla\CMS\User\User
 	 * @since Kunena
 	 */
 	public $user;
@@ -58,13 +55,19 @@ class ComponentKunenaControllerUserItemDisplay extends KunenaControllerDisplay
 	public $tabs;
 
 	/**
+	 * @var string
+	 * @since Kunena
+	 */
+	protected $name = 'User/Item';
+
+	/**
 	 * Load user profile.
 	 *
 	 * @return void
 	 *
-	 * @throws Exception
-	 * @throws null
 	 * @since Kunena
+	 * @throws null
+	 * @throws Exception
 	 */
 	protected function before()
 	{
@@ -90,6 +93,18 @@ class ComponentKunenaControllerUserItemDisplay extends KunenaControllerDisplay
 		$this->profile = KunenaUserHelper::get($userid);
 		$this->profile->tryAuthorise('read');
 
+		$activityIntegration = KunenaFactory::getActivityIntegration();
+		$this->points        = $activityIntegration->getUserPoints($this->profile->userid);
+		$this->medals        = $activityIntegration->getUserMedals($this->profile->userid);
+		$this->private       = KunenaFactory::getPrivateMessaging();
+		$socials             = $this->profile->socialButtons();
+		$this->socials       = ArrayHelper::toObject($socials);
+
+		$this->avatar  = $this->profile->getAvatarImage(KunenaFactory::getTemplate()->params->get('avatarType'), 'post');
+		$this->banInfo = $this->config->showbannedreason
+			? KunenaUserBan::getInstanceByUserid($this->profile->userid)
+			: null;
+
 		// Update profile hits.
 		if (!$this->profile->exists() || !$this->profile->isMyself())
 		{
@@ -102,7 +117,7 @@ class ComponentKunenaControllerUserItemDisplay extends KunenaControllerDisplay
 
 		if (!$Itemid && $format != 'feed' && KunenaConfig::getInstance()->sef_redirect)
 		{
-			$controller = JControllerLegacy::getInstance("kunena");
+			$controller = BaseController::getInstance("kunena");
 
 			if (KunenaConfig::getInstance()->profile_id)
 			{
@@ -139,8 +154,8 @@ class ComponentKunenaControllerUserItemDisplay extends KunenaControllerDisplay
 	 * Prepare document.
 	 *
 	 * @return void
-	 * @throws Exception
 	 * @since Kunena
+	 * @throws Exception
 	 */
 	protected function prepareDocument()
 	{
@@ -159,23 +174,21 @@ class ComponentKunenaControllerUserItemDisplay extends KunenaControllerDisplay
 			$this->setMetaData('profile:gender', Text::_('COM_KUNENA_MYPROFILE_GENDER_UNKNOWN'), 'property');
 		}
 
-		$app       = Factory::getApplication();
-		$menu_item = $app->getMenu()->getActive();
+		$menu_item = $this->app->getMenu()->getActive();
 		$config    = Factory::getConfig();
 		$robots    = $config->get('robots');
 		$image     = '';
 
 		$this->setMetaData('og:url', Uri::current(), 'property');
 		$this->setMetaData('og:type', 'profile', 'property');
-		$this->setMetaData('og:author', $this->profile->name, 'property');
 
-		if (JFile::exists(JPATH_SITE . '/media/kunena/avatars/' . KunenaFactory::getUser($this->profile->id)->avatar))
+		if (File::exists(JPATH_SITE . '/media/kunena/avatars/' . KunenaFactory::getUser($this->profile->id)->avatar))
 		{
 			$image = Uri::root() . 'media/kunena/avatars/' . KunenaFactory::getUser($this->profile->id)->avatar;
 		}
 		elseif ($this->profile->avatar == null || KunenaConfig::getInstance()->avatar_type && KunenaFactory::getUser($this->profile->id)->avatar == null)
 		{
-			if (JFile::exists(JPATH_SITE . '/' . KunenaConfig::getInstance()->emailheader))
+			if (File::exists(JPATH_SITE . '/' . KunenaConfig::getInstance()->emailheader))
 			{
 				$image = Uri::base() . KunenaConfig::getInstance()->emailheader;
 			}

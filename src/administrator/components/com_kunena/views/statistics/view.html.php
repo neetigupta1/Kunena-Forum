@@ -4,7 +4,7 @@
  * @package       Kunena.Administrator
  * @subpackage    Views
  *
- * @copyright     Copyright (C) 2008 - 2018 Kunena Team. All rights reserved.
+ * @copyright     Copyright (C) 2008 - 2019 Kunena Team. All rights reserved.
  * @license       https://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link          https://www.kunena.org
  **/
@@ -21,10 +21,10 @@ use Joomla\CMS\Language\Text;
 class KunenaAdminViewStatistics extends KunenaView
 {
 	/**
-	 * @param   null $tpl tpl
+	 * @param   null  $tpl  tpl
 	 *
-	 * @throws ReflectionException
 	 * @since Kunena
+	 * @throws ReflectionException
 	 */
 	public function displayDefault($tpl = null)
 	{
@@ -56,7 +56,7 @@ class KunenaAdminViewStatistics extends KunenaView
 		$this->listOrdering    = $this->escape($this->state->get('list.ordering'));
 		$this->listDirection   = $this->escape($this->state->get('list.direction'));
 
-		$document = Factory::getDocument();
+		$document = Factory::getApplication()->getDocument();
 		$document->setTitle(Text::_('Forum Logs'));
 
 		$this->setToolbar();
@@ -130,8 +130,8 @@ class KunenaAdminViewStatistics extends KunenaView
 
 	/**
 	 * @return array
-	 * @throws ReflectionException
 	 * @since  Kunena
+	 * @throws ReflectionException
 	 */
 	protected function getFilterOperationFields()
 	{
@@ -181,6 +181,6 @@ class KunenaAdminViewStatistics extends KunenaView
 	{
 		$checked = isset($this->group[$name]) ? ' checked="checked"' : '';
 
-		return '<input type="checkbox" name="group_' . $name . '" value="1" title="Group By" ' . $checked . ' class="filter" />';
+		return '<input type="checkbox" name="group_' . $name . '" value="1" title="Group By" ' . $checked . ' class="filter form-control" />';
 	}
 }

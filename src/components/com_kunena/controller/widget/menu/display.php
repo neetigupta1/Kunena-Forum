@@ -4,7 +4,7 @@
  * @package         Kunena.Site
  * @subpackage      Controller.Widget
  *
- * @copyright       Copyright (C) 2008 - 2018 Kunena Team. All rights reserved.
+ * @copyright       Copyright (C) 2008 - 2019 Kunena Team. All rights reserved.
  * @license         https://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link            https://www.kunena.org
  **/
@@ -89,7 +89,7 @@ class ComponentKunenaControllerWidgetMenuDisplay extends KunenaControllerDisplay
 			return false;
 		}
 
-		$parameters = new \Joomla\Registry\Registry;
+		$parameters = new Joomla\Registry\Registry;
 		$template   = KunenaFactory::getTemplate();
 		$parameters->set('showAllChildren', $template->params->get('menu_showall', 0));
 		$parameters->set('menutype', $basemenu->menutype);

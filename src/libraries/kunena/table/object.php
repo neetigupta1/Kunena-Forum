@@ -4,14 +4,14 @@
  * @package       Kunena.Framework
  * @subpackage    Table
  *
- * @copyright     Copyright (C) 2008 - 2018 Kunena Team. All rights reserved.
+ * @copyright     Copyright (C) 2008 - 2019 Kunena Team. All rights reserved.
  * @license       https://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link          https://www.kunena.org
  **/
 defined('_JEXEC') or die();
 
 use Joomla\CMS\Factory;
-
+use Joomla\Database\QueryInterface;
 
 /**
  * Abstract Table Object class
@@ -55,7 +55,7 @@ abstract class KunenaTableObject
 	 * Array of primary key fields in the table.
 	 * Always override this variable in your own class!
 	 *
-	 * @var    string
+	 * @var    array
 	 * @since  K4.0
 	 */
 	protected static $tbl_keys = array();
@@ -196,7 +196,7 @@ abstract class KunenaTableObject
 	/**
 	 * Override this function if you need to initialise object right after creating it.
 	 *
-	 * Can be used for example if the database fields need to be converted to array or \Joomla\Registry\Registry.
+	 * Can be used for example if the database fields need to be converted to array or Joomla\Registry\Registry.
 	 *
 	 * @param   bool $sqlFetch True only if properties were assigned before constructor was called.
 	 *
@@ -243,13 +243,17 @@ abstract class KunenaTableObject
 			$this->reset();
 		}
 
+		$k = static::$tbl;
+
 		// Initialise the query.
-		$query = static::$db->getQuery(true)->select('*')->from(static::$tbl);
+		$query = static::$db->getQuery(true)
+			->select('*')
+			->from(static::$db->quoteName($k));
 
 		foreach ($keys as $field => $value)
 		{
 			// Make sure the object contains the search fields.
-			// This is incompatible to \Joomla\CMS\Table\Table, but needed by this class.
+			// This is incompatible to Joomla\CMS\Table\Table, but needed by this class.
 			$this->$field = $value;
 
 			// Add the search tuple to the query.
@@ -374,11 +378,11 @@ abstract class KunenaTableObject
 	}
 
 	/**
-	 * Method to bind an associative array or object to the \Joomla\CMS\Table\Table instance.This
+	 * Method to bind an associative array or object to the Joomla\CMS\Table\Table instance.This
 	 * method only binds properties that are publicly accessible and optionally
 	 * takes an array of properties to ignore when binding.
 	 *
-	 * @param   mixed $src    An associative array or object to bind to the \Joomla\CMS\Table\Table instance.
+	 * @param   mixed $src    An associative array or object to bind to the Joomla\CMS\Table\Table instance.
 	 * @param   mixed $ignore An optional array or space separated list of properties to ignore while binding.
 	 *
 	 * @return  KunenaTableObject
@@ -459,7 +463,7 @@ abstract class KunenaTableObject
 	 *
 	 * @return  boolean  True on success.
 	 *
-	 * @link    http://docs.joomla.org/\Joomla\CMS\Table\Table/setDbo
+	 * @link    http://docs.joomla.org/Joomla\CMS\Table\Table/setDbo
 	 * @since   K4.0
 	 */
 	public static function setDbo(JDatabaseDriver $db)
@@ -621,7 +625,9 @@ abstract class KunenaTableObject
 	public static function getQuery()
 	{
 		$db    = static::$db;
-		$query = $db->getQuery(true)->select('a.*')->from(static::$tbl . ' AS a');
+		$query = $db->getQuery(true)
+			->select($db->quoteName('a.*'))
+			->from($db->quoteName(static::$tbl, 'a'));
 
 		return $query;
 	}
@@ -629,12 +635,12 @@ abstract class KunenaTableObject
 	/**
 	 * @internal
 	 *
-	 * @param   JDatabaseQuery $query query
+	 * @param   QueryInterface $query query
 	 *
 	 * @return array
 	 * @since Kunena
 	 */
-	public static function &loadInstances(JDatabaseQuery $query)
+	public static function &loadInstances(QueryInterface $query)
 	{
 		$db = Factory::getDbo();
 		$db->setQuery($query);
@@ -658,14 +664,14 @@ abstract class KunenaTableObject
 	}
 
 	/**
-	 * Method to provide a shortcut to binding, checking and storing a \Joomla\CMS\Table\Table
+	 * Method to provide a shortcut to binding, checking and storing a Joomla\CMS\Table\Table
 	 * instance to the database table.  The method will check a row in once the
 	 * data has been stored and if an ordering filter is present will attempt to
 	 * reorder the table rows based on the filter.  The ordering filter is an instance
 	 * property name.  The rows that will be reordered are those whose value matches
-	 * the \Joomla\CMS\Table\Table instance for the property specified.
+	 * the Joomla\CMS\Table\Table instance for the property specified.
 	 *
-	 * @param   mixed  $src              An associative array or object to bind to the \Joomla\CMS\Table\Table instance.
+	 * @param   mixed  $src              An associative array or object to bind to the Joomla\CMS\Table\Table instance.
 	 * @param   string $orderingFilter   Filter for the order updating
 	 * @param   mixed  $ignore           An optional array or space separated list of properties
 	 *                                   to ignore while binding.
@@ -675,7 +681,7 @@ abstract class KunenaTableObject
 	 * @since  K4.0
 	 */
 	/*
- 	public function save($src, $orderingFilter = '', $ignore = '')
+	 public function save($src, $orderingFilter = '', $ignore = '')
 	{
 		// Attempt to bind the source to the instance.
 		if (!$this->bind($src, $ignore))
@@ -706,7 +712,7 @@ abstract class KunenaTableObject
 		{
 			$filterValue = $this->$orderingFilter;
 			$this->reorder($orderingFilter ?
-				static::$db->quoteName($orderingFilter) . ' = ' . static::$db->Quote($filterValue) : '');
+				static::$db->quoteName($orderingFilter) . ' = ' . static::$db->quote($filterValue) : '');
 		}
 
 		// Set the error to empty and return true.
@@ -734,7 +740,7 @@ abstract class KunenaTableObject
 	}
 
 	/**
-	 * Method to perform sanity checks on the \Joomla\CMS\Table\TableObject instance properties to ensure
+	 * Method to perform sanity checks on the Joomla\CMS\Table\TableObject instance properties to ensure
 	 * they are safe to store in the database.  Child classes should override this
 	 * method to make sure the data they are storing in the database is safe and
 	 * as expected before storage.
@@ -840,8 +846,12 @@ abstract class KunenaTableObject
 			throw $e;
 		}
 
+		$k = static::$tbl;
+
 		// Delete the row by given keys/fields.
-		$query = static::$db->getQuery(true)->delete()->from(static::$tbl);
+		$query = static::$db->getQuery(true)
+			->delete()
+			->from(static::$db->quoteName($k));
 
 		foreach ($keys as $key => $value)
 		{
@@ -891,11 +901,11 @@ abstract class KunenaTableObject
 		$time = Factory::getDate()->toSql();
 
 		// Check the row out by primary key.
-		$query = static::$db->getQuery(true);
-		$query->update(static::$tbl);
-		$query->set(static::$db->quoteName('checked_out') . ' = ' . (int) $userId);
-		$query->set(static::$db->quoteName('checked_out_time') . ' = ' . static::$db->quote($time));
-		$query->where(static::$tbl_key . ' = ' . static::$db->quote($pk));
+		$query = static::$db->getQuery(true)
+			->update(static::$tbl)
+			->set(static::$db->quoteName('checked_out') . ' = ' . static::$db->quote((int) $userId))
+			->set(static::$db->quoteName('checked_out_time') . ' = ' . static::$db->quote($time))
+			->where(static::$db->quoteName($k) . ' = ' . static::$db->quote($pk));
 		static::$db->setQuery($query);
 		static::$db->execute();
 
@@ -935,10 +945,11 @@ abstract class KunenaTableObject
 
 		// Check the row in by primary key.
 		$query = static::$db->getQuery(true);
-		$query->update(static::$tbl);
-		$query->set(static::$db->quoteName('checked_out') . ' = 0');
-		$query->set(static::$db->quoteName('checked_out_time') . ' = ' . static::$db->quote(static::$db->getNullDate()));
-		$query->where(static::$tbl_key . ' = ' . static::$db->quote($pk));
+		$nullDate = static::$db->getNullDate() ? static::$db->quote(static::$db->getNullDate()) : 'NULL';
+		$query->update(static::$tbl)
+			->set(static::$db->quoteName('checked_out') . ' = 0')
+			->set(static::$db->quoteName('checked_out_time') . ' = ' . $nullDate)
+			->where(static::$db->quoteName($k) . ' = ' . static::$db->quote($pk));
 		static::$db->setQuery($query);
 
 		// Check for a database error.
@@ -946,7 +957,7 @@ abstract class KunenaTableObject
 
 		// Set table values in the object.
 		$this->checked_out      = 0;
-		$this->checked_out_time = '';
+		$this->checked_out_time = null;
 
 		return true;
 	}
@@ -981,10 +992,10 @@ abstract class KunenaTableObject
 		}
 
 		// Check the row in by primary key.
-		$query = static::$db->getQuery(true);
-		$query->update(static::$tbl);
-		$query->set(static::$db->quoteName('hits') . ' = (' . static::$db->quoteName('hits') . ' + 1)');
-		$query->where(static::$tbl_key . ' = ' . static::$db->quote($pk));
+		$query = static::$db->getQuery(true)
+			->update(static::$tbl)
+			->set(static::$db->quoteName('hits') . ' = (' . static::$db->quoteName('hits') . ' + 1)')
+			->where(static::$db->quoteName($k) . ' = ' . static::$db->quote($pk));
 		static::$db->setQuery($query);
 		static::$db->execute();
 
@@ -1011,7 +1022,7 @@ abstract class KunenaTableObject
 	public function isCheckedOut($with = 0, $against = null)
 	{
 		// Handle the non-static case.
-		if (isset($this) && ($this instanceof \Joomla\CMS\Table\Table) && is_null($against))
+		if (isset($this) && ($this instanceof Joomla\CMS\Table\Table) && is_null($against))
 		{
 			$against = $this->get('checked_out');
 		}
@@ -1023,7 +1034,7 @@ abstract class KunenaTableObject
 		}
 
 		static::$db = Factory::getDBO();
-		static::$db->setQuery('SELECT COUNT(userid)' . ' FROM ' . static::$db->quoteName('#__session') . ' WHERE ' . static::$db->quoteName('userid') . ' = ' . (int) $against);
+		static::$db->setQuery('SELECT COUNT(' . static::$db->quoteName('userid') . ')' . ' FROM ' . static::$db->quoteName('#__session') . ' WHERE ' . static::$db->quoteName('userid') . ' = ' . static::$db->quote((int) $against));
 		$checkedOut = (boolean) static::$db->loadResult();
 
 		// If a session exists for the user then it is checked out.

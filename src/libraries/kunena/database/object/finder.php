@@ -4,12 +4,14 @@
  * @package       Kunena.Framework
  * @subpackage    Database
  *
- * @copyright     Copyright (C) 2008 - 2018 Kunena Team. All rights reserved.
+ * @copyright     Copyright (C) 2008 - 2019 Kunena Team. All rights reserved.
  * @license       https://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link          https://www.kunena.org
  **/
 
 use Joomla\CMS\Factory;
+use Joomla\Database\DatabaseDriver;
+use Joomla\Database\QueryInterface;
 
 // No direct access
 defined('_JEXEC') or die;
@@ -41,7 +43,7 @@ abstract class KunenaDatabaseObjectFinder
 	protected $query;
 
 	/**
-	 * @var JDatabase
+	 * @var DatabaseDriver
 	 * @since Kunena
 	 */
 	protected $db;
@@ -77,13 +79,13 @@ abstract class KunenaDatabaseObjectFinder
 
 		$this->db    = Factory::getDbo();
 		$this->query = $this->db->getQuery(true);
-		$this->query->from($this->table . ' AS a');
+		$this->query->from($this->db->quoteName($this->table, 'a'));
 	}
 
 	/**
 	 * Set limitstart for the query.
 	 *
-	 * @param   int $limitstart limitstart
+	 * @param   int  $limitstart  limitstart
 	 *
 	 * @return $this
 	 * @since Kunena
@@ -100,7 +102,7 @@ abstract class KunenaDatabaseObjectFinder
 	 *
 	 * If this function isn't used, RokClub will use threads per page configuration setting.
 	 *
-	 * @param   int $limit limit
+	 * @param   int  $limit  limit
 	 *
 	 * @return $this
 	 * @since Kunena
@@ -120,9 +122,9 @@ abstract class KunenaDatabaseObjectFinder
 	 *
 	 * This function can be used more than once to chain order by.
 	 *
-	 * @param   string $by        by
-	 * @param   int    $direction direction
-	 * @param   string $alias     alias
+	 * @param   string  $by         by
+	 * @param   int     $direction  direction
+	 * @param   string  $alias      alias
 	 *
 	 * @return $this
 	 * @since Kunena
@@ -139,10 +141,10 @@ abstract class KunenaDatabaseObjectFinder
 	/**
 	 * Filter by field.
 	 *
-	 * @param   string       $field     Field name.
-	 * @param   string       $operation Operation (>|>=|<|<=|=|IN|NOT IN)
-	 * @param   string|array $value     Value.
-	 * @param   bool         $escape    Only works for LIKE / NOT LIKE.
+	 * @param   string        $field      Field name.
+	 * @param   string        $operation  Operation (>|>=|<|<=|=|IN|NOT IN)
+	 * @param   string|array  $value      Value.
+	 * @param   bool          $escape     Only works for LIKE / NOT LIKE.
 	 *
 	 * @return $this
 	 * @since Kunena
@@ -202,8 +204,8 @@ abstract class KunenaDatabaseObjectFinder
 	 * Derived classes should generally override this function to return correct objects.
 	 *
 	 * @return array
-	 * @throws Exception
 	 * @since Kunena
+	 * @throws Exception
 	 */
 	public function find()
 	{
@@ -232,12 +234,12 @@ abstract class KunenaDatabaseObjectFinder
 	/**
 	 * Override to include your own static filters.
 	 *
-	 * @param   JDatabaseQuery $query query
+	 * @param   QueryInterface  $query  query
 	 *
 	 * @return void
 	 * @since Kunena
 	 */
-	protected function build(JDatabaseQuery $query)
+	protected function build(QueryInterface $query = null)
 	{
 	}
 
@@ -245,8 +247,8 @@ abstract class KunenaDatabaseObjectFinder
 	 * Count items.
 	 *
 	 * @return integer
-	 * @throws Exception
 	 * @since Kunena
+	 * @throws Exception
 	 */
 	public function count()
 	{
@@ -256,7 +258,7 @@ abstract class KunenaDatabaseObjectFinder
 		if ($query->group)
 		{
 			$countQuery = $this->db->getQuery(true);
-			$countQuery->select('COUNT(*)')->from("({$query}) AS c");
+			$countQuery->select('COUNT(*)')->from($this->db->quoteName($query, 's'));
 			$this->db->setQuery($countQuery);
 		}
 		else

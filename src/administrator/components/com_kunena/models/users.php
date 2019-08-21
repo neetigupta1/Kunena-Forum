@@ -5,7 +5,7 @@
  * @package         Kunena.Administrator
  * @subpackage      Models
  *
- * @copyright       Copyright (C) 2008 - 2018 Kunena Team. All rights reserved.
+ * @copyright       Copyright (C) 2008 - 2019 Kunena Team. All rights reserved.
  * @license         https://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link            https://www.kunena.org
  **/
@@ -14,6 +14,7 @@ defined('_JEXEC') or die();
 use Joomla\CMS\HTML\HTMLHelper;
 use Joomla\CMS\Factory;
 use Joomla\CMS\Language\Text;
+use Joomla\Database\QueryInterface;
 
 jimport('joomla.application.component.modellist');
 
@@ -22,15 +23,17 @@ jimport('joomla.application.component.modellist');
  *
  * @since  2.0
  */
-class KunenaAdminModelUsers extends \Joomla\CMS\MVC\Model\ListModel
+class KunenaAdminModelUsers extends Joomla\CMS\MVC\Model\ListModel
 {
 	/**
 	 * Constructor.
 	 *
-	 * @param   array $config An optional associative array of configuration settings.
-	 *
 	 * @see        JController
+	 *
+	 * @param   array  $config  An optional associative array of configuration settings.
+	 *
 	 * @since      Kunena
+	 * @throws Exception
 	 */
 	public function __construct($config = array())
 	{
@@ -60,8 +63,8 @@ class KunenaAdminModelUsers extends \Joomla\CMS\MVC\Model\ListModel
 	 *
 	 * @return boolean|KunenaUser
 	 *
-	 * @throws Exception
 	 * @since   3.0
+	 * @throws Exception
 	 */
 	public function getItems()
 	{
@@ -110,7 +113,7 @@ class KunenaAdminModelUsers extends \Joomla\CMS\MVC\Model\ListModel
 	 * different modules that might need different sets of data or different
 	 * ordering requirements.
 	 *
-	 * @param   string $id A prefix for the store id.
+	 * @param   string  $id  A prefix for the store id.
 	 *
 	 * @return    string        A store id.
 	 * @since Kunena
@@ -136,8 +139,8 @@ class KunenaAdminModelUsers extends \Joomla\CMS\MVC\Model\ListModel
 	 *
 	 * @return  string
 	 *
-	 * @throws Exception
 	 * @since  3.0
+	 * @throws Exception
 	 */
 	public function getModcatslist()
 	{
@@ -154,11 +157,11 @@ class KunenaAdminModelUsers extends \Joomla\CMS\MVC\Model\ListModel
 	/**
 	 * Method to auto-populate the model state.
 	 *
-	 * @param   null $ordering  ordering
-	 * @param   null $direction direction
+	 * @param   null  $ordering   ordering
+	 * @param   null  $direction  direction
 	 *
-	 * @throws Exception
 	 * @since Kunena
+	 * @throws Exception
 	 */
 	protected function populateState($ordering = null, $direction = null)
 	{
@@ -213,7 +216,7 @@ class KunenaAdminModelUsers extends \Joomla\CMS\MVC\Model\ListModel
 	/**
 	 * Build an SQL query to load the list data.
 	 *
-	 * @return    JDatabaseQuery
+	 * @return QueryInterface
 	 * @since Kunena
 	 */
 	protected function getListQuery()
@@ -245,7 +248,7 @@ class KunenaAdminModelUsers extends \Joomla\CMS\MVC\Model\ListModel
 			}
 			else
 			{
-				$search = $db->Quote('%' . $db->escape($search, true) . '%');
+				$search = $db->quote('%' . $db->escape($search, true) . '%');
 				$query->where('(a.username LIKE ' . $search . ' OR a.name LIKE ' . $search . ' OR a.email LIKE ' . $search . ' OR ku.ip LIKE ' . $search . ' OR a.id LIKE ' . $search . ')');
 			}
 		}
@@ -255,7 +258,7 @@ class KunenaAdminModelUsers extends \Joomla\CMS\MVC\Model\ListModel
 
 		if (!empty($username))
 		{
-			$username = $db->Quote('%' . $db->escape($username, true) . '%');
+			$username = $db->quote('%' . $db->escape($username, true) . '%');
 			$query->where('a.username LIKE ' . $username . ' OR a.name LIKE ' . $username);
 		}
 
@@ -264,7 +267,7 @@ class KunenaAdminModelUsers extends \Joomla\CMS\MVC\Model\ListModel
 
 		if (!empty($rank))
 		{
-			$rank = $db->Quote('%' . $db->escape($rank, true) . '%');
+			$rank = $db->quote('%' . $db->escape($rank, true) . '%');
 			$query->where('ku.rank LIKE ' . $rank);
 		}
 
@@ -273,7 +276,7 @@ class KunenaAdminModelUsers extends \Joomla\CMS\MVC\Model\ListModel
 
 		if (!empty($email))
 		{
-			$email = $db->Quote('%' . $db->escape($email, true) . '%');
+			$email = $db->quote('%' . $db->escape($email, true) . '%');
 			$query->where('a.email LIKE ' . $email);
 		}
 
@@ -282,7 +285,7 @@ class KunenaAdminModelUsers extends \Joomla\CMS\MVC\Model\ListModel
 
 		if (!empty($ip))
 		{
-			$ip = $db->Quote('%' . $db->escape($ip, true) . '%');
+			$ip = $db->quote('%' . $db->escape($ip, true) . '%');
 			$query->where('ku.ip LIKE ' . $ip);
 		}
 
@@ -314,15 +317,16 @@ class KunenaAdminModelUsers extends \Joomla\CMS\MVC\Model\ListModel
 
 		if ($filter !== '')
 		{
-			$now = new \Joomla\CMS\Date\Date;
+			$now      = new Joomla\CMS\Date\Date;
+			$nullDate = $db->getNullDate() ? $db->quote($db->getNullDate()) : 'NULL';
 
 			if ($filter)
 			{
-				$query->where("ku.banned={$db->quote($db->getNullDate())} OR ku.banned>{$db->quote($now->toSql())}");
+				$query->where("ku.banned={$nullDate} OR ku.banned>{$db->quote($now->toSql())}");
 			}
 			else
 			{
-				$query->where("ku.banned IS NULL OR (ku.banned>{$db->quote($db->getNullDate())} AND ku.banned<{$db->quote($now->toSql())})");
+				$query->where("ku.banned IS NULL OR (ku.banned>{$nullDate} AND ku.banned<{$db->quote($now->toSql())})");
 			}
 		}
 
@@ -370,6 +374,8 @@ class KunenaAdminModelUsers extends \Joomla\CMS\MVC\Model\ListModel
 			default:
 				$query->order('a.username ' . $direction);
 		}
+
+		$db->setQuery($query);
 
 		return $query;
 	}

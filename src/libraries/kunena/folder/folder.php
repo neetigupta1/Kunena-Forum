@@ -4,21 +4,20 @@
  * @package       Kunena.Framework
  * @subpackage    Folder
  *
- * @copyright     Copyright (C) 2008 - 2018 Kunena Team. All rights reserved.
+ * @copyright     Copyright (C) 2008 - 2019 Kunena Team. All rights reserved.
  * @license       https://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link          https://www.kunena.org
  **/
 defined('_JEXEC') or die();
 
-jimport('joomla.filesystem.folder');
+use Joomla\CMS\Filesystem\File;
 
 /**
  * Class KunenaFolder
  *
- * @see   JFolder
  * @since Kunena
  */
-class KunenaFolder extends JFolder
+class KunenaFolder
 {
 	/**
 	 * Create index.html file into the given folder, if it doesn't exist.
@@ -31,10 +30,10 @@ class KunenaFolder extends JFolder
 	public static function createIndex($folder)
 	{
 		// Make sure we have an index.html file in the current folder
-		if (!KunenaFile::exists($folder . '/index.html'))
+		if (!File::exists($folder . '/index.html'))
 		{
 			$contents = '<html><body></body></html>';
-			KunenaFile::write($folder . '/index.html', $contents);
+			File::write($folder . '/index.html', $contents);
 		}
 	}
 }

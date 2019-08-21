@@ -4,13 +4,15 @@
  * @package         Kunena.Framework
  * @subpackage      Upload
  *
- * @copyright       Copyright (C) 2008 - 2018 Kunena Team. All rights reserved.
+ * @copyright       Copyright (C) 2008 - 2019 Kunena Team. All rights reserved.
  * @license         https://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link            https://www.kunena.org
  **/
 
 use Joomla\CMS\Factory;
 use Joomla\CMS\Language\Text;
+use Joomla\CMS\Filesystem\File;
+use Joomla\CMS\Filesystem\Folder;
 
 defined('_JEXEC') or die;
 
@@ -132,7 +134,7 @@ class KunenaUpload
 			$folder = $this->getFolder();
 
 			// Create target directory if it does not exist.
-			if (!KunenaFolder::exists($folder) && !KunenaFolder::create($folder))
+			if (!Folder::exists($folder) && !Folder::create($folder))
 			{
 				throw new RuntimeException(Text::_('Failed to create upload directory.'), 500);
 			}
@@ -242,10 +244,13 @@ class KunenaUpload
 				}
 			}
 
-			// Get filename from stream
-			$meta_data = stream_get_meta_data($out);
-			$filename  = $meta_data['uri'];
-			KunenaImage::correctImageOrientation($filename);
+			if (stripos($type, 'image/') !== false && stripos($type, 'image/') >= 0)
+			{
+				// Get filename from stream
+				$meta_data = stream_get_meta_data($out);
+				$filename  = $meta_data['uri'];
+				KunenaImage::correctImageOrientation($filename);
+			}
 		}
 		catch (Exception $exception)
 		{
@@ -332,7 +337,7 @@ class KunenaUpload
 	{
 		$filename = $filename ? $filename : $this->filename;
 
-		$user    = Factory::getUser();
+		$user    = Factory::getApplication()->getIdentity();
 		$session = Factory::getSession();
 		$token   = Factory::getConfig()->get('secret') . $user->get('id', 0) . $session->getToken();
 		list($name, $ext) = $this->splitFilename($filename);
@@ -564,7 +569,7 @@ class KunenaUpload
 	 */
 	public function ajaxResponse($content)
 	{
-		// TODO: Joomla 3.1+ uses \Joomla\CMS\Response\JsonResponse (we just emulate it for now).
+		// TODO: Joomla 3.1+ uses Joomla\CMS\Response\JsonResponse (we just emulate it for now).
 		$response           = new StdClass;
 		$response->success  = true;
 		$response->message  = null;
@@ -614,7 +619,7 @@ class KunenaUpload
 	/**
 	 * Upload file by passing it by HTML input
 	 *
-	 * @param   array  $fileInput   The file object returned by \Joomla\CMS\Input\Input
+	 * @param   array  $fileInput   The file object returned by Joomla\CMS\Input\Input
 	 * @param   string $destination The path of destination of file uploaded
 	 * @param   string $type        The type of file uploaded: attachment or avatar
 	 *
@@ -625,7 +630,7 @@ class KunenaUpload
 	public function upload($fileInput, $destination, $type = 'attachment')
 	{
 		$file       = new stdClass;
-		$file->ext  = JFile::getExt($fileInput['name']);
+		$file->ext  = File::getExt($fileInput['name']);
 		$file->ext  = strtolower($file->ext);
 		$file->size = $fileInput['size'];
 		$config     = KunenaFactory::getConfig();
@@ -637,7 +642,7 @@ class KunenaUpload
 		else
 		{
 			$pathInfo       = pathinfo($fileInput['tmp_name']);
-			$file->tmp_name = $pathInfo['dirname'] . '/' . JFile::makeSafe($pathInfo['basename']);
+			$file->tmp_name = $pathInfo['dirname'] . '/' . File::makeSafe($pathInfo['basename']);
 		}
 
 		$file->error       = $fileInput['error'];
@@ -708,8 +713,7 @@ class KunenaUpload
 			}
 			else
 			{
-				$info = getimagesize($file->tmp_name);
-				$type = $info['mime'];
+				throw new RuntimeException("Fileinfo extension not loaded.");
 			}
 
 			if (!$file->isAvatar && stripos($type, 'image/') !== false)
@@ -731,7 +735,7 @@ class KunenaUpload
 
 		KunenaImage::correctImageOrientation($file->tmp_name);
 
-		if (!KunenaFile::copy($file->tmp_name, $file->destination))
+		if (!File::copy($file->tmp_name, $file->destination))
 		{
 			throw new RuntimeException(Text::_('COM_KUNENA_UPLOAD_ERROR_FILE_RIGHT_MEDIA_DIR'), 500);
 		}
@@ -764,7 +768,7 @@ class KunenaUpload
 		$units = array(Text::_('COM_KUNENA_UPLOAD_ERROR_FILE_WEIGHT_BYTES'),
 			Text::_('COM_KUNENA_UPLOAD_ERROR_FILE_WEIGHT_KB'),
 			Text::_('COM_KUNENA_UPLOAD_ERROR_FILE_WEIGHT_MB'),
-			Text::_('COM_KUNENA_UPLOAD_ERROR_FILE_WEIGHT_GB')
+			Text::_('COM_KUNENA_UPLOAD_ERROR_FILE_WEIGHT_GB'),
 		);
 		$mod   = 1024;
 

@@ -4,7 +4,7 @@
  * @package         Kunena.Framework
  * @subpackage      Tables
  *
- * @copyright       Copyright (C) 2008 - 2018 Kunena Team. All rights reserved.
+ * @copyright       Copyright (C) 2008 - 2019 Kunena Team. All rights reserved.
  * @license         https://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link            https://www.kunena.org
  **/
@@ -254,6 +254,13 @@ class TableKunenaUsers extends KunenaTable
 	public $google = null;
 
 	/**
+	 * Github ID
+	 * @var string
+	 * @since Kunena
+	 */
+	public $github = null;
+
+	/**
 	 * MYSPACE ID
 	 * @var string
 	 * @since Kunena
@@ -266,13 +273,6 @@ class TableKunenaUsers extends KunenaTable
 	 * @since Kunena
 	 */
 	public $linkedin = null;
-
-	/**
-	 * DELICIOUS ID
-	 * @var string
-	 * @since Kunena
-	 */
-	public $delicious = null;
 
 	/**
 	 * FRIENDFEED ID
@@ -417,6 +417,13 @@ class TableKunenaUsers extends KunenaTable
 	/**
 	 * what's app
 	 * @var integer
+	 * @since Kunena 6.0.0
+	 */
+	public $vimeo = null;
+
+	/**
+	 * what's app
+	 * @var integer
 	 * @since Kunena
 	 */
 	public $whatsapp = null;
@@ -479,10 +486,11 @@ class TableKunenaUsers extends KunenaTable
 		}
 
 		// Load the user data.
-		$query = "SELECT u.name, u.username, u.email, u.block as blocked, u.registerDate, u.lastvisitDate, ku.*
-			FROM #__users AS u
-			LEFT JOIN {$this->_tbl} AS ku ON u.id = ku.userid
-			WHERE u.id = {$this->$k}";
+		$query  = $this->_db->getQuery(true);
+		$query->select('u.name, u.username, u.email, u.block as blocked, u.registerDate, u.lastvisitDate, ku.*')
+			->from($this->_db->quoteName('#__users', 'u'))
+			->leftJoin($this->_db->quoteName($this->_tbl, 'ku') . ' ON ' . $this->_db->quoteName('u.id') . ' = ' . $this->_db->quoteName('ku.userid'))
+			->where($this->_db->quoteName('u.id') . ' = ' . $this->_db->quote($this->$k));
 		$this->_db->setQuery($query);
 
 		try
@@ -504,7 +512,7 @@ class TableKunenaUsers extends KunenaTable
 			return false;
 		}
 
-		if ($data['posts'] !== null)
+		if ($data !== null)
 		{
 			$this->_exists = true;
 		}
@@ -559,19 +567,20 @@ class TableKunenaUsers extends KunenaTable
 	{
 		if (!$this->userid || !Factory::getUser($this->userid))
 		{
+			// FIIXME: find a way to throw exception because it prevent guest to post
 			$this->setError(Text::sprintf('COM_KUNENA_LIB_TABLE_USERS_ERROR_USER_INVALID', (int) $this->userid));
 		}
 
 		if ($this->status < 0 || $this->status > 3)
 		{
-			$this->setError(Text::_('COM_KUNENA_UNKNOWN_STATUS'));
+			throw new UnexpectedValueException(Text::_('COM_KUNENA_UNKNOWN_STATUS'));
 		}
 
 		if (strlen($this->status) < 0 || strlen($this->status) > 255)
 		{
-			$this->setError(Text::_('COM_KUNENA_STATUS_TOOLONG'));
+			throw new UnexpectedValueException(Text::_('COM_KUNENA_STATUS_TOOLONG'));
 		}
 
-		return $this->getError() == '';
+		return true;
 	}
 }

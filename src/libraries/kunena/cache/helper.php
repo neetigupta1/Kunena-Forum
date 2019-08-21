@@ -4,13 +4,14 @@
  * @package       Kunena.Framework
  * @subpackage    Cache
  *
- * @copyright     Copyright (C) 2008 - 2018 Kunena Team. All rights reserved.
+ * @copyright     Copyright (C) 2008 - 2019 Kunena Team. All rights reserved.
  * @license       https://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link          https://www.kunena.org
  **/
 defined('_JEXEC') or die();
 
 use Joomla\CMS\Factory;
+use Joomla\CMS\Filesystem\Folder;
 
 /**
  * Class KunenaCacheHelper has helper functions to clear all caches that affects Kunena.
@@ -44,7 +45,7 @@ abstract class KunenaCacheHelper
 	 */
 	public static function clearKunena()
 	{
-		// @var \Joomla\CMS\Cache\Cache|\Joomla\CMS\Cache\CacheController $cache
+		// @var Joomla\CMS\Cache\Cache|Joomla\CMS\Cache\CacheController $cache
 
 		$cache = Factory::getCache();
 		$cache->clean('com_kunena');
@@ -57,7 +58,7 @@ abstract class KunenaCacheHelper
 	 */
 	public static function clearSystem()
 	{
-		// @var \Joomla\CMS\Cache\Cache|\Joomla\CMS\Cache\CacheController $cache
+		// @var Joomla\CMS\Cache\Cache|Joomla\CMS\Cache\CacheController $cache
 
 		$cache = Factory::getCache();
 		$cache->clean('_system');
@@ -96,10 +97,10 @@ abstract class KunenaCacheHelper
 
 		if (is_dir($cacheDir))
 		{
-			KunenaFolder::delete($cacheDir);
+			Folder::delete($cacheDir);
 		}
 
-		KunenaFolder::create($cacheDir);
+		Folder::create($cacheDir);
 	}
 
 	/**
@@ -114,10 +115,10 @@ abstract class KunenaCacheHelper
 
 		if (is_dir($cacheDir))
 		{
-			KunenaFolder::delete($cacheDir);
+			Folder::delete($cacheDir);
 		}
 
-		KunenaFolder::create($cacheDir);
+		Folder::create($cacheDir);
 	}
 
 	/**

@@ -4,7 +4,7 @@
  * @package       Kunena.Libraries
  * @subpackage    Log
  *
- * @copyright     Copyright (C) 2008 - 2018 Kunena Team. All rights reserved.
+ * @copyright     Copyright (C) 2008 - 2019 Kunena Team. All rights reserved.
  * @license       https://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link          https://www.kunena.org
  **/
@@ -45,7 +45,7 @@ class KunenaLogEntry
 		KunenaUser $user = null
 	)
 	{
-		$now = new \Joomla\CMS\Date\Date;
+		$now = new Joomla\CMS\Date\Date;
 
 		$this->data = array(
 			'type'        => (int) $type,
@@ -53,7 +53,7 @@ class KunenaLogEntry
 			'category_id' => $category ? $category->id : 0,
 			'topic_id'    => $topic ? $topic->id : 0,
 			'target_user' => $user ? $user->userid : 0,
-			'ip'          => Factory::getApplication()->isClient('site') && isset($_SERVER['REMOTE_ADDR']) ? $_SERVER['REMOTE_ADDR'] : '',
+			'ip'          => Factory::getApplication()->isClient('site') && KunenaUserHelper::getUserIp() !== null ? KunenaUserHelper::getUserIp() : '',
 			'time'        => $now->toUnix(),
 			'operation'   => $operation,
 			'data'        => json_encode($data),

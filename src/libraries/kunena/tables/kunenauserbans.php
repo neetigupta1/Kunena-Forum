@@ -4,7 +4,7 @@
  * @package       Kunena.Framework
  * @subpackage    Tables
  *
- * @copyright     Copyright (C) 2008 - 2018 Kunena Team. All rights reserved.
+ * @copyright     Copyright (C) 2008 - 2019 Kunena Team. All rights reserved.
  * @license       https://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link          https://www.kunena.org
  **/
@@ -19,7 +19,7 @@ require_once __DIR__ . '/kunena.php';
  * Provides access to the #__kunena_users_banned table
  * @since Kunena
  */
-class TableKunenaUserBans extends \Joomla\CMS\Table\Table
+class TableKunenaUserBans extends Joomla\CMS\Table\Table
 {
 	/**
 	 * @since Kunena
@@ -140,13 +140,24 @@ class TableKunenaUserBans extends \Joomla\CMS\Table\Table
 			return false;
 		}
 
-		$now = new \Joomla\CMS\Date\Date;
+		$now = new Joomla\CMS\Date\Date;
+		$nullDate = $this->_db->getNullDate() ? $this->_db->quote($this->_db->getNullDate()) : 'NULL';
 
 		// Load the user data.
-		$query = "SELECT * FROM {$this->_tbl} 
-      WHERE userid = {$this->_db->quote($userid)} 
-      " . ($mode == self::ACTIVE ? "AND (expiration = {$this->_db->quote($this->_db->getNullDate())} OR expiration > {$this->_db->quote($now->toSql())})" : '') . " 
-      ORDER BY id DESC";
+		if ($mode == self::ACTIVE)
+		{
+			$where = ' AND (expiration = ' . $nullDate . ' OR expiration > ' . $this->_db->quote($now->toSql()) . ')';
+		}
+		else
+		{
+			$where = '';
+		}
+
+		$query  = $this->_db->getQuery(true);
+		$query->select('*')
+			->from($this->_db->quoteName($this->_tbl))
+			->where($this->_db->quoteName('userid') . ' = ' . $this->_db->quote($userid) . ' ' . $where)
+			->order($this->_db->quoteName('id') . ' DESC');
 		$this->_db->setQuery($query, 0, 1);
 
 		try
@@ -216,13 +227,25 @@ class TableKunenaUserBans extends \Joomla\CMS\Table\Table
 			return false;
 		}
 
-		$now = new \Joomla\CMS\Date\Date;
+		$now = new Joomla\CMS\Date\Date;
+		$nullDate = $this->_db->getNullDate() ? $this->_db->quote($this->_db->getNullDate()) : 'NULL';
 
 		// Load the user data.
-		$query = "SELECT * FROM {$this->_tbl}
-			WHERE ip = {$this->_db->quote($ip)}
-			" . ($mode == self::ACTIVE ? "AND (expiration = {$this->_db->quote($this->_db->getNullDate())} OR expiration > {$this->_db->quote($now->toSql())})" : '') . "
-			ORDER BY id DESC";
+
+		if ($mode == self::ACTIVE)
+		{
+			$where = 'AND (expiration = ' . $nullDate . ' OR expiration > ' . $this->_db->quote($now->toSql()) . ')';
+		}
+		else
+		{
+			$where = '';
+		}
+
+		$query  = $this->_db->getQuery(true);
+		$query->select('*')
+			->from($this->_db->quoteName($this->_tbl))
+			->where($this->_db->quoteName('ip') . ' = ' . $this->_db->quote($ip) . ' ' . $where)
+			->order($this->_db->quoteName('id') . ' DESC');
 		$this->_db->setQuery($query, 0, 1);
 
 		try
@@ -262,10 +285,10 @@ class TableKunenaUserBans extends \Joomla\CMS\Table\Table
 
 			if (!$user->exists())
 			{
-				$this->setError(Text::sprintf('COM_KUNENA_LIB_TABLE_USERBANS_ERROR_USER_INVALID', (int) $user->userid));
+				throw new RuntimeException(Text::sprintf('COM_KUNENA_LIB_TABLE_USERBANS_ERROR_USER_INVALID', (int) $user->userid));
 			}
 		}
 
-		return $this->getError() == '';
+		return true;
 	}
 }

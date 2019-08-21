@@ -5,7 +5,7 @@
  * @package         Kunena.Site
  * @subpackage      Controllers.Misc
  *
- * @copyright       Copyright (C) 2008 - 2018 Kunena Team. All rights reserved.
+ * @copyright       Copyright (C) 2008 - 2019 Kunena Team. All rights reserved.
  * @license         https://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link            https://www.kunena.org
  **/
@@ -34,7 +34,7 @@ class KunenaLayoutWidgetModule extends KunenaLayout
 	 */
 	public function renderPosition()
 	{
-		$document = Factory::getDocument();
+		$document = Factory::getApplication()->getDocument();
 
 		if ($this->position && $document->countModules($this->position))
 		{

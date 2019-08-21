@@ -4,13 +4,14 @@
  * @package         Kunena.Framework
  * @subpackage      Integration
  *
- * @copyright       Copyright (C) 2008 - 2018 Kunena Team. All rights reserved.
+ * @copyright       Copyright (C) 2008 - 2019 Kunena Team. All rights reserved.
  * @license         https://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link            https://www.kunena.org
  **/
 defined('_JEXEC') or die();
 
 use Joomla\CMS\Factory;
+use Joomla\CMS\Helper\AuthenticationHelper;
 
 /**
  * Class KunenaLogin
@@ -35,7 +36,7 @@ class KunenaLogin
 	 */
 	public function __construct()
 	{
-		\Joomla\CMS\Plugin\PluginHelper::importPlugin('kunena');
+		Joomla\CMS\Plugin\PluginHelper::importPlugin('kunena');
 
 		$classes = Factory::getApplication()->triggerEvent('onKunenaGetLogin');
 
@@ -71,12 +72,11 @@ class KunenaLogin
 	 *
 	 * @return integer
 	 * @since Kunena
+	 * @throws Exception
 	 */
 	public static function getTwoFactorMethods()
 	{
-		require_once JPATH_ADMINISTRATOR . '/components/com_users/helpers/users.php';
-
-		return count(UsersHelper::getTwoFactorMethods());
+		return count(AuthenticationHelper::getTwoFactorMethods());
 	}
 
 	/**
@@ -238,24 +238,17 @@ class KunenaLogin
 	 * user has enabled a specific TFA method on their account. Only if both conditions
 	 * are met will this method return true;
 	 *
-	 * @param   integer $userId The user ID to check. Skip to use the current user.
+	 * @param   integer  $userId  The user ID to check. Skip to use the current user.
 	 *
 	 * @return boolean True if TFA is enabled for this user
 	 * @since Kunena
+	 * @throws Exception
 	 */
 	public function isTFAEnabled($userId = null)
 	{
 		// Include the necessary user model and helper
 		require_once JPATH_ADMINISTRATOR . '/components/com_users/helpers/users.php';
-
-		if (version_compare(JVERSION, '4.0.0-dev', '>='))
-		{
-			require_once JPATH_ADMINISTRATOR . '/components/com_users/Model/UserModel.php';
-		}
-		else
-		{
-			require_once JPATH_ADMINISTRATOR . '/components/com_users/models/user.php';
-		}
+		require_once JPATH_ADMINISTRATOR . '/components/com_users/Model/UserModel.php';
 
 		// Is TFA globally turned off?
 		$twoFactorMethods = UsersHelper::getTwoFactorMethods();
@@ -268,7 +261,7 @@ class KunenaLogin
 		// Do we need to get the User ID?
 		if (empty($userId))
 		{
-			$userId = Factory::getUser()->id;
+			$userId = Factory::getApplication()->getIdentity()->id;
 		}
 
 		// Has this user turned on TFA on their account?
@@ -276,5 +269,24 @@ class KunenaLogin
 		$otpConfig = $model->getOtpConfig($userId);
 
 		return !(empty($otpConfig->method) || ($otpConfig->method == 'none'));
+	}
+
+	/**
+	 * Return the parameters of the plugin
+	 *
+	 * @return JRegistry|boolean
+	 * @since Kunena 5.1
+	 */
+	public function getParams()
+	{
+		foreach ($this->instances as $login)
+		{
+			if (method_exists($login, 'getParams'))
+			{
+				return $login->getParams();
+			}
+		}
+
+		return false;
 	}
 }

@@ -1,22 +1,25 @@
 <?php
 /**
- * @version   $Id$
- * @author    RocketTheme http://www.rockettheme.com
- * @copyright Copyright (C) 2007 - ${copyright_year} RocketTheme, LLC
- * @license   http://www.gnu.org/licenses/gpl-2.0.html GNU/GPLv2 only
- */
+ * Kunena Component
+ * @package       Kunena.Lib.Response
+ * @subpackage    Json
+ *
+ * @copyright     Copyright (C) 2008 - 2019 Kunena Team. All rights reserved.
+ * @license       https://www.gnu.org/copyleft/gpl.html GNU/GPL
+ * @link          https://www.kunena.org
+ **/
 
 // No direct access
 defined('_JEXEC') or die;
 
 /**
- * Kunena JSON Response, extends \Joomla\CMS\Response\JsonResponse.
+ * Kunena JSON Response, extends Joomla\CMS\Response\JsonResponse.
  * @since Kunena
  */
 class KunenaResponseJson extends KunenaCompatResponseJson
 {
 	/**
-	 * @var int|mixed
+	 * @var integer|mixed
 	 * @since Kunena
 	 */
 	public $code = 200;

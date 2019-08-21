@@ -5,7 +5,7 @@
  * @package         Kunena.Administrator
  * @subpackage      Controllers
  *
- * @copyright       Copyright (C) 2008 - 2018 Kunena Team. All rights reserved.
+ * @copyright       Copyright (C) 2008 - 2019 Kunena Team. All rights reserved.
  * @license         https://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link            https://www.kunena.org
  **/
@@ -13,6 +13,7 @@ defined('_JEXEC') or die();
 
 use Joomla\CMS\Factory;
 use Joomla\CMS\Language\Text;
+use Joomla\CMS\Router\Route;
 use Joomla\CMS\Session\Session;
 use Joomla\Utilities\ArrayHelper;
 
@@ -32,10 +33,10 @@ class KunenaAdminControllerUsers extends KunenaController
 	/**
 	 * Construct
 	 *
-	 * @param   array $config construct
+	 * @param   array  $config  construct
 	 *
-	 * @throws Exception
 	 * @since    2.0
+	 * @throws Exception
 	 */
 	public function __construct($config = array())
 	{
@@ -46,11 +47,11 @@ class KunenaAdminControllerUsers extends KunenaController
 	/**
 	 * Edit
 	 *
-	 * @throws Exception
-	 *
 	 * @return boolean|void
 	 *
 	 * @since    2.0
+	 * @throws Exception
+	 *
 	 * @throws null
 	 */
 	public function edit()
@@ -63,8 +64,8 @@ class KunenaAdminControllerUsers extends KunenaController
 			return;
 		}
 
-		$cid = $this->input->get('cid', array(), 'array');
-		$cid = ArrayHelper::toInteger($cid, array());
+		$cid    = $this->input->get('cid', array(), 'array');
+		$cid    = ArrayHelper::toInteger($cid, array());
 		$userid = array_shift($cid);
 
 		if ($userid <= 0)
@@ -77,17 +78,17 @@ class KunenaAdminControllerUsers extends KunenaController
 
 		$this->app->setUserState('kunena.user.userid', $userid);
 
-		$this->setRedirect(JRoute::_("index.php?option=com_kunena&view=user&layout=edit&userid={$userid}", false));
+		$this->setRedirect(Route::_("index.php?option=com_kunena&view=user&layout=edit&userid={$userid}", false));
 	}
 
 	/**
 	 * Save
 	 *
-	 * @throws Exception
-	 *
 	 * @return void
 	 *
 	 * @since    2.0
+	 * @throws Exception
+	 *
 	 * @throws null
 	 */
 	public function save()
@@ -102,14 +103,14 @@ class KunenaAdminControllerUsers extends KunenaController
 
 		$newview      = $this->app->input->getString('newview');
 		$newrank      = $this->app->input->getString('newrank');
-		$signature    = $this->app->input->getString('signature', '', 'POST', JREQUEST_ALLOWRAW);
+		$signature    = $this->app->input->getString('signature', '');
 		$deleteSig    = $this->app->input->getInt('deleteSig');
 		$moderator    = $this->app->input->getInt('moderator');
 		$uid          = $this->app->input->getInt('uid');
 		$deleteAvatar = $this->app->input->getInt('deleteAvatar');
 		$neworder     = $this->app->input->getInt('neworder');
-		$modCatids    = $moderator ? $this->app->input->get('catid', array(), 'post', 'array') : array();
-		ArrayHelper::toInteger($modCatids);
+		$modCatids    = $moderator ? $this->app->input->get('catid', array(), 'array') : array();
+		$modCatids    = ArrayHelper::toInteger($modCatids);
 
 		if ($uid)
 		{
@@ -141,11 +142,11 @@ class KunenaAdminControllerUsers extends KunenaController
 			$this->cleanSocial($user, $this->app);
 			$user->websitename  = $this->app->input->getString('websitename', '');
 			$user->websiteurl   = $this->app->input->getString('websiteurl', '');
-			$user->hideEmail    = $this->app->input->getString('hidemail');
-			$user->showOnline   = $this->app->input->getString('showonline');
-			$user->cansubscribe = $this->app->input->getString('cansubscribe');
-			$user->userlisttime = $this->app->input->getString('userlisttime');
-			$user->socialshare  = $this->app->input->getString('socialshare');
+			$user->hideEmail    = $this->app->input->getInt('hidemail');
+			$user->showOnline   = $this->app->input->getInt('showonline');
+			$user->canSubscribe = $this->app->input->getInt('cansubscribe');
+			$user->userListtime = $this->app->input->getInt('userlisttime');
+			$user->socialshare  = $this->app->input->getInt('socialshare');
 			$user->view         = $newview;
 			$user->ordering     = $neworder;
 			$user->rank         = $newrank;
@@ -164,32 +165,67 @@ class KunenaAdminControllerUsers extends KunenaController
 				$this->app->enqueueMessage(Text::_('COM_KUNENA_USER_PROFILE_SAVED_SUCCESSFULLY'));
 			}
 
-			// Update moderator rights
-			$categories = KunenaForumCategoryHelper::getCategories(false, false, 'admin');
-
-			foreach ($categories as $category)
-			{
-				$category->setModerator($user, in_array($category->id, $modCatids));
-			}
-
-			// Global moderator is a special case
-			if ($this->me->isAdmin())
-			{
-				KunenaAccess::getInstance()->setModerator(0, $user, in_array(0, $modCatids));
-			}
+			$this->setModerate($user, $modCatids);
 		}
 
 		$this->setRedirect(KunenaRoute::_($this->baseurl, false));
 	}
 
 	/**
-	 * Apply
+	 * Clean social items
 	 *
+	 * @param $user
+	 * @param $app
+	 *
+	 * @since Kunena
+	 */
+	protected function cleanSocial(&$user, $app)
+	{
+		foreach ($user->socialButtons() as $key=>$social)
+		{
+			$user->$key = str_replace(' ', '', trim($app->input->getString($key, '')));
+		}
+	}
+
+	/**
+	 * Set moderator rights on the user given
+	 *
+	 * @param   KunenaUser  $user
+	 *
+	 * @param               $modCatids
+	 *
+	 * @return boolean
+	 *
+	 * @since Kunena 5.1
 	 * @throws Exception
+	 */
+	protected function setModerate(KunenaUser $user, $modCatids)
+	{
+		// Update moderator rights
+		$categories = KunenaForumCategoryHelper::getCategories(false, false, 'admin');
+
+		foreach ($categories as $category)
+		{
+			$category->setModerator($user, in_array($category->id, $modCatids));
+		}
+
+		// Global moderator is a special case
+		if ($this->me->isAdmin())
+		{
+			KunenaAccess::getInstance()->setModerator(0, $user, in_array(0, $modCatids));
+		}
+
+		return true;
+	}
+
+	/**
+	 * Apply
 	 *
 	 * @return void
 	 *
 	 * @since    2.0
+	 * @throws Exception
+	 *
 	 */
 	public function apply()
 	{
@@ -202,14 +238,14 @@ class KunenaAdminControllerUsers extends KunenaController
 
 		$newview      = $this->app->input->getString('newview');
 		$newrank      = $this->app->input->getString('newrank');
-		$signature    = $this->app->input->getString('signature', '', 'POST', JREQUEST_ALLOWRAW);
+		$signature    = $this->app->input->getString('signature', '');
 		$deleteSig    = $this->app->input->getInt('deleteSig');
 		$moderator    = $this->app->input->getInt('moderator');
 		$uid          = $this->app->input->getInt('uid');
 		$deleteAvatar = $this->app->input->getInt('deleteAvatar');
 		$neworder     = $this->app->input->getInt('neworder');
-		$modCatids    = $moderator ? $this->app->input->get('catid', array(), 'post', 'array') : array();
-		ArrayHelper::toInteger($modCatids);
+		$modCatids    = $moderator ? $this->app->input->get('catid', array(), 'array') : array();
+		$modCatids    = ArrayHelper::toInteger($modCatids);
 
 		if ($uid)
 		{
@@ -241,11 +277,11 @@ class KunenaAdminControllerUsers extends KunenaController
 			$this->cleanSocial($user, $this->app);
 			$user->websitename  = $this->app->input->getString('websitename', '');
 			$user->websiteurl   = $this->app->input->getString('websiteurl', '');
-			$user->hideEmail    = $this->app->input->getString('hidemail');
-			$user->showOnline   = $this->app->input->getString('showonline');
-			$user->cansubscribe = $this->app->input->getString('cansubscribe');
-			$user->userlisttime = $this->app->input->getString('userlisttime');
-			$user->socialshare  = $this->app->input->getString('socialshare');
+			$user->hideEmail    = $this->app->input->getInt('hidemail');
+			$user->showOnline   = $this->app->input->getInt('showonline');
+			$user->canSubscribe = $this->app->input->getInt('cansubscribe');
+			$user->userListtime = $this->app->input->getInt('userlisttime');
+			$user->socialshare  = $this->app->input->getInt('socialshare');
 
 			$user->view     = $newview;
 			$user->ordering = $neworder;
@@ -284,11 +320,11 @@ class KunenaAdminControllerUsers extends KunenaController
 	/**
 	 * Trash menu
 	 *
-	 * @throws Exception
-	 *
 	 * @return void
 	 *
 	 * @since    2.0
+	 * @throws Exception
+	 *
 	 * @throws null
 	 */
 	public function trashusermessages()
@@ -331,11 +367,11 @@ class KunenaAdminControllerUsers extends KunenaController
 	/**
 	 * Move
 	 *
-	 * @throws Exception
-	 *
 	 * @return  void
 	 *
 	 * @since    2.0
+	 * @throws Exception
+	 *
 	 * @throws null
 	 */
 	public function move()
@@ -361,17 +397,17 @@ class KunenaAdminControllerUsers extends KunenaController
 
 		$this->app->setUserState('kunena.usermove.userids', $cid);
 
-		$this->setRedirect(JRoute::_("index.php?option=com_kunena&view=user&layout=move", false));
+		$this->setRedirect(Route::_("index.php?option=com_kunena&view=user&layout=move", false));
 	}
 
 	/**
 	 * Move Messages
 	 *
-	 * @throws Exception
-	 *
 	 * @return void
 	 *
 	 * @since    2.0
+	 * @throws Exception
+	 *
 	 * @throws null
 	 */
 	public function movemessages()
@@ -438,11 +474,11 @@ class KunenaAdminControllerUsers extends KunenaController
 	/**
 	 * Logout
 	 *
-	 * @throws Exception
-	 *
 	 * @return void
 	 *
 	 * @since    2.0
+	 * @throws Exception
+	 *
 	 * @throws null
 	 */
 	public function logout()
@@ -457,7 +493,7 @@ class KunenaAdminControllerUsers extends KunenaController
 
 		$cid = $this->input->get('cid', array(), 'array');
 		$cid = ArrayHelper::toInteger($cid, array());
-		$id = array_shift($cid);
+		$id  = array_shift($cid);
 
 		if ($id <= 0)
 		{
@@ -477,11 +513,11 @@ class KunenaAdminControllerUsers extends KunenaController
 	/**
 	 * Remove
 	 *
-	 * @throws Exception
-	 *
 	 * @return void
 	 *
 	 * @since    2.0
+	 * @throws Exception
+	 *
 	 * @throws null
 	 */
 	public function remove()
@@ -507,7 +543,7 @@ class KunenaAdminControllerUsers extends KunenaController
 
 		$users = KunenaUserHelper::loadUsers($cid);
 
-		$my        = Factory::getUser();
+		$my        = Factory::getApplication()->getIdentity();
 		$usernames = array();
 
 		foreach ($users as $user)
@@ -518,7 +554,7 @@ class KunenaAdminControllerUsers extends KunenaController
 				continue;
 			}
 
-			$instance = \Joomla\CMS\User\User::getInstance($user->userid);
+			$instance = Joomla\CMS\User\User::getInstance($user->userid);
 
 			if ($instance->authorise('core.admin'))
 			{
@@ -557,11 +593,11 @@ class KunenaAdminControllerUsers extends KunenaController
 	/**
 	 * Ban
 	 *
-	 * @throws Exception
-	 *
 	 * @return void
 	 *
 	 * @since    2.0
+	 * @throws Exception
+	 *
 	 * @throws null
 	 */
 	public function ban()
@@ -574,8 +610,8 @@ class KunenaAdminControllerUsers extends KunenaController
 			return;
 		}
 
-		$cid = $this->input->get('cid', array(), 'array');
-		$cid = ArrayHelper::toInteger($cid, array());
+		$cid    = $this->input->get('cid', array(), 'array');
+		$cid    = ArrayHelper::toInteger($cid, array());
 		$userid = array_shift($cid);
 
 		if ($userid <= 0)
@@ -596,7 +632,7 @@ class KunenaAdminControllerUsers extends KunenaController
 		else
 		{
 			jimport('joomla.utilities.date');
-			$now = new \Joomla\CMS\Date\Date;
+			$now = new Joomla\CMS\Date\Date;
 			$ban->setExpiration($now);
 			$success = $ban->save();
 		}
@@ -618,11 +654,11 @@ class KunenaAdminControllerUsers extends KunenaController
 	/**
 	 * Unban
 	 *
-	 * @throws Exception
-	 *
 	 * @return void
 	 *
 	 * @since    2.0
+	 * @throws Exception
+	 *
 	 * @throws null
 	 */
 	public function unban()
@@ -635,8 +671,8 @@ class KunenaAdminControllerUsers extends KunenaController
 			return;
 		}
 
-		$cid = $this->input->get('cid', array(), 'array');
-		$cid = ArrayHelper::toInteger($cid, array());
+		$cid    = $this->input->get('cid', array(), 'array');
+		$cid    = ArrayHelper::toInteger($cid, array());
 		$userid = array_shift($cid);
 
 		if ($userid <= 0)
@@ -657,7 +693,7 @@ class KunenaAdminControllerUsers extends KunenaController
 		else
 		{
 			jimport('joomla.utilities.date');
-			$now = new \Joomla\CMS\Date\Date;
+			$now = new Joomla\CMS\Date\Date;
 			$ban->setExpiration($now);
 			$success = $ban->save();
 		}
@@ -677,13 +713,63 @@ class KunenaAdminControllerUsers extends KunenaController
 	}
 
 	/**
-	 * Unmoderate
-	 *
-	 * @throws Exception
+	 * Set an user as global moderator, works only if you are an admin
 	 *
 	 * @return void
 	 *
-	 * @since    2.0
+	 * @since    5.1
+	 * @throws null
+	 */
+	public function moderate()
+	{
+		if (!Session::checkToken('post'))
+		{
+			$this->app->enqueueMessage(Text::_('COM_KUNENA_ERROR_TOKEN'), 'error');
+			$this->setRedirect(KunenaRoute::_($this->baseurl, false));
+
+			return;
+		}
+
+		$modCatids = $this->app->input->get('catid', array(), 'array');
+		$modCatids = ArrayHelper::toInteger($modCatids);
+
+		$cid    = $this->app->input->get('cid', array(), 'array');
+		$cid    = ArrayHelper::toInteger($cid);
+		$userid = array_shift($cid);
+
+		if ($userid <= 0)
+		{
+			$this->app->enqueueMessage(Text::_('COM_KUNENA_PROFILE_NO_USER'), 'error');
+			$this->setRedirect(KunenaRoute::_($this->baseurl, false));
+
+			return;
+		}
+
+		if ($userid <= 0)
+		{
+			$this->app->enqueueMessage(Text::_('COM_KUNENA_PROFILE_NO_USER'), 'error');
+			$this->setRedirect(KunenaRoute::_($this->baseurl, false));
+
+			return;
+		}
+
+		$user = KunenaUserHelper::get($userid);
+
+		$this->setModerate($user, $modCatids);
+
+		$this->app->enqueueMessage(Text::_('COM_KUNENA_USER_MODERATE_DONE'));
+
+		$this->setRedirect(KunenaRoute::_($this->baseurl, false));
+	}
+
+	/**
+	 * Unmoderate
+	 *
+	 * @return void
+	 *
+	 * @since    5.1
+	 * @throws Exception
+	 *
 	 * @throws null
 	 */
 	public function unmoderate()
@@ -696,8 +782,8 @@ class KunenaAdminControllerUsers extends KunenaController
 			return;
 		}
 
-		$cid = $this->app->input->get('cid', array(), 'post', 'array');
-		ArrayHelper::toInteger($cid);
+		$cid    = $this->app->input->get('cid', array(), 'array');
+		$cid    = ArrayHelper::toInteger($cid);
 		$userid = array_shift($cid);
 
 		if ($userid <= 0)
@@ -708,7 +794,7 @@ class KunenaAdminControllerUsers extends KunenaController
 			return;
 		}
 
-		$user = KunenaUserHelper::get($userid);
+		$user     = KunenaUserHelper::get($userid);
 		$category = null;
 
 		if ($category instanceof KunenaForumCategory)
@@ -723,7 +809,13 @@ class KunenaAdminControllerUsers extends KunenaController
 		if ($usercategory->role == 1)
 		{
 			$usercategory->role = false;
-			$success            = $usercategory->save();
+
+			if (!$usercategory->params)
+			{
+				$usercategory->params = '';
+			}
+
+			$success = $usercategory->save();
 
 			// Clear role cache
 			KunenaAccess::getInstance()->clearCache();
@@ -737,8 +829,6 @@ class KunenaAdminControllerUsers extends KunenaController
 				$success         = $user->save();
 			}
 		}
-
-
 
 		$message = Text::_('COM_KUNENA_USER_UNMODERATE_DONE');
 
@@ -757,11 +847,11 @@ class KunenaAdminControllerUsers extends KunenaController
 	/**
 	 * Block
 	 *
-	 * @throws Exception
-	 *
 	 * @return void
 	 *
 	 * @since    2.0
+	 * @throws Exception
+	 *
 	 * @throws null
 	 */
 	public function block()
@@ -774,8 +864,8 @@ class KunenaAdminControllerUsers extends KunenaController
 			return;
 		}
 
-		$cid = $this->input->get('cid', array(), 'array');
-		$cid = ArrayHelper::toInteger($cid, array());
+		$cid    = $this->input->get('cid', array(), 'array');
+		$cid    = ArrayHelper::toInteger($cid, array());
 		$userid = array_shift($cid);
 
 		if ($userid <= 0)
@@ -796,7 +886,7 @@ class KunenaAdminControllerUsers extends KunenaController
 		else
 		{
 			jimport('joomla.utilities.date');
-			$now = new \Joomla\CMS\Date\Date;
+			$now = new Joomla\CMS\Date\Date;
 			$ban->setExpiration($now);
 			$success = $ban->save();
 		}
@@ -818,11 +908,11 @@ class KunenaAdminControllerUsers extends KunenaController
 	/**
 	 * Unblock
 	 *
-	 * @throws Exception
-	 *
 	 * @return void
 	 *
 	 * @since    2.0
+	 * @throws Exception
+	 *
 	 * @throws null
 	 */
 	public function unblock()
@@ -835,8 +925,8 @@ class KunenaAdminControllerUsers extends KunenaController
 			return;
 		}
 
-		$cid = $this->input->get('cid', array(), 'array');
-		$cid = ArrayHelper::toInteger($cid, array());
+		$cid    = $this->input->get('cid', array(), 'array');
+		$cid    = ArrayHelper::toInteger($cid, array());
 		$userid = array_shift($cid);
 
 		if ($userid <= 0)
@@ -857,7 +947,7 @@ class KunenaAdminControllerUsers extends KunenaController
 		else
 		{
 			jimport('joomla.utilities.date');
-			$now = new \Joomla\CMS\Date\Date;
+			$now = new Joomla\CMS\Date\Date;
 			$ban->setExpiration($now);
 			$success = $ban->save();
 		}
@@ -879,11 +969,11 @@ class KunenaAdminControllerUsers extends KunenaController
 	/**
 	 * Batch Moderators
 	 *
-	 * @throws Exception
-	 *
 	 * @return void
 	 *
 	 * @since    2.0
+	 * @throws Exception
+	 *
 	 * @throws null
 	 */
 	public function batch_moderators()
@@ -896,8 +986,8 @@ class KunenaAdminControllerUsers extends KunenaController
 			return;
 		}
 
-		$cid = $this->input->get('cid', array(), 'array');
-		$cid = ArrayHelper::toInteger($cid, array());
+		$cid    = $this->input->get('cid', array(), 'array');
+		$cid    = ArrayHelper::toInteger($cid, array());
 		$catids = $this->input->get('catid', array(), 'array');
 		$catids = ArrayHelper::toInteger($catids, array());
 
@@ -947,8 +1037,8 @@ class KunenaAdminControllerUsers extends KunenaController
 	 *
 	 * @return void
 	 *
-	 * @throws Exception
 	 * @since K4.0
+	 * @throws Exception
 	 * @throws null
 	 */
 	public function cancel()
@@ -959,11 +1049,11 @@ class KunenaAdminControllerUsers extends KunenaController
 	/**
 	 * Remove categories subscriptions for the users selected
 	 *
+	 * @return void
 	 * @since 4.0.0
 	 *
-	 * @return void
-	 * @throws Exception
 	 * @since Kunena
+	 * @throws Exception
 	 * @throws null
 	 */
 	public function removecatsubscriptions()
@@ -985,7 +1075,9 @@ class KunenaAdminControllerUsers extends KunenaController
 			foreach ($cid as $userid)
 			{
 				$query = $db->getQuery(true);
-				$query->update($db->quoteName('#__kunena_user_categories'))->set($db->quoteName('subscribed') . ' = 0')->where($db->quoteName('user_id') . ' = ' . $userid);
+				$query->update($db->quoteName('#__kunena_user_categories'))
+					->set($db->quoteName('subscribed') . ' = 0')
+					->where($db->quoteName('user_id') . ' = ' . $userid);
 				$db->setQuery($query);
 
 				try
@@ -1006,11 +1098,11 @@ class KunenaAdminControllerUsers extends KunenaController
 	/**
 	 * Remove topics subscriptions for the users selected
 	 *
+	 * @return void
 	 * @since 4.0.0
 	 *
-	 * @return void
-	 * @throws Exception
 	 * @since Kunena
+	 * @throws Exception
 	 * @throws null
 	 */
 	public function removetopicsubscriptions()
@@ -1032,7 +1124,9 @@ class KunenaAdminControllerUsers extends KunenaController
 			foreach ($cid as $userid)
 			{
 				$query = $db->getQuery(true);
-				$query->update($db->quoteName('#__kunena_user_topics'))->set($db->quoteName('subscribed') . ' = 0')->where($db->quoteName('user_id') . ' = ' . $userid);
+				$query->update($db->quoteName('#__kunena_user_topics'))
+					->set($db->quoteName('subscribed') . ' = 0')
+					->where($db->quoteName('user_id') . ' = ' . $userid);
 				$db->setQuery($query);
 
 				try
@@ -1051,41 +1145,57 @@ class KunenaAdminControllerUsers extends KunenaController
 	}
 
 	/**
-	 * Clean social items
+	 * Subscribe users to categories selected
 	 *
-	 * @param $user
-	 * @param $app
+	 * @return void
+	 * @since 5.1.8
 	 *
 	 * @since Kunena
+	 * @throws Exception
+	 * @throws null
 	 */
-	protected function cleanSocial(&$user, $app)
+	public function subscribeuserstocategories()
 	{
-		$user->icq              = str_replace(' ', '', trim($app->input->getString('icq', '')));
-		$user->yim              = str_replace(' ', '', trim($app->input->getString('yim', '')));
-		$user->microsoft        = str_replace(' ', '', trim($app->input->getString('microsoft', '')));
-		$user->skype            = str_replace(' ', '', trim($app->input->getString('skype', '')));
-		$user->google           = str_replace(' ', '', trim($app->input->getString('google', '')));
-		$user->twitter          = str_replace(' ', '', trim($app->input->getString('twitter', '')));
-		$user->facebook         = str_replace(' ', '', trim($app->input->getString('facebook', '')));
-		$user->myspace          = str_replace(' ', '', trim($app->input->getString('myspace', '')));
-		$user->linkedin         = str_replace(' ', '', trim($app->input->getString('linkedin', '')));
-		$user->linkedin_company = str_replace(' ', '', trim($app->input->getString('linkedin_company', '')));
-		$user->delicious        = str_replace(' ', '', trim($app->input->getString('delicious', '')));
-		$user->friendfeed       = str_replace(' ', '', trim($app->input->getString('friendfeed', '')));
-		$user->digg             = str_replace(' ', '', trim($app->input->getString('digg', '')));
-		$user->blogspot         = str_replace(' ', '', trim($app->input->getString('blogspot', '')));
-		$user->flickr           = str_replace(' ', '', trim($app->input->getString('flickr', '')));
-		$user->bebo             = str_replace(' ', '', trim($app->input->getString('bebo', '')));
-		$user->instagram        = str_replace(' ', '', trim($app->input->getString('instagram', '')));
-		$user->qq               = str_replace(' ', '', trim($app->input->getString('qq', '')));
-		$user->qzone            = str_replace(' ', '', trim($app->input->getString('qzone', '')));
-		$user->weibo            = str_replace(' ', '', trim($app->input->getString('weibo', '')));
-		$user->wechat           = str_replace(' ', '', trim($app->input->getString('wechat', '')));
-		$user->apple            = str_replace(' ', '', trim($app->input->getString('apple', '')));
-		$user->vk               = str_replace(' ', '', trim($app->input->getString('vk', '')));
-		$user->telegram         = str_replace(' ', '', trim($app->input->getString('telegram', '')));
-		$user->whatsapp         = str_replace(' ', '', trim($app->input->getString('whatsapp', '')));
-		$user->youtube          = str_replace(' ', '', trim($app->input->getString('youtube', '')));
-		$user->ok               = str_replace(' ', '', trim($app->input->getString('ok', '')));
+		if (!Session::checkToken('post'))
+		{
+			$this->app->enqueueMessage(Text::_('COM_KUNENA_ERROR_TOKEN'), 'error');
+			$this->setRedirect(KunenaRoute::_($this->baseurl, false));
+
+			return;
+		}
+
+		$userids = $this->app->input->get('cid', array(), 'array');
+		$userids = ArrayHelper::toInteger($userids);
+		$catids  = $this->app->input->get('catid', array(), 'array');
+		$catids  = ArrayHelper::toInteger($catids);
+
+		if (empty($userids))
+		{
+			$this->app->enqueueMessage(Text::_('COM_KUNENA_USERS_BATCH_NO_USERS_SELECTED'), 'error');
+			$this->setRedirect(KunenaRoute::_($this->baseurl, false));
+
+			return;
+		}
+
+		if (empty($catids))
+		{
+			$this->app->enqueueMessage(Text::_('COM_KUNENA_USERS_BATCH_NO_CATEGORIES_SELECTED'), 'error');
+			$this->setRedirect(KunenaRoute::_($this->baseurl, false));
+
+			return;
+		}
+
+		$categories = KunenaForumCategoryHelper::getCategories($catids);
+
+		foreach ($userids as $userid)
+		{
+			foreach ($categories as $category)
+			{
+				$category->subscribe(true, $userid);
+			}
+		}
+
+		$this->app->enqueueMessage(Text::_('COM_KUNENA_USERS_ADD_CATEGORIES_SUBSCRIPTIONS_DONE'));
+		$this->setRedirect(KunenaRoute::_($this->baseurl, false));
 	}
 }

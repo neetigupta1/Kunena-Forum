@@ -4,7 +4,7 @@
  * @package         Kunena.Framework
  * @subpackage      HTML
  *
- * @copyright       Copyright (C) 2008 - 2018 Kunena Team. All rights reserved.
+ * @copyright       Copyright (C) 2008 - 2019 Kunena Team. All rights reserved.
  * @license         https://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link            https://www.kunena.org
  **/
@@ -42,14 +42,16 @@ abstract class KunenaHtmlParser
 	{
 		$db = Factory::getDBO();
 		$grayscale == true ? $column = "greylocation" : $column = "location";
-		$sql = "SELECT code, {$db->quoteName($column)} AS file FROM #__kunena_smileys";
+		$query = $db->getQuery(true)
+			->select(array($db->quoteName('code'), $db->quoteName($column, 'file')))
+			->from($db->quoteName('#__kunena_smileys'));
 
 		if ($emoticonbar == true)
 		{
-			$sql .= " WHERE emoticonbar='1'";
+			$query->where($db->quoteName('emoticonbar') . ' = 1');
 		}
 
-		$db->setQuery($sql);
+		$db->setQuery($query);
 
 		try
 		{
@@ -65,8 +67,15 @@ abstract class KunenaHtmlParser
 
 		foreach ($smilies as $smiley)
 		{
+			$smileyProperties = KunenaImage::getImageFileProperties($template->getSmileyPath($smiley->file));
+
+			$emoticon = new stdClass;
+			$emoticon->path = $template->getSmileyPath($smiley->file);
+			$emoticon->width = $smileyProperties->width;
+			$emoticon->height = $smileyProperties->height;
+
 			// We load all smileys in array, so we can sort them
-			$smileyArray [$smiley->code] = $template->getSmileyPath($smiley->file);
+			$smileyArray [$smiley->code] = $emoticon;
 		}
 
 		if ($emoticonbar == 0)
@@ -133,7 +142,7 @@ abstract class KunenaHtmlParser
 		$event_target  = (array) $config->get('jcontentevent_target', array());
 
 		$name   = '';
-		$plugin = \Joomla\CMS\Plugin\PluginHelper::getPlugin('content');
+		$plugin = Joomla\CMS\Plugin\PluginHelper::getPlugin('content');
 
 		foreach ($plugin as $key => $value)
 		{
@@ -146,10 +155,10 @@ abstract class KunenaHtmlParser
 			$row->text =& $content;
 
 			// Run events
-			$params = new \Joomla\Registry\Registry;
+			$params = new Joomla\Registry\Registry;
 			$params->set('ksource', 'kunena');
 
-			\Joomla\CMS\Plugin\PluginHelper::importPlugin('content');
+			Joomla\CMS\Plugin\PluginHelper::importPlugin('content');
 			Factory::getApplication()->triggerEvent('onContentPrepare', array($name, &$row, &$params, 0));
 			$content = $row->text;
 		}
@@ -250,7 +259,7 @@ abstract class KunenaHtmlParser
 		$txt = preg_replace('/\[instagram(.*?)\](.*?)\[\/instagram]/s', '', $txt);
 		$txt = preg_replace('/\[soundcloud(.*?)\](.*?)\[\/soundcloud]/s', '', $txt);
 
-		if (\Joomla\CMS\Plugin\PluginHelper::isEnabled('content', 'emailcloak'))
+		if (Joomla\CMS\Plugin\PluginHelper::isEnabled('content', 'emailcloak'))
 		{
 			$pattern     = "/[^@\s]*@[^@\s]*\.[^@\s]*/";
 			$replacement = ' ';

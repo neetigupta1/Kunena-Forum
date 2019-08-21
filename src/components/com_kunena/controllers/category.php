@@ -5,7 +5,7 @@
  * @package         Kunena.Site
  * @subpackage      Controllers
  *
- * @copyright       Copyright (C) 2008 - 2018 Kunena Team. All rights reserved.
+ * @copyright       Copyright (C) 2008 - 2019 Kunena Team. All rights reserved.
  * @license         https://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link            https://www.kunena.org
  **/
@@ -162,7 +162,7 @@ class KunenaControllerCategory extends KunenaAdminControllerCategories
 
 			if ($success)
 			{
-				$this->app->enqueueMessage(Text::_('COM_KUNENA_GEN_CATEGORY_SUBCRIBED'));
+				$this->app->enqueueMessage(Text::sprintf('COM_KUNENA_CATEGORY_USER_SUBCRIBED', $category->name));
 			}
 		}
 
@@ -184,11 +184,15 @@ class KunenaControllerCategory extends KunenaAdminControllerCategories
 			return;
 		}
 
+		$me = KunenaUserHelper::getMyself();
+
+		$userid = $this->app->input->getInt('userid');
+
 		$catid  = $this->app->input->getInt('catid', 0);
 		$catids = $catid
 			? array($catid)
-			: array_keys($this->app->input->get('categories', array(), 'post', 'array'));
-		ArrayHelper::toInteger($catids);
+			: array_keys($this->app->input->get('categories', array(), 'post'));
+		$catids = ArrayHelper::toInteger($catids);
 
 		$categories = KunenaForumCategoryHelper::getCategories($catids);
 
@@ -202,11 +206,15 @@ class KunenaControllerCategory extends KunenaAdminControllerCategories
 
 			if ($this->me->exists())
 			{
-				$success = $category->subscribe(0);
+				$success = $category->subscribe(0, $userid);
 
-				if ($success)
+				if ($success && $userid == $me->userid)
 				{
 					$this->app->enqueueMessage(Text::sprintf('COM_KUNENA_GEN_CATEGORY_NAME_UNSUBCRIBED', $category->name));
+				}
+				else
+				{
+					$this->app->enqueueMessage(Text::sprintf('COM_KUNENA_CATEGORY_NAME_MODERATOR_UNSUBCRIBED_USER', $category->name));
 				}
 			}
 		}

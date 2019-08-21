@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?><!DOCTYPE extension>
-<extension type="component" version="3.4" method="upgrade">
+<extension type="component" version="4.0" method="upgrade">
     <name>com_kunena</name>
     <version>@kunenaversion@</version>
     <versionname>@kunenaversionname@</versionname>
@@ -7,7 +7,7 @@
     <author>Kunena Team</author>
     <authorEmail>kunena@kunena.org</authorEmail>
     <authorUrl>https://www.kunena.org</authorUrl>
-    <copyright>(C) 2008 - 2018 Kunena Team. All rights reserved.</copyright>
+    <copyright>(C) 2008 - 2019 Kunena Team. All rights reserved.</copyright>
     <license>GNU/GPLv3 or later</license>
     <description>COM_KUNENA_XML_DESCRIPTION</description>
     <scriptfile>install/install.script.php</scriptfile>

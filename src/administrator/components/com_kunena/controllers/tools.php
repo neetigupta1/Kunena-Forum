@@ -5,7 +5,7 @@
  * @package         Kunena.Administrator
  * @subpackage      Controllers
  *
- * @copyright       Copyright (C) 2008 - 2018 Kunena Team. All rights reserved.
+ * @copyright       Copyright (C) 2008 - 2019 Kunena Team. All rights reserved.
  * @license         https://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link            https://www.kunena.org
  **/
@@ -33,10 +33,10 @@ class KunenaAdminControllerTools extends KunenaController
 	/**
 	 * Construct
 	 *
-	 * @param   array $config config
+	 * @param   array  $config  config
 	 *
-	 * @throws Exception
 	 * @since    2.0
+	 * @throws Exception
 	 */
 	public function __construct($config = array())
 	{
@@ -49,8 +49,8 @@ class KunenaAdminControllerTools extends KunenaController
 	 *
 	 * @return void
 	 *
-	 * @throws Exception
 	 * @since    2.0
+	 * @throws Exception
 	 * @throws null
 	 */
 	public function diagnostics()
@@ -91,11 +91,11 @@ class KunenaAdminControllerTools extends KunenaController
 	/**
 	 * Prune
 	 *
-	 * @throws Exception
-	 *
 	 * @return void
 	 *
 	 * @since    2.0
+	 * @throws Exception
+	 *
 	 * @throws null
 	 */
 	public function prune()
@@ -108,8 +108,8 @@ class KunenaAdminControllerTools extends KunenaController
 			return;
 		}
 
-		$ids = $this->app->input->get('prune_forum', array(), 'post', 'array');
-		ArrayHelper::toInteger($ids);
+		$ids = $this->app->input->get('prune_forum', array(), 'array');
+		$ids = ArrayHelper::toInteger($ids);
 
 		$categories = KunenaForumCategoryHelper::getCategories($ids, false, 'admin');
 
@@ -216,8 +216,8 @@ class KunenaAdminControllerTools extends KunenaController
 	 *
 	 * @return void
 	 *
-	 * @throws Exception
 	 * @since    2.0
+	 * @throws Exception
 	 * @throws null
 	 */
 	public function syncusers()
@@ -239,13 +239,13 @@ class KunenaAdminControllerTools extends KunenaController
 
 		if ($useradd)
 		{
-			$db->setQuery(
-				"INSERT INTO #__kunena_users (userid, showOnline)
-					SELECT a.id AS userid, 1 AS showOnline
-					FROM #__users AS a
-					LEFT JOIN #__kunena_users AS b ON b.userid=a.id
-					WHERE b.userid IS NULL"
-			);
+			$query = $db->getQuery(true);
+			$query->insert($db->quoteName('#__kunena_users') . '(userid, showOnline)')
+				->select('a.id AS userid, 1 AS showOnline')
+				->from($db->quoteName('#__users', 'a'))
+				->leftJoin($db->quoteName('#__kunena_users', 'b') . ' ON b.userid=a.id')
+				->where('b.userid IS NULL');
+			$db->setQuery($query);
 
 			try
 			{
@@ -263,11 +263,12 @@ class KunenaAdminControllerTools extends KunenaController
 
 		if ($userdel)
 		{
+			// TODO :  need to find the correct way to convert this query to use JDatabaseQuery
 			$db->setQuery(
 				"DELETE a
-					FROM #__kunena_users AS a
-					LEFT JOIN #__users AS b ON a.userid=b.id
-					WHERE b.username IS NULL"
+				FROM #__kunena_users AS a
+				LEFT JOIN #__users AS b ON a.userid=b.id
+				WHERE b.username IS NULL"
 			);
 
 			try
@@ -286,19 +287,25 @@ class KunenaAdminControllerTools extends KunenaController
 
 		if ($userdellife)
 		{
-			$db->setQuery(
-				"DELETE a
-			FROM #__kunena_users AS a
-			LEFT JOIN #__users AS b ON a.userid=b.id
-			WHERE banned='0000-00-00 00:00:00'"
-			);
-			$db->execute();
+			// TODO :  need to find the correct way to convert this query to use JDatabaseQuery
+			$db->setQuery("DELETE a FROM #__kunena_users AS a LEFT JOIN #__users AS b ON a.userid=b.id WHERE banned='9999-12-31 23:59:59'");
 
-			$db->setQuery(
-				"DELETE a
-			FROM #__users AS a
-			WHERE block='1'"
-			);
+			try
+			{
+				$db->execute();
+			}
+			catch (RuntimeException $e)
+			{
+				$this->app->enqueueMessage($e->getMessage());
+
+				return;
+			}
+
+			$query = $db->getQuery(true)
+				->delete($db->quoteName('#__users'))
+				->where('block=\'1\'');
+
+			$db->setQuery($query);
 
 			try
 			{
@@ -318,10 +325,12 @@ class KunenaAdminControllerTools extends KunenaController
 		{
 			$queryName = $this->config->username ? "username" : "name";
 
-			$query = "UPDATE #__kunena_messages AS m
-					INNER JOIN #__users AS u
-					SET m.name = u.{$queryName}
-					WHERE m.userid = u.id";
+			$query = $db->getQuery(true)
+				->update($db->quoteName('#__kunena_messages', 'm'))
+				->innerJoin($db->quoteName('#__users', 'u'))
+				->set('m.name = u.' . $queryName)
+				->where('m.userid = u.id');
+
 			$db->setQuery($query);
 
 			try
@@ -338,27 +347,6 @@ class KunenaAdminControllerTools extends KunenaController
 			$this->app->enqueueMessage(Text::sprintf('COM_KUNENA_SYNC_USERS_RENAME_DONE', $db->getAffectedRows()));
 		}
 
-		if ($userdellife)
-		{
-			$db->setQuery("DELETE a FROM #__kunena_users AS a LEFT JOIN #__users AS b ON a.userid=b.id WHERE banned='0000-00-00 00:00:00'");
-			$db->execute();
-
-			$db->setQuery("DELETE a FROM #__users AS a WHERE block='1'");
-
-			try
-			{
-				$db->execute();
-			}
-			catch (RuntimeException $e)
-			{
-				$this->app->enqueueMessage($e->getMessage());
-
-				return;
-			}
-
-			$this->app->enqueueMessage(Text::sprintf('COM_KUNENA_SYNC_USERS_DELETE_DONE', $db->getAffectedRows()));
-		}
-
 		$this->setRedirect(KunenaRoute::_($this->baseurl, false));
 	}
 
@@ -367,8 +355,8 @@ class KunenaAdminControllerTools extends KunenaController
 	 *
 	 * @return void
 	 *
-	 * @throws Exception
 	 * @since    2.0
+	 * @throws Exception
 	 * @throws null
 	 */
 	public function recount()
@@ -482,9 +470,9 @@ class KunenaAdminControllerTools extends KunenaController
 	 *
 	 * @return void
 	 *
+	 * @since    2.0
 	 * @throws Exception
 	 *
-	 * @since    2.0
 	 * @throws null
 	 */
 	public function dorecount()
@@ -643,7 +631,7 @@ class KunenaAdminControllerTools extends KunenaController
 	/**
 	 * Check timeout
 	 *
-	 * @param   bool $stop stop
+	 * @param   bool  $stop  stop
 	 *
 	 * @return boolean
 	 *
@@ -680,8 +668,8 @@ class KunenaAdminControllerTools extends KunenaController
 	 *
 	 * @return void
 	 *
-	 * @throws Exception
 	 * @since    2.0
+	 * @throws Exception
 	 * @throws null
 	 */
 	public function trashmenu()
@@ -701,8 +689,8 @@ class KunenaAdminControllerTools extends KunenaController
 	 *
 	 * @return void
 	 *
-	 * @throws Exception
 	 * @since    2.0
+	 * @throws Exception
 	 * @throws null
 	 */
 	public function fixlegacy()
@@ -735,8 +723,8 @@ class KunenaAdminControllerTools extends KunenaController
 	 *
 	 * @return  void
 	 *
-	 * @throws Exception
 	 * @since    2.0
+	 * @throws Exception
 	 * @throws null
 	 */
 	public function purgeReStatements()
@@ -753,8 +741,13 @@ class KunenaAdminControllerTools extends KunenaController
 
 		if ($re_string != null)
 		{
-			$db    = Factory::getDbo();
-			$query = "UPDATE #__kunena_messages SET subject=TRIM(TRIM(LEADING {$db->quote($re_string)} FROM subject)) WHERE subject LIKE {$db->quote($re_string . '%')}";
+			$db = Factory::getDbo();
+
+			$query = $db->getQuery(true)
+				->update($db->quoteName('#__kunena_messages'))
+				->set("subject=TRIM(TRIM(LEADING {$db->quote($re_string)} FROM subject))")
+				->where("subject LIKE {$db->quote($re_string.'%')}");
+
 			$db->setQuery($query);
 
 			try
@@ -791,11 +784,11 @@ class KunenaAdminControllerTools extends KunenaController
 	/**
 	 * Clean ip
 	 *
-	 * @throws Exception
-	 *
 	 * @return void
 	 *
 	 * @since    2.0
+	 * @throws Exception
+	 *
 	 * @throws null
 	 */
 	public function cleanupIP()
@@ -814,11 +807,22 @@ class KunenaAdminControllerTools extends KunenaController
 		if ($cleanup_days)
 		{
 			$clean_date = Factory::getDate()->toUnix() - ($cleanup_days * 86400);
-			$where      = 'WHERE time < ' . $clean_date;
+			$where      = 'time < ' . $clean_date;
 		}
 
-		$db    = Factory::getDbo();
-		$query = "UPDATE #__kunena_messages SET ip=NULL {$where};";
+		$db = Factory::getDbo();
+
+		if (!empty($where))
+		{
+			$query = $db->getQuery(true)
+				->update($db->quoteName('#__kunena_messages'))->set('ip=NULL')->where($where);
+		}
+		else
+		{
+			$query = $db->getQuery(true)
+				->update($db->quoteName('#__kunena_messages'))->set('ip=NULL');
+		}
+
 		$db->setQuery($query);
 
 		try
@@ -839,7 +843,9 @@ class KunenaAdminControllerTools extends KunenaController
 		if ($deleteipusers)
 		{
 			$db    = Factory::getDbo();
-			$query = "UPDATE #__kunena_users SET ip = NULL;";
+			$query = $db->getQuery(true)
+				->update($db->quoteName('#__kunena_users'))
+				->set('ip=NULL');
 			$db->setQuery($query);
 
 			try
@@ -873,8 +879,8 @@ class KunenaAdminControllerTools extends KunenaController
 	 *
 	 * @return void
 	 *
-	 * @throws Exception
 	 * @since K4.0
+	 * @throws Exception
 	 * @throws null
 	 */
 	public function cancel()
@@ -887,8 +893,8 @@ class KunenaAdminControllerTools extends KunenaController
 	 *
 	 * @return void
 	 *
-	 * @throws Exception
 	 * @since K4.0
+	 * @throws Exception
 	 * @throws null
 	 */
 	public function uninstall()
@@ -919,7 +925,7 @@ class KunenaAdminControllerTools extends KunenaController
 
 		$error = $login->loginUser($username, $password, 0, null);
 
-		$user = Factory::getUser(\Joomla\CMS\User\UserHelper::getUserId($username));
+		$user = Factory::getUser(Joomla\CMS\User\UserHelper::getUserId($username));
 
 		$isroot = $user->authorise('core.admin');
 
@@ -941,8 +947,8 @@ class KunenaAdminControllerTools extends KunenaController
 	 *
 	 * @return void
 	 *
-	 * @throws Exception
 	 * @since    2.0
+	 * @throws Exception
 	 * @throws null
 	 */
 	public function systemreport()

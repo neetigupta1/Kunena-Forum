@@ -4,7 +4,7 @@
  * @package         Kunena.Administrator
  * @subpackage      Controllers
  *
- * @copyright       Copyright (C) 2008 - 2018 Kunena Team. All rights reserved.
+ * @copyright       Copyright (C) 2008 - 2019 Kunena Team. All rights reserved.
  * @license         https://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link            https://www.kunena.org
  **/
@@ -27,10 +27,10 @@ class KunenaAdminControllerEmail extends KunenaController
 	/**
 	 * Construct
 	 *
-	 * @param   array $config config
+	 * @param   array  $config  config
 	 *
-	 * @throws Exception
 	 * @since    5.1
+	 * @throws Exception
 	 */
 	public function __construct($config = array())
 	{

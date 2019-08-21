@@ -5,7 +5,7 @@
  * @package         Kunena.Site
  * @subpackage      Controllers
  *
- * @copyright       Copyright (C) 2008 - 2018 Kunena Team. All rights reserved.
+ * @copyright       Copyright (C) 2008 - 2019 Kunena Team. All rights reserved.
  * @license         https://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link            https://www.kunena.org
  **/
@@ -21,30 +21,35 @@ use Joomla\Utilities\ArrayHelper;
  * Kunena Topic Controller
  *
  * @since  2.0
+ * @property int catid
+ * @property int id
+ * @property int mesid
+ * @property int return
+ *
  */
 class KunenaControllerTopic extends KunenaController
 {
 	/**
-	 * @param   array $config config
+	 * @param   array  $config  config
 	 *
-	 * @throws Exception
 	 * @since Kunena
+	 * @throws Exception
 	 */
 	public function __construct($config = array())
 	{
 		parent::__construct($config);
-		$this->catid  = Factory::getApplication()->input->getInt('catid', 0);
-		$this->return = Factory::getApplication()->input->getInt('return', $this->catid);
-		$this->id     = Factory::getApplication()->input->getInt('id', 0);
-		$this->mesid  = Factory::getApplication()->input->getInt('mesid', 0);
+		$this->catid  = $this->app->input->getInt('catid', 0);
+		$this->return = $this->app->input->getInt('return', $this->catid);
+		$this->id     = $this->app->input->getInt('id', 0);
+		$this->mesid  = $this->app->input->getInt('mesid', 0);
 	}
 
 	/**
 	 * Get attachments attached to a message with AJAX.
 	 *
 	 * @return void
-	 * @throws Exception
 	 * @since Kunena
+	 * @throws Exception
 	 * @throws null
 	 */
 	public function loadattachments()
@@ -75,6 +80,7 @@ class KunenaControllerTopic extends KunenaController
 			$object->type    = $attach->filetype;
 			$object->path    = $attach->getUrl();
 			$object->image   = $attach->isImage();
+			$object->inline  = $attach->isInline();
 			$list['files'][] = $object;
 		}
 
@@ -98,8 +104,8 @@ class KunenaControllerTopic extends KunenaController
 	 * Set inline to 0 on the attachment object.
 	 *
 	 * @return void
-	 * @throws Exception
 	 * @since Kunena 5.1
+	 * @throws Exception
 	 */
 	public function removeinline()
 	{
@@ -115,11 +121,28 @@ class KunenaControllerTopic extends KunenaController
 		}
 
 		$attach_id = $this->input->getInt('file_id', 0);
+		$instance  = KunenaAttachmentHelper::get($attach_id);
+		$response  = array();
 
-		$success           = array();
-		$instance          = KunenaAttachmentHelper::get($attach_id);
-		$success['result'] = $instance->setInline(0);
-		unset($instance);
+		if (KunenaUserHelper::getMyself()->userid == $instance->userid || KunenaUserHelper::getMyself()->isAdmin() || KunenaUserHelper::getMyself()->isModerator())
+		{
+			if ($instance->inline)
+			{
+				$response['result'] = $instance->setInline(0);
+				$response['value']  = 0;
+			}
+			else
+			{
+				$response['result'] = $instance->setInline(1);
+				$response['value']  = 1;
+			}
+
+			unset($instance);
+		}
+		else
+		{
+			throw new RuntimeException(Text::_('Forbidden'), 403);
+		}
 
 		header('Content-type: application/json');
 		header("Expires: Mon, 26 Jul 1997 05:00:00 GMT");
@@ -132,7 +155,7 @@ class KunenaControllerTopic extends KunenaController
 		{
 		}
 
-		echo json_encode($success);
+		echo json_encode($response);
 
 		jexit();
 	}
@@ -141,8 +164,8 @@ class KunenaControllerTopic extends KunenaController
 	 * Remove files with AJAX.
 	 *
 	 * @return void
-	 * @throws Exception
 	 * @since Kunena
+	 * @throws Exception
 	 */
 	public function removeattachments()
 	{
@@ -157,11 +180,20 @@ class KunenaControllerTopic extends KunenaController
 			throw new RuntimeException(Text::_('Forbidden'), 403);
 		}
 
-		$attach_id         = $this->input->getInt('file_id', 0);
-		$success           = array();
-		$instance          = KunenaAttachmentHelper::get($attach_id);
-		$success['result'] = $instance->delete();
-		unset($instance);
+		$attach_id = $this->input->getInt('file_id', 0);
+		$success   = array();
+		$instance  = KunenaAttachmentHelper::get($attach_id);
+
+		if (KunenaUserHelper::getMyself()->userid == $instance->userid || KunenaUserHelper::getMyself()->isAdmin() || KunenaUserHelper::getMyself()->isModerator())
+		{
+			$success['result'] = $instance->delete();
+			unset($instance);
+		}
+		else
+		{
+			throw new RuntimeException(Text::_('Forbidden'), 403);
+		}
+
 		header('Content-type: application/json');
 		header("Expires: Mon, 26 Jul 1997 05:00:00 GMT");
 		header("Last-Modified: " . gmdate("D, d M Y H:i:s") . " GMT");
@@ -181,8 +213,8 @@ class KunenaControllerTopic extends KunenaController
 	/**
 	 * Upload files with AJAX.
 	 *
-	 * @throws null
 	 * @since Kunena
+	 * @throws null
 	 */
 	public function upload()
 	{
@@ -335,25 +367,28 @@ class KunenaControllerTopic extends KunenaController
 	}
 
 	/**
+	 * @return void
+	 * @since Kunena
 	 * @throws Exception
 	 * @throws null
-	 * @since Kunena
 	 */
 	public function post()
 	{
-		$this->id = Factory::getApplication()->input->getInt('parentid', 0);
+		$this->id = $this->app->input->getInt('parentid', 0);
 		$fields   = array(
 			'catid'             => $this->catid,
-			'name'              => Factory::getApplication()->input->getString('authorname', $this->me->getName()),
-			'email'             => Factory::getApplication()->input->getString('email', null),
-			'subject'           => Factory::getApplication()->input->post->get('subject', '', 'raw'),
-			'message'           => Factory::getApplication()->input->post->get('message', '', 'raw'),
-			'icon_id'           => Factory::getApplication()->input->getInt('topic_emoticon', null),
-			'anonymous'         => Factory::getApplication()->input->getInt('anonymous', 0),
-			'poll_title'        => Factory::getApplication()->input->getString('poll_title', ''),
-			'poll_options'      => Factory::getApplication()->input->get('polloptionsID', array(), 'post', 'array'),
-			'poll_time_to_live' => Factory::getApplication()->input->getString('poll_time_to_live', 0),
-			'subscribe'         => Factory::getApplication()->input->getInt('subscribeMe', 0),
+			'name'              => $this->app->input->getString('authorname', $this->me->getName()),
+			'email'             => $this->app->input->getString('email', null),
+			'subject'           => $this->app->input->post->get('subject', '', 'raw'),
+			'message'           => $this->app->input->post->get('message', '', 'raw'),
+			'icon_id'           => $this->app->input->getInt('topic_emoticon', null),
+			'anonymous'         => $this->app->input->getInt('anonymous', 0),
+			'poll_title'        => $this->app->input->getString('poll_title', ''),
+			'poll_options'      => $this->app->input->post->get('polloptionsID', array(), 'array'),
+			'poll_time_to_live' => $this->app->input->getString('poll_time_to_live', 0),
+			'subscribe'         => $this->app->input->getInt('subscribeMe', 0),
+			'rating'            => 0,
+			'params'            => '',
 		);
 
 		$this->app->setUserState('com_kunena.postfields', $fields);
@@ -408,29 +443,24 @@ class KunenaControllerTopic extends KunenaController
 
 		if ($this->me->canDoCaptcha())
 		{
-			if (\Joomla\CMS\Plugin\PluginHelper::isEnabled('captcha'))
+			if (Joomla\CMS\Plugin\PluginHelper::isEnabled('captcha'))
 			{
-				$plugin = \Joomla\CMS\Plugin\PluginHelper::getPlugin('captcha');
-				$params = new \Joomla\Registry\Registry($plugin[0]->params);
+				$plugin = Joomla\CMS\Plugin\PluginHelper::getPlugin('captcha');
+				$params = new Joomla\Registry\Registry($plugin[0]->params);
 
 				$captcha_pubkey  = $params->get('public_key');
 				$captcha_privkey = $params->get('private_key');
 
 				if (!empty($captcha_pubkey) && !empty($captcha_privkey))
 				{
-					\Joomla\CMS\Plugin\PluginHelper::importPlugin('captcha');
+					Joomla\CMS\Plugin\PluginHelper::importPlugin('captcha');
 
 					$captcha_response = $this->app->input->getString('g-recaptcha-response');
 
 					if (!empty($captcha_response))
 					{
 						// For ReCaptcha API 2.0
-						$res = Factory::getApplication()->triggerEvent('onCheckAnswer', array($this->app->input->getString('g-recaptcha-response')));
-					}
-					else
-					{
-						// For ReCaptcha API 1.0
-						$res = Factory::getApplication()->triggerEvent('onCheckAnswer', array($this->app->input->getString('recaptcha_response_field')));
+						$res = $this->app->triggerEvent('onCheckAnswer', array($this->app->input->getString('g-recaptcha-response')));
 					}
 
 					if (!$res[0])
@@ -446,7 +476,7 @@ class KunenaControllerTopic extends KunenaController
 		$isNew = !$topic->exists();
 
 		// Redirect to full reply instead.
-		if (Factory::getApplication()->input->getString('fullreply'))
+		if ($this->app->input->getString('fullreply'))
 		{
 			$this->setRedirect(KunenaRoute::_("index.php?option=com_kunena&view=topic&layout=reply&catid={$fields->catid}&id={$parent->getTopic()->id}&mesid={$parent->id}", false));
 
@@ -457,10 +487,14 @@ class KunenaControllerTopic extends KunenaController
 		if ($this->config->floodprotection && !$this->me->isModerator($category) && $isNew)
 		{
 			$timelimit = Factory::getDate()->toUnix() - $this->config->floodprotection;
-			$ip        = $_SERVER ["REMOTE_ADDR"];
+			$ip        = KunenaUserHelper::getUserIp();
 
-			$db = Factory::getDBO();
-			$db->setQuery("SELECT COUNT(*) FROM #__kunena_messages WHERE ip={$db->Quote($ip)} AND time>{$db->quote($timelimit)}");
+			$db    = Factory::getDBO();
+			$query = $db->getQuery(true);
+			$query->select('COUNT(*)')
+				->from($db->quoteName('#__kunena_messages'))
+				->where('ip=' . $db->quote($ip) . ' AND time > ' . $db->quote($timelimit));
+			$db->setQuery($query);
 
 			try
 			{
@@ -499,6 +533,18 @@ class KunenaControllerTopic extends KunenaController
 			$topic->icon_id = $fields['icon_id'];
 		}
 
+		// Check for guest user if the IP, username or email are blacklisted
+		if ($message->getCategory()->allow_anonymous && !$this->me->userid)
+		{
+			if ($this->checkIfBlacklisted($message))
+			{
+				$this->app->enqueueMessage(Text::_('COM_KUNENA_TOPIC_MESSAGES_ERROR_BALCKLISTED'), 'error');
+				$this->setRedirectBack();
+
+				return;
+			}
+		}
+
 		// Remove IP address
 		if (!$this->config->iptracking)
 		{
@@ -527,8 +573,8 @@ class KunenaControllerTopic extends KunenaController
 		@ignore_user_abort(true);
 
 		// Mark attachments to be added or deleted.
-		$attachments = Factory::getApplication()->input->get('attachments', array(), 'post', 'array');
-		$attachment  = Factory::getApplication()->input->get('attachment', array(), 'post', 'array');
+		$attachments = $this->app->input->get('attachments', array(), 'post', 'array');
+		$attachment  = $this->app->input->get('attachment', array(), 'post', 'array');
 		$message->addAttachments(array_keys(array_intersect_key($attachments, $attachment)));
 		$message->removeAttachments(array_keys(array_diff_key($attachments, $attachment)));
 
@@ -563,7 +609,7 @@ class KunenaControllerTopic extends KunenaController
 
 		if (!preg_match('!(<img |<object |<iframe )!', $text))
 		{
-			$text = trim(\Joomla\CMS\Filter\OutputFilter::cleanText($text));
+			$text = trim(Joomla\CMS\Filter\OutputFilter::cleanText($text));
 		}
 
 		if (!$text)
@@ -579,6 +625,14 @@ class KunenaControllerTopic extends KunenaController
 		if (!$maxlinks)
 		{
 			$this->app->enqueueMessage(Text::_('COM_KUNENA_TOPIC_SPAM_LINK_PROTECTION'), 'error');
+			$this->setRedirectBack();
+
+			return;
+		}
+
+		if (!$this->catid)
+		{
+			$this->app->enqueueMessage(Text::_('COM_KUNENA_ACTION_NO_CATEGORY_SELECTED'), 'error');
 			$this->setRedirectBack();
 
 			return;
@@ -654,7 +708,7 @@ class KunenaControllerTopic extends KunenaController
 
 				if (!empty($fields['poll_time_to_live']))
 				{
-					$polltimetolive       = new \Joomla\CMS\Date\Date($fields['poll_time_to_live']);
+					$polltimetolive       = new Joomla\CMS\Date\Date($fields['poll_time_to_live']);
 					$poll->polltimetolive = $polltimetolive->toSql();
 				}
 
@@ -725,28 +779,135 @@ class KunenaControllerTopic extends KunenaController
 	}
 
 	/**
-	 * @throws Exception
-	 * @throws null
+	 * Check if title of topic or message contains URL to limit part of spam
+	 *
+	 * @internal param string $usbject
+	 *
+	 * @param $subject
+	 *
+	 * @return boolean
+	 * @since    Kunena
+	 */
+	protected function checkURLInSubject($subject)
+	{
+		if ($this->config->url_subject_topic)
+		{
+			preg_match_all('/\b(?:(?:https?|ftp):\/\/|www\.)[-a-z0-9+&@#\/%?=~_|!:,.;]*[-a-z0-9+&@#\/%=~_|]/i', $subject, $matches);
+
+			$ignore = false;
+
+			foreach ($matches as $match)
+			{
+				if (!empty($match))
+				{
+					$ignore = true;
+				}
+			}
+
+			return $ignore;
+		}
+
+		return true;
+	}
+
+	/**
+	 * Check in the text the max links
+	 *
+	 * @param $text
+	 * @param $topic
+	 *
+	 * @return boolean
 	 * @since Kunena
+	 * @throws Exception
+	 */
+	protected function checkMaxLinks($text, $topic)
+	{
+		$category = $topic->getCategory();
+
+		if ($this->me->isAdmin() || $this->me->isModerator($category))
+		{
+			return true;
+		}
+
+		preg_match_all('/<div class=\"kunena_ebay_widget\"(.*?)>(.*?)<\/div>/s', $text, $ebay_matches);
+
+		$ignore = false;
+
+		foreach ($ebay_matches as $match)
+		{
+			if (!empty($match))
+			{
+				$ignore = true;
+			}
+		}
+
+		preg_match_all('/<div id=\"kunena_twitter_widget\"(.*?)>(.*?)<\/div>/s', $text, $twitter_matches);
+
+		foreach ($twitter_matches as $match)
+		{
+			if (!empty($match))
+			{
+				$ignore = true;
+			}
+		}
+
+		if (!$ignore)
+		{
+			preg_match_all('@\(((https?://)?([-\\w]+\\.[-\\w\\.]+)+\\w(:\\d+)?(/([-\\w/_\\.]*(\\?\\S+)?)?)*)\)@', $text, $matches);
+
+			if (empty($matches[0]))
+			{
+				preg_match_all("/<a\s[^>]*href=\"([^\"]*)\"[^>]*>(.*)<\/a>/siU", $text, $matches);
+			}
+
+			$countlink = count($matches[0]);
+
+			// Ignore internal links
+			foreach ($matches[1] as $link)
+			{
+				$uri  = Uri::getInstance($link);
+				$host = $uri->getHost();
+
+				// The cms will catch most of these well
+				if (empty($host) || Uri::isInternal($link))
+				{
+					$countlink--;
+				}
+			}
+
+			if (!$topic->isAuthorised('approve') && $countlink >= $this->config->max_links + 1)
+			{
+				return false;
+			}
+		}
+
+		return true;
+	}
+
+	/**
+	 * @since Kunena
+	 * @throws null
+	 * @throws Exception
 	 */
 	public function edit()
 	{
-		$this->id = Factory::getApplication()->input->getInt('mesid', 0);
+		$this->id = $this->app->input->getInt('mesid', 0);
 
 		$message = KunenaForumMessageHelper::get($this->id);
 		$topic   = $message->getTopic();
 		$fields  = array(
-			'name'              => Factory::getApplication()->input->getString('authorname', $message->name),
-			'email'             => Factory::getApplication()->input->getString('email', $message->email),
-			'subject'           => Factory::getApplication()->input->post->get('subject', '', 'raw'),
-			'message'           => Factory::getApplication()->input->post->get('message', '', 'raw'),
-			'modified_reason'   => Factory::getApplication()->input->getString('modified_reason', $message->modified_reason),
-			'icon_id'           => Factory::getApplication()->input->getInt('topic_emoticon', $topic->icon_id),
-			'anonymous'         => Factory::getApplication()->input->getInt('anonymous', 0),
-			'poll_title'        => Factory::getApplication()->input->getString('poll_title', null),
-			'poll_options'      => Factory::getApplication()->input->get('polloptionsID', array(), 'post', 'array'),
-			'poll_time_to_live' => Factory::getApplication()->input->getString('poll_time_to_live', 0),
-			'subscribe'         => Factory::getApplication()->input->getInt('subscribeMe', 0),
+			'name'              => $this->app->input->getString('authorname', $message->name),
+			'email'             => $this->app->input->getString('email', $message->email),
+			'subject'           => $this->app->input->post->get('subject', '', 'raw'),
+			'message'           => $this->app->input->post->get('message', '', 'raw'),
+			'modified_reason'   => $this->app->input->getString('modified_reason', $message->modified_reason),
+			'icon_id'           => $this->app->input->getInt('topic_emoticon', $topic->icon_id),
+			'anonymous'         => $this->app->input->getInt('anonymous', 0),
+			'poll_title'        => $this->app->input->getString('poll_title', null),
+			'poll_options'      => $this->app->input->get('polloptionsID', array(), 'post', 'array'),
+			'poll_time_to_live' => $this->app->input->getString('poll_time_to_live', 0),
+			'subscribe'         => $this->app->input->getInt('subscribeMe', 0),
+			'params'            => '',
 		);
 
 		if (!Session::checkToken('post'))
@@ -787,13 +948,13 @@ class KunenaControllerTopic extends KunenaController
 		@ignore_user_abort(true);
 
 		// Mark attachments to be added or deleted.
-		$attachments = Factory::getApplication()->input->get('attachments', array(), 'post', 'array');
-		$attachment  = Factory::getApplication()->input->get('attachment', array(), 'post', 'array');
+		$attachments = $this->app->input->get('attachments', array(), 'post', 'array');
+		$attachment  = $this->app->input->get('attachment', array(), 'post', 'array');
 
-		$addList = array_keys(array_intersect_key($attachments, $attachment));
-		ArrayHelper::toInteger($addList);
+		$addList    = array_keys(array_intersect_key($attachments, $attachment));
+		$addList    = ArrayHelper::toInteger($addList);
 		$removeList = array_keys(array_diff_key($attachments, $attachment));
-		ArrayHelper::toInteger($removeList);
+		$removeList = ArrayHelper::toInteger($removeList);
 
 		$message->addAttachments($addList);
 		$message->removeAttachments($removeList);
@@ -831,7 +992,7 @@ class KunenaControllerTopic extends KunenaController
 		}
 
 		// Check if we are editing first post and update topic if we are!
-		if ($topic->first_post_id == $message->id)
+		if ($topic->first_post_id == $message->id || KunenaConfig::getInstance()->allow_change_subject && $topic->first_post_userid == $message->userid || KunenaUserHelper::getMyself()->isModerator())
 		{
 			$topic->subject = $fields['subject'];
 		}
@@ -841,7 +1002,7 @@ class KunenaControllerTopic extends KunenaController
 
 		if (!preg_match('!(<img |<object |<iframe )!', $text))
 		{
-			$text = trim(\Joomla\CMS\Filter\OutputFilter::cleanText($text));
+			$text = trim(Joomla\CMS\Filter\OutputFilter::cleanText($text));
 		}
 
 		if (!$text && $this->config->userdeletetmessage == 1)
@@ -922,7 +1083,7 @@ class KunenaControllerTopic extends KunenaController
 			$this->app->enqueueMessage($warning, 'notice');
 		}
 
-		$subscribe = Factory::getApplication()->input->getInt('subscribeMe');
+		$subscribe = $this->app->input->getInt('subscribeMe');
 		$usertopic = $topic->getUserTopic();
 
 		if ($topic->isAuthorised('subscribe'))
@@ -953,7 +1114,7 @@ class KunenaControllerTopic extends KunenaController
 
 				if (!empty($fields['poll_time_to_live']))
 				{
-					$polltimetolive       = new \Joomla\CMS\Date\Date($fields['poll_time_to_live']);
+					$polltimetolive       = new Joomla\CMS\Date\Date($fields['poll_time_to_live']);
 					$poll->polltimetolive = $polltimetolive->toSql();
 				}
 
@@ -1043,138 +1204,22 @@ class KunenaControllerTopic extends KunenaController
 	}
 
 	/**
-	 * Check if title of topic or message contains URL to limit part of spam
-	 *
-	 * @param $subject
-	 *
-	 * @return boolean
-	 * @internal param string $usbject
-	 * @since    Kunena
-	 */
-	protected function checkURLInSubject($subject)
-	{
-		if ($this->config->url_subject_topic)
-		{
-			preg_match_all('/\b(?:(?:https?|ftp):\/\/|www\.)[-a-z0-9+&@#\/%?=~_|!:,.;]*[-a-z0-9+&@#\/%=~_|]/i', $subject, $matches);
-
-			$ignore = false;
-
-			foreach ($matches as $match)
-			{
-				if (!empty($match))
-				{
-					$ignore = true;
-				}
-			}
-
-			return $ignore;
-		}
-
-		return true;
-	}
-
-	/**
-	 * Check in the text the max links
-	 *
-	 * @param $text
-	 * @param $topic
-	 *
-	 * @return boolean
-	 * @throws Exception
 	 * @since Kunena
-	 */
-	protected function checkMaxLinks($text, $topic)
-	{
-		$category = $topic->getCategory();
-
-		if ($this->me->isAdmin() || $this->me->isModerator($category))
-		{
-			return true;
-		}
-
-		preg_match_all('/<div class=\"kunena_ebay_widget\"(.*?)>(.*?)<\/div>/s', $text, $ebay_matches);
-
-		$ignore = false;
-
-		foreach ($ebay_matches as $match)
-		{
-			if (!empty($match))
-			{
-				$ignore = true;
-			}
-		}
-
-		preg_match_all('/<div id=\"kunena_twitter_widget\"(.*?)>(.*?)<\/div>/s', $text, $twitter_matches);
-
-		foreach ($twitter_matches as $match)
-		{
-			if (!empty($match))
-			{
-				$ignore = true;
-			}
-		}
-
-		if (!$ignore)
-		{
-			preg_match_all('@\(((https?://)?([-\\w]+\\.[-\\w\\.]+)+\\w(:\\d+)?(/([-\\w/_\\.]*(\\?\\S+)?)?)*)\)@', $text, $matches);
-
-			if (empty($matches[0]))
-			{
-				preg_match_all("/<a\s[^>]*href=\"([^\"]*)\"[^>]*>(.*)<\/a>/siU", $text, $matches);
-			}
-
-			$countlink = count($matches[0]);
-
-			// Ignore internal links
-			foreach ($matches[1] as $link)
-			{
-				$uri = Uri::getInstance($link);
-				$host = $uri->getHost();
-
-				// The cms will catch most of these well
-				if (empty($host) || Uri::isInternal($link))
-				{
-					$countlink--;
-				}
-			}
-
-			if (!$topic->isAuthorised('approve') && $countlink >= $this->config->max_links + 1)
-			{
-				return false;
-			}
-		}
-
-		return true;
-	}
-
-	/**
-	 * @throws Exception
 	 * @throws null
-	 * @since Kunena
+	 * @throws Exception
 	 */
 	public function thankyou()
 	{
-		$type = Factory::getApplication()->input->getString('task');
-		$this->setThankyou($type);
-	}
-
-	/**
-	 * @throws Exception
-	 * @throws null
-	 * @since Kunena
-	 */
-	public function unthankyou()
-	{
-		$type = Factory::getApplication()->input->getString('task');
+		$type = $this->app->input->getString('task');
 		$this->setThankyou($type);
 	}
 
 	/**
 	 * @param $type
 	 *
-	 * @throws Exception
-	 * @throws null
 	 * @since Kunena
+	 * @throws null
+	 * @throws Exception
 	 */
 	protected function setThankyou($type)
 	{
@@ -1232,7 +1277,7 @@ class KunenaControllerTopic extends KunenaController
 		}
 		else
 		{
-			$userid = Factory::getApplication()->input->getInt('userid', '0');
+			$userid = $this->app->input->getInt('userid', '0');
 
 			try
 			{
@@ -1264,6 +1309,17 @@ class KunenaControllerTopic extends KunenaController
 		}
 
 		$this->setRedirect($message->getUrl($category->exists() ? $category->id : $message->catid, false));
+	}
+
+	/**
+	 * @since Kunena
+	 * @throws null
+	 * @throws Exception
+	 */
+	public function unthankyou()
+	{
+		$type = $this->app->input->getString('task');
+		$this->setThankyou($type);
 	}
 
 	/**
@@ -1736,7 +1792,6 @@ class KunenaControllerTopic extends KunenaController
 		{
 			// Delete message
 			$message = $target = KunenaForumMessageHelper::get($this->mesid);
-			$topic   = $message->getTopic();
 			$log     = KunenaLog::LOG_POST_DESTROY;
 			$topic   = KunenaForumTopicHelper::get($target->getTopic());
 
@@ -1861,8 +1916,8 @@ class KunenaControllerTopic extends KunenaController
 	}
 
 	/**
-	 * @throws Exception
 	 * @since Kunena
+	 * @throws Exception
 	 * @throws null
 	 */
 	public function move()
@@ -1875,14 +1930,14 @@ class KunenaControllerTopic extends KunenaController
 			return;
 		}
 
-		$topicId        = Factory::getApplication()->input->getInt('id', 0);
-		$messageId      = Factory::getApplication()->input->getInt('mesid', 0);
-		$targetCategory = Factory::getApplication()->input->getInt('targetcategory', 0);
-		$targetTopic    = Factory::getApplication()->input->getInt('targettopic', 0);
+		$topicId        = $this->app->input->getInt('id', 0);
+		$messageId      = $this->app->input->getInt('mesid', 0);
+		$targetCategory = $this->app->input->getInt('targetcategory', 0);
+		$targetTopic    = $this->app->input->getInt('targettopic', 0);
 
 		if ($targetTopic < 0)
 		{
-			$targetTopic = Factory::getApplication()->input->getInt('targetid', 0);
+			$targetTopic = $this->app->input->getInt('targetid', 0);
 		}
 
 		if ($messageId)
@@ -1918,20 +1973,20 @@ class KunenaControllerTopic extends KunenaController
 		}
 		else
 		{
-			$changesubject  = Factory::getApplication()->input->getBool('changesubject', false);
-			$subject        = Factory::getApplication()->input->getString('subject', '');
-			$shadow         = Factory::getApplication()->input->getBool('shadow', false);
-			$topic_emoticon = Factory::getApplication()->input->getInt('topic_emoticon', null);
-			$keep_poll      = Factory::getApplication()->input->getInt('keep_poll', false);
+			$changesubject  = $this->app->input->getBool('changesubject', false);
+			$subject        = $this->app->input->getString('subject', '');
+			$shadow         = $this->app->input->getBool('shadow', false);
+			$topic_emoticon = $this->app->input->getInt('topic_emoticon', null);
+			$keep_poll      = $this->app->input->getInt('keep_poll', false);
 
 			if ($object instanceof KunenaForumMessage)
 			{
-				$mode = Factory::getApplication()->input->getWord('mode', 'selected');
+				$mode = $this->app->input->getWord('mode', 'selected');
 
 				switch ($mode)
 				{
 					case 'newer':
-						$ids = new \Joomla\CMS\Date\Date($object->time);
+						$ids = new Joomla\CMS\Date\Date($object->time);
 						break;
 					case 'selected':
 					default:
@@ -1988,8 +2043,8 @@ class KunenaControllerTopic extends KunenaController
 	}
 
 	/**
-	 * @throws Exception
 	 * @since Kunena
+	 * @throws Exception
 	 * @throws null
 	 */
 	public function report()
@@ -2020,7 +2075,7 @@ class KunenaControllerTopic extends KunenaController
 			return;
 		}
 
-		if (!$this->config->getEmail() || !\Joomla\CMS\Mail\MailHelper::isEmailAddress($this->config->getEmail()))
+		if (!$this->config->getEmail() || !Joomla\CMS\Mail\MailHelper::isEmailAddress($this->config->getEmail()))
 		{
 			// Error: email address is invalid
 			$this->app->enqueueMessage(Text::_('COM_KUNENA_EMAIL_INVALID'), 'error');
@@ -2052,8 +2107,8 @@ class KunenaControllerTopic extends KunenaController
 			return;
 		}
 
-		$reason = Factory::getApplication()->input->getString('reason');
-		$text   = Factory::getApplication()->input->getString('text');
+		$reason = $this->app->input->getString('reason');
+		$text   = $this->app->input->getString('text');
 
 		$template = KunenaTemplate::getInstance();
 
@@ -2096,7 +2151,7 @@ class KunenaControllerTopic extends KunenaController
 
 			if (!empty($emailToList))
 			{
-				$mailsender  = \Joomla\CMS\Mail\MailHelper::cleanAddress($this->config->board_title . ': ' . $this->me->getName());
+				$mailsender  = Joomla\CMS\Mail\MailHelper::cleanAddress($this->config->board_title . ': ' . $this->me->getName());
 				$mailsubject = "[" . $this->config->board_title . " " . Text::_('COM_KUNENA_FORUM') . "] " . Text::_('COM_KUNENA_REPORT_MSG') . ": ";
 
 				if ($reason)
@@ -2111,7 +2166,7 @@ class KunenaControllerTopic extends KunenaController
 				jimport('joomla.environment.uri');
 				$msglink = Uri::getInstance()->toString(array('scheme', 'host', 'port')) . $target->getPermaUrl(null, false);
 
-				$mail = \Joomla\CMS\Mail\Mail::getInstance();
+				$mail = Joomla\CMS\Mail\Mail::getInstance();
 				$mail->setSender(array($this->config->getEmail(), $mailsender));
 				$mail->setSubject($mailsubject);
 				$mail->addReplyTo($this->me->email, $this->me->username);
@@ -2162,9 +2217,9 @@ class KunenaControllerTopic extends KunenaController
 	}
 
 	/**
-	 * @throws Exception
-	 * @throws null
 	 * @since Kunena
+	 * @throws null
+	 * @throws Exception
 	 */
 	public function vote()
 	{
@@ -2176,9 +2231,9 @@ class KunenaControllerTopic extends KunenaController
 			return;
 		}
 
-		$vote  = Factory::getApplication()->input->getInt('kpollradio', '');
-		$id    = Factory::getApplication()->input->getInt('id', 0);
-		$catid = Factory::getApplication()->input->getInt('catid', 0);
+		$vote  = $this->app->input->getInt('kpollradio', '');
+		$id    = $this->app->input->getInt('id', 0);
+		$catid = $this->app->input->getInt('catid', 0);
 
 		$topic = KunenaForumTopicHelper::get($id);
 		$poll  = $topic->getPoll();
@@ -2251,5 +2306,96 @@ class KunenaControllerTopic extends KunenaController
 
 		$this->app->enqueueMessage(Text::_('COM_KUNENA_TOPIC_VOTE_RESET_SUCCESS'));
 		$this->setRedirect($topic->getUrl($this->return, false));
+	}
+
+	/**
+	 * Check if the IP, username or email adress given are blacklisted
+	 *
+	 * @return boolean
+	 * @since 6.0.0
+	 */
+	protected function checkIfBlacklisted($message)
+	{
+		$ip = $message->ip;
+		$name = $message->name;
+		$email = $message->email;
+
+		// Prepare the request to stopforumspam
+		if (KunenaUserHelper::isIPv6($message->ip))
+		{
+			$ip = '[' . $message->ip . ']';
+		}
+
+		$data = 'ip=' . $ip;
+
+		if (!empty($name))
+		{
+			$data .= '&username=' . $name;
+		}
+
+		if (!empty($email))
+		{
+			$data .= '&email=' . $email;
+		}
+
+		$options = new Joomla\Registry\Registry;
+
+		$transport = new Joomla\CMS\Http\Transport\StreamTransport($options);
+
+		// Create a 'stream' transport.
+		$http = new Joomla\CMS\Http\Http($options, $transport);
+
+		$response = $http->post('https://api.stopforumspam.org/api', $data . '&json');
+
+		if ($response->code == '200')
+		{
+			// The query has worked
+			$result = json_decode($response->body);
+
+			if ($result->success)
+			{
+				if ($result->ip->appears)
+				{
+					return true;
+				}
+				elseif (!empty($result->username))
+				{
+					if ($result->username->appears)
+					{
+						return true;
+					}
+					else
+					{
+						return false;
+					}
+				}
+				elseif (!empty($result->email))
+				{
+					if ($result->email->appears)
+					{
+						return true;
+					}
+					else
+					{
+						return false;
+					}
+				}
+			}
+			else
+			{
+				// TODO : log the result or display something in debug mode
+
+				return false;
+			}
+		}
+		else
+		{
+			// The query has failed or has been refused
+
+			// TODO : log the result or display something in debug mode
+
+			return false;
+		}
+
 	}
 }

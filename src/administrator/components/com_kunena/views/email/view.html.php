@@ -4,7 +4,7 @@
  * @package       Kunena.Administrator
  * @subpackage    Views
  *
- * @copyright     Copyright (C) 2008 - 2018 Kunena Team. All rights reserved.
+ * @copyright     Copyright (C) 2008 - 2019 Kunena Team. All rights reserved.
  * @license       https://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link          https://www.kunena.org
  **/
@@ -21,9 +21,10 @@ use Joomla\CMS\Language\Text;
 class KunenaAdminViewEmail extends KunenaView
 {
 	/**
-	 * @param   null $tpl tpl
+	 * @param   null  $tpl  tpl
 	 *
 	 * @since Kunena
+	 * @throws Exception
 	 */
 	public function displayDefault($tpl = null)
 	{
@@ -32,7 +33,7 @@ class KunenaAdminViewEmail extends KunenaView
 		$this->items      = $this->get('items');
 		$this->pagination = $this->get('Pagination');
 
-		$document = Factory::getDocument();
+		$document = Factory::getApplication()->getDocument();
 		$document->setTitle(Text::_('COM_KUNENA_A_EMAIL_MANAGER'));
 
 		$this->setToolbar();
@@ -46,7 +47,7 @@ class KunenaAdminViewEmail extends KunenaView
 	protected function setToolbar()
 	{
 		// Get the toolbar object instance
-		$bar = \Joomla\CMS\Toolbar\Toolbar::getInstance('toolbar');
+		$bar = Joomla\CMS\Toolbar\Toolbar::getInstance('toolbar');
 
 		// Set the titlebar text
 		JToolbarHelper::title(Text::_('COM_KUNENA') . ': ' . Text::_('COM_KUNENA_A_EMAIL_MANAGER'));

@@ -5,7 +5,7 @@
  * @package         Kunena.Site
  * @subpackage      Controllers.Misc
  *
- * @copyright       Copyright (C) 2008 - 2018 Kunena Team. All rights reserved.
+ * @copyright       Copyright (C) 2008 - 2019 Kunena Team. All rights reserved.
  * @license         https://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link            https://www.kunena.org
  **/
@@ -73,7 +73,7 @@ class KunenaLayoutWidgetFooter extends KunenaLayout
 
 			$itemid = KunenaRoute::fixMissingItemID();
 
-			if (\Joomla\CMS\Application\CMSApplication::getInstance('site')->get('sef_suffix'))
+			if (Joomla\CMS\Application\CMSApplication::getInstance('site')->get('sef_suffix'))
 			{
 				$url = KunenaRoute::_("index.php?option=com_kunena&view=topics&layout=default&{$rss_type}") . '?format=feed&type=rss';
 			}
@@ -82,7 +82,7 @@ class KunenaLayoutWidgetFooter extends KunenaLayout
 				$url = KunenaRoute::_("index.php?option=com_kunena&view=topics&format=feed&type=rss&layout=default&{$rss_type}&Itemid={$itemid}", true);
 			}
 
-			$doc = Factory::getDocument();
+			$doc = Factory::getApplication()->getDocument();
 			$doc->addHeadLink($url, 'alternate', 'rel', array('type' => 'application/rss+xml'));
 
 			return '<a rel="alternate" type="application/rss+xml" href="' . $url . '">' . KunenaIcons::rss($text = true) . '</a>';

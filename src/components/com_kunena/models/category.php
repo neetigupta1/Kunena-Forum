@@ -5,7 +5,7 @@
  * @package         Kunena.Site
  * @subpackage      Models
  *
- * @copyright       Copyright (C) 2008 - 2018 Kunena Team. All rights reserved.
+ * @copyright       Copyright (C) 2008 - 2019 Kunena Team. All rights reserved.
  * @license         https://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link            https://www.kunena.org
  **/
@@ -63,6 +63,26 @@ class KunenaModelCategory extends KunenaAdminModelCategories
 		$layout = $this->getCmd('layout', 'default');
 		$this->setState('layout', $layout);
 
+		$params = $this->getParameters();
+		$this->setState('params', $params);
+
+		$userid = $this->getInt('userid', -1);
+
+		if ($userid < 0)
+		{
+			$userid = $this->me->userid;
+		}
+		elseif ($userid > 0)
+		{
+			$userid = KunenaFactory::getUser($userid)->userid;
+		}
+		else
+		{
+			$userid = 0;
+		}
+
+		$this->setState('user', $userid);
+
 		// Administrator state
 		if ($layout == 'manage' || $layout == 'create' || $layout == 'edit')
 		{
@@ -116,7 +136,7 @@ class KunenaModelCategory extends KunenaAdminModelCategories
 		if ($this->items === false)
 		{
 			$this->items = array();
-			$user        = KunenaFactory::getUser();
+			$user        = KunenaFactory::getApplication()->getIdentity();
 			list($total, $categories) = KunenaForumCategoryHelper::getLatestSubscriptions($user->userid);
 			$this->items = $categories;
 		}
@@ -232,12 +252,11 @@ class KunenaModelCategory extends KunenaAdminModelCategories
 			{
 				$catlist = implode(',', $modcats);
 				$db      = Factory::getDBO();
-				$db->setQuery(
-					"SELECT catid, COUNT(*) AS count
-				FROM #__kunena_messages
-				WHERE catid IN ({$catlist}) AND hold=1
-				GROUP BY catid"
-				);
+				$query = $db->getQuery(true);
+				$query->select('catid, COUNT(*) AS count')
+					->from($db->quoteName('#__kunena_messages'))
+					->where('catid IN (' . $catlist . ') AND hold=1');
+				$db->setQuery($query);
 
 				try
 				{
@@ -320,7 +339,7 @@ class KunenaModelCategory extends KunenaAdminModelCategories
 			$moved  = $format == 'feed' ? 0 : 1;
 			$params = array(
 				'hold'  => $hold,
-				'moved' => $moved,);
+				'moved' => $moved, );
 
 			switch ($topic_ordering)
 			{

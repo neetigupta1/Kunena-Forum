@@ -5,7 +5,7 @@
  * @package         Kunena.Site
  * @subpackage      Views
  *
- * @copyright       Copyright (C) 2008 - 2018 Kunena Team. All rights reserved.
+ * @copyright       Copyright (C) 2008 - 2019 Kunena Team. All rights reserved.
  * @license         https://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link            https://www.kunena.org
  **/
@@ -13,6 +13,7 @@ defined('_JEXEC') or die();
 
 use Joomla\CMS\Factory;
 use Joomla\CMS\Uri\Uri;
+use Joomla\CMS\Filesystem\Folder;
 
 /**
  * Users View
@@ -111,7 +112,7 @@ class KunenaViewUser extends KunenaView
 
 		jimport('joomla.filesystem.folder');
 
-		$list_files = JFolder::files(JPATH_BASE . '/media/kunena/avatars/gallery/' . $gallery_name);
+		$list_files = Folder::files(JPATH_BASE . '/media/kunena/avatars/gallery/' . $gallery_name);
 
 		foreach ($list_files as $key => $file)
 		{

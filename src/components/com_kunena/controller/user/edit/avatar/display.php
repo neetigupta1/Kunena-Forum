@@ -4,7 +4,7 @@
  * @package         Kunena.Site
  * @subpackage      Controller.User
  *
- * @copyright       Copyright (C) 2008 - 2018 Kunena Team. All rights reserved.
+ * @copyright       Copyright (C) 2008 - 2019 Kunena Team. All rights reserved.
  * @license         https://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link            https://www.kunena.org
  **/
@@ -14,6 +14,7 @@ use Joomla\String\StringHelper;
 use Joomla\CMS\HTML\HTMLHelper;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\Uri\Uri;
+use Joomla\CMS\Filesystem\Folder;
 
 /**
  * Class ComponentKunenaControllerUserEditAvatarDisplay
@@ -126,7 +127,7 @@ class ComponentKunenaControllerUserEditAvatarDisplay extends ComponentKunenaCont
 		}
 
 		// TODO: Allow recursive paths.
-		$folders = KunenaFolder::folders($path);
+		$folders = Folder::folders($path);
 
 		foreach ($folders as $folder)
 		{
@@ -154,7 +155,7 @@ class ComponentKunenaControllerUserEditAvatarDisplay extends ComponentKunenaCont
 	 */
 	protected function getGallery($path)
 	{
-		return KunenaFolder::files($path, $this->imageFilter);
+		return Folder::files($path, $this->imageFilter);
 	}
 
 	/**

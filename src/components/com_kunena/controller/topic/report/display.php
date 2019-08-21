@@ -4,7 +4,7 @@
  * @package         Kunena.Site
  * @subpackage      Controller.Topic
  *
- * @copyright       Copyright (C) 2008 - 2018 Kunena Team. All rights reserved.
+ * @copyright       Copyright (C) 2008 - 2019 Kunena Team. All rights reserved.
  * @license         https://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link            https://www.kunena.org
  **/
@@ -100,8 +100,7 @@ class ComponentKunenaControllerTopicReportDisplay extends KunenaControllerDispla
 	 */
 	protected function prepareDocument()
 	{
-		$app       = Factory::getApplication();
-		$menu_item = $app->getMenu()->getActive();
+		$menu_item = $this->app->getMenu()->getActive();
 
 		if ($menu_item)
 		{

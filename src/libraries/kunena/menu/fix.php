@@ -4,7 +4,7 @@
  * @package         Kunena.Framework
  * @subpackage      Forum.Menu
  *
- * @copyright       Copyright (C) 2008 - 2018 Kunena Team. All rights reserved.
+ * @copyright       Copyright (C) 2008 - 2019 Kunena Team. All rights reserved.
  * @copyright   (C) 2005 - 2012 Open Source Matters, Inc. All rights reserved.
  * @license         https://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link            https://www.kunena.org
@@ -95,12 +95,12 @@ abstract class KunenaMenuFix
 		$query = $db->getQuery(true);
 		$query->select('m.id, m.menutype, m.title, m.alias, m.path AS route, m.link, m.type, m.level, m.language');
 		$query->select('m.browserNav, m.access, m.params, m.home, m.img, m.template_style_id, m.component_id, m.parent_id');
-		$query->select('e.element AS component, m.published');
-		$query->from('#__menu AS m');
-		$query->leftJoin('#__extensions AS e ON m.component_id = e.extension_id');
-		$query->where('m.parent_id > 0');
-		$query->where('m.client_id = 0');
-		$query->order('m.lft');
+		$query->select('e.element AS component, m.published')
+			->from($db->quoteName('#__menu', 'm'))
+			->leftJoin($db->quoteName('#__extensions', 'e') . ' ON ' . $db->quoteName('m.component_id') . ' = ' . $db->quoteName('e.extension_id'))
+			->where($db->quoteName('m.parent_id') . ' > 0')
+			->andWhere($db->quoteName('m.client_id') . ' = 0')
+			->order($db->quoteName('m.lft'));
 
 		// Set the query
 		$db->setQuery($query);
@@ -199,7 +199,7 @@ abstract class KunenaMenuFix
 	/**
 	 * @param   StdClass $item item
 	 *
-	 * @return object
+	 * @return object|boolean
 	 * @since Kunena
 	 */
 	protected static function getHome($item)
@@ -256,7 +256,7 @@ abstract class KunenaMenuFix
 		{
 			$item = self::$items[$itemid];
 			KunenaRouteLegacy::convertMenuItem($item);
-			$table = \Joomla\CMS\Table\Table::getInstance('menu');
+			$table = Joomla\CMS\Table\Table::getInstance('menu');
 			$table->load($item->id);
 			$data = array(
 				'link'   => $item->link,
@@ -288,7 +288,7 @@ abstract class KunenaMenuFix
 			return false;
 		}
 
-		$table  = \Joomla\CMS\Table\Table::getInstance('menu');
+		$table  = Joomla\CMS\Table\Table::getInstance('menu');
 		$result = $table->delete($itemid);
 		KunenaMenuHelper::cleanCache();
 

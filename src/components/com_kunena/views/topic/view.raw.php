@@ -5,7 +5,7 @@
  * @package         Kunena.Site
  * @subpackage      Views
  *
- * @copyright       Copyright (C) 2008 - 2018 Kunena Team. All rights reserved.
+ * @copyright       Copyright (C) 2008 - 2019 Kunena Team. All rights reserved.
  * @license         https://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link            https://www.kunena.org
  **/
@@ -14,7 +14,6 @@ defined('_JEXEC') or die();
 use Joomla\CMS\Factory;
 use Joomla\CMS\Uri\Uri;
 
-
 /**
  * Topic View
  * @since Kunena
@@ -22,10 +21,10 @@ use Joomla\CMS\Uri\Uri;
 class KunenaViewTopic extends KunenaView
 {
 	/**
-	 * @param   null $tpl tpl
+	 * @param   null  $tpl  tpl
 	 *
-	 * @throws Exception
 	 * @since Kunena
+	 * @throws Exception
 	 */
 	public function displayEdit($tpl = null)
 	{
@@ -51,13 +50,13 @@ class KunenaViewTopic extends KunenaView
 	/**
 	 *    Return JSON results of smilies available
 	 *
-	 * @param   string $tpl tpl
+	 * @param   string  $tpl  tpl
 	 *
 	 * @return void
-	 * @throws Exception
 	 * @since K4.0
 	 *
 	 * @since Kunena
+	 * @throws Exception
 	 */
 	public function displayListEmoji($tpl = null)
 	{
@@ -68,7 +67,7 @@ class KunenaViewTopic extends KunenaView
 			$search = $this->app->input->get('search');
 
 			$db     = Factory::getDBO();
-			$kquery = new KunenaDatabaseQuery;
+			$kquery = $db->getQuery(true);
 			$kquery->select('*')->from("{$db->quoteName('#__kunena_smileys')}")->where("code LIKE '%{$db->escape($search)}%' AND emoticonbar=1");
 			$db->setQuery($kquery);
 
@@ -105,8 +104,8 @@ class KunenaViewTopic extends KunenaView
 	 * Send list of topic icons in JSON for the category set selected
 	 *
 	 * @return void
-	 * @throws Exception
 	 * @since Kunena
+	 * @throws Exception
 	 */
 	public function displayTopicIcons()
 	{
@@ -190,7 +189,7 @@ class KunenaViewTopic extends KunenaView
 	 */
 	public function displayGetrate()
 	{
-		$user = Factory::getUser();
+		$user = Factory::getApplication()->getIdentity();
 
 		$topicid  = $this->app->input->get('topic_id', 0, 'int');
 		$response = array();
@@ -216,10 +215,10 @@ class KunenaViewTopic extends KunenaView
 	/**
 	 * Save rate for user logged in by JSON call
 	 *
-	 * @param   null $tpl tpl
+	 * @param   null  $tpl  tpl
 	 *
-	 * @throws Exception
 	 * @since Kunena
+	 * @throws Exception
 	 */
 	public function displayRate($tpl = null)
 	{
@@ -255,10 +254,10 @@ class KunenaViewTopic extends KunenaView
 	/**
 	 * Return the template text corresponding to the category selected
 	 *
-	 * @param   null $tpl tpl
+	 * @param   null  $tpl  tpl
 	 *
-	 * @throws Exception
 	 * @since Kunena 5.1
+	 * @throws Exception
 	 */
 	public function displayCategorytemplatetext($tpl = null)
 	{

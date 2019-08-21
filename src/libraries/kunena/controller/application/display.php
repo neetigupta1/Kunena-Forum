@@ -4,7 +4,7 @@
  * @package       Kunena.Framework
  * @subpackage    Controller
  *
- * @copyright     Copyright (C) 2008 - 2018 Kunena Team. All rights reserved.
+ * @copyright     Copyright (C) 2008 - 2019 Kunena Team. All rights reserved.
  * @license       https://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link          https://www.kunena.org
  **/
@@ -39,7 +39,7 @@ class KunenaControllerApplicationDisplay extends KunenaControllerDisplay
 	protected $content;
 
 	/**
-	 * @var \Joomla\CMS\Pathway\Pathway
+	 * @var Joomla\CMS\Pathway\Pathway
 	 * @since Kunena
 	 */
 	protected $breadcrumb;
@@ -57,13 +57,13 @@ class KunenaControllerApplicationDisplay extends KunenaControllerDisplay
 	protected $template;
 
 	/**
-	 * @var \Joomla\CMS\Document\HtmlDocument
+	 * @var Joomla\CMS\Document\HtmlDocument
 	 * @since Kunena
 	 */
 	protected $document;
 
 	/**
-	 * @return \Joomla\CMS\Layout\BaseLayout
+	 * @return Joomla\CMS\Layout\BaseLayout
 	 * @throws Exception
 	 * @since Kunena
 	 * @throws null
@@ -120,7 +120,7 @@ class KunenaControllerApplicationDisplay extends KunenaControllerDisplay
 				$banned = KunenaUserHelper::getMyself()->isBanned();
 				$userid = $this->input->getInt('userid');
 
-				if (Factory::getUser()->guest && KunenaUserHelper::get($userid)->exists())
+				if (Factory::getApplication()->getIdentity()->guest && KunenaUserHelper::get($userid)->exists())
 				{
 					$this->setResponseStatus($e->getResponseCode());
 					$this->output->setLayout('login');
@@ -180,7 +180,7 @@ class KunenaControllerApplicationDisplay extends KunenaControllerDisplay
 				if (!($e instanceof KunenaExceptionAuthorise))
 				{
 					$header  = 'Error while rendering layout';
-					$content = isset($content) ? $content->renderError($e) : $this->content->renderError($e);
+					$content = $e->getMessage();
 					$e       = new KunenaExceptionAuthorise($e->getMessage(), $e->getCode(), $e);
 				}
 				else
@@ -236,7 +236,7 @@ class KunenaControllerApplicationDisplay extends KunenaControllerDisplay
 
 		$this->me       = KunenaUserHelper::getMyself();
 		$this->config   = KunenaConfig::getInstance();
-		$this->document = Factory::getDocument();
+		$this->document = Factory::getApplication()->getDocument();
 		$this->template = KunenaFactory::getTemplate();
 		$this->template->initialize();
 
@@ -286,7 +286,8 @@ class KunenaControllerApplicationDisplay extends KunenaControllerDisplay
 
 		if (!$limitstart)
 		{
-			$this->document->addHeadLink(KunenaRoute::_(), 'canonical', 'rel');
+			$uri = trim(strtok(KunenaRoute::_(), '?'));
+			$this->document->addHeadLink($uri, 'canonical', 'rel');
 		}
 
 		// Initialize breadcrumb.
@@ -417,7 +418,7 @@ class KunenaControllerApplicationDisplay extends KunenaControllerDisplay
 
 		$credits .= '</div>';
 
-		if (\Joomla\CMS\Plugin\PluginHelper::isEnabled('kunena', 'powered'))
+		if (Joomla\CMS\Plugin\PluginHelper::isEnabled('kunena', 'powered'))
 		{
 			$credits = '';
 		}

@@ -4,13 +4,14 @@
  * @package         Kunena.Framework
  * @subpackage      Template
  *
- * @copyright       Copyright (C) 2008 - 2018 Kunena Team. All rights reserved.
+ * @copyright       Copyright (C) 2008 - 2019 Kunena Team. All rights reserved.
  * @license         https://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link            https://www.kunena.org
  **/
 defined('_JEXEC') or die();
 
 use Joomla\CMS\Language\Text;
+use Joomla\CMS\Filesystem\Folder;
 
 /**
  * Kunena Template Helper Class
@@ -74,7 +75,7 @@ abstract class KunenaTemplateHelper
 			return array('' => $data);
 		}
 
-		$templateDirs = KunenaFolder::folders($templateBaseDir);
+		$templateDirs = Folder::folders($templateBaseDir);
 		$rows         = array();
 
 		// Check that the directory contains an xml file
@@ -185,7 +186,7 @@ abstract class KunenaTemplateHelper
 	}
 
 	/**
-	 * Check if crypsis template can be used on Joomla! version used
+	 * Check if aurelia template can be used on Joomla! version used
 	 *
 	 * @param   string $templatename The name of template which needs to be checked
 	 *
@@ -194,7 +195,7 @@ abstract class KunenaTemplateHelper
 	 */
 	public static function templateCanBeUsed($templatename)
 	{
-		if ($templatename == 'Crypsis' || $templatename == 'Crypsisb3')
+		if ($templatename == 'aurelia')
 		{
 			return false;
 		}

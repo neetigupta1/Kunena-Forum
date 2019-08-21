@@ -5,7 +5,7 @@
  * @package         Kunena.Site
  * @subpackage      Layout.Search
  *
- * @copyright       Copyright (C) 2008 - 2018 Kunena Team. All rights reserved.
+ * @copyright       Copyright (C) 2008 - 2019 Kunena Team. All rights reserved.
  * @license         https://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link            https://www.kunena.org
  **/
@@ -177,5 +177,26 @@ class KunenaLayoutSearchForm extends KunenaLayout
 		echo HTMLHelper::_(
 			'kunenaforum.categorylist', 'catids[]', 0, $options, $cat_params, $attributes, 'value', 'text', $this->state->get('query.catids'), $id
 		);
+	}
+
+	/**
+	 * Method to create an input in function of name given
+	 *
+	 * @param   string $name       Name of input to create
+	 * @param   string $attributes Attibutes to be added to input
+	 * @param   int    $id         Id to be added to the input
+	 *
+	 * @return string
+	 * @since Kunena
+	 */
+	public function displayInput($name, $attributes = '', $id = null)
+	{
+		switch ($name)
+		{
+			case 'searchatdate':
+				return '<input type="text" class="form-control" name="searchatdate" data-date-format="yyyy-mm-dd" placeholder="yyyy-mm-dd" value="' . $this->state->get('query.searchatdate') . '">' . $attributes;
+		}
+
+		return '';
 	}
 }

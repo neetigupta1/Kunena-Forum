@@ -4,7 +4,7 @@
  * @package       Kunena.Framework
  * @subpackage    Table
  *
- * @copyright     Copyright (C) 2008 - 2018 Kunena Team. All rights reserved.
+ * @copyright     Copyright (C) 2008 - 2019 Kunena Team. All rights reserved.
  * @license       https://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link          https://www.kunena.org
  **/
@@ -147,7 +147,7 @@ class KunenaTableMap
 	 *
 	 * @return  string  The name of the database table being modeled.
 	 *
-	 * @link    http://docs.joomla.org/\Joomla\CMS\Table\Table/getTableName
+	 * @link    http://docs.joomla.org/Joomla\CMS\Table\Table/getTableName
 	 * @since   Kunena
 	 */
 	public function getTableName()
@@ -160,7 +160,7 @@ class KunenaTableMap
 	 *
 	 * @return  string  The name of the primary key for the table.
 	 *
-	 * @link    http://docs.joomla.org/\Joomla\CMS\Table\Table/getKeyName
+	 * @link    http://docs.joomla.org/Joomla\CMS\Table\Table/getKeyName
 	 * @since   Kunena
 	 */
 	public function getKeyName()
@@ -184,7 +184,7 @@ class KunenaTableMap
 	 *
 	 * @return  JDatabaseDriver  The internal database driver object.
 	 *
-	 * @link    http://docs.joomla.org/\Joomla\CMS\Table\Table/getDBO
+	 * @link    http://docs.joomla.org/Joomla\CMS\Table\Table/getDBO
 	 * @since   Kunena
 	 */
 	public function getDbo()
@@ -254,7 +254,7 @@ class KunenaTableMap
 	 *
 	 * @return  boolean  True on success.
 	 *
-	 * @link    http://docs.joomla.org/\Joomla\CMS\Table\Table/setDbo
+	 * @link    http://docs.joomla.org/Joomla\CMS\Table\Table/setDbo
 	 * @since   Kunena
 	 */
 	public function setDbo(JDatabaseDriver $db)
@@ -265,16 +265,16 @@ class KunenaTableMap
 	}
 
 	/**
-	 * Method to bind an associative array or object to the \Joomla\CMS\Table\Table instance. This
+	 * Method to bind an associative array or object to the Joomla\CMS\Table\Table instance. This
 	 * method only binds properties that are publicly accessible and optionally
 	 * takes an array of properties to ignore when binding.
 	 *
-	 * @param   mixed $src    An associative array or object to bind to the \Joomla\CMS\Table\Table instance.
+	 * @param   mixed $src    An associative array or object to bind to the Joomla\CMS\Table\Table instance.
 	 * @param   mixed $ignore An optional array or space separated list of properties to ignore while binding.
 	 *
 	 * @return  boolean  True on success.
 	 *
-	 * @link    http://docs.joomla.org/\Joomla\CMS\Table\Table/bind
+	 * @link    http://docs.joomla.org/Joomla\CMS\Table\Table/bind
 	 * @throws  InvalidArgumentException
 	 * @since   Kunena
 	 */
@@ -337,7 +337,7 @@ class KunenaTableMap
 	}
 
 	/**
-	 * Method to provide a shortcut to binding, checking and storing a \Joomla\CMS\Table\Table
+	 * Method to provide a shortcut to binding, checking and storing a Joomla\CMS\Table\Table
 	 * instance to the database table.
 	 *
 	 * @param   array $map    An array of mapped Ids.
@@ -380,19 +380,19 @@ class KunenaTableMap
 	 */
 	public function setMapped(array $list)
 	{
-		ArrayHelper::toInteger($list);
+		$list = ArrayHelper::toInteger($list);
 		$this->{$this->_tbl_mapped} = $list;
 	}
 
 	/**
-	 * Method to perform sanity checks on the \Joomla\CMS\Table\Table instance properties to ensure
+	 * Method to perform sanity checks on the Joomla\CMS\Table\Table instance properties to ensure
 	 * they are safe to store in the database.  Child classes should override this
 	 * method to make sure the data they are storing in the database is safe and
 	 * as expected before storage.
 	 *
 	 * @return  boolean  True if the instance is sane and able to be stored in the database.
 	 *
-	 * @link    http://docs.joomla.org/\Joomla\CMS\Table\Table/check
+	 * @link    http://docs.joomla.org/Joomla\CMS\Table\Table/check
 	 * @since   Kunena
 	 */
 	public function check()
@@ -401,13 +401,13 @@ class KunenaTableMap
 	}
 
 	/**
-	 * Method to store mapped rows in the database from the \Joomla\CMS\Table\Table instance properties.
+	 * Method to store mapped rows in the database from the Joomla\CMS\Table\Table instance properties.
 	 *
 	 * @param   array $filter Touch only these filtered items.
 	 *
 	 * @return  boolean  True on success.
 	 *
-	 * @link    http://docs.joomla.org/\Joomla\CMS\Table\Table/store
+	 * @link    http://docs.joomla.org/Joomla\CMS\Table\Table/store
 	 * @throws  UnexpectedValueException
 	 * @since   Kunena
 	 */
@@ -444,10 +444,10 @@ class KunenaTableMap
 					$values[] = (int) $id . ',' . (int) $var;
 				}
 
-				$query = $this->_db->getQuery(true);
-				$query->insert($this->_db->quoteName($this->_tbl));
-				$query->columns(array($this->_db->quoteName($this->_tbl_key), $this->_db->quoteName($this->_tbl_mapped)));
-				$query->values($values);
+				$query = $this->_db->getQuery(true)
+					->insert($this->_db->quoteName($this->_tbl))
+					->columns(array($this->_db->quoteName($this->_tbl_key), $this->_db->quoteName($this->_tbl_mapped)))
+					->values($this->_db->quote($values));
 				$this->_db->setQuery($query);
 				$this->_db->execute();
 			}
@@ -455,10 +455,10 @@ class KunenaTableMap
 			// Remove all deleted items.
 			if ($deleted)
 			{
-				$query = $this->_db->getQuery(true);
-				$query->delete($this->_db->quoteName($this->_tbl));
-				$query->where($this->_db->quoteName($this->_tbl_key) . '=' . (int) $id);
-				$query->where($this->_db->quoteName($this->_tbl_mapped) . ' IN (' . implode(',', $deleted) . ')');
+				$query = $this->_db->getQuery(true)
+					->delete($this->_db->quoteName($this->_tbl))
+					->where($this->_db->quoteName($this->_tbl_key) . ' = ' . $this->_db->quote((int) $id))
+					->andWhere($this->_db->quoteName($this->_tbl_mapped) . ' IN (' . implode(',', $deleted) . ')');
 				$this->_db->setQuery($query);
 				$this->_db->execute();
 			}
@@ -480,7 +480,7 @@ class KunenaTableMap
 
 	/**
 	 * Method to load all mapped values from the database by primary key and bind the fields
-	 * to the \Joomla\CMS\Table\Table instance properties.
+	 * to the Joomla\CMS\Table\Table instance properties.
 	 *
 	 * @param   mixed   $keys    An optional primary key value to load the row by, or an array of fields to match.  If
 	 *                           not set the instance property value is used.
@@ -488,7 +488,7 @@ class KunenaTableMap
 	 *
 	 * @return  boolean  True if successful. False if no rows were found.
 	 *
-	 * @link    http://docs.joomla.org/\Joomla\CMS\Table\Table/load
+	 * @link    http://docs.joomla.org/Joomla\CMS\Table\Table/load
 	 * @throws  RuntimeException
 	 * @throws  UnexpectedValueException
 	 * @since   Kunena
@@ -521,9 +521,10 @@ class KunenaTableMap
 		}
 
 		// Initialise the query.
-		$query = $this->_db->getQuery(true);
-		$query->select($this->_tbl_mapped);
-		$query->from($this->_tbl);
+		$query = $this->_db->getQuery(true)
+			->select($this->_db->quoteName($this->_tbl_mapped))
+			->from($this->_db->quoteName($this->_tbl));
+
 		$fields = array_keys($this->getProperties());
 
 		foreach ($keys as $field => $value)
@@ -554,7 +555,7 @@ class KunenaTableMap
 	 *
 	 * @return  void
 	 *
-	 * @link    http://docs.joomla.org/\Joomla\CMS\Table\Table/reset
+	 * @link    http://docs.joomla.org/Joomla\CMS\Table\Table/reset
 	 * @since   Kunena
 	 */
 	public function reset()
@@ -578,7 +579,7 @@ class KunenaTableMap
 	 *
 	 * @return  boolean  True on success.
 	 *
-	 * @link    http://docs.joomla.org/\Joomla\CMS\Table\Table/delete
+	 * @link    http://docs.joomla.org/Joomla\CMS\Table\Table/delete
 	 * @throws  UnexpectedValueException
 	 * @since   Kunena
 	 */
@@ -600,9 +601,9 @@ class KunenaTableMap
 		}
 
 		// Delete the row by primary key.
-		$query = $this->_db->getQuery(true);
-		$query->delete();
-		$query->from($this->_tbl);
+		$query = $this->_db->getQuery(true)
+			->delete()
+			->from($this->_tbl);
 
 		foreach ($pk as $key => $value)
 		{

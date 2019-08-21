@@ -5,7 +5,7 @@
  * @package         Kunena.Administrator
  * @subpackage      Controllers
  *
- * @copyright       Copyright (C) 2008 - 2018 Kunena Team. All rights reserved.
+ * @copyright       Copyright (C) 2008 - 2019 Kunena Team. All rights reserved.
  * @license         https://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link            https://www.kunena.org
  **/
@@ -22,14 +22,14 @@ use Joomla\CMS\Session\Session;
 class KunenaAdminControllerConfig extends KunenaController
 {
 	/**
-	 * @since    2.0.0-BETA2
 	 * @var null|string
+	 * @since    2.0.0-BETA2
 	 */
 	protected $baseurl = null;
 
 	/**
-	 * @since    2.0.0-BETA2
 	 * @var string
+	 * @since    2.0.0-BETA2
 	 * @since    Kunena
 	 */
 	protected $kunenabaseurl = null;
@@ -37,10 +37,10 @@ class KunenaAdminControllerConfig extends KunenaController
 	/**
 	 * Construct
 	 *
-	 * @param   array $config config
+	 * @param   array  $config  config
 	 *
-	 * @throws Exception
 	 * @since    2.0.0-BETA2
+	 * @throws Exception
 	 */
 	public function __construct($config = array())
 	{
@@ -54,8 +54,8 @@ class KunenaAdminControllerConfig extends KunenaController
 	 *
 	 * @return void
 	 *
-	 * @throws Exception
 	 * @since    2.0.0-BETA2
+	 * @throws Exception
 	 * @throws null
 	 */
 	public function apply()
@@ -66,12 +66,12 @@ class KunenaAdminControllerConfig extends KunenaController
 	/**
 	 * Save
 	 *
-	 * @param   null $url url
+	 * @param   null  $url  url
 	 *
 	 * @return void
 	 *
-	 * @throws Exception
 	 * @since    2.0.0-BETA2
+	 * @throws Exception
 	 * @throws null
 	 */
 	public function save($url = null)
@@ -88,7 +88,7 @@ class KunenaAdminControllerConfig extends KunenaController
 
 		$post_config = $this->app->input->post->getArray();
 
-		// TODO: fix depricated value
+		// TODO: fix deprecated value
 		foreach ($post_config as $postsetting => $postvalue)
 		{
 			if (Joomla\String\StringHelper::strpos($postsetting, 'cfg_') === 0)
@@ -141,8 +141,8 @@ class KunenaAdminControllerConfig extends KunenaController
 	 *
 	 * @return void
 	 *
-	 * @throws Exception
 	 * @since    2.0.0-BETA2
+	 * @throws Exception
 	 * @throws null
 	 */
 	public function setdefault()

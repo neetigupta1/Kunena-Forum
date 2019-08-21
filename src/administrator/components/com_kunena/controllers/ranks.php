@@ -5,7 +5,7 @@
  * @package         Kunena.Administrator
  * @subpackage      Controllers
  *
- * @copyright       Copyright (C) 2008 - 2018 Kunena Team. All rights reserved.
+ * @copyright       Copyright (C) 2008 - 2019 Kunena Team. All rights reserved.
  * @license         https://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link            https://www.kunena.org
  **/
@@ -13,6 +13,7 @@ defined('_JEXEC') or die();
 
 use Joomla\CMS\Factory;
 use Joomla\CMS\Language\Text;
+use Joomla\CMS\Router\Route;
 use Joomla\CMS\Session\Session;
 use Joomla\Utilities\ArrayHelper;
 
@@ -32,10 +33,10 @@ class KunenaAdminControllerRanks extends KunenaController
 	/**
 	 * Construct
 	 *
-	 * @param   array $config config
+	 * @param   array  $config  config
 	 *
-	 * @throws Exception
 	 * @since    2.0
+	 * @throws Exception
 	 */
 	public function __construct($config = array())
 	{
@@ -48,8 +49,8 @@ class KunenaAdminControllerRanks extends KunenaController
 	 *
 	 * @return void
 	 *
-	 * @throws Exception
 	 * @since    2.0
+	 * @throws Exception
 	 * @throws null
 	 */
 	public function add()
@@ -62,7 +63,7 @@ class KunenaAdminControllerRanks extends KunenaController
 			return;
 		}
 
-		$this->setRedirect(JRoute::_('index.php?option=com_kunena&view=rank&layout=add', false));
+		$this->setRedirect(Route::_('index.php?option=com_kunena&view=rank&layout=add', false));
 	}
 
 	/**
@@ -70,9 +71,9 @@ class KunenaAdminControllerRanks extends KunenaController
 	 *
 	 * @return void
 	 *
+	 * @since    2.0
 	 * @throws Exception
 	 *
-	 * @since    2.0
 	 * @throws null
 	 */
 	public function edit()
@@ -99,7 +100,7 @@ class KunenaAdminControllerRanks extends KunenaController
 		}
 		else
 		{
-			$this->setRedirect(JRoute::_("index.php?option=com_kunena&view=rank&layout=edit&id={$id}", false));
+			$this->setRedirect(Route::_("index.php?option=com_kunena&view=rank&layout=edit&id={$id}", false));
 		}
 	}
 
@@ -110,8 +111,8 @@ class KunenaAdminControllerRanks extends KunenaController
 	 *
 	 * @since    2.0
 	 *
-	 * @throws Exception
 	 * @since    Kunena
+	 * @throws Exception
 	 * @throws null
 	 */
 	public function save()
@@ -134,12 +135,11 @@ class KunenaAdminControllerRanks extends KunenaController
 
 		if (!$rankid)
 		{
-			$db->setQuery("INSERT INTO #__kunena_ranks SET
-					rank_title={$db->quote($rank_title)},
-					rank_image={$db->quote($rank_image)},
-					rank_special={$db->quote($rank_special)},
-					rank_min={$db->quote($rank_min)}"
-			);
+			$query = $db->getQuery(true)
+				->insert("{$db->quoteName('#__kunena_ranks')}")
+				->set("rank_title={$db->quote($rank_title)}, rank_image={$db->quote($rank_image)}, rank_special={$db->quote($rank_special)}, rank_min={$db->quote($rank_min)}");
+
+			$db->setQuery($query);
 
 			try
 			{
@@ -154,13 +154,12 @@ class KunenaAdminControllerRanks extends KunenaController
 		}
 		else
 		{
-			$db->setQuery("UPDATE #__kunena_ranks SET
-					rank_title={$db->quote($rank_title)},
-					rank_image={$db->quote($rank_image)},
-					rank_special={$db->quote($rank_special)},
-					rank_min={$db->quote($rank_min)}
-				WHERE rank_id={$db->quote($rankid)}"
-			);
+			$query = $db->getQuery(true)
+				->update("{$db->quoteName('#__kunena_ranks')}")
+				->set("rank_title={$db->quote($rank_title)}, rank_image={$db->quote($rank_image)}, rank_special={$db->quote($rank_special)}, rank_min={$db->quote($rank_min)}")
+				->where("rank_id={$db->quote($rankid)}");
+
+			$db->setQuery($query);
 
 			try
 			{
@@ -185,8 +184,8 @@ class KunenaAdminControllerRanks extends KunenaController
 	 *
 	 * @since    2.0
 	 *
-	 * @throws Exception
 	 * @since    Kunena
+	 * @throws Exception
 	 * @throws null
 	 */
 	public function rankupload()
@@ -223,8 +222,8 @@ class KunenaAdminControllerRanks extends KunenaController
 	 *
 	 * @since    2.0
 	 *
-	 * @throws Exception
 	 * @since    Kunena
+	 * @throws Exception
 	 * @throws null
 	 */
 	public function remove()
@@ -246,7 +245,12 @@ class KunenaAdminControllerRanks extends KunenaController
 
 		if ($cids)
 		{
-			$db->setQuery("DELETE FROM #__kunena_ranks WHERE rank_id IN ($cids)");
+			$query = $db->getQuery(true)
+				->delete()
+				->from("{$db->quoteName('#__kunena_ranks')}")
+				->where("rank_id IN ($cids)");
+
+			$db->setQuery($query);
 
 			try
 			{
@@ -269,8 +273,8 @@ class KunenaAdminControllerRanks extends KunenaController
 	 *
 	 * @return void
 	 *
-	 * @throws Exception
 	 * @since K4.0
+	 * @throws Exception
 	 * @throws null
 	 */
 	public function cancel()

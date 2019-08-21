@@ -3,24 +3,25 @@
  * Kunena Component
  * @package        Kunena.Framework
  *
- * @copyright      Copyright (C) 2008 - 2018 Kunena Team. All rights reserved.
+ * @copyright      Copyright (C) 2008 - 2019 Kunena Team. All rights reserved.
+ * @copyright      Copyright (C) 2006 - 2007 Best Of Joomla All rights reserved.
+ * @license        https://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @license        https://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link           https://www.kunena.org
  *
  * Based on FireBoard Component
- * @copyright      Copyright (C) 2006 - 2007 Best Of Joomla All rights reserved.
- * @license        https://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link           http://www.bestofjoomla.com
  **/
 defined('_JEXEC') or die();
 
 use Joomla\CMS\Factory;
+use Joomla\CMS\Object\CMSObject;
 
 /**
  * Class KunenaConfig
  * @since Kunena
  */
-class KunenaConfig extends JObject
+class KunenaConfig extends CMSObject
 {
 	/**
 	 * @var    integer  ID; input, hidden
@@ -104,7 +105,7 @@ class KunenaConfig extends JObject
 	 * @var    string  Template; input, hidden
 	 * @since  1.0.0
 	 */
-	public $template = 'crypsis';
+	public $template = 'aurelia';
 
 	/**
 	 * @var    integer  Show announcement; select, boolean
@@ -120,8 +121,8 @@ class KunenaConfig extends JObject
 
 	/**
 	 * @var    string  Category image path; input, text
-	 * @deprecated 4.0
 	 * @since      1.0.0
+	 * @deprecated 4.0
 	 */
 	public $catimagepath = 'category_images';
 
@@ -667,6 +668,12 @@ class KunenaConfig extends JObject
 	public $pollresultsuserslist = 1;
 
 	/**
+	 * @var    integer  Poll result user list; select, boolean
+	 * @since  1.6.0
+	 */
+	public $allow_user_edit_poll = 0;
+
+	/**
 	 * @var    integer  Max person text; input, number
 	 * @since  1.6.0
 	 */
@@ -1051,12 +1058,6 @@ class KunenaConfig extends JObject
 	public $categoryicons = 1;
 
 	/**
-	 * @var    integer  Avatar resize method; select, selection
-	 * @since  K4.0.0
-	 */
-	public $avatarresizemethod = 1;
-
-	/**
 	 * @var    integer  Avatar crop; select, boolean
 	 * @since  K4.0.0
 	 */
@@ -1334,9 +1335,21 @@ class KunenaConfig extends JObject
 
 	/**
 	 * @var    integer  Auto embed instagram; select, boolean
-	 * @since  1.0.5
+	 * @since  5.1.5
 	 */
 	public $autoembedinstagram = 1;
+
+	/**
+	 * @var integer
+	 * @since  K5.1.14
+	 */
+	public $disable_re = 0;
+
+	/**
+	 * @var    integer  Auto embed instagram; select, boolean
+	 * @since  1.0.5
+	 */
+	public $utm_source = 0;
 
 	/**
 	 * @since Kunena
@@ -1375,17 +1388,17 @@ class KunenaConfig extends JObject
 	/**
 	 * Load config settings from database table.
 	 *
+	 * @return void
 	 * @since Kunena
 	 * @throws Exception
-	 * @return void
 	 */
 	public function load()
 	{
 		$db    = Factory::getDBO();
 		$query = $db->getQuery(true);
-		$query->select('*');
-		$query->from($db->quoteName('#__kunena_configuration'));
-		$query->where($db->quoteName('id') . '=1');
+		$query->select('*')
+			->from($db->quoteName('#__kunena_configuration'))
+			->where($db->quoteName('id') . ' = 1');
 		$db->setQuery($query);
 
 		try
@@ -1406,7 +1419,7 @@ class KunenaConfig extends JObject
 		// Perform custom validation of config data before we let anybody access it.
 		$this->check();
 
-		\Joomla\CMS\Plugin\PluginHelper::importPlugin('kunena');
+		Joomla\CMS\Plugin\PluginHelper::importPlugin('kunena');
 		$plugins = array();
 		Factory::getApplication()->triggerEvent('onKunenaGetConfiguration', array('kunena.configuration', &$plugins));
 		$this->plugins = array();
@@ -1417,7 +1430,7 @@ class KunenaConfig extends JObject
 			{
 				$this->bind($registry->toArray());
 			}
-			elseif ($name && $registry instanceof \Joomla\Registry\Registry)
+			elseif ($name && $registry instanceof Joomla\Registry\Registry)
 			{
 				$this->plugins[$name] = $registry;
 			}
@@ -1427,8 +1440,8 @@ class KunenaConfig extends JObject
 	/**
 	 * @param   mixed $properties properties
 	 *
-	 * @since Kunena
 	 * @return void
+	 * @since Kunena
 	 */
 	public function bind($properties)
 	{
@@ -1437,23 +1450,23 @@ class KunenaConfig extends JObject
 
 	/**
 	 * Messages per page
-	 * @since Kunena
 	 * @return void
+	 * @since Kunena
 	 */
 	public function check()
 	{
 		// Add anything that requires validation
 
-		// Need to have at least two per page of these
-		$this->messages_per_page        = max($this->messages_per_page, 2);
-		$this->messages_per_page_search = max($this->messages_per_page_search, 2);
-		$this->threads_per_page         = max($this->threads_per_page, 2);
+		// Need to have at least one per page of these
+		$this->messages_per_page        = max($this->messages_per_page, 1);
+		$this->messages_per_page_search = max($this->messages_per_page_search, 1);
+		$this->threads_per_page         = max($this->threads_per_page, 1);
 	}
 
 	/**
+	 * @return void
 	 * @since Kunena
 	 * @throws Exception
-	 * @return void
 	 */
 	public function save()
 	{
@@ -1482,8 +1495,8 @@ class KunenaConfig extends JObject
 	}
 
 	/**
-	 * @since Kunena
 	 * @return void
+	 * @since Kunena
 	 */
 	public function reset()
 	{
@@ -1492,24 +1505,25 @@ class KunenaConfig extends JObject
 	}
 
 	/**
+	 * @internal
+	 *
 	 * @param   string $name Name of the plugin
 	 *
-	 * @return \Joomla\Registry\Registry
+	 * @return Joomla\Registry\Registry
 	 *
-	 * @internal
 	 * @since Kunena
 	 */
 	public function getPlugin($name)
 	{
-		return isset($this->plugins[$name]) ? $this->plugins[$name] : new \Joomla\Registry\Registry;
+		return isset($this->plugins[$name]) ? $this->plugins[$name] : new Joomla\Registry\Registry;
 	}
 
 	/**
 	 * Email set for the configuration
 	 *
 	 * @return string
-	 * @throws Exception
 	 * @since Kunena
+	 * @throws Exception
 	 */
 	public function getEmail()
 	{

@@ -4,7 +4,7 @@
  * @package       Kunena.Framework
  * @subpackage    Forum.Topic.Poll
  *
- * @copyright     Copyright (C) 2008 - 2018 Kunena Team. All rights reserved.
+ * @copyright     Copyright (C) 2008 - 2019 Kunena Team. All rights reserved.
  * @license       https://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link          https://www.kunena.org
  **/
@@ -12,17 +12,18 @@ defined('_JEXEC') or die();
 
 use Joomla\CMS\Factory;
 use Joomla\CMS\Language\Text;
+use Joomla\CMS\Object\CMSObject;
 
 /**
  * Class KunenaForumTopicPoll
  *
- * @property int    $id
+ * @since Kunena
  * @property string $title
  * @property int    $threadid
  * @property string $polltimetolive
- * @since Kunena
+ * @property int    $id
  */
-class KunenaForumTopicPoll extends JObject
+class KunenaForumTopicPoll extends CMSObject
 {
 	/**
 	 * @var boolean
@@ -49,7 +50,7 @@ class KunenaForumTopicPoll extends JObject
 	protected $options = false;
 
 	/**
-	 * @var boolean
+	 * @var array
 	 * @since Kunena
 	 */
 	protected $newOptions = false;
@@ -79,9 +80,10 @@ class KunenaForumTopicPoll extends JObject
 	protected $mytime = array();
 
 	/**
-	 * @param   int $identifier identifier
+	 * @param   int  $identifier  identifier
 	 *
 	 * @since Kunena
+	 * @throws Exception
 	 */
 	public function __construct($identifier = 0)
 	{
@@ -93,10 +95,11 @@ class KunenaForumTopicPoll extends JObject
 	/**
 	 * Method to load a KunenaForumTopicPoll object by id.
 	 *
-	 * @param   int $id The poll id to be loaded.
+	 * @param   int  $id  The poll id to be loaded.
 	 *
 	 * @return boolean
 	 * @since Kunena
+	 * @throws Exception
 	 */
 	public function load($id)
 	{
@@ -115,10 +118,10 @@ class KunenaForumTopicPoll extends JObject
 	/**
 	 * Method to get the polls table object.
 	 *
-	 * @param   string $type   Polls table name to be used.
-	 * @param   string $prefix Polls table prefix to be used.
+	 * @param   string  $type    Polls table name to be used.
+	 * @param   string  $prefix  Polls table prefix to be used.
 	 *
-	 * @return boolean|\Joomla\CMS\Table\Table|KunenaTable|TableKunenaPolls
+	 * @return boolean|Joomla\CMS\Table\Table|KunenaTable|TableKunenaPolls
 	 * @since Kunena
 	 */
 	public function getTable($type = 'KunenaPolls', $prefix = 'Table')
@@ -133,14 +136,14 @@ class KunenaForumTopicPoll extends JObject
 		}
 
 		// Create the user table object
-		return \Joomla\CMS\Table\Table::getInstance($tabletype ['name'], $tabletype ['prefix']);
+		return Joomla\CMS\Table\Table::getInstance($tabletype ['name'], $tabletype ['prefix']);
 	}
 
 	/**
 	 * Returns KunenaForumTopicPoll object.
 	 *
-	 * @param   mixed $identifier Poll to load - Can be only an integer.
-	 * @param   bool  $reset      reset
+	 * @param   mixed  $identifier  Poll to load - Can be only an integer.
+	 * @param   bool   $reset       reset
 	 *
 	 * @return KunenaForumTopicPoll
 	 * @since Kunena
@@ -152,8 +155,8 @@ class KunenaForumTopicPoll extends JObject
 
 	/**
 	 * @return integer
-	 * @throws Exception
 	 * @since Kunena
+	 * @throws Exception
 	 */
 	public function getTotal()
 	{
@@ -173,17 +176,18 @@ class KunenaForumTopicPoll extends JObject
 
 	/**
 	 * @return array
-	 * @throws Exception
 	 * @since Kunena
+	 * @throws Exception
 	 */
 	public function getOptions()
 	{
 		if ($this->options === false)
 		{
-			$query = "SELECT *
-				FROM #__kunena_polls_options
-				WHERE pollid={$this->_db->Quote($this->id)}
-				ORDER BY id";
+			$query = $this->_db->getQuery(true);
+			$query->select('*')
+				->from($this->_db->quoteName('#__kunena_polls_options'))
+				->where($this->_db->quoteName('pollid') . ' = ' . $this->_db->quote($this->id))
+				->order($this->_db->quoteName('id'));
 			$this->_db->setQuery($query);
 
 			try
@@ -202,10 +206,10 @@ class KunenaForumTopicPoll extends JObject
 	/**
 	 * Filters and sets poll options.
 	 *
-	 * @param   array $options array(id=>name, id=>name)
+	 * @param   array  $options  array(id=>name, id=>name)
 	 *
-	 * @since Kunena
 	 * @return void
+	 * @since Kunena
 	 */
 	public function setOptions($options)
 	{
@@ -214,7 +218,7 @@ class KunenaForumTopicPoll extends JObject
 			return;
 		}
 
-		$filter     = \Joomla\CMS\Filter\InputFilter::getInstance();
+		$filter     = Joomla\CMS\Filter\InputFilter::getInstance();
 		$newOptions = array();
 
 		foreach ($options as $key => &$value)
@@ -232,16 +236,17 @@ class KunenaForumTopicPoll extends JObject
 
 	/**
 	 * @return integer
-	 * @throws Exception
 	 * @since Kunena
+	 * @throws Exception
 	 */
 	public function getUserCount()
 	{
 		if ($this->usercount === false)
 		{
-			$query = "SELECT COUNT(*)
-				FROM #__kunena_polls_users
-				WHERE pollid={$this->_db->Quote($this->id)}";
+			$query = $this->_db->getQuery(true);
+			$query->select('COUNT(*)')
+				->from($this->_db->quoteName('#__kunena_polls_users'))
+				->where($this->_db->quoteName('pollid') . ' = ' . $this->_db->quote($this->id));
 			$this->_db->setQuery($query);
 
 			try
@@ -258,20 +263,22 @@ class KunenaForumTopicPoll extends JObject
 	}
 
 	/**
-	 * @param   int $start start
-	 * @param   int $limit limit
+	 * @param   int  $start  start
+	 * @param   int  $limit  limit
 	 *
 	 * @return array
-	 * @throws Exception
 	 * @since Kunena
+	 * @throws Exception
 	 */
 	public function getUsers($start = 0, $limit = 0)
 	{
 		if ($this->users === false)
 		{
-			$query = "SELECT *
-				FROM #__kunena_polls_users
-				WHERE pollid={$this->_db->Quote($this->id)} ORDER BY lasttime DESC";
+			$query = $this->_db->getQuery(true);
+			$query->select('*')
+				->from($this->_db->quoteName('#__kunena_polls_users'))
+				->where($this->_db->quoteName('pollid') . ' = ' . $this->_db->quote($this->id))
+				->order($this->_db->quoteName('lasttime') . ' DESC');
 			$this->_db->setQuery($query, $start, $limit);
 
 			try
@@ -288,11 +295,11 @@ class KunenaForumTopicPoll extends JObject
 	}
 
 	/**
-	 * @param   mixed $user user
+	 * @param   mixed  $user  user
 	 *
 	 * @return integer
-	 * @throws Exception
 	 * @since Kunena
+	 * @throws Exception
 	 */
 	public function getMyTime($user = null)
 	{
@@ -300,9 +307,11 @@ class KunenaForumTopicPoll extends JObject
 
 		if (!isset($this->mytime[$user->userid]))
 		{
-			$query = "SELECT MAX(lasttime)
-				FROM #__kunena_polls_users
-				WHERE pollid={$this->_db->Quote($this->id)} AND userid={$this->_db->Quote($user->userid)}";
+			$query = $this->_db->getQuery(true);
+			$query->select('MAX(lasttime)')
+				->from($this->_db->quoteName('#__kunena_polls_users'))
+				->where($this->_db->quoteName('pollid') . ' = ' . $this->_db->quote($this->id))
+				->andWhere($this->_db->quoteName('userid') . ' = ' . $this->_db->quote($user->userid));
 			$this->_db->setQuery($query);
 
 			try
@@ -319,13 +328,13 @@ class KunenaForumTopicPoll extends JObject
 	}
 
 	/**
-	 * @param   int   $option option
-	 * @param   bool  $change change
-	 * @param   mixed $user   user
+	 * @param   int    $option  option
+	 * @param   bool   $change  change
+	 * @param   mixed  $user    user
 	 *
 	 * @return boolean
-	 * @throws Exception
 	 * @since Kunena
+	 * @throws Exception
 	 */
 	public function vote($option, $change = false, $user = null)
 	{
@@ -403,8 +412,19 @@ class KunenaForumTopicPoll extends JObject
 		if ($votes->new)
 		{
 			// No votes
-			$query = "INSERT INTO #__kunena_polls_users (pollid,userid,votes,lastvote,lasttime)
-				VALUES({$this->_db->Quote($this->id)},{$this->_db->Quote($votes->userid)},{$this->_db->Quote($votes->votes)},{$this->_db->Quote($votes->lastvote)},{$this->_db->Quote($votes->lasttime)});";
+			$query = $this->_db->getQuery(true);
+
+			// Insert columns.
+			$columns = array('pollid', 'userid', 'votes', 'lastvote', 'lasttime');
+
+			// Insert values.
+			$values = array($this->_db->quote($this->id), $this->_db->quote($votes->userid), $this->_db->quote($votes->votes), $this->_db->quote($votes->lastvote), $this->_db->quote($votes->lasttime));
+
+			// Prepare the insert query.
+			$query
+				->insert($this->_db->quoteName('#__kunena_polls_users'))
+				->columns($this->_db->quoteName($columns))
+				->values(implode(',', $values));
 			$this->_db->setQuery($query);
 
 			try
@@ -423,9 +443,20 @@ class KunenaForumTopicPoll extends JObject
 		else
 		{
 			// Already voted
-			$query = "UPDATE #__kunena_polls_users
-				SET votes={$this->_db->Quote($votes->votes)},lastvote={$this->_db->Quote($votes->lastvote)},lasttime={$this->_db->Quote($votes->lasttime)}
-				WHERE pollid={$this->_db->Quote($this->id)} AND userid={$this->_db->Quote($votes->userid)};";
+			$query = $this->_db->getQuery(true);
+
+			// Insert columns.
+			$columns = array('votes', 'lastvote', 'lasttime');
+
+			// Insert values.
+			$values = array($this->_db->quote($votes->votes), $this->_db->quote($votes->lastvote), $this->_db->quote($votes->lasttime));
+
+			// Prepare the insert query.
+			$query
+				->insert($this->_db->quoteName('#__kunena_polls_users'))
+				->columns($this->_db->quoteName($columns))
+				->values(implode(',', $values))
+				->where('pollid=' . $this->_db->quote($this->id) . ' AND userid=' . $this->_db->quote($votes->userid));
 			$this->_db->setQuery($query);
 
 			try
@@ -446,7 +477,7 @@ class KunenaForumTopicPoll extends JObject
 	}
 
 	/**
-	 * @param   null|bool $exists exists
+	 * @param   null|bool  $exists  exists
 	 *
 	 * @return boolean
 	 * @since Kunena
@@ -464,18 +495,20 @@ class KunenaForumTopicPoll extends JObject
 	}
 
 	/**
-	 * @param   mixed $user user
+	 * @param   mixed  $user  user
 	 *
 	 * @return integer
-	 * @throws Exception
 	 * @since Kunena
+	 * @throws Exception
 	 */
 	public function getLastVoteId($user = null)
 	{
 		$user  = KunenaFactory::getUser($user);
-		$query = "SELECT lastvote
-				FROM #__kunena_polls_users
-				WHERE pollid={$this->_db->Quote($this->id)} AND userid={$this->_db->Quote($user->userid)}";
+		$query = $this->_db->getQuery(true);
+		$query->select($this->_db->quoteName('lastvote'))
+			->from($this->_db->quoteName('#__kunena_polls_users'))
+			->where($this->_db->quoteName('pollid') . ' = ' . $this->_db->quote($this->id))
+			->andWhere($this->_db->quoteName('userid') . ' = ' . $this->_db->quote($user->userid));
 		$this->_db->setQuery($query);
 
 		try
@@ -491,11 +524,11 @@ class KunenaForumTopicPoll extends JObject
 	}
 
 	/**
-	 * @param   mixed $user user
+	 * @param   mixed  $user  user
 	 *
 	 * @return integer
-	 * @throws Exception
 	 * @since Kunena
+	 * @throws Exception
 	 */
 	public function getMyVotes($user = null)
 	{
@@ -503,9 +536,11 @@ class KunenaForumTopicPoll extends JObject
 
 		if (!isset($this->myvotes[$user->userid]))
 		{
-			$query = "SELECT SUM(votes)
-				FROM #__kunena_polls_users
-				WHERE pollid={$this->_db->Quote($this->id)} AND userid={$this->_db->Quote($user->userid)}";
+			$query = $this->_db->getQuery(true);
+			$query->select('SUM(' . $this->_db->quoteName('votes') . ')')
+				->from($this->_db->quoteName('#__kunena_polls_users'))
+				->where($this->_db->quoteName('pollid') . ' = ' . $this->_db->quote($this->id))
+				->andWhere($this->_db->quoteName('userid') . ' = ' . $this->_db->quote($user->userid));
 			$this->_db->setQuery($query);
 
 			try
@@ -522,12 +557,12 @@ class KunenaForumTopicPoll extends JObject
 	}
 
 	/**
-	 * @param   int $option option
-	 * @param   int $delta  delta
+	 * @param   int  $option  option
+	 * @param   int  $delta   delta
 	 *
 	 * @return boolean
-	 * @throws Exception
 	 * @since Kunena
+	 * @throws Exception
 	 */
 	protected function changeOptionVotes($option, $delta)
 	{
@@ -541,8 +576,10 @@ class KunenaForumTopicPoll extends JObject
 
 		// Change votes in the option
 		$delta = intval($delta);
-		$query = "UPDATE #__kunena_polls_options SET votes=votes+{$delta} WHERE id={$this->_db->Quote($option)}";
-
+		$query = $this->_db->getQuery(true);
+		$query->update($this->_db->quoteName('#__kunena_polls_options'))
+			->set($this->_db->quoteName('votes') . ' = votes+' . $this->_db->quote($delta))
+			->where($this->_db->quoteName('id') . ' = ' . $this->_db->quote($option));
 		$this->_db->setQuery($query);
 
 		try
@@ -562,11 +599,11 @@ class KunenaForumTopicPoll extends JObject
 	}
 
 	/**
-	 * @param   array $data  data
-	 * @param   array $allow allow
+	 * @param   array  $data   data
+	 * @param   array  $allow  allow
 	 *
-	 * @since Kunena
 	 * @return void
+	 * @since Kunena
 	 */
 	public function bind(array $data, array $allow = array())
 	{
@@ -582,8 +619,8 @@ class KunenaForumTopicPoll extends JObject
 	 * Method to delete the KunenaForumTopicPoll object from the database.
 	 *
 	 * @return boolean    True on success.
-	 * @throws Exception
 	 * @since Kunena
+	 * @throws Exception
 	 */
 	public function delete()
 	{
@@ -606,7 +643,9 @@ class KunenaForumTopicPoll extends JObject
 
 		// Delete options
 		$db    = Factory::getDBO();
-		$query = "DELETE FROM #__kunena_polls_options WHERE pollid={$db->Quote($this->id)}";
+		$query = $this->_db->getQuery(true);
+		$query->delete($this->_db->quoteName('#__kunena_polls_options'))
+			->where($this->_db->quoteName('pollid') . ' = ' . $db->quote($this->id));
 		$db->setQuery($query);
 
 		try
@@ -619,7 +658,9 @@ class KunenaForumTopicPoll extends JObject
 		}
 
 		// Delete votes
-		$query = "DELETE FROM #__kunena_polls_users WHERE pollid={$db->Quote($this->id)}";
+		$query = $this->_db->getQuery();
+		$query->delete($this->_db->quoteName('#__kunena_polls_users'))
+			->where($this->_db->quoteName('pollid') . ' = ' . $db->quote($this->id));
 		$db->setQuery($query);
 
 		try
@@ -663,11 +704,11 @@ class KunenaForumTopicPoll extends JObject
 	/**
 	 * Method to save the KunenaForumTopicPoll object to the database.
 	 *
-	 * @param   bool $updateOnly Save the object only if not a new poll.
+	 * @param   bool  $updateOnly  Save the object only if not a new poll.
 	 *
 	 * @return boolean    True on success.
-	 * @throws Exception
 	 * @since Kunena
+	 * @throws Exception
 	 */
 	public function save($updateOnly = false)
 	{
@@ -715,7 +756,9 @@ class KunenaForumTopicPoll extends JObject
 		{
 			if (empty($this->newOptions[$key]))
 			{
-				$query = "DELETE FROM #__kunena_polls_options WHERE id={$this->_db->Quote($key)}";
+				$query = $this->_db->getQuery(true);
+				$query->delete($this->_db->quoteName('#__kunena_polls_options'))
+					->where($this->_db->quoteName('id') . ' = ' . $this->_db->quote($key));
 				$this->_db->setQuery($query);
 
 				try
@@ -747,8 +790,9 @@ class KunenaForumTopicPoll extends JObject
 			if (!isset($options[$key]))
 			{
 				// Option doesn't exist: create it
-				$query = "INSERT INTO #__kunena_polls_options (text, pollid, votes)
-					VALUES({$this->_db->quote($value)}, {$this->_db->Quote($this->id)}, 0)";
+				$query = $this->_db->getQuery(true);
+				$query->insert($this->_db->quoteName('#__kunena_polls_options') . '(text, pollid, votes)')
+					->values($this->_db->quote($value) . ', ' . $this->_db->quote($this->id) . ' , 0');
 				$this->_db->setQuery($query);
 
 				try
@@ -763,9 +807,10 @@ class KunenaForumTopicPoll extends JObject
 			elseif ($options[$key]->text != $value)
 			{
 				// Option exists and has changed: update text
-				$query = "UPDATE #__kunena_polls_options
-					SET text={$this->_db->quote($value)}
-					WHERE id={$this->_db->Quote($key)}";
+				$query = $this->_db->getQuery(true);
+				$query->update($this->_db->quoteName('#__kunena_polls_options'))
+					->set($this->_db->quoteName('text') . ' = ' . $this->_db->quote($value))
+					->where($this->_db->quoteName('id') . ' = ' . $this->_db->quote($key));
 				$this->_db->setQuery($query);
 
 				try

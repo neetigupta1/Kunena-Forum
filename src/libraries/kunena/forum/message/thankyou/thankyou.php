@@ -4,7 +4,7 @@
  * @package       Kunena.Framework
  * @subpackage    Forum.Message.Thankyou
  *
- * @copyright     Copyright (C) 2008 - 2018 Kunena Team. All rights reserved.
+ * @copyright     Copyright (C) 2008 - 2019 Kunena Team. All rights reserved.
  * @license       https://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link          https://www.kunena.org
  **/
@@ -12,6 +12,7 @@ defined('_JEXEC') or die();
 
 use Joomla\CMS\Factory;
 use Joomla\CMS\Language\Text;
+use Joomla\CMS\Object\CMSObject;
 
 /**
  * Class KunenaForumMessageThankyou
@@ -22,7 +23,7 @@ use Joomla\CMS\Language\Text;
  * @property string $time
  * @since Kunena
  */
-class KunenaForumMessageThankyou extends JObject
+class KunenaForumMessageThankyou extends CMSObject
 {
 	/**
 	 * @var integer
@@ -108,8 +109,9 @@ class KunenaForumMessageThankyou extends JObject
 
 		$db    = Factory::getDBO();
 		$time  = Factory::getDate();
-		$query = "INSERT INTO #__kunena_thankyou
-			SET postid={$db->quote($this->id)} , userid={$db->quote($user->userid)} , targetuserid={$db->quote($message->userid)}, time={$db->quote($time->toSql())}";
+		$query = $db->getQuery(true);
+		$query->insert($db->quoteName('#__kunena_thankyou'))
+			->set('postid = ' . $db->quote($this->id) . ', userid = ' . $db->quote($user->userid) . ', targetuserid = ' . $db->quote($message->userid) . ', time = ' . $db->quote($time->toSql()));
 		$db->setQuery($query);
 
 		try
@@ -151,8 +153,10 @@ class KunenaForumMessageThankyou extends JObject
 	protected function _savethankyou(KunenaForumMessage $message)
 	{
 		$db    = Factory::getDBO();
-		$query = "UPDATE #__kunena_users
-				SET thankyou=thankyou+1 WHERE userid={$db->quote($message->userid)}";
+		$query = $db->getQuery(true);
+		$query->update($db->quoteName('#__kunena_users'))
+			->set('thankyou = thankyou+1')
+			->where('userid = ' . $db->quote($message->userid));
 		$db->setQuery($query);
 
 		try
@@ -204,11 +208,17 @@ class KunenaForumMessageThankyou extends JObject
 		}
 
 		$db    = Factory::getDBO();
-		$query = "DELETE FROM #__kunena_thankyou WHERE postid={$db->quote($this->id)} AND userid={$db->quote($user->userid)}";
+		$query = $db->getQuery(true);
+		$query->delete($db->quoteName('#__kunena_thankyou'))
+			->where('postid = ' . $db->quote($this->id))
+			->andWhere('userid = ' . $db->quote($user->userid));
 		$db->setQuery($query);
 		$db->execute();
 
-		$query = "UPDATE #__kunena_users SET thankyou=thankyou-1 WHERE userid={$db->quote($message->userid)}";
+		$query = $db->getQuery(true);
+		$query->update($db->quoteName('#__kunena_users'))
+			->set('thankyou = thankyou-1')
+			->where('userid = ' . $db->quote($message->userid));
 		$db->setQuery($query);
 
 		try

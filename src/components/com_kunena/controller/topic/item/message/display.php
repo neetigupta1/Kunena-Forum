@@ -4,7 +4,7 @@
  * @package         Kunena.Site
  * @subpackage      Controller.Topic
  *
- * @copyright       Copyright (C) 2008 - 2018 Kunena Team. All rights reserved.
+ * @copyright       Copyright (C) 2008 - 2019 Kunena Team. All rights reserved.
  * @license         https://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link            https://www.kunena.org
  **/
@@ -177,7 +177,7 @@ class ComponentKunenaControllerTopicItemMessageDisplay extends KunenaControllerD
 		{
 			if (!empty($this->message->ip))
 			{
-				$this->ipLink = '<a href="https://www.geoiptool.com/en/?ip=' . $this->message->ip
+				$this->ipLink = '<a href="https://www.geoiptool.de/en/?ip=' . $this->message->ip
 					. '" target="_blank" rel="nofollow noopener noreferrer"> IP: ' . $this->message->ip . '</a>';
 			}
 			else

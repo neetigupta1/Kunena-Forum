@@ -5,7 +5,7 @@
  * @package         Kunena.Administrator
  * @subpackage      Views
  *
- * @copyright       Copyright (C) 2008 - 2018 Kunena Team. All rights reserved.
+ * @copyright       Copyright (C) 2008 - 2019 Kunena Team. All rights reserved.
  * @license         https://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link            https://www.kunena.org
  **/
@@ -21,10 +21,11 @@ use Joomla\CMS\Language\Text;
 class KunenaAdminViewSmiley extends KunenaView
 {
 	/**
-	 * @param   null $tpl tpl
+	 * @param   null  $tpl  tpl
 	 *
 	 * @return mixed|void
 	 * @since Kunena
+	 * @throws Exception
 	 */
 	public function display($tpl = null)
 	{

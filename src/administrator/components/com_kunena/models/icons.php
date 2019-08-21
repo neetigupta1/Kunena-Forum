@@ -5,7 +5,7 @@
  * @package       Kunena.Administrator
  * @subpackage    Models
  *
- * @copyright     Copyright (C) 2008 - 2018 Kunena Team. All rights reserved.
+ * @copyright     Copyright (C) 2008 - 2019 Kunena Team. All rights reserved.
  * @license       https://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link          https://www.kunena.org
  **/
@@ -18,15 +18,17 @@ jimport('joomla.application.component.model');
  *
  * @since 5.1
  */
-class KunenaAdminModelIcons extends \Joomla\CMS\MVC\Model\ListModel
+class KunenaAdminModelIcons extends Joomla\CMS\MVC\Model\ListModel
 {
 	/**
 	 * Constructor.
 	 *
-	 * @param   array $config An optional associative array of configuration settings.
-	 *
 	 * @see        JController
+	 *
+	 * @param   array  $config  An optional associative array of configuration settings.
+	 *
 	 * @since      Kunena
+	 * @throws Exception
 	 */
 	public function __construct($config = array())
 	{

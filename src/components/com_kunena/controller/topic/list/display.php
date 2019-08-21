@@ -4,7 +4,7 @@
  * @package         Kunena.Site
  * @subpackage      Controller.Topic
  *
- * @copyright       Copyright (C) 2008 - 2018 Kunena Team. All rights reserved.
+ * @copyright       Copyright (C) 2008 - 2019 Kunena Team. All rights reserved.
  * @license         https://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link            https://www.kunena.org
  **/
@@ -109,14 +109,14 @@ abstract class ComponentKunenaControllerTopicListDisplay extends KunenaControlle
 		$options            = array();
 		$options []         = HTMLHelper::_('select.option', '0', Text::_('COM_KUNENA_FORUM_TOP'));
 		$cat_params         = array('sections' => 1, 'catid' => 0);
-		$this->categorylist = HTMLHelper::_('kunenaforum.categorylist', 'catid', 0, $options, $cat_params, 'class="inputbox fbs" size="1" onchange = "this.form.submit()"', 'value', 'text');
+		$this->categorylist = HTMLHelper::_('kunenaforum.categorylist', 'catid', 0, $options, $cat_params, 'class="form-control fbs" size="1" onchange = "this.form.submit()"', 'value', 'text');
 
 		// Run events.
-		$params = new \Joomla\Registry\Registry;
+		$params = new Joomla\Registry\Registry;
 		$params->set('ksource', 'kunena');
 		$params->set('kunena_view', 'topic');
 		$params->set('kunena_layout', 'list');
-		\Joomla\CMS\Plugin\PluginHelper::importPlugin('kunena');
+		Joomla\CMS\Plugin\PluginHelper::importPlugin('kunena');
 		KunenaHtmlParser::prepareContent($content, 'topic_list_default');
 		Factory::getApplication()->triggerEvent('onKunenaPrepare', array('kunena.topic.list', &$this->topic, &$params, 0));
 	}
@@ -134,8 +134,7 @@ abstract class ComponentKunenaControllerTopicListDisplay extends KunenaControlle
 		$total      = $this->pagination->pagesTotal;
 		$headerText = $this->headerText . ($total > 1 && $page > 1 ? " - " . Text::_('COM_KUNENA_PAGES') . " {$page}" : '');
 
-		$app       = Factory::getApplication();
-		$menu_item = $app->getMenu()->getActive();
+		$menu_item = $this->app->getMenu()->getActive();
 
 		$config = Factory::getConfig();
 		$robots = $config->get('robots');

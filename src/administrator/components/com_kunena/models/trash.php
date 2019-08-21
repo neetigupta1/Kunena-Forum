@@ -5,7 +5,7 @@
  * @package         Kunena.Administrator
  * @subpackage      Models
  *
- * @copyright       Copyright (C) 2008 - 2018 Kunena Team. All rights reserved.
+ * @copyright       Copyright (C) 2008 - 2019 Kunena Team. All rights reserved.
  * @license         https://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link            https://www.kunena.org
  **/
@@ -51,9 +51,9 @@ class KunenaAdminModelTrash extends KunenaModel
 	/**
 	 * Method to get all deleted messages or topics in function of user selection.
 	 *
-	 * @return    array
-	 * @throws Exception
+	 * @return    array|object
 	 * @since    1.6
+	 * @throws Exception
 	 * @throws null
 	 */
 	public function getTrashItems()
@@ -73,9 +73,9 @@ class KunenaAdminModelTrash extends KunenaModel
 	 *
 	 * @return    object
 	 *
-	 * @throws Exception
-	 * @throws null
 	 * @since    1.6
+	 * @throws null
+	 * @throws Exception
 	 */
 	protected function _getTopics()
 	{
@@ -109,7 +109,7 @@ class KunenaAdminModelTrash extends KunenaModel
 		/*
 		if (!empty($filter))
 		{
-		$like = $db->Quote('%' . $db->escape($filter, true) . '%');
+		$like = $db->quote('%' . $db->escape($filter, true) . '%');
 		$query->where('(a.subject LIKE ' . $like . ')');
 		}
 
@@ -117,7 +117,7 @@ class KunenaAdminModelTrash extends KunenaModel
 
 		if (!empty($filter))
 		{
-		$like = $db->Quote('%' . $db->escape($filter, true) . '%');
+		$like = $db->quote('%' . $db->escape($filter, true) . '%');
 		$query->where('(c.name LIKE ' . $like . ')');
 
 		}
@@ -126,7 +126,7 @@ class KunenaAdminModelTrash extends KunenaModel
 
 		if (!empty($filter))
 		{
-		$like = $db->Quote('%' . $db->escape($filter, true) . '%');
+		$like = $db->quote('%' . $db->escape($filter, true) . '%');
 		$query->where('(m.name LIKE ' . $like . ')');
 
 		} */
@@ -166,23 +166,25 @@ class KunenaAdminModelTrash extends KunenaModel
 	 * Method to get all deleted messages.
 	 *
 	 * @return    array
-	 * @throws Exception
-	 * @throws null
 	 * @since    1.6
+	 * @throws null
+	 * @throws Exception
 	 */
 	protected function _getMessages()
 	{
 		$db   = Factory::getDBO();
 		$join = array();
 
-		$query = $db->getQuery(true)->select('a.id')->from('#__kunena_messages AS a');
-		$query->where('a.hold>=2');
+		$query = $db->getQuery(true)
+			->select('a.id')
+			->from($db->quoteName('#__kunena_messages', 'a'));
+		$query->where('a.hold >= 2');
 
 		$filter = $this->getState('filter.title');
 
 		if (!empty($filter))
 		{
-			$like = $db->Quote('%' . $db->escape($filter, true) . '%');
+			$like = $db->quote('%' . $db->escape($filter, true) . '%');
 			$query->where('(a.subject LIKE ' . $like . ')');
 		}
 
@@ -190,7 +192,7 @@ class KunenaAdminModelTrash extends KunenaModel
 
 		if (!empty($filter))
 		{
-			$like = $db->Quote('%' . $db->escape($filter, true) . '%');
+			$like = $db->quote('%' . $db->escape($filter, true) . '%');
 			$query->where('(tt.subject LIKE ' . $like . ')');
 			$join['tt'] = true;
 		}
@@ -199,7 +201,7 @@ class KunenaAdminModelTrash extends KunenaModel
 
 		if (!empty($filter))
 		{
-			$like = $db->Quote('%' . $db->escape($filter, true) . '%');
+			$like = $db->quote('%' . $db->escape($filter, true) . '%');
 			$query->where('(c.name LIKE ' . $like . ')');
 			$join['c'] = true;
 		}
@@ -208,7 +210,7 @@ class KunenaAdminModelTrash extends KunenaModel
 
 		if (!empty($filter))
 		{
-			$like = $db->Quote('%' . $db->escape($filter, true) . '%');
+			$like = $db->quote('%' . $db->escape($filter, true) . '%');
 			$query->where('(a.ip LIKE ' . $like . ')');
 		}
 
@@ -216,7 +218,7 @@ class KunenaAdminModelTrash extends KunenaModel
 
 		if (!empty($filter))
 		{
-			$like = $db->Quote('%' . $db->escape($filter, true) . '%');
+			$like = $db->quote('%' . $db->escape($filter, true) . '%');
 			$query->where('(a.name LIKE ' . $like . ')');
 		}
 
@@ -224,7 +226,7 @@ class KunenaAdminModelTrash extends KunenaModel
 
 		if (!empty($filter))
 		{
-			$like = $db->Quote('%' . $db->escape($filter, true) . '%');
+			$like = $db->quote('%' . $db->escape($filter, true) . '%');
 			$query->where('(a.time LIKE ' . $like . ')');
 		}
 
@@ -232,7 +234,7 @@ class KunenaAdminModelTrash extends KunenaModel
 
 		if (!empty($search))
 		{
-			$like = $db->Quote('%' . $db->escape($search, true) . '%');
+			$like = $db->quote('%' . $db->escape($search, true) . '%');
 			$query->where('( a.subject LIKE ' . $like . ' OR a.name LIKE ' . $like . ' OR a.id LIKE ' . $like . ' )');
 		}
 
@@ -268,12 +270,12 @@ class KunenaAdminModelTrash extends KunenaModel
 
 		if (isset($join['tt']))
 		{
-			$query->innerJoin('#__kunena_topics AS tt ON tt.id=a.thread');
+			$query->innerJoin($db->quoteName('#__kunena_topics', 'tt') . ' ON tt.id=a.thread');
 		}
 
 		if (isset($join['c']))
 		{
-			$query->innerJoin('#__kunena_categories AS c ON c.id=a.catid');
+			$query->innerJoin($db->quoteName('#__kunena_categories', 'c') . ' ON c.id=a.catid');
 		}
 
 		// TODO: add authorization.
@@ -325,7 +327,7 @@ class KunenaAdminModelTrash extends KunenaModel
 		$view_options[] = HTMLHelper::_('select.option', 'messages', Text::_('COM_KUNENA_TRASH_MESSAGES'));
 
 		return HTMLHelper::_('select.genericlist', $view_options, 'layout',
-			'class="inputbox" size="1" onchange="this.form.submit()"', 'value', 'text', $this->getState('layout')
+			'class="inputbox form-control" size="1" onchange="this.form.submit()"', 'value', 'text', $this->getState('layout')
 		);
 	}
 
@@ -334,9 +336,9 @@ class KunenaAdminModelTrash extends KunenaModel
 	 *
 	 * @return    array
 	 *
-	 * @throws Exception
-	 * @throws null
 	 * @since    1.6
+	 * @throws null
+	 * @throws Exception
 	 */
 	public function getPurgeItems()
 	{
@@ -372,13 +374,13 @@ class KunenaAdminModelTrash extends KunenaModel
 	}
 
 	/**
-	 * @return \Joomla\CMS\Pagination\Pagination
+	 * @return Joomla\CMS\Pagination\Pagination
 	 * @since Kunena
 	 */
 	public function getNavigation()
 	{
 		jimport('joomla.html.pagination');
-		$navigation = new \Joomla\CMS\Pagination\Pagination($this->getState('list.total'),
+		$navigation = new Joomla\CMS\Pagination\Pagination($this->getState('list.total'),
 			$this->getState('list.start'), $this->getState('list.limit')
 		);
 

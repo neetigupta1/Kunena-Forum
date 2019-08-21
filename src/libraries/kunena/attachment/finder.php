@@ -4,7 +4,7 @@
  * @package       Kunena.Framework
  * @subpackage    Attachment
  *
- * @copyright     Copyright (C) 2008 - 2018 Kunena Team. All rights reserved.
+ * @copyright     Copyright (C) 2008 - 2019 Kunena Team. All rights reserved.
  * @license       https://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link          https://www.kunena.org
  **/
@@ -44,13 +44,24 @@ class KunenaAttachmentFinder extends KunenaDatabaseObjectFinder
 
 		try
 		{
-			$results = new KunenaCollection((array) $this->db->loadObjectList('id', 'KunenaAttachment'));
+			$results = (array) $this->db->loadObjectList('id');
 		}
 		catch (RuntimeException $e)
 		{
 			KunenaError::displayDatabaseError($e);
 		}
 
-		return $results;
+		$instances = array();
+
+		foreach ($results as $id => $result)
+		{
+			$instances[$id] = KunenaAttachmentHelper::get($id);
+		}
+
+		$instances = new KunenaCollection($instances);
+
+		unset($results);
+
+		return $instances;
 	}
 }

@@ -5,7 +5,7 @@
  * @package         Kunena.Site
  * @subpackage      Views
  *
- * @copyright       Copyright (C) 2008 - 2018 Kunena Team. All rights reserved.
+ * @copyright       Copyright (C) 2008 - 2019 Kunena Team. All rights reserved.
  * @license         https://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link            https://www.kunena.org
  **/
@@ -145,12 +145,12 @@ class KunenaViewTopics extends KunenaView
 		$this->position = 0;
 
 		// Run events
-		$params = new \Joomla\Registry\Registry;
+		$params = new Joomla\Registry\Registry;
 		$params->set('ksource', 'kunena');
 		$params->set('kunena_view', 'user');
 		$params->set('kunena_layout', 'topics');
 
-		\Joomla\CMS\Plugin\PluginHelper::importPlugin('kunena');
+		Joomla\CMS\Plugin\PluginHelper::importPlugin('kunena');
 
 		Factory::getApplication()->triggerEvent('onKunenaPrepare', array('kunena.topics', &$this->topics, &$params, 0));
 
@@ -200,7 +200,7 @@ class KunenaViewTopics extends KunenaView
 
 				if ($usertype == 'guest')
 				{
-					$contents = preg_replace_callback('|\[K=(\w+)(?:\:([\w-_]+))?\]|', array($this, 'fillTopicInfo'), $contents);
+					$contents = preg_replace_callback('|\[K=(\w+)(?:\:([\w_-]+))?\]|', array($this, 'fillTopicInfo'), $contents);
 				}
 
 				// FIXME: enable caching after fixing the issues
@@ -209,7 +209,7 @@ class KunenaViewTopics extends KunenaView
 
 			if ($usertype != 'guest')
 			{
-				$contents = preg_replace_callback('|\[K=(\w+)(?:\:([\w-_]+))?\]|', array($this, 'fillTopicInfo'), $contents);
+				$contents = preg_replace_callback('|\[K=(\w+)(?:\:([\w_-]+))?\]|', array($this, 'fillTopicInfo'), $contents);
 			}
 
 			echo $contents;
@@ -248,12 +248,12 @@ class KunenaViewTopics extends KunenaView
 		$this->position = 0;
 
 		// Run events
-		$params = new \Joomla\Registry\Registry;
+		$params = new Joomla\Registry\Registry;
 		$params->set('ksource', 'kunena');
 		$params->set('kunena_view', 'user');
 		$params->set('kunena_layout', 'posts');
 
-		\Joomla\CMS\Plugin\PluginHelper::importPlugin('kunena');
+		Joomla\CMS\Plugin\PluginHelper::importPlugin('kunena');
 
 		Factory::getApplication()->triggerEvent('onKunenaPrepare', array('kunena.messages', &$this->messages, &$params, 0));
 
@@ -293,7 +293,7 @@ class KunenaViewTopics extends KunenaView
 
 				if ($usertype == 'guest')
 				{
-					$contents = preg_replace_callback('|\[K=(\w+)(?:\:([\w-_]+))?\]|', array($this, 'fillTopicInfo'), $contents);
+					$contents = preg_replace_callback('|\[K=(\w+)(?:\:([\w_-]+))?\]|', array($this, 'fillTopicInfo'), $contents);
 				}
 
 				// FIXME: enable caching after fixing the issues
@@ -302,7 +302,7 @@ class KunenaViewTopics extends KunenaView
 
 			if ($usertype != 'guest')
 			{
-				$contents = preg_replace_callback('|\[K=(\w+)(?:\:([\w-_]+))?\]|', array($this, 'fillTopicInfo'), $contents);
+				$contents = preg_replace_callback('|\[K=(\w+)(?:\:([\w_-]+))?\]|', array($this, 'fillTopicInfo'), $contents);
 			}
 
 			echo $contents;

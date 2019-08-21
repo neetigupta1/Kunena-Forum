@@ -4,7 +4,7 @@
  * @package       Kunena.Framework
  * @subpackage    Forum.Category
  *
- * @copyright     Copyright (C) 2008 - 2018 Kunena Team. All rights reserved.
+ * @copyright     Copyright (C) 2008 - 2019 Kunena Team. All rights reserved.
  * @license       https://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link          https://www.kunena.org
  **/
@@ -18,6 +18,7 @@ use Joomla\CMS\Uri\Uri;
 /**
  * Class KunenaForumCategory
  *
+ * @since Kunena
  * @property int    $id
  * @property int    $parent_id
  * @property string $name
@@ -53,7 +54,7 @@ use Joomla\CMS\Uri\Uri;
  * @property string $params
  * @property string $topictemplate
  * @property string $sectionheaderdesc
- * @since Kunena
+ * @property int    $allow_ratings
  */
 class KunenaForumCategory extends KunenaDatabaseObject
 {
@@ -172,7 +173,7 @@ class KunenaForumCategory extends KunenaDatabaseObject
 	 * @var integer
 	 * @since Kunena
 	 */
-	protected $_new = 0;
+	protected $_new = null;
 
 	/**
 	 * @var string
@@ -187,7 +188,13 @@ class KunenaForumCategory extends KunenaDatabaseObject
 	protected $sectionheaderdesc;
 
 	/**
-	 * @param   mixed|array $properties properties
+	 * @var integer
+	 * @since Kunena
+	 */
+	protected $hold;
+
+	/**
+	 * @param   mixed|array  $properties  properties
 	 *
 	 * @since Kunena
 	 */
@@ -202,7 +209,7 @@ class KunenaForumCategory extends KunenaDatabaseObject
 			$this->setProperties($properties);
 		}
 
-		$registry = new \Joomla\Registry\Registry;
+		$registry = new Joomla\Registry\Registry;
 
 		if (!empty($this->params))
 		{
@@ -231,8 +238,8 @@ class KunenaForumCategory extends KunenaDatabaseObject
 	/**
 	 * Returns the global KunenaForumCategory object.
 	 *
-	 * @param   null $identifier The category id to load.
-	 * @param   bool $reload     Force reload from the database.
+	 * @param   null  $identifier  The category id to load.
+	 * @param   bool  $reload      Force reload from the database.
 	 *
 	 * @return KunenaForumCategory
 	 * @since Kunena
@@ -245,11 +252,11 @@ class KunenaForumCategory extends KunenaDatabaseObject
 	/**
 	 * Returns list of children of this category.
 	 *
-	 * @param   int $levels How many levels to search.
+	 * @param   int  $levels  How many levels to search.
 	 *
 	 * @return array    List of KunenaForumCategory objects.
-	 * @throws null
 	 * @since Kunena
+	 * @throws null
 	 */
 	public function getChildren($levels = 0)
 	{
@@ -259,7 +266,7 @@ class KunenaForumCategory extends KunenaDatabaseObject
 	/**
 	 * Returns object containing user information from this category.
 	 *
-	 * @param   mixed $user user
+	 * @param   mixed  $user  user
 	 *
 	 * @return KunenaForumCategoryUser
 	 * @since Kunena
@@ -273,10 +280,10 @@ class KunenaForumCategory extends KunenaDatabaseObject
 	/**
 	 * Subscribe / Unsubscribe user to this category.
 	 *
-	 * @param   boolean $value True for subscribe, false for unsubscribe.
-	 * @param   mixed   $user  user
+	 * @param   boolean  $value  True for subscribe, false for unsubscribe.
+	 * @param   mixed    $user   user
 	 *
-	 * @return boolean
+	 * @return void
 	 * @since Kunena
 	 * @throws Exception
 	 */
@@ -285,23 +292,32 @@ class KunenaForumCategory extends KunenaDatabaseObject
 		$usercategory             = KunenaForumCategoryUserHelper::get($this->id, $user);
 		$usercategory->subscribed = (int) $value;
 
-		if (!$usercategory->save())
+		if (!$usercategory->params)
 		{
-			$this->setError($usercategory->getError());
+			$usercategory->params = '';
 		}
 
-		return !$this->getError();
+		try
+		{
+			$usercategory->save();
+		}
+		catch (Exception $e)
+		{
+			KunenaError::displayDatabaseError($e);
+		}
+
+		return true;
 	}
 
 	/**
 	 * Returns new topics count from this category for current user.
 	 *
-	 * @todo  Currently new topics needs to be calculated manually, make it automatic.
-	 *
-	 * @param   mixed $count Internal parameter to set new count.
+	 * @param   mixed  $count  Internal parameter to set new count.
 	 *
 	 * @return integer    New topics count.
 	 * @since Kunena
+	 * @todo  Currently new topics needs to be calculated manually, make it automatic.
+	 *
 	 */
 	public function getNewCount($count = null)
 	{
@@ -315,8 +331,8 @@ class KunenaForumCategory extends KunenaDatabaseObject
 
 	/**
 	 * @return string
-	 * @throws Exception
 	 * @since Kunena
+	 * @throws Exception
 	 */
 	public function getIcon()
 	{
@@ -324,34 +340,27 @@ class KunenaForumCategory extends KunenaDatabaseObject
 	}
 
 	/**
-	 * @param   mixed    $category Fake category (or null).
-	 * @param   bool     $xhtml    True if URL needs to be escaped for XHTML.
-	 * @param   int|null $action   Limitstart.
+	 * @param   mixed  $category  Fake category (or null).
+	 * @param   bool   $xhtml     True if URL needs to be escaped for XHTML.
 	 *
 	 * @return string
-	 * @throws Exception
 	 * @since Kunena
-	 * @throws null
+	 * @throws Exception
 	 */
-	public function getUrl($category = null, $xhtml = true, $action = null)
+	public function getUrl($category = null, $xhtml = true)
 	{
 		$category = $category ? KunenaForumCategoryHelper::get($category) : $this;
-
-		if (!$category->exists())
-		{
-			return '';
-		}
 
 		return KunenaRoute::getCategoryUrl($category, $xhtml);
 	}
 
 	/**
-	 * @param   bool $xhtml xhtml
+	 * @param   bool  $xhtml  xhtml
 	 *
 	 * @return boolean|null
-	 * @throws Exception
-	 * @throws null
 	 * @since Kunena
+	 * @throws null
+	 * @throws Exception
 	 */
 	public function getNewTopicUrl($xhtml = true)
 	{
@@ -366,11 +375,11 @@ class KunenaForumCategory extends KunenaDatabaseObject
 	}
 
 	/**
-	 * @param   mixed $user user
+	 * @param   mixed  $user  user
 	 *
 	 * @return KunenaForumCategory
-	 * @throws null
 	 * @since Kunena
+	 * @throws null
 	 */
 	public function getNewTopicCategory($user = null)
 	{
@@ -399,12 +408,12 @@ class KunenaForumCategory extends KunenaDatabaseObject
 	}
 
 	/**
-	 * @param   string $action action
+	 * @param   string  $action  action
 	 *
 	 * @return KunenaForumCategory|KunenaForumCategory[]
-	 * @throws Exception
-	 * @throws null
 	 * @since Kunena
+	 * @throws null
+	 * @throws Exception
 	 */
 	public function getChannels($action = 'read')
 	{
@@ -469,15 +478,40 @@ class KunenaForumCategory extends KunenaDatabaseObject
 	}
 
 	/**
+	 * Returns true if user is authorised to do the action.
+	 *
+	 * @param   string      $action  action
+	 * @param   KunenaUser  $user    user
+	 *
+	 * @return boolean
+	 *
+	 * @since  K4.0
+	 * @throws null
+	 */
+	public function isAuthorised($action = 'read', KunenaUser $user = null)
+	{
+		if (KunenaFactory::getConfig()->read_only)
+		{
+			// Special case to ignore authorisation.
+			if ($action != 'read')
+			{
+				return false;
+			}
+		}
+
+		return !$this->tryAuthorise($action, $user, false);
+	}
+
+	/**
 	 * Throws an exception if user isn't authorised to do the action.
 	 *
-	 * @param   string     $action action
-	 * @param   KunenaUser $user   user
-	 * @param   bool       $throw  throw
+	 * @param   string      $action  action
+	 * @param   KunenaUser  $user    user
+	 * @param   bool        $throw   throw
 	 *
 	 * @return KunenaExceptionAuthorise|null
-	 * @throws null
 	 * @since  K4.0
+	 * @throws null
 	 */
 	public function tryAuthorise($action = 'read', KunenaUser $user = null, $throw = true)
 	{
@@ -565,11 +599,11 @@ class KunenaForumCategory extends KunenaDatabaseObject
 	}
 
 	/**
-	 * @param   KunenaUser $user user
+	 * @param   KunenaUser  $user  user
 	 *
-	 * @return KunenaExceptionAuthorise|null
-	 * @throws Exception
+	 * @return KunenaExceptionAuthorise|void
 	 * @since Kunena
+	 * @throws Exception
 	 */
 	protected function authoriseRead(KunenaUser $user)
 	{
@@ -602,13 +636,13 @@ class KunenaForumCategory extends KunenaDatabaseObject
 	}
 
 	/**
-	 * @param   bool $children children
-	 * @param   bool $xhtml    xhtml
+	 * @param   bool  $children  children
+	 * @param   bool  $xhtml     xhtml
 	 *
 	 * @return boolean|null
-	 * @throws Exception
 	 * @since Kunena
 	 * @throws null
+	 * @throws Exception
 	 */
 	public function getMarkReadUrl($children = false, $xhtml = true)
 	{
@@ -627,13 +661,13 @@ class KunenaForumCategory extends KunenaDatabaseObject
 	/**
 	 * Method which  return the RSS feed URL for the actual category
 	 *
-	 * @param   bool|string $xhtml xhtml
+	 * @param   bool|string  $xhtml  xhtml
 	 *
-	 * @return boolean|null
-	 * @throws Exception
-	 * @result string
+	 * @return boolean|void
 	 * @since  Kunena
 	 * @throws null
+	 * @throws Exception
+	 * @result string
 	 */
 	public function getRSSUrl($xhtml = true)
 	{
@@ -655,10 +689,10 @@ class KunenaForumCategory extends KunenaDatabaseObject
 	}
 
 	/**
-	 * @param   mixed    $category Fake category (or null).
-	 * @param   int|null $action   Limitstart.
+	 * @param   mixed     $category  Fake category (or null).
+	 * @param   int|null  $action    Limitstart.
 	 *
-	 * @return \Joomla\CMS\Uri\Uri
+	 * @return Joomla\CMS\Uri\Uri
 	 * @since Kunena
 	 */
 	public function getUri($category = null, $action = null)
@@ -683,11 +717,11 @@ class KunenaForumCategory extends KunenaDatabaseObject
 	}
 
 	/**
-	 * @param   string $field Field to be displayed.
+	 * @param   string  $field  Field to be displayed.
 	 *
 	 * @return integer|string
-	 * @throws Exception
 	 * @since Kunena
+	 * @throws Exception
 	 */
 	public function displayField($field)
 	{
@@ -728,7 +762,11 @@ class KunenaForumCategory extends KunenaDatabaseObject
 		if (!isset($this->_aliases))
 		{
 			$db    = Factory::getDbo();
-			$query = "SELECT * FROM #__kunena_aliases WHERE type='catid' AND item={$db->Quote($this->id)}";
+			$query = $db->getQuery(true);
+			$query->select('*')
+				->from($db->quoteName('#__kunena_aliases'))
+				->where($db->quoteName('type') . ' = ' . $db->quote('catid'))
+				->andWhere($db->quoteName('item') . ' = ' . $db->quote($this->id));
 			$db->setQuery($query);
 			$this->_aliases = (array) $db->loadObjectList('alias');
 		}
@@ -737,11 +775,11 @@ class KunenaForumCategory extends KunenaDatabaseObject
 	}
 
 	/**
-	 * @param   string $alias alias
+	 * @param   string  $alias  alias
 	 *
 	 * @return boolean
-	 * @throws Exception
 	 * @since Kunena
+	 * @throws Exception
 	 */
 	public function deleteAlias($alias)
 	{
@@ -752,7 +790,12 @@ class KunenaForumCategory extends KunenaDatabaseObject
 		}
 
 		$db    = Factory::getDbo();
-		$query = "DELETE FROM #__kunena_aliases WHERE type='catid' AND item={$db->Quote($this->id)} AND alias={$db->Quote($alias)}";
+		$query = $db->getQuery(true);
+		$query->delete()
+			->from($db->quoteName('#__kunena_aliases'))
+			->where($db->quoteName('type') . ' = ' . $db->quote('catid'))
+			->andWhere($db->quoteName('item') . ' = ' . $db->quote($this->id))
+			->andWhere($db->quoteName('alias') . ' = ' . $db->quote($alias));
 		$db->setQuery($query);
 
 		try
@@ -793,6 +836,7 @@ class KunenaForumCategory extends KunenaDatabaseObject
 	/**
 	 * @return boolean
 	 * @since Kunena
+	 * @throws Exception
 	 */
 	public function getTopics()
 	{
@@ -801,6 +845,10 @@ class KunenaForumCategory extends KunenaDatabaseObject
 		return $this->_topics;
 	}
 
+	/**
+	 * @since Kunena
+	 * @throws Exception
+	 */
 	protected function buildInfo()
 	{
 		if ($this->_topics !== false)
@@ -811,8 +859,6 @@ class KunenaForumCategory extends KunenaDatabaseObject
 		$this->_topics  = 0;
 		$this->_posts   = 0;
 		$this->_lastcat = $this;
-
-		// @var array|KunenaForumCategory[] $categories
 
 		$categories[$this->id] = $this;
 
@@ -836,6 +882,7 @@ class KunenaForumCategory extends KunenaDatabaseObject
 	/**
 	 * @return boolean|KunenaForumCategory
 	 * @since Kunena
+	 * @throws Exception
 	 */
 	public function getLastCategory()
 	{
@@ -847,6 +894,7 @@ class KunenaForumCategory extends KunenaDatabaseObject
 	/**
 	 * @return boolean
 	 * @since Kunena
+	 * @throws Exception
 	 */
 	public function getPosts()
 	{
@@ -858,6 +906,7 @@ class KunenaForumCategory extends KunenaDatabaseObject
 	/**
 	 * @return integer
 	 * @since Kunena
+	 * @throws Exception
 	 */
 	public function getReplies()
 	{
@@ -869,6 +918,7 @@ class KunenaForumCategory extends KunenaDatabaseObject
 	/**
 	 * @return KunenaForumTopic
 	 * @since Kunena
+	 * @throws Exception
 	 */
 	public function getLastTopic()
 	{
@@ -876,13 +926,13 @@ class KunenaForumCategory extends KunenaDatabaseObject
 	}
 
 	/**
-	 * @param   array $fields     fields
-	 * @param   mixed $user       user
-	 * @param   array $safefields safefields
+	 * @param   array  $fields      fields
+	 * @param   mixed  $user        user
+	 * @param   array  $safefields  safefields
 	 *
 	 * @return array
-	 * @throws null
 	 * @since Kunena
+	 * @throws null
 	 */
 	public function newTopic(array $fields = null, $user = null, array $safefields = null)
 	{
@@ -892,7 +942,7 @@ class KunenaForumCategory extends KunenaDatabaseObject
 		$message->catid  = $catid;
 		$message->name   = $user->getName('');
 		$message->userid = $user->userid;
-		$message->ip     = !empty($_SERVER ['REMOTE_ADDR']) ? $_SERVER ['REMOTE_ADDR'] : '';
+		$message->ip     = !empty(KunenaUserHelper::getUserIp()) ? KunenaUserHelper::getUserIp() : '';
 		$message->hold   = $this->review ? (int) !$this->isAuthorised('moderate', $user) : 0;
 
 		if ($safefields)
@@ -908,6 +958,8 @@ class KunenaForumCategory extends KunenaDatabaseObject
 		$topic              = new KunenaForumTopic;
 		$topic->category_id = $catid;
 		$topic->hold        = KunenaForum::TOPIC_CREATION;
+		$topic->rating      = 0;
+		$topic->params      = '';
 
 		if ($safefields)
 		{
@@ -930,46 +982,13 @@ class KunenaForumCategory extends KunenaDatabaseObject
 	 */
 	public function getParent()
 	{
-		$parent = KunenaForumCategoryHelper::get(intval($this->parent_id));
-
-		if (!$parent->exists())
-		{
-			$parent->name    = Text::_('COM_KUNENA_TOPLEVEL');
-			$parent->_exists = true;
-		}
-
-		return $parent;
-	}
-
-	/**
-	 * Returns true if user is authorised to do the action.
-	 *
-	 * @param   string     $action action
-	 * @param   KunenaUser $user   user
-	 *
-	 * @return boolean
-	 *
-	 * @throws null
-	 * @since  K4.0
-	 */
-	public function isAuthorised($action = 'read', KunenaUser $user = null)
-	{
-		if (KunenaFactory::getConfig()->read_only)
-		{
-			// Special case to ignore authorisation.
-			if ($action != 'read')
-			{
-				return false;
-			}
-		}
-
-		return !$this->tryAuthorise($action, $user, false);
+		return KunenaForumCategoryHelper::get(intval($this->parent_id));
 	}
 
 	/**
 	 * Get users, who can administrate this category.
 	 *
-	 * @param   bool $includeGlobal include global
+	 * @param   bool  $includeGlobal  include global
 	 *
 	 * @return array
 	 * @since Kunena
@@ -996,12 +1015,12 @@ class KunenaForumCategory extends KunenaDatabaseObject
 	/**
 	 * Get users, who can moderate this category.
 	 *
-	 * @param   bool $includeGlobal include global
-	 * @param   bool $objects       objects
+	 * @param   bool  $includeGlobal  include global
+	 * @param   bool  $objects        objects
 	 *
 	 * @return array
-	 * @throws Exception
 	 * @since Kunena
+	 * @throws Exception
 	 */
 	public function getModerators($includeGlobal = true, $objects = true)
 	{
@@ -1031,13 +1050,13 @@ class KunenaForumCategory extends KunenaDatabaseObject
 	/**
 	 * Add moderator to this category.
 	 *
-	 * @param   mixed $user user
+	 * @param   mixed  $user  user
 	 *
 	 * @return boolean
 	 *
+	 * @since   Kunena
 	 * @throws Exception
 	 * @example if ($category->isAuthorised('admin')) $category->addModerator($user);
-	 * @since   Kunena
 	 */
 	public function addModerator($user = null)
 	{
@@ -1047,14 +1066,14 @@ class KunenaForumCategory extends KunenaDatabaseObject
 	/**
 	 * Add or remove moderator from this category.
 	 *
-	 * @param   mixed $user  user
-	 * @param   bool  $value value
+	 * @param   mixed  $user   user
+	 * @param   bool   $value  value
 	 *
 	 * @return boolean
 	 *
+	 * @since   Kunena
 	 * @throws Exception
 	 * @example if ($category->isAuthorised('admin')) $category->setModerator($user, true);
-	 * @since   Kunena
 	 */
 	public function setModerator($user = null, $value = false)
 	{
@@ -1064,12 +1083,12 @@ class KunenaForumCategory extends KunenaDatabaseObject
 	/**
 	 * Add multiple moderators to this category.
 	 *
-	 * @param   array $users users
+	 * @param   array  $users  users
 	 *
+	 * @return void
+	 * @since   Kunena
 	 * @throws Exception
 	 * @example if ($category->isAuthorised('admin')) $category->addModerators(array($user1, $user2, $user3));
-	 * @since   Kunena
-	 * @return void
 	 */
 	public function addModerators($users = array())
 	{
@@ -1088,13 +1107,13 @@ class KunenaForumCategory extends KunenaDatabaseObject
 	/**
 	 * Remove moderator from this category.
 	 *
-	 * @param   mixed $user user
+	 * @param   mixed  $user  user
 	 *
 	 * @return boolean
 	 *
+	 * @since   Kunena
 	 * @throws Exception
 	 * @example if ($category->isAuthorised('admin')) $category->removeModerator($user);
-	 * @since   Kunena
 	 */
 	public function removeModerator($user = null)
 	{
@@ -1104,9 +1123,10 @@ class KunenaForumCategory extends KunenaDatabaseObject
 	/**
 	 * @see   KunenaDatabaseObject::bind()
 	 *
-	 * @param   array $src     src
-	 * @param   array $fields  fields
-	 * @param   bool  $include include
+	 * @param   array  $fields   fields
+	 * @param   bool   $include  include
+	 *
+	 * @param   array  $src      src
 	 *
 	 * @return boolean
 	 * @since Kunena
@@ -1120,9 +1140,9 @@ class KunenaForumCategory extends KunenaDatabaseObject
 
 		$result = parent::bind($src, $fields, $include);
 
-		if (!($this->params instanceof \Joomla\Registry\Registry))
+		if (!($this->params instanceof Joomla\Registry\Registry))
 		{
-			$registry = new \Joomla\Registry\Registry;
+			$registry = new Joomla\Registry\Registry;
 
 			if (is_array($this->params))
 			{
@@ -1142,10 +1162,11 @@ class KunenaForumCategory extends KunenaDatabaseObject
 	/**
 	 * @see   KunenaDatabaseObject::load()
 	 *
-	 * @param   null $id id
+	 * @param   null  $id  id
 	 *
 	 * @return boolean
 	 * @since Kunena
+	 * @throws Exception
 	 */
 	public function load($id = null)
 	{
@@ -1153,10 +1174,10 @@ class KunenaForumCategory extends KunenaDatabaseObject
 
 		if (!$this->_saving)
 		{
-			$this->_alias = $this->get('alias', '');
+			$this->_alias = $this->get('alias');
 		}
 
-		$registry = new \Joomla\Registry\Registry;
+		$registry = new Joomla\Registry\Registry;
 
 		if ($this->params)
 		{
@@ -1176,8 +1197,9 @@ class KunenaForumCategory extends KunenaDatabaseObject
 
 	/**
 	 * @see   KunenaDatabaseObject::check()
-	 * @since Kunena
 	 * @return mixed
+	 * @since Kunena
+	 * @throws Exception
 	 */
 	public function check()
 	{
@@ -1192,9 +1214,13 @@ class KunenaForumCategory extends KunenaDatabaseObject
 		{
 			$this->alias = KunenaRoute::stringURLSafe($this->alias);
 
-			if ($this->checkAlias($this->alias) === false)
+			try
 			{
-				$this->setError(Text::sprintf('COM_KUNENA_LIB_FORUM_CATEGORY_ERROR_ALIAS_RESERVED', $this->alias));
+				$this->checkAlias($this->alias);
+			}
+			catch (Exception $e)
+			{
+				KunenaError::displayDatabaseError($e);
 
 				return false;
 			}
@@ -1204,7 +1230,7 @@ class KunenaForumCategory extends KunenaDatabaseObject
 	}
 
 	/**
-	 * @param   string $alias alias
+	 * @param   string  $alias  alias
 	 *
 	 * @return boolean|string
 	 * @since Kunena
@@ -1243,13 +1269,13 @@ class KunenaForumCategory extends KunenaDatabaseObject
 	/**
 	 * Purge old topics from this category. Removes topics from the database.
 	 *
-	 * @param   int   $time   time
-	 * @param   array $params params
-	 * @param   int   $limit  limit
+	 * @param   int    $time    time
+	 * @param   array  $params  params
+	 * @param   int    $limit   limit
 	 *
 	 * @return integer    Number of purged topics.
-	 * @throws Exception
 	 * @since Kunena
+	 * @throws Exception
 	 */
 	public function purge($time, $params = array(), $limit = 1000)
 	{
@@ -1262,7 +1288,11 @@ class KunenaForumCategory extends KunenaDatabaseObject
 		$where = isset($params['where']) ? (string) $params['where'] : '';
 
 		$db    = Factory::getDBO();
-		$query = "SELECT id FROM #__kunena_topics AS tt WHERE tt.category_id={$this->id} {$where} ORDER BY tt.last_post_time ASC";
+		$query = $db->getQuery(true);
+		$query->select($db->quoteName('id'))
+			->from($db->quoteName('#__kunena_topics', 'tt'))
+			->where('tt.category_id = ' . $this->id . ' ' . $where)
+			->order('tt.last_post_time ASC');
 		$db->setQuery($query, 0, $limit);
 
 		try
@@ -1291,13 +1321,13 @@ class KunenaForumCategory extends KunenaDatabaseObject
 	/**
 	 * Trash old topics in this category. Changes topic state to deleted.
 	 *
-	 * @param   int   $time   time
-	 * @param   array $params params
-	 * @param   int   $limit  limit
+	 * @param   int    $time    time
+	 * @param   array  $params  params
+	 * @param   int    $limit   limit
 	 *
 	 * @return integer    Number of trashed topics.
-	 * @throws Exception
 	 * @since Kunena
+	 * @throws Exception
 	 */
 	public function trash($time, $params = array(), $limit = 1000)
 	{
@@ -1310,7 +1340,11 @@ class KunenaForumCategory extends KunenaDatabaseObject
 		$where = isset($params['where']) ? (string) $params['where'] : '';
 
 		$db    = Factory::getDBO();
-		$query = "SELECT id FROM #__kunena_topics AS tt WHERE tt.category_id={$this->id} AND tt.hold!=2 {$where} ORDER BY tt.last_post_time ASC";
+		$query = $db->getQuery(true);
+		$query->select($db->quoteName('id'))
+			->from($db->quoteName('#__kunena_topics', 'tt'))
+			->where('tt.category_id = ' . $this->id . ' AND tt.hold!=2 ' . $where)
+			->order('tt.last_post_time ASC');
 		$db->setQuery($query, 0, $limit);
 
 		try
@@ -1339,8 +1373,8 @@ class KunenaForumCategory extends KunenaDatabaseObject
 	 * Delete this category and all related information from the database.
 	 *
 	 * @return boolean    True on success
-	 * @throws Exception
 	 * @since Kunena
+	 * @throws Exception
 	 */
 	public function delete()
 	{
@@ -1414,7 +1448,7 @@ class KunenaForumCategory extends KunenaDatabaseObject
 	/**
 	 * Method to check out the KunenaForumCategory object.
 	 *
-	 * @param   integer $who who
+	 * @param   integer  $who  who
 	 *
 	 * @return    boolean    True if checked out by somebody else.
 	 *
@@ -1466,9 +1500,7 @@ class KunenaForumCategory extends KunenaDatabaseObject
 		$this->setProperties($table->getProperties());
 		$this->params = $params;
 
-		$cache = Factory::getCache('com_kunena', 'output');
-
-		// FIXME: enable caching after fixing the issues
+		// $cache = Factory::getCache('com_kunena', 'output');
 		// $cache->clean('categories');
 
 		return $result;
@@ -1477,7 +1509,7 @@ class KunenaForumCategory extends KunenaDatabaseObject
 	/**
 	 * Method to check if an item is checked out.
 	 *
-	 * @param   string $with with
+	 * @param   string  $with  with
 	 *
 	 * @return boolean
 	 *
@@ -1500,13 +1532,13 @@ class KunenaForumCategory extends KunenaDatabaseObject
 	}
 
 	/**
-	 * @param   KunenaForumTopic $topic      topic
-	 * @param   int              $topicdelta topicdelta
-	 * @param   int              $postdelta  postdelta
+	 * @param   KunenaForumTopic  $topic       topic
+	 * @param   int               $topicdelta  topicdelta
+	 * @param   int               $postdelta   postdelta
 	 *
 	 * @return boolean
-	 * @throws Exception
 	 * @since Kunena
+	 * @throws Exception
 	 */
 	public function update($topic, $topicdelta = 0, $postdelta = 0)
 	{
@@ -1539,7 +1571,13 @@ class KunenaForumCategory extends KunenaDatabaseObject
 		{
 			// If last topic/post got moved or deleted, we need to find last post
 			$db    = Factory::getDBO();
-			$query = "SELECT * FROM #__kunena_topics WHERE category_id={$db->quote($this->id)} AND hold=0 AND moved_id=0 ORDER BY last_post_time DESC, last_post_id DESC";
+			$query = $db->getQuery(true);
+			$query->select('*')
+				->from($db->quoteName('#__kunena_topics'))
+				->where($db->quoteName('category_id') . ' = ' . $db->quote($this->id))
+				->andWhere($db->quoteName('hold') . ' = 0')
+				->andWhere($db->quoteName('moved_id') . ' = 0')
+				->order(array($db->quoteName('moved_id') . ' DESC', $db->quoteName('last_post_id') . ' DESC'));
 			$db->setQuery($query, 0, 1);
 
 			try
@@ -1583,7 +1621,7 @@ class KunenaForumCategory extends KunenaDatabaseObject
 	/**
 	 * Get if the user has subscribed on this category.
 	 *
-	 * @param   mixed $userid userid
+	 * @param   mixed  $userid  userid
 	 *
 	 * @return boolean
 	 *
@@ -1608,9 +1646,71 @@ class KunenaForumCategory extends KunenaDatabaseObject
 	}
 
 	/**
-	 * @see   KunenaDatabaseObject::saveInternal()
+	 * @param   int  $count  count
+	 *
+	 * @return integer
+	 *
+	 * @since Kunena 5.0.13
+	 */
+	public function totalCount($count)
+	{
+		if ($count)
+		{
+			if ($count > 1)
+			{
+				return Text::plural('COM_KUNENA_X_TOPICS_MORE', $this->formatLargeNumber($count));
+			}
+			else
+			{
+				return Text::plural('COM_KUNENA_X_TOPICS_1', $count);
+			}
+		}
+
+		return Text::_('COM_KUNENA_X_TOPICS_0');
+	}
+
+	/**
+	 * This function formats a number to n significant digits when above
+	 * 10,000. Starting at 10,0000 the out put changes to 10k, starting
+	 * at 1,000,000 the output switches to 1m. Both k and m are defined
+	 * in the language file. The significant digits are used to limit the
+	 * number of digits displayed when in 10k or 1m mode.
+	 *
+	 * @param   int  $number     Number to be formated
+	 * @param   int  $precision  Significant digits for output
+	 *
+	 * @return string
 	 * @since Kunena
+	 */
+	public function formatLargeNumber($number, $precision = 3)
+	{
+		// Do we need to reduce the number of significant digits?
+		if ($number >= 10000)
+		{
+			// Round the number to n significant digits
+			$number = round($number, -1 * (log10($number) + 1) + $precision);
+		}
+
+		if ($number < 10000)
+		{
+			$output = $number;
+		}
+		elseif ($number >= 1000000)
+		{
+			$output = $number / 1000000 . Text::_('COM_KUNENA_MILLION');
+		}
+		else
+		{
+			$output = $number / 1000 . Text::_('COM_KUNENA_THOUSAND');
+		}
+
+		return $output;
+	}
+
+	/**
+	 * @see   KunenaDatabaseObject::saveInternal()
 	 * @return boolean
+	 * @since Kunena
 	 * @throws Exception
 	 */
 	protected function saveInternal()
@@ -1646,11 +1746,11 @@ class KunenaForumCategory extends KunenaDatabaseObject
 	}
 
 	/**
-	 * @param   string $alias alias
+	 * @param   string  $alias  alias
 	 *
-	 * @return boolean
-	 * @throws Exception
+	 * @return boolean|void
 	 * @since Kunena
+	 * @throws Exception
 	 */
 	public function addAlias($alias)
 	{
@@ -1681,7 +1781,7 @@ class KunenaForumCategory extends KunenaDatabaseObject
 		}
 
 		$db    = Factory::getDbo();
-		$query = "REPLACE INTO #__kunena_aliases (alias, type, item) VALUES ({$db->Quote($alias)},'catid',{$db->Quote($this->id)})";
+		$query = "REPLACE INTO #__kunena_aliases (alias, type, item) VALUES ({$db->quote($alias)},'catid',{$db->quote($this->id)})";
 		$db->setQuery($query);
 
 		try
@@ -1697,11 +1797,11 @@ class KunenaForumCategory extends KunenaDatabaseObject
 	}
 
 	/**
-	 * @param   KunenaUser $user user
+	 * @param   KunenaUser  $user  user
 	 *
-	 * @return KunenaExceptionAuthorise|null
-	 * @throws Exception
+	 * @return KunenaExceptionAuthorise|void
 	 * @since Kunena
+	 * @throws Exception
 	 */
 	protected function authoriseNotBanned(KunenaUser $user)
 	{
@@ -1725,11 +1825,11 @@ class KunenaForumCategory extends KunenaDatabaseObject
 	}
 
 	/**
-	 * @param   KunenaUser $user user
+	 * @param   KunenaUser  $user  user
 	 *
-	 * @return KunenaExceptionAuthorise|null
-	 * @throws Exception
+	 * @return KunenaExceptionAuthorise|void
 	 * @since Kunena
+	 * @throws Exception
 	 */
 	protected function authoriseGuestWrite(KunenaUser $user)
 	{
@@ -1743,11 +1843,11 @@ class KunenaForumCategory extends KunenaDatabaseObject
 	}
 
 	/**
-	 * @param   KunenaUser $user user
+	 * @param   KunenaUser  $user  user
 	 *
-	 * @return KunenaExceptionAuthorise|null
-	 * @throws Exception
+	 * @return KunenaExceptionAuthorise|void
 	 * @since Kunena
+	 * @throws Exception
 	 */
 	protected function authoriseSubscribe(KunenaUser $user)
 	{
@@ -1768,11 +1868,11 @@ class KunenaForumCategory extends KunenaDatabaseObject
 	}
 
 	/**
-	 * @param   KunenaUser $user user
+	 * @param   KunenaUser  $user  user
 	 *
-	 * @return KunenaExceptionAuthorise|null
-	 * @throws Exception
+	 * @return KunenaExceptionAuthorise|void
 	 * @since Kunena
+	 * @throws Exception
 	 */
 	protected function authoriseCatSubscribe(KunenaUser $user)
 	{
@@ -1793,11 +1893,11 @@ class KunenaForumCategory extends KunenaDatabaseObject
 	}
 
 	/**
-	 * @param   KunenaUser $user user
+	 * @param   KunenaUser  $user  user
 	 *
-	 * @return KunenaExceptionAuthorise|null
-	 * @throws Exception
+	 * @return KunenaExceptionAuthorise|void
 	 * @since Kunena
+	 * @throws Exception
 	 */
 	protected function authoriseFavorite(KunenaUser $user)
 	{
@@ -1816,10 +1916,11 @@ class KunenaForumCategory extends KunenaDatabaseObject
 	}
 
 	/**
-	 * @param   KunenaUser $user user
+	 * @param   KunenaUser  $user  user
 	 *
-	 * @return KunenaExceptionAuthorise|null
+	 * @return KunenaExceptionAuthorise|void
 	 * @since Kunena
+	 * @throws Exception
 	 */
 	protected function authoriseNotSection(KunenaUser $user)
 	{
@@ -1835,6 +1936,7 @@ class KunenaForumCategory extends KunenaDatabaseObject
 	/**
 	 * @return boolean
 	 * @since Kunena
+	 * @throws Exception
 	 */
 	public function isSection()
 	{
@@ -1844,12 +1946,12 @@ class KunenaForumCategory extends KunenaDatabaseObject
 	}
 
 	/**
-	 * @param   KunenaUser $user user
+	 * @param   KunenaUser  $user  user
 	 *
-	 * @return KunenaExceptionAuthorise|null
-	 * @throws Exception
-	 * @throws null
+	 * @return KunenaExceptionAuthorise|void
 	 * @since Kunena
+	 * @throws null
+	 * @throws Exception
 	 */
 	protected function authoriseChannel(KunenaUser $user)
 	{
@@ -1865,11 +1967,11 @@ class KunenaForumCategory extends KunenaDatabaseObject
 	}
 
 	/**
-	 * @param   KunenaUser $user user
+	 * @param   KunenaUser  $user  user
 	 *
-	 * @return KunenaExceptionAuthorise|null
-	 * @throws Exception
+	 * @return KunenaExceptionAuthorise|void
 	 * @since Kunena
+	 * @throws Exception
 	 */
 	protected function authoriseUnlocked(KunenaUser $user)
 	{
@@ -1883,11 +1985,11 @@ class KunenaForumCategory extends KunenaDatabaseObject
 	}
 
 	/**
-	 * @param   KunenaUser $user user
+	 * @param   KunenaUser  $user  user
 	 *
-	 * @return KunenaExceptionAuthorise|null
-	 * @throws Exception
+	 * @return KunenaExceptionAuthorise|void
 	 * @since Kunena
+	 * @throws Exception
 	 */
 	protected function authoriseModerate(KunenaUser $user)
 	{
@@ -1906,11 +2008,11 @@ class KunenaForumCategory extends KunenaDatabaseObject
 	}
 
 	/**
-	 * @param   KunenaUser $user user
+	 * @param   KunenaUser  $user  user
 	 *
-	 * @return KunenaExceptionAuthorise|null
-	 * @throws Exception
+	 * @return KunenaExceptionAuthorise|void
 	 * @since Kunena
+	 * @throws Exception
 	 */
 	protected function authoriseGlobalModerate(KunenaUser $user)
 	{
@@ -1929,11 +2031,11 @@ class KunenaForumCategory extends KunenaDatabaseObject
 	}
 
 	/**
-	 * @param   KunenaUser $user user
+	 * @param   KunenaUser  $user  user
 	 *
-	 * @return KunenaExceptionAuthorise|null
-	 * @throws Exception
+	 * @return KunenaExceptionAuthorise|void
 	 * @since Kunena
+	 * @throws Exception
 	 */
 	protected function authoriseAdmin(KunenaUser $user)
 	{
@@ -1952,11 +2054,11 @@ class KunenaForumCategory extends KunenaDatabaseObject
 	}
 
 	/**
-	 * @param   KunenaUser $user user
+	 * @param   KunenaUser  $user  user
 	 *
-	 * @return KunenaExceptionAuthorise|null
-	 * @throws Exception
+	 * @return KunenaExceptionAuthorise|void
 	 * @since Kunena
+	 * @throws Exception
 	 */
 	protected function authorisePoll(KunenaUser $user)
 	{
@@ -1976,9 +2078,9 @@ class KunenaForumCategory extends KunenaDatabaseObject
 	}
 
 	/**
-	 * @param   KunenaUser $user user
+	 * @param   KunenaUser  $user  user
 	 *
-	 * @return KunenaExceptionAuthorise|null
+	 * @return KunenaExceptionAuthorise|void
 	 * @since Kunena
 	 */
 	protected function authoriseVote(KunenaUser $user)
@@ -1993,11 +2095,11 @@ class KunenaForumCategory extends KunenaDatabaseObject
 	}
 
 	/**
-	 * @param   KunenaUser $user user
+	 * @param   KunenaUser  $user  user
 	 *
-	 * @return KunenaExceptionAuthorise|null
-	 * @throws Exception
+	 * @return KunenaExceptionAuthorise|void
 	 * @since Kunena
+	 * @throws Exception
 	 */
 	protected function authoriseUpload(KunenaUser $user)
 	{
@@ -2008,67 +2110,5 @@ class KunenaForumCategory extends KunenaDatabaseObject
 		}
 
 		return;
-	}
-
-	/**
-	 * @param   int $count count
-	 *
-	 * @return integer
-	 *
-	 * @since Kunena 5.0.13
-	 */
-	public function totalCount($count)
-	{
-		if ($count)
-		{
-			if ($count > 1)
-			{
-				return Text::plural('COM_KUNENA_X_TOPICS_MORE', $this->formatLargeNumber($count));
-			}
-			else
-			{
-				return Text::plural('COM_KUNENA_X_TOPICS_1', $count);
-			}
-		}
-
-		return Text::_('COM_KUNENA_X_TOPICS_0');
-	}
-
-	/**
-	 * This function formats a number to n significant digits when above
-	 * 10,000. Starting at 10,0000 the out put changes to 10k, starting
-	 * at 1,000,000 the output switches to 1m. Both k and m are defined
-	 * in the language file. The significant digits are used to limit the
-	 * number of digits displayed when in 10k or 1m mode.
-	 *
-	 * @param   int $number    Number to be formated
-	 * @param   int $precision Significant digits for output
-	 *
-	 * @return string
-	 * @since Kunena
-	 */
-	public function formatLargeNumber($number, $precision = 3)
-	{
-		// Do we need to reduce the number of significant digits?
-		if ($number >= 10000)
-		{
-			// Round the number to n significant digits
-			$number = round($number, -1 * (log10($number) + 1) + $precision);
-		}
-
-		if ($number < 10000)
-		{
-			$output = $number;
-		}
-		elseif ($number >= 1000000)
-		{
-			$output = $number / 1000000 . Text::_('COM_KUNENA_MILLION');
-		}
-		else
-		{
-			$output = $number / 1000 . Text::_('COM_KUNENA_THOUSAND');
-		}
-
-		return $output;
 	}
 }

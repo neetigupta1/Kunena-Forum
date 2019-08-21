@@ -4,15 +4,17 @@
  * @package       Kunena.Framework
  * @subpackage    Route
  *
- * @copyright     Copyright (C) 2008 - 2018 Kunena Team. All rights reserved.
+ * @copyright     Copyright (C) 2008 - 2019 Kunena Team. All rights reserved.
  * @license       https://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link          https://www.kunena.org
  **/
 defined('_JEXEC') or die();
 
 use Joomla\CMS\Factory;
+use Joomla\CMS\Router\Route;
 use Joomla\CMS\Session\Session;
 use Joomla\CMS\Uri\Uri;
+use Joomla\CMS\Component\ComponentHelper;
 
 jimport('joomla.environment.uri');
 jimport('joomla.html.parameter');
@@ -100,7 +102,7 @@ abstract class KunenaRoute
 	public static $default = false;
 
 	/**
-	 * @var null
+	 * @var mixed
 	 * @since Kunena
 	 */
 	public static $active = null;
@@ -162,7 +164,7 @@ abstract class KunenaRoute
 	/**
 	 * @param   bool $object object
 	 *
-	 * @return boolean|\Joomla\CMS\Uri\Uri|null|string
+	 * @return boolean|Joomla\CMS\Uri\Uri|null|string
 	 * @throws Exception
 	 * @since Kunena
 	 * @throws null
@@ -191,7 +193,7 @@ abstract class KunenaRoute
 	/**
 	 * @param   null $uri uri
 	 *
-	 * @return boolean|\Joomla\CMS\Uri\Uri|null
+	 * @return boolean|Joomla\CMS\Uri\Uri|null
 	 * @throws Exception
 	 * @since Kunena
 	 * @throws null
@@ -228,13 +230,13 @@ abstract class KunenaRoute
 			$item = self::$menu[intval($uri)];
 			$uri  = Uri::getInstance("{$item->link}&Itemid={$item->id}");
 		}
-		elseif ($uri instanceof \Joomla\CMS\Uri\Uri)
+		elseif ($uri instanceof Joomla\CMS\Uri\Uri)
 		{
 			// Nothing to do
 		}
 		else
 		{
-			$uri = new \Joomla\CMS\Uri\Uri((string) $uri);
+			$uri = new Joomla\CMS\Uri\Uri((string) $uri);
 		}
 
 		$option = $uri->getVar('option');
@@ -314,14 +316,14 @@ abstract class KunenaRoute
 	}
 
 	/**
-	 * @param   \Joomla\CMS\Uri\Uri $uri uri
+	 * @param   Joomla\CMS\Uri\Uri $uri uri
 	 *
 	 * @return integer
 	 * @throws Exception
 	 * @throws null
 	 * @since Kunena
 	 */
-	protected static function setItemID(\Joomla\CMS\Uri\Uri $uri)
+	protected static function setItemID(Joomla\CMS\Uri\Uri $uri)
 	{
 		static $candidates = array();
 		KUNENA_PROFILER ? KunenaProfiler::instance()->start('function ' . __CLASS__ . '::' . __FUNCTION__ . '()') : null;
@@ -420,7 +422,7 @@ abstract class KunenaRoute
 		if (self::$search === false)
 		{
 			$user         = KunenaUserHelper::getMyself();
-			$language     = strtolower(Factory::getDocument()->getLanguage());
+			$language     = strtolower(Factory::getApplication()->getDocument()->getLanguage());
 			self::$search = false;
 
 			if (KunenaConfig::getInstance()->get('cache_mid'))
@@ -482,7 +484,7 @@ abstract class KunenaRoute
 	}
 
 	/**
-	 * @return \Joomla\CMS\Cache\CacheController
+	 * @return Joomla\CMS\Cache\CacheController
 	 * @since Kunena
 	 */
 	protected static function getCache()
@@ -565,13 +567,13 @@ abstract class KunenaRoute
 
 	/**
 	 * @param   mixed               $item item
-	 * @param   \Joomla\CMS\Uri\Uri $uri  uri
+	 * @param   Joomla\CMS\Uri\Uri $uri  uri
 	 *
 	 * @return integer
 	 * @since Kunena
 	 * @throws null
 	 */
-	protected static function checkItem($item, \Joomla\CMS\Uri\Uri $uri)
+	protected static function checkItem($item, Joomla\CMS\Uri\Uri $uri)
 	{
 		$authorise = self::$menus->authorise($item->id);
 
@@ -607,13 +609,13 @@ abstract class KunenaRoute
 
 	/**
 	 * @param   mixed               $item item
-	 * @param   \Joomla\CMS\Uri\Uri $uri  url
+	 * @param   Joomla\CMS\Uri\Uri $uri  url
 	 *
 	 * @return integer
 	 * @throws null
 	 * @since Kunena
 	 */
-	protected static function checkCategory($item, \Joomla\CMS\Uri\Uri $uri)
+	protected static function checkCategory($item, Joomla\CMS\Uri\Uri $uri)
 	{
 		static $cache = array();
 		$catid = (int) $uri->getVar('catid');
@@ -640,12 +642,12 @@ abstract class KunenaRoute
 
 	/**
 	 * @param   mixed               $item item
-	 * @param   \Joomla\CMS\Uri\Uri $uri  uri
+	 * @param   Joomla\CMS\Uri\Uri $uri  uri
 	 *
 	 * @return integer
 	 * @since Kunena
 	 */
-	protected static function check($item, \Joomla\CMS\Uri\Uri $uri)
+	protected static function check($item, Joomla\CMS\Uri\Uri $uri)
 	{
 		$hits = 0;
 
@@ -684,7 +686,7 @@ abstract class KunenaRoute
 
 		if ($referrer)
 		{
-			$uri = new \Joomla\CMS\Uri\Uri($referrer);
+			$uri = new Joomla\CMS\Uri\Uri($referrer);
 
 			// Make sure we do not return into a task -- or if task is SEF encoded, make sure it fails.
 			$uri->delVar('task');
@@ -709,7 +711,7 @@ abstract class KunenaRoute
 			}
 
 			$default = self::_($default);
-			$uri     = new \Joomla\CMS\Uri\Uri($default);
+			$uri     = new Joomla\CMS\Uri\Uri($default);
 		}
 
 		if ($anchor)
@@ -734,7 +736,7 @@ abstract class KunenaRoute
 	{
 		if (self::$adminApp)
 		{
-			if ($uri instanceof \Joomla\CMS\Uri\Uri)
+			if ($uri instanceof Joomla\CMS\Uri\Uri)
 			{
 				$uri = $uri->toString();
 			}
@@ -742,7 +744,7 @@ abstract class KunenaRoute
 			if (substr($uri, 0, 14) == 'administrator/')
 			{
 				// Use default routing in administration
-				return JRoute::_(substr($uri, 14), $xhtml, $ssl);
+				return Route::_(substr($uri, 14), $xhtml, $ssl);
 			}
 			else
 			{
@@ -752,7 +754,7 @@ abstract class KunenaRoute
 
 		KUNENA_PROFILER ? KunenaProfiler::instance()->start('function ' . __CLASS__ . '::' . __FUNCTION__ . '()') : null;
 
-		$key = (self::$home ? self::$home->id : 0) . '-' . (int) $xhtml . (int) $ssl . ($uri instanceof \Joomla\CMS\Uri\Uri ? $uri->toString() : (string) $uri);
+		$key = (self::$home ? self::$home->id : 0) . '-' . (int) $xhtml . (int) $ssl . ($uri instanceof Joomla\CMS\Uri\Uri ? $uri->toString() : (string) $uri);
 
 		if (!$uri || (is_string($uri) && $uri[0] == '&'))
 		{
@@ -782,7 +784,7 @@ abstract class KunenaRoute
 
 		$fragment = $uri->getFragment();
 		KUNENA_PROFILER ? KunenaProfiler::instance()->start('function ' . __CLASS__ . '::' . __FUNCTION__ . '(t)') : null;
-		self::$uris[$key] = JRoute::_('index.php?' . $uri->getQuery(), $xhtml, $ssl) . ($fragment ? '#' . $fragment : '');
+		self::$uris[$key] = Route::_('index.php?' . $uri->getQuery(), $xhtml, $ssl) . ($fragment ? '#' . $fragment : '');
 		KUNENA_PROFILER ? KunenaProfiler::instance()->stop('function ' . __CLASS__ . '::' . __FUNCTION__ . '(t)') : null;
 		self::$urisSave = true;
 		KUNENA_PROFILER ? KunenaProfiler::instance()->stop('function ' . __CLASS__ . '::' . __FUNCTION__ . '()') : null;
@@ -791,10 +793,10 @@ abstract class KunenaRoute
 	}
 
 	/**
-	 * @param   \Joomla\CMS\Uri\Uri $uri    uri
+	 * @param   Joomla\CMS\Uri\Uri $uri    uri
 	 * @param   bool                $object object
 	 *
-	 * @return \Joomla\CMS\Uri\Uri|string
+	 * @return Joomla\CMS\Uri\Uri|string
 	 * @throws Exception
 	 * @since Kunena
 	 * @throws null
@@ -903,7 +905,7 @@ abstract class KunenaRoute
 
 		if (!isset(self::$filtered[$string]))
 		{
-			self::$filtered[$string] = \Joomla\CMS\Application\ApplicationHelper::stringURLSafe($string);
+			self::$filtered[$string] = Joomla\CMS\Application\ApplicationHelper::stringURLSafe($string);
 
 			// Remove beginning and trailing "whitespace", fixes #1130 where category alias creation fails on error: Duplicate entry '-'.
 			self::$filtered[$string] = trim(self::$filtered[$string], '-_ ');
@@ -929,7 +931,7 @@ abstract class KunenaRoute
 	{
 		KUNENA_PROFILER ? KunenaProfiler::instance()->start('function ' . __CLASS__ . '::' . __FUNCTION__ . '()') : null;
 		$db    = Factory::getDbo();
-		$query = "SELECT * FROM #__kunena_aliases WHERE alias LIKE {$db->Quote($alias . '%')}";
+		$query = "SELECT * FROM #__kunena_aliases WHERE alias LIKE {$db->quote($alias . '%')}";
 		$db->setQuery($query);
 		$aliases = $db->loadObjectList();
 
@@ -983,7 +985,7 @@ abstract class KunenaRoute
 		$uri = clone Uri::getInstance();
 
 		// Get current route.
-		self::$current = new \Joomla\CMS\Uri\Uri('index.php');
+		self::$current = new Joomla\CMS\Uri\Uri('index.php');
 
 		if ($active)
 		{
@@ -1021,7 +1023,7 @@ abstract class KunenaRoute
 				continue;
 			}
 
-			if (in_array($key, array('q', 'query', 'searchuser')))
+			if (in_array($key, array('query', 'searchuser')))
 			{
 				// Allow all values
 			}
@@ -1130,7 +1132,7 @@ abstract class KunenaRoute
 	 */
 	public static function fixMissingItemID()
 	{
-		$component = JComponentHelper::getComponent('com_kunena');
+		$component = ComponentHelper::getComponent('com_kunena');
 		$items     = Factory::getApplication()->getMenu('site')->getItems('component_id', $component->id);
 
 		if ($items)

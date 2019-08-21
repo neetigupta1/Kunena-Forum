@@ -4,7 +4,7 @@
  * @package       Kunena.Framework
  * @subpackage    Forum
  *
- * @copyright     Copyright (C) 2008 - 2018 Kunena Team. All rights reserved.
+ * @copyright     Copyright (C) 2008 - 2019 Kunena Team. All rights reserved.
  * @license       https://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link          https://www.kunena.org
  **/
@@ -179,7 +179,6 @@ class KunenaForumStatistics
 		$this->showpopsubjectstats  = (bool) $this->_config->showpopsubjectstats;
 		$this->showpoppollstats     = (bool) $this->_config->showpoppollstats;
 		$this->showpopthankyoustats = (bool) $this->_config->showpopthankyoustats;
-
 	}
 
 	/**
@@ -307,13 +306,16 @@ class KunenaForumStatistics
 		{
 			$todaystart     = strtotime(date('Y-m-d'));
 			$yesterdaystart = $todaystart - (1 * 24 * 60 * 60);
-			$this->_db->setQuery("SELECT
-				SUM(time>={$todaystart} AND parent=0) AS todayTopicCount,
-				SUM(time>={$todaystart} AND parent>0) AS todayReplyCount,
-				SUM(time>={$yesterdaystart} AND time<{$todaystart} AND parent=0) AS yesterdayTopicCount,
-				SUM(time>={$yesterdaystart} AND time<{$todaystart} AND parent>0) AS yesterdayReplyCount
-				FROM #__kunena_messages WHERE time>={$yesterdaystart} AND hold=0"
-			);
+
+			$query  = $this->_db->getQuery(true);
+			$query->select('SUM(' . $this->_db->quoteName('time') . ' >= ' . $this->_db->quote($todaystart) . ' AND ' . $this->_db->quoteName('parent') . ' = 0) AS ' . $this->_db->quote('todayTopicCount') . ',
+				SUM(' . $this->_db->quoteName('time') . ' >= ' . $this->_db->quote($todaystart) . ' AND ' . $this->_db->quoteName('parent') . ' > 0) AS ' . $this->_db->quote('todayReplyCount') . ',
+				SUM(' . $this->_db->quoteName('time') . ' >= ' . $this->_db->quote($yesterdaystart) . ' AND ' . $this->_db->quoteName('time') . ' < ' . $this->_db->quote($todaystart) . '  AND ' . $this->_db->quoteName('parent') . ' = 0 ) AS ' . $this->_db->quote('yesterdayTopicCount') . ',
+				SUM(' . $this->_db->quoteName('time') . ' >= ' . $this->_db->quote($yesterdaystart) . '  AND ' . $this->_db->quoteName('time') . '< ' . $this->_db->quote($todaystart) . '  AND ' . $this->_db->quoteName('parent') . ' > 0) AS ' . $this->_db->quote('yesterdayReplyCount')
+			)
+				->from($this->_db->quoteName('#__kunena_messages'))
+				->where($this->_db->quoteName('time') . ' >= ' . $this->_db->quote($yesterdaystart) . ' AND ' . $this->_db->quoteName('hold') . ' = 0');
+			$this->_db->setQuery($query);
 
 			try
 			{
@@ -423,12 +425,14 @@ class KunenaForumStatistics
 
 		if ($this->topPolls < $limit)
 		{
-			$query = "SELECT poll.threadid AS id, SUM(opt.votes) AS count
-					FROM #__kunena_polls_options AS opt
-					INNER JOIN #__kunena_polls AS poll ON poll.id=opt.pollid
-					GROUP BY pollid
-					HAVING count > 0
-					ORDER BY count DESC";
+			$db = Factory::getDBO();
+			$query  = $db->getQuery(true);
+			$query->select($this->_db->quoteName('poll.threadid', 'id') . ', SUM(' . $this->_db->quoteName('opt.votes') . ') AS ' . $this->_db->quoteName('count'))
+				->from($db->quoteName('#__kunena_polls_options', 'opt'))
+				->innerJoin($db->quoteName('#__kunena_polls', 'poll') . ' ON ' . $this->_db->quoteName('poll.id') . ' = ' . $this->_db->quoteName('opt.pollid'))
+				->group($this->_db->quoteName('pollid'))
+				->having($this->_db->quoteName('count') . ' > 0')
+				->order($this->_db->quoteName('count') . ' DESC');
 			$this->_db->setQuery($query, 0, $limit);
 
 			try
@@ -591,17 +595,17 @@ class KunenaForumStatistics
 		if ($this->topThanks < $limit)
 		{
 			$query = $this->_db->getQuery(true);
-			$query->select($this->_db->quoteName(array('t.targetuserid'), array('id')));
-			$query->select('COUNT(t.targetuserid) AS count');
-			$query->from($this->_db->quoteName(array('#__kunena_thankyou'), array('t')));
-			$query->innerJoin($this->_db->quoteName('#__users', 'u') . ' ON ' . $this->_db->quoteName('u.id') . ' = ' . $this->_db->quoteName('t.targetuserid'));
-			$query->group($this->_db->quoteName('t.targetuserid'));
+			$query->select(array('t.targetuserid'), array('id'))
+				->select('COUNT(' . $this->_db->quoteName('t.targetuserid') . ') AS ' . $this->_db->quoteName('count'))
+				->from($this->_db->quoteName(array('#__kunena_thankyou'), array('t')))
+				->innerJoin($this->_db->quoteName('#__users', 'u') . ' ON ' . $this->_db->quoteName('u.id') . ' = ' . $this->_db->quoteName('t.targetuserid'))
+				->group($this->_db->quoteName('t.targetuserid'));
 			$query->order($this->_db->quoteName('count') . ' DESC');
 
 			if (KunenaFactory::getConfig()->superadmin_userlist)
 			{
-				$filter = \Joomla\CMS\Access\Access::getUsersByGroup(8);
-				$query->where('u.id NOT IN (' . implode(',', $filter) . ')');
+				$filter = Joomla\CMS\Access\Access::getUsersByGroup(8);
+				$query->where($this->_db->quoteName('u.id') . ' NOT IN (' . implode(',', $filter) . ')');
 			}
 
 			$this->_db->setQuery($query, 0, $limit);

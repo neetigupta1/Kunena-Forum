@@ -4,7 +4,7 @@
  *
  * @package        Kunena.Installer
  *
- * @copyright      Copyright (C) 2008 - 2018 Kunena Team. All rights reserved.
+ * @copyright      Copyright (C) 2008 - 2019 Kunena Team. All rights reserved.
  * @license        https://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link           https://www.kunena.org
  **/
@@ -47,8 +47,8 @@ function installSampleData()
 	jimport('joomla.utilities.date');
 
 	$db       = Factory::getDBO();
-	$posttime = new \Joomla\CMS\Date\Date;
-	$my       = Factory::getUser();
+	$posttime = new Joomla\CMS\Date\Date;
+	$my       = Factory::getApplication()->getIdentity();
 	$queries  = array();
 
 	$query = "INSERT INTO `#__kunena_aliases` (`alias`, `type`, `item`, `state`) VALUES

@@ -4,7 +4,7 @@
  * @package         Kunena.Site
  * @subpackage      Controller.Statistics
  *
- * @copyright       Copyright (C) 2008 - 2018 Kunena Team. All rights reserved.
+ * @copyright       Copyright (C) 2008 - 2019 Kunena Team. All rights reserved.
  * @license         https://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link            https://www.kunena.org
  **/
@@ -12,6 +12,7 @@ defined('_JEXEC') or die;
 
 use Joomla\CMS\Factory;
 use Joomla\CMS\Language\Text;
+use Joomla\CMS\MVC\Controller\BaseController;
 
 /**
  * Class ComponentKunenaControllerStatisticsGeneralDisplay
@@ -46,7 +47,7 @@ class ComponentKunenaControllerStatisticsGeneralDisplay extends KunenaController
 		if (!$Itemid && KunenaConfig::getInstance()->sef_redirect)
 		{
 			$itemid     = KunenaRoute::fixMissingItemID();
-			$controller = JControllerLegacy::getInstance("kunena");
+			$controller = BaseController::getInstance("kunena");
 			$controller->setRedirect(KunenaRoute::_("index.php?option=com_kunena&view=statistics&Itemid={$itemid}", false));
 			$controller->redirect();
 		}
@@ -56,7 +57,7 @@ class ComponentKunenaControllerStatisticsGeneralDisplay extends KunenaController
 			throw new KunenaExceptionAuthorise(Text::_('COM_KUNENA_NO_ACCESS'), '404');
 		}
 
-		if (!$this->config->statslink_allowed && Factory::getUser()->guest)
+		if (!$this->config->statslink_allowed && Factory::getApplication()->getIdentity()->guest)
 		{
 			throw new KunenaExceptionAuthorise(Text::_('COM_KUNENA_NO_ACCESS'), '401');
 		}
@@ -78,8 +79,7 @@ class ComponentKunenaControllerStatisticsGeneralDisplay extends KunenaController
 	 */
 	protected function prepareDocument()
 	{
-		$app       = Factory::getApplication();
-		$menu_item = $app->getMenu()->getActive();
+		$menu_item = $this->app->getMenu()->getActive();
 
 		if ($menu_item)
 		{

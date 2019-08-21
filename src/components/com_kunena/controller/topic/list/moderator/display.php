@@ -4,13 +4,15 @@
  * @package         Kunena.Site
  * @subpackage      Controller.Topic
  *
- * @copyright       Copyright (C) 2008 - 2018 Kunena Team. All rights reserved.
+ * @copyright       Copyright (C) 2008 - 2019 Kunena Team. All rights reserved.
  * @license         https://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link            https://www.kunena.org
  **/
 defined('_JEXEC') or die;
 
+use Joomla\CMS\Component\ComponentHelper;
 use Joomla\CMS\Language\Text;
+use Joomla\CMS\MVC\Controller\BaseController;
 
 /**
  * Class ComponentKunenaControllerTopicListDisplay
@@ -36,7 +38,7 @@ class ComponentKunenaControllerTopicListModeratorDisplay extends ComponentKunena
 		$this->moreUri  = null;
 		$this->embedded = $this->getOptions()->get('embedded', true);
 
-		$params = $this->app->getParams('com_kunena');
+		$params = ComponentHelper::getParams('com_kunena');
 		$start  = $this->input->getInt('limitstart', 0);
 		$limit  = $this->input->getInt('limit', 0);
 		$Itemid = $this->input->getInt('Itemid');
@@ -59,7 +61,7 @@ class ComponentKunenaControllerTopicListModeratorDisplay extends ComponentKunena
 				$itemidfix = KunenaRoute::fixMissingItemID();
 			}
 
-			$controller = JControllerLegacy::getInstance("kunena");
+			$controller = BaseController::getInstance("kunena");
 			$controller->setRedirect(KunenaRoute::_("index.php?option=com_kunena&view=topics&layout=moderator&Itemid={$itemidfix}", false));
 			$controller->redirect();
 		}

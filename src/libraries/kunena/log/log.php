@@ -4,7 +4,7 @@
  * @package       Kunena.Libraries
  * @subpackage    Log
  *
- * @copyright     Copyright (C) 2008 - 2018 Kunena Team. All rights reserved.
+ * @copyright     Copyright (C) 2008 - 2019 Kunena Team. All rights reserved.
  * @license       https://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link          https://www.kunena.org
  **/
@@ -239,17 +239,17 @@ class KunenaLog
 	/**
 	 * @since Kunena 5.0
 	 */
-	Const LOG_USER_EDIT = 'LOG_USER_EDIT';
+	const LOG_USER_EDIT = 'LOG_USER_EDIT';
 
 	/**
 	 * @since Kunena 5.0
 	 */
-	Const LOG_USER_BLOCK = 'LOG_USER_BLOCK';
+	const LOG_USER_BLOCK = 'LOG_USER_BLOCK';
 
 	/**
 	 * @since Kunena 5.0
 	 */
-	Const LOG_USER_UNBLOCK = 'LOG_USER_UNBLOCK';
+	const LOG_USER_UNBLOCK = 'LOG_USER_UNBLOCK';
 
 	/**
 	 * @since Kunena 5.0
@@ -259,7 +259,7 @@ class KunenaLog
 	/**
 	 * @since Kunena 5.0
 	 */
-	Const LOG_USER_UNBAN = 'LOG_USER_UNBAN';
+	const LOG_USER_UNBAN = 'LOG_USER_UNBAN';
 
 	/**
 	 * @since Kunena
@@ -321,7 +321,7 @@ class KunenaLog
 		{
 			$db    = Factory::getDbo();
 			$query = $db->getQuery(true)
-				->insert('#__kunena_logs')
+				->insert($db->quoteName('#__kunena_logs'))
 				->columns('type, user_id, category_id, topic_id, target_user, ip, time, operation, data');
 
 			foreach (static::$entries as $entry)

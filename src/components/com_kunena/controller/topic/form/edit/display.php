@@ -4,7 +4,7 @@
  * @package         Kunena.Site
  * @subpackage      Controller.Topic
  *
- * @copyright       Copyright (C) 2008 - 2018 Kunena Team. All rights reserved.
+ * @copyright       Copyright (C) 2008 - 2019 Kunena Team. All rights reserved.
  * @license         https://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link            https://www.kunena.org
  **/
@@ -63,7 +63,30 @@ class ComponentKunenaControllerTopicFormEditDisplay extends KunenaControllerDisp
 			throw new KunenaExceptionAuthorise(Text::_('COM_KUNENA_NO_ACCESS'), '401');
 		}
 
-		$doc = Factory::getDocument();
+		$categories        = KunenaForumCategoryHelper::getCategories();
+		$arrayanynomousbox = array();
+		$arraypollcatid    = array();
+
+		foreach ($categories as $category)
+		{
+			if (!$category->isSection() && $category->allow_anonymous)
+			{
+				$arrayanynomousbox[$category->id] = $category->post_anonymous;
+			}
+
+			if ($this->config->pollenabled)
+			{
+				if (!$category->isSection() && $category->allow_polls)
+				{
+					$arraypollcatid[$category->id] = 1;
+				}
+			}
+		}
+
+		KunenaTemplate::getInstance()->addScriptOptions('com_kunena.arrayanynomousbox', json_encode($arrayanynomousbox));
+		KunenaTemplate::getInstance()->addScriptOptions('com_kunena.pollcategoriesid', json_encode($arraypollcatid));
+
+		$doc = Factory::getApplication()->getDocument();
 		$doc->setMetaData('robots', 'nofollow, noindex');
 
 		foreach ($doc->_links as $key => $value)
@@ -84,12 +107,12 @@ class ComponentKunenaControllerTopicFormEditDisplay extends KunenaControllerDisp
 		}
 
 		// Run onKunenaPrepare event.
-		$params = new \Joomla\Registry\Registry;
+		$params = new Joomla\Registry\Registry;
 		$params->set('ksource', 'kunena');
 		$params->set('kunena_view', 'topic');
 		$params->set('kunena_layout', 'reply');
 
-		\Joomla\CMS\Plugin\PluginHelper::importPlugin('kunena');
+		Joomla\CMS\Plugin\PluginHelper::importPlugin('kunena');
 
 		Factory::getApplication()->triggerEvent('onKunenaPrepare', array('kunena.topic', &$this->topic, &$params, 0));
 
@@ -116,7 +139,13 @@ class ComponentKunenaControllerTopicFormEditDisplay extends KunenaControllerDisp
 
 		$this->post_anonymous       = isset($saved['anonymous']) ? $saved['anonymous'] : !empty($this->category->post_anonymous);
 		$this->subscriptionschecked = false;
+		$this->canSubscribe         = false;
 		$usertopic                  = $this->topic->getUserTopic();
+
+		if ($this->config->allowsubscriptions)
+		{
+			$this->canSubscribe = true;
+		}
 
 		if ($this->topic->isAuthorised('subscribe') && $this->topic->exists())
 		{
@@ -136,8 +165,6 @@ class ComponentKunenaControllerTopicFormEditDisplay extends KunenaControllerDisp
 		$this->modified_reason = isset($saved['modified_reason']) ? $saved['modified_reason'] : '';
 		$this->app->setUserState('com_kunena.postfields', null);
 
-		$this->canSubscribe = false;
-
 		$this->headerText = Text::_('COM_KUNENA_POST_EDIT') . ' ' . $this->topic->subject;
 	}
 
@@ -150,8 +177,7 @@ class ComponentKunenaControllerTopicFormEditDisplay extends KunenaControllerDisp
 	 */
 	protected function prepareDocument()
 	{
-		$app       = Factory::getApplication();
-		$menu_item = $app->getMenu()->getActive();
+		$menu_item = $this->app->getMenu()->getActive();
 
 		$this->setMetaData('robots', 'nofollow, noindex');
 

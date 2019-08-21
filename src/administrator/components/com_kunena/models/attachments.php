@@ -5,13 +5,14 @@
  * @package         Kunena.Administrator
  * @subpackage      Models
  *
- * @copyright       Copyright (C) 2008 - 2018 Kunena Team. All rights reserved.
+ * @copyright       Copyright (C) 2008 - 2019 Kunena Team. All rights reserved.
  * @license         https://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link            https://www.kunena.org
  **/
 defined('_JEXEC') or die();
 
 use Joomla\CMS\Factory;
+use Joomla\Database\QueryInterface;
 
 jimport('joomla.application.component.modellist');
 
@@ -20,12 +21,13 @@ jimport('joomla.application.component.modellist');
  *
  * @since 2.0
  */
-class KunenaAdminModelAttachments extends \Joomla\CMS\MVC\Model\ListModel
+class KunenaAdminModelAttachments extends Joomla\CMS\MVC\Model\ListModel
 {
 	/**
-	 * @param   array $config config
+	 * @param   array  $config  config
 	 *
 	 * @since Kunena
+	 * @throws Exception
 	 */
 	public function __construct($config = array())
 	{
@@ -48,12 +50,12 @@ class KunenaAdminModelAttachments extends \Joomla\CMS\MVC\Model\ListModel
 	/**
 	 * Method to auto-populate the model state.
 	 *
-	 * @param   string $ordering  ordering
-	 * @param   string $direction direction
+	 * @param   string  $ordering   ordering
+	 * @param   string  $direction  direction
 	 *
 	 * @return    void
-	 * @throws Exception
 	 * @since    1.6
+	 * @throws Exception
 	 */
 	protected function populateState($ordering = null, $direction = null)
 	{
@@ -100,7 +102,7 @@ class KunenaAdminModelAttachments extends \Joomla\CMS\MVC\Model\ListModel
 	}
 
 	/**
-	 * @param   string $id id
+	 * @param   string  $id  id
 	 *
 	 * @return string
 	 * @since Kunena
@@ -119,14 +121,14 @@ class KunenaAdminModelAttachments extends \Joomla\CMS\MVC\Model\ListModel
 	}
 
 	/**
-	 * @param   string $query      query
-	 * @param   int    $limitstart limitstart
-	 * @param   int    $limit      limit
+	 * @param   string  $query       query
+	 * @param   int     $limitstart  limitstart
+	 * @param   int     $limit       limit
 	 *
 	 * @return KunenaAttachment[]
-	 * @throws Exception
-	 * @throws null
 	 * @since Kunena
+	 * @throws null
+	 * @throws Exception
 	 */
 	protected function _getList($query, $limitstart = 0, $limit = 0)
 	{
@@ -149,7 +151,7 @@ class KunenaAdminModelAttachments extends \Joomla\CMS\MVC\Model\ListModel
 	}
 
 	/**
-	 * @return JDatabaseQuery
+	 * @return QueryInterface
 	 * @since Kunena
 	 */
 	protected function getListQuery()
@@ -176,7 +178,7 @@ class KunenaAdminModelAttachments extends \Joomla\CMS\MVC\Model\ListModel
 
 		if (!empty($filter))
 		{
-			$title = $db->Quote('%' . $db->escape($filter, true) . '%');
+			$title = $db->quote('%' . $db->escape($filter, true) . '%');
 			$query->where('(a.filename LIKE ' . $title . ' OR a.filename_real LIKE ' . $title . ')');
 		}
 
@@ -184,7 +186,7 @@ class KunenaAdminModelAttachments extends \Joomla\CMS\MVC\Model\ListModel
 
 		if (!empty($filter))
 		{
-			$type = $db->Quote('%' . $db->escape($filter, true) . '%');
+			$type = $db->quote('%' . $db->escape($filter, true) . '%');
 			$query->where('(a.filetype LIKE ' . $type . ')');
 		}
 
@@ -193,7 +195,7 @@ class KunenaAdminModelAttachments extends \Joomla\CMS\MVC\Model\ListModel
 
 		if (!empty($filter))
 		{
-			$size = $db->Quote('%' . $db->escape($filter, true) . '%');
+			$size = $db->quote('%' . $db->escape($filter, true) . '%');
 			$query->where('(a.size LIKE ' . $size . ')');
 		}
 
@@ -201,7 +203,7 @@ class KunenaAdminModelAttachments extends \Joomla\CMS\MVC\Model\ListModel
 
 		if (!empty($filter))
 		{
-			$username = $db->Quote('%' . $db->escape($filter, true) . '%');
+			$username = $db->quote('%' . $db->escape($filter, true) . '%');
 			$query->where('(m.name LIKE ' . $username . ')');
 		}
 
@@ -209,7 +211,7 @@ class KunenaAdminModelAttachments extends \Joomla\CMS\MVC\Model\ListModel
 
 		if (!empty($filter))
 		{
-			$post = $db->Quote('%' . $db->escape($filter, true) . '%');
+			$post = $db->quote('%' . $db->escape($filter, true) . '%');
 			$query->where('(m.subject LIKE ' . $post . ')');
 		}
 
@@ -241,9 +243,11 @@ class KunenaAdminModelAttachments extends \Joomla\CMS\MVC\Model\ListModel
 
 		if (!empty($filter))
 		{
-			$post = $db->Quote('%' . $db->escape($filter, true) . '%');
+			$post = $db->quote('%' . $db->escape($filter, true) . '%');
 			$query->where('(a.filename LIKE ' . $post . ')');
 		}
+
+		$db->setQuery($query);
 
 		return $query;
 	}

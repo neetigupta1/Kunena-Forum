@@ -4,7 +4,7 @@
  * @package       Kunena.Framework
  * @subpackage    Tables
  *
- * @copyright     Copyright (C) 2008 - 2018 Kunena Team. All rights reserved.
+ * @copyright     Copyright (C) 2008 - 2019 Kunena Team. All rights reserved.
  * @license       https://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link          https://www.kunena.org
  **/
@@ -14,7 +14,7 @@ defined('_JEXEC') or die();
  * Class KunenaTable
  * @since Kunena
  */
-abstract class KunenaTable extends \Joomla\CMS\Table\Table
+abstract class KunenaTable extends Joomla\CMS\Table\Table
 {
 	/**
 	 * @var boolean
@@ -23,11 +23,12 @@ abstract class KunenaTable extends \Joomla\CMS\Table\Table
 	protected $_exists = false;
 
 	/**
-	 * @param   null $keys  keys
-	 * @param   bool $reset reset
+	 * @param   null  $keys   keys
+	 * @param   bool  $reset  reset
 	 *
 	 * @return boolean
 	 * @since Kunena
+	 * @throws Exception
 	 */
 	public function load($keys = null, $reset = true)
 	{
@@ -82,33 +83,42 @@ abstract class KunenaTable extends \Joomla\CMS\Table\Table
 			$this->reset();
 		}
 
-		// Initialise the query.
-		$query  = $this->_db->getQuery(true)
-			->select('*')
-			->from($this->_db->quoteName($this->_tbl));
-		$fields = array_keys($this->getProperties());
-
-		foreach ($keys as $field => $value)
-		{
-			// Check that $field is in the table.
-			if (!in_array($field, $fields))
-			{
-				throw new UnexpectedValueException(sprintf('Missing field in database: %s &#160; %s.', get_class($this), $field));
-			}
-
-			// Add the search tuple to the query.
-			$query->where($this->_db->quoteName($field) . ' = ' . $this->_db->quote($value));
-		}
-
-		$this->_db->setQuery($query);
-
 		try
 		{
+			$this->_db->transactionStart();
+
+			// Initialise the query.
+			$query  = $this->_db->getQuery(true)
+				->select('*')
+				->from($this->_db->quoteName($this->_tbl));
+			$fields = array_keys($this->getProperties());
+
+			foreach ($keys as $field => $value)
+			{
+				// Check that $field is in the table.
+				if (!in_array($field, $fields))
+				{
+					throw new UnexpectedValueException(sprintf('Missing field in database: %s &#160; %s.', get_class($this), $field));
+				}
+
+				// Add the search tuple to the query.
+				$query->Where($this->_db->quoteName($field) . ' = ' . $this->_db->quote($value));
+			}
+
+			$this->_db->setQuery($query);
+
 			$row = $this->_db->loadAssoc();
+
+			$this->_db->transactionCommit();
 		}
-		catch (JDatabaseExceptionExecuting $e)
+		catch (Exception $e)
 		{
-			throw new RuntimeException($e->getMessage(), $e->getCode());
+			// Catch any database errors.
+			$this->_db->transactionRollback();
+
+			KunenaError::displayDatabaseError($e);
+
+			return false;
 		}
 
 		if (empty($row))
@@ -134,10 +144,11 @@ abstract class KunenaTable extends \Joomla\CMS\Table\Table
 	}
 
 	/**
-	 * @param   bool $updateNulls update
+	 * @param   bool  $updateNulls  update
 	 *
 	 * @return boolean
 	 * @since Kunena
+	 * @throws Exception
 	 */
 	public function store($updateNulls = false)
 	{
@@ -163,8 +174,6 @@ abstract class KunenaTable extends \Joomla\CMS\Table\Table
 
 		if (!$result)
 		{
-			$this->setError(get_class($this) . '::store() failed - ' . $this->_db->getErrorMsg());
-
 			return false;
 		}
 
@@ -201,12 +210,13 @@ abstract class KunenaTable extends \Joomla\CMS\Table\Table
 	/**
 	 * Updates a row in a table based on an object's properties.
 	 *
-	 * @param   boolean $nulls True to update null fields or false to ignore them.
+	 * @param   boolean  $nulls  True to update null fields or false to ignore them.
 	 *
 	 * @return  boolean  True on success.
 	 *
-	 * @throws  RuntimeException
 	 * @since Kunena
+	 * @throws Exception
+	 * @throws  RuntimeException
 	 */
 	public function updateObject($nulls = false)
 	{
@@ -266,10 +276,28 @@ abstract class KunenaTable extends \Joomla\CMS\Table\Table
 			return true;
 		}
 
-		// Set the query and execute the update.
-		$this->_db->setQuery(sprintf($statement, implode(",", $fields), implode(' AND ', $where)));
+		try
+		{
+			$this->_db->transactionStart();
 
-		return $this->_db->execute();
+			// Set the query and execute the update.
+			$this->_db->setQuery(sprintf($statement, implode(",", $fields), implode(' AND ', $where)));
+
+			$this->_db->execute();
+
+			$this->_db->transactionCommit();
+		}
+		catch (Exception $e)
+		{
+			// Catch any database errors.
+			$this->_db->transactionRollback();
+
+			KunenaError::displayDatabaseError($e);
+
+			return false;
+		}
+
+		return true;
 	}
 
 	/**
@@ -277,8 +305,9 @@ abstract class KunenaTable extends \Joomla\CMS\Table\Table
 	 *
 	 * @return  boolean    True on success.
 	 *
-	 * @throws  RuntimeException
 	 * @since Kunena
+	 * @throws Exception
+	 * @throws  RuntimeException
 	 */
 	protected function insertObject()
 	{
@@ -309,22 +338,38 @@ abstract class KunenaTable extends \Joomla\CMS\Table\Table
 			$values[] = $this->_db->quote($v);
 		}
 
-		// Create the base insert statement.
-		$query = $this->_db->getQuery(true)
-			->insert($this->_db->quoteName($this->_tbl))
-			->columns($fields)
-			->values(implode(',', $values));
-
-		// Set the query and execute the insert.
-		$this->_db->setQuery($query);
-
-		if (!$this->_db->execute())
+		try
 		{
+			$this->_db->transactionStart();
+
+			// Create the base insert statement.
+			$query = $this->_db->getQuery(true)
+				->insert($this->_db->quoteName($this->_tbl))
+				->columns($fields)
+				->values(implode(',', $values));
+
+			// Set the query and execute the insert.
+			$this->_db->setQuery($query);
+
+			if (!$this->_db->execute())
+			{
+				return false;
+			}
+
+			// Update the primary key if it exists.
+			$id = $this->_db->insertid();
+
+			$this->_db->transactionCommit();
+		}
+		catch (Exception $e)
+		{
+			// Catch any database errors.
+			$this->_db->transactionRollback();
+
+			KunenaError::displayDatabaseError($e);
+
 			return false;
 		}
-
-		// Update the primary key if it exists.
-		$id = $this->_db->insertid();
 
 		if (count($tbl_keys) == 1 && $id)
 		{
@@ -336,10 +381,11 @@ abstract class KunenaTable extends \Joomla\CMS\Table\Table
 	}
 
 	/**
-	 * @param   null $pk pk
+	 * @param   null  $pk  pk
 	 *
 	 * @return boolean
 	 * @since Kunena
+	 * @throws Exception
 	 */
 	public function delete($pk = null)
 	{
@@ -381,25 +427,34 @@ abstract class KunenaTable extends \Joomla\CMS\Table\Table
 			$this->_observers->update('onBeforeDelete', array($pk));
 		}
 
-		// Delete the row by primary key.
-		$query = $this->_db->getQuery(true)
-			->delete($this->_tbl);
-
-		foreach ($pk as $key => $value)
-		{
-			$query->where("{$this->_db->quoteName($key)} = {$this->_db->quote($value)}");
-		}
-
-		$this->_db->setQuery($query);
-
 		// Check for a database error.
 		try
 		{
+			$this->_db->transactionStart();
+
+			// Delete the row by primary key.
+			$query = $this->_db->getQuery(true)
+				->delete($this->_db->quoteName($this->_tbl));
+
+			foreach ($pk as $key => $value)
+			{
+				$query->where("{$this->_db->quoteName($key)} = {$this->_db->quote($value)}");
+			}
+
+			$this->_db->setQuery($query);
+
 			$this->_db->execute();
+
+			$this->_db->transactionCommit();
 		}
-		catch (JDatabaseExceptionExecuting $e)
+		catch (Exception $e)
 		{
-			throw new RuntimeException($e->getMessage(), $e->getCode());
+			// Catch any database errors.
+			$this->_db->transactionRollback();
+
+			KunenaError::displayDatabaseError($e);
+
+			return false;
 		}
 
 		// Implement JObservableInterface: Post-processing by observers

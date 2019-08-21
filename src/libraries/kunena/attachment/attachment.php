@@ -4,7 +4,7 @@
  * @package         Kunena.Framework
  * @subpackage      Forum.Message.Attachment
  *
- * @copyright       Copyright (C) 2008 - 2018 Kunena Team. All rights reserved.
+ * @copyright       Copyright (C) 2008 - 2019 Kunena Team. All rights reserved.
  * @license         https://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link            https://www.kunena.org
  **/
@@ -13,6 +13,9 @@ defined('_JEXEC') or die();
 use Joomla\CMS\Factory;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\Uri\Uri;
+use Joomla\CMS\Filesystem\File;
+use Joomla\CMS\Filesystem\Folder;
+use Joomla\Image\Image;
 
 /**
  * Class KunenaAttachment
@@ -28,7 +31,9 @@ use Joomla\CMS\Uri\Uri;
  * @property string $filename
  * @property string $filename_real
  * @property string $caption
+ * @property string $comment
  * @property int    $inline
+ * @property string $typeAlias
  *
  * @property int    $width   Image width (0 for non-images).
  * @property int    $height  Image height (0 for non-images).
@@ -82,19 +87,97 @@ class KunenaAttachment extends KunenaDatabaseObject
 	 * @var integer
 	 * @since Kunena
 	 */
-	protected $width;
+	public $width;
 
 	/**
 	 * @var integer
 	 * @since Kunena
 	 */
-	protected $height;
+	public $height;
 
 	/**
 	 * @var string
 	 * @since Kunena
 	 */
 	protected $shortname;
+
+	/**
+	 * @var string
+	 * @since Kunena
+	 */
+	public $folder;
+
+	/**
+	 * @var string
+	 * @since Kunena
+	 */
+	public $userid;
+
+	/**
+	 * @var string
+	 * @since Kunena
+	 */
+	public $mesid;
+
+	/**
+	 * @var string
+	 * @since Kunena
+	 */
+	public $protected;
+
+	/**
+	 * @var string
+	 * @since Kunena
+	 */
+	public $hash;
+
+	/**
+	 * @var string
+	 * @since Kunena
+	 */
+	public $size;
+
+	/**
+	 * @var string
+	 * @since Kunena
+	 */
+	public $filetype;
+
+	/**
+	 * @var string
+	 * @since Kunena
+	 */
+	public $filename;
+
+	/**
+	 * @var string
+	 * @since Kunena
+	 */
+	public $filename_real;
+
+	/**
+	 * @var string
+	 * @since Kunena
+	 */
+	public $comment;
+
+	/**
+	 * @var boolean
+	 * @since Kunena
+	 */
+	public $inline;
+
+	/**
+	 * @var string
+	 * @since Kunena
+	 */
+	public $typeAlias;
+
+	/**
+	 * @var string
+	 * @since Kunena
+	 */
+	public $caption;
 
 	/**
 	 * @param   mixed $identifier identifier
@@ -139,21 +222,21 @@ class KunenaAttachment extends KunenaDatabaseObject
 
 		if (is_file($filename))
 		{
-			KunenaFile::delete($filename);
+			File::delete($filename);
 		}
 
 		$filename = $path . '/raw/' . $this->filename;
 
 		if (is_file($filename))
 		{
-			KunenaFile::delete($filename);
+			File::delete($filename);
 		}
 
 		$filename = $path . '/thumb/' . $this->filename;
 
 		if (is_file($filename))
 		{
-			KunenaFile::delete($filename);
+			File::delete($filename);
 		}
 	}
 
@@ -178,6 +261,32 @@ class KunenaAttachment extends KunenaDatabaseObject
 				return $this->width;
 			case 'height':
 				return $this->height;
+			case 'filename':
+				return $this->filename;
+			case 'folder':
+				return $this->folder;
+			case 'userid':
+				return $this->userid;
+			case 'mesid':
+				return $this->mesid;
+			case 'protected':
+				return $this->protected;
+			case 'hash':
+				return $this->hash;
+			case 'size':
+				return $this->size;
+			case 'filetype':
+				return $this->filetype;
+			case 'filename_real':
+				return $this->filename_real;
+			case 'comment':
+				return $this->comment;
+			case 'inline':
+				return $this->inline;
+			case 'typeAlias':
+				return $this->typeAlias;
+			case 'caption':
+				return $this->caption;
 		}
 
 		throw new InvalidArgumentException(sprintf('Property "%s" is not defined', $property));
@@ -194,7 +303,7 @@ class KunenaAttachment extends KunenaDatabaseObject
 
 		if ($path && $this->isImage())
 		{
-			list($this->width, $this->height) = getimagesize($path);
+			list($this->width, $this->height) = Image::getImageFileProperties($path);
 		}
 		else
 		{
@@ -273,6 +382,25 @@ class KunenaAttachment extends KunenaDatabaseObject
 	public function isPdf()
 	{
 		return stripos($this->filetype, 'application/pdf') !== false;
+	}
+
+	/**
+	 * Check if attachment is inline.
+	 *
+	 * @return  boolean  True if attachment is inline.
+	 *
+	 * @since  K5.1.9
+	 */
+	public function isInline()
+	{
+		if ($this->inline)
+		{
+			return true;
+		}
+		else
+		{
+			return false;
+		}
 	}
 
 	/**
@@ -376,9 +504,14 @@ class KunenaAttachment extends KunenaDatabaseObject
 
 		$url = KunenaRoute::_("index.php?option=com_kunena&view=attachment&id={$this->id}{$thumb}{$download}&format=raw", $escape);
 
-		if (\Joomla\CMS\Application\CMSApplication::getInstance('site')->get('sef_suffix'))
+		if (Joomla\CMS\Application\CMSApplication::getInstance('site')->get('sef_suffix'))
 		{
 			$url = preg_replace('/.html/', '', $url);
+		}
+
+		if ($protect && $inline && $this->isPdf())
+		{
+			$url = Uri::base() . $this->folder . '/' . $this->filename_real;
 		}
 
 		return $url;
@@ -584,7 +717,7 @@ class KunenaAttachment extends KunenaDatabaseObject
 
 		$uploadBasePath = JPATH_ROOT . '/media/kunena/attachments/' . $this->userid . '/';
 
-		if (!JFolder::exists($uploadBasePath))
+		if (!Folder::exists($uploadBasePath))
 		{
 			mkdir(JPATH_ROOT . '/media/kunena/attachments/' . $this->userid . '/');
 		}
@@ -593,10 +726,10 @@ class KunenaAttachment extends KunenaDatabaseObject
 
 		$fileInput['name'] = preg_replace('/[[:space:]]/', '', $fileInput['name']);
 
-		$fileNameWithoutExt = JFile::stripExt($fileInput['name']);
+		$fileNameWithoutExt = File::stripExt($fileInput['name']);
 		$fileNameWithoutExt = strtolower($fileNameWithoutExt);
 
-		$fileExt = JFile::getExt($fileInput['name']);
+		$fileExt = File::getExt($fileInput['name']);
 		$fileExt = strtolower($fileExt);
 
 		$fileNameWithExt = $fileInput['name'];
@@ -625,9 +758,7 @@ class KunenaAttachment extends KunenaDatabaseObject
 			}
 			else
 			{
-				$info = getimagesize($uploadBasePath . $fileNameWithExt);
-
-				$type = $info['mime'];
+				throw new RuntimeException("Fileinfo extension not loaded.");
 			}
 
 			if (stripos($type, 'image/') !== false)
@@ -707,7 +838,6 @@ class KunenaAttachment extends KunenaDatabaseObject
 		// Hash, size and MIME are set during saving, so let's deal with all other variables.
 		$this->userid    = is_null($this->userid) ? KunenaUserHelper::getMyself() : $this->userid;
 		$this->folder    = is_null($this->folder) ? "media/kunena/attachments/{$this->userid}" : $this->folder;
-		$this->protected = is_null($this->protected) ? (bool) KunenaConfig::getInstance()->attachment_protection : $this->protected;
 
 		if (!$this->filename_real)
 		{
@@ -728,7 +858,7 @@ class KunenaAttachment extends KunenaDatabaseObject
 		}
 
 		// Create target directory if it does not exist.
-		if (!KunenaFolder::exists(JPATH_ROOT . "/{$this->folder}") && !KunenaFolder::create(JPATH_ROOT . "/{$this->folder}"))
+		if (!Folder::exists(JPATH_ROOT . "/{$this->folder}") && !Folder::create(JPATH_ROOT . "/{$this->folder}"))
 		{
 			throw new RuntimeException(Text::_('Failed to create attachment directory.'));
 		}
@@ -749,7 +879,7 @@ class KunenaAttachment extends KunenaDatabaseObject
 				@chmod($source, 0644);
 			}
 
-			$success = KunenaFile::copy($source, $destination);
+			$success = File::copy($source, $destination);
 
 			if (!$success)
 			{
@@ -770,7 +900,7 @@ class KunenaAttachment extends KunenaDatabaseObject
 	/**
 	 * @param   KunenaUser $user user
 	 *
-	 * @return mixed
+	 * @return mixed|void
 	 *
 	 * @since  K4.0
 	 */
@@ -788,7 +918,7 @@ class KunenaAttachment extends KunenaDatabaseObject
 	/**
 	 * @param   KunenaUser $user user
 	 *
-	 * @return mixed
+	 * @return mixed|void
 	 *
 	 * @throws Exception
 	 * @since  K4.0
@@ -822,7 +952,7 @@ class KunenaAttachment extends KunenaDatabaseObject
 	/**
 	 * @param   KunenaUser $user user
 	 *
-	 * @return mixed
+	 * @return mixed|void
 	 *
 	 * @throws Exception
 	 * @since  K4.0

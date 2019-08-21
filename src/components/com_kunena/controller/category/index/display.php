@@ -4,7 +4,7 @@
  * @package         Kunena.Site
  * @subpackage      Controller.Category
  *
- * @copyright       Copyright (C) 2008 - 2018 Kunena Team. All rights reserved.
+ * @copyright       Copyright (C) 2008 - 2019 Kunena Team. All rights reserved.
  * @license         https://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link            https://www.kunena.org
  **/
@@ -14,6 +14,9 @@ use Joomla\CMS\Factory;
 use Joomla\CMS\HTML\HTMLHelper;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\Uri\Uri;
+use Joomla\CMS\MVC\Controller\BaseController;
+use Joomla\Registry\Registry;
+use Joomla\CMS\Filesystem\File;
 
 /**
  * Class ComponentKunenaControllerApplicationMiscDisplay
@@ -62,15 +65,16 @@ class ComponentKunenaControllerCategoryIndexDisplay extends KunenaControllerDisp
 	 * Prepare category index display.
 	 *
 	 * @return void
-	 * @throws Exception
-	 * @throws null
 	 * @since Kunena
+	 * @throws null
+	 * @throws Exception
 	 */
 	protected function before()
 	{
 		parent::before();
 
-		$this->me = KunenaUserHelper::getMyself();
+		$this->me        = KunenaUserHelper::getMyself();
+		$this->ktemplate = KunenaFactory::getTemplate();
 
 		// Get sections to display.
 		$catid       = $this->input->getInt('catid', 0);
@@ -81,7 +85,7 @@ class ComponentKunenaControllerCategoryIndexDisplay extends KunenaControllerDisp
 
 		if (!$Itemid && KunenaConfig::getInstance()->sef_redirect)
 		{
-			$controller = JControllerLegacy::getInstance("kunena");
+			$controller = BaseController::getInstance("kunena");
 
 			if (KunenaConfig::getInstance()->index_id)
 			{
@@ -140,7 +144,7 @@ class ComponentKunenaControllerCategoryIndexDisplay extends KunenaControllerDisp
 		$options            = array();
 		$options []         = HTMLHelper::_('select.option', '0', Text::_('COM_KUNENA_FORUM_TOP'));
 		$cat_params         = array('sections' => 1, 'catid' => 0);
-		$this->categorylist = HTMLHelper::_('kunenaforum.categorylist', 'catid', 0, $options, $cat_params, 'class="inputbox fbs" size="1" onchange = "this.form.submit()"', 'value', 'text');
+		$this->categorylist = HTMLHelper::_('kunenaforum.categorylist', 'catid', 0, $options, $cat_params, 'class="form-control inputbox fbs" size="1" onchange = "this.form.submit()"', 'value', 'text');
 
 		if ($catid)
 		{
@@ -160,10 +164,19 @@ class ComponentKunenaControllerCategoryIndexDisplay extends KunenaControllerDisp
 			$this->categories[$category->id] = array();
 			$this->more[$category->id]       = 0;
 
-			// Display only categories which are supposed to show up.
-			if ($catid || $category->params->get('display.index.parent', 3) > 0)
+			$registry = new Registry;
+
+			if (!empty($registry->params))
 			{
-				if ($catid || $category->params->get('display.index.children', 3) > 1)
+				$registry->loadString($category->params);
+			}
+
+			$params = $registry->loadString($category->params);
+
+			// Display only categories which are supposed to show up.
+			if ($catid || $params->get('display.index.parent', 3) > 0)
+			{
+				if ($catid || $params->get('display.index.children', 3) > 1)
 				{
 					$sectionIds[] = $category->id;
 				}
@@ -203,25 +216,46 @@ class ComponentKunenaControllerCategoryIndexDisplay extends KunenaControllerDisp
 		{
 			$this->more[$category->id] = 0;
 
-			// Display only categories which are supposed to show up.
-			if ($catid || $category->params->get('display.index.parent', 3) > 1)
+			$registry = new Registry;
+
+			if (!empty($registry->params))
 			{
-				if ($catid
-					|| ($category->getParent()->params->get('display.index.children', 3) > 2 && $category->params->get('display.index.children', 3) > 2)
-				)
+				$registry->loadString($category->params);
+			}
+
+			$params = $registry->loadString($category->params);
+
+			$subregistry = new Registry;
+
+			if (!empty($subregistry->params))
+			{
+				$subregistry->loadString($category->getParent()->params);
+			}
+
+			if ($category->getParent())
+			{
+				$subparams = $subregistry->loadString($category->getParent()->params);
+
+				// Display only categories which are supposed to show up.
+				if ($catid || $params->get('display.index.parent', 3) > 1)
 				{
-					$categoryIds[] = $category->id;
+					if ($catid
+						|| ($subparams->get('display.index.children', 3) > 2 && $params->get('display.index.children', 3) > 2)
+					)
+					{
+						$categoryIds[] = $category->id;
+					}
+					else
+					{
+						$this->more[$category->id]++;
+					}
 				}
 				else
 				{
-					$this->more[$category->id]++;
+					$this->more[$category->parent_id]++;
+					unset($categories[$key]);
+					continue;
 				}
-			}
-			else
-			{
-				$this->more[$category->parent_id]++;
-				unset($categories[$key]);
-				continue;
 			}
 
 			// Get list of topics.
@@ -246,8 +280,17 @@ class ComponentKunenaControllerCategoryIndexDisplay extends KunenaControllerDisp
 
 		foreach ($subcategories as $category)
 		{
+			$registry = new Registry;
+
+			if (!empty($registry->params))
+			{
+				$registry->loadString($category->params);
+			}
+
+			$params = $registry->loadString($category->params);
+
 			// Display only categories which are supposed to show up.
-			if ($catid || $category->params->get('display.index.parent', 3) > 2)
+			if ($catid || $params->get('display.index.parent', 3) > 2)
 			{
 				$this->categories[$category->parent_id][] = $category;
 			}
@@ -298,12 +341,12 @@ class ComponentKunenaControllerCategoryIndexDisplay extends KunenaControllerDisp
 				// Get pending messages.
 				$catlist = implode(',', array_keys($moderate));
 				$db      = Factory::getDbo();
-				$db->setQuery(
-					"SELECT catid, COUNT(*) AS count
-					FROM #__kunena_messages
-					WHERE catid IN ({$catlist}) AND hold=1
-					GROUP BY catid"
-				);
+				$query = $db->getQuery(true);
+				$query->select('catid, COUNT(*) AS count')
+					->from($db->quoteName('#__kunena_messages'))
+					->where('catid IN (' . $catlist . ') AND hold=1')
+					->group('catid');
+				$db->setQuery($query);
 
 				try
 				{
@@ -328,7 +371,7 @@ class ComponentKunenaControllerCategoryIndexDisplay extends KunenaControllerDisp
 				}
 				else
 				{
-					$topic_ordering = $this->config->default_sort == 'asc' ? false : true;
+					$topic_ordering = KunenaConfig::getInstance()->default_sort == 'asc' ? false : true;
 				}
 
 				// Fix last post position when user can see unapproved or deleted posts.
@@ -339,7 +382,7 @@ class ComponentKunenaControllerCategoryIndexDisplay extends KunenaControllerDisp
 			}
 		}
 
-		$doc = Factory::getDocument();
+		$doc = Factory::getApplication()->getDocument();
 
 		foreach ($doc->_links as $key => $value)
 		{
@@ -366,18 +409,17 @@ class ComponentKunenaControllerCategoryIndexDisplay extends KunenaControllerDisp
 	 * Prepare document.
 	 *
 	 * @return void
-	 * @throws Exception
 	 * @since Kunena
+	 * @throws Exception
 	 */
 	protected function prepareDocument()
 	{
-		$app       = Factory::getApplication();
-		$menu_item = $app->getMenu()->getActive();
+		$menu_item = $this->app->getMenu()->getActive();
 
 		$config = Factory::getConfig();
 		$robots = $config->get('robots');
 
-		if (JFile::exists(JPATH_SITE . '/' . KunenaConfig::getInstance()->emailheader))
+		if (File::exists(JPATH_SITE . '/' . KunenaConfig::getInstance()->emailheader))
 		{
 			$image = Uri::base() . KunenaConfig::getInstance()->emailheader;
 			$this->setMetaData('og:image', $image, 'property');
@@ -402,7 +444,14 @@ class ComponentKunenaControllerCategoryIndexDisplay extends KunenaControllerDisp
 
 		if ($menu_item)
 		{
-			$params             = $menu_item->params;
+			$registry = new Registry;
+
+			if (!empty($registry->params))
+			{
+				$registry->loadString($menu_item->params);
+			}
+
+			$params             = $registry->loadString($menu_item->params);
 			$params_title       = $params->get('page_title');
 			$params_keywords    = $params->get('menu-meta_keywords');
 			$params_description = $params->get('menu-meta_description');
@@ -441,7 +490,7 @@ class ComponentKunenaControllerCategoryIndexDisplay extends KunenaControllerDisp
 			}
 			else
 			{
-				$description = Text::_('COM_KUNENA_VIEW_CATEGORIES_DEFAULT') . ' - ' . $this->config->board_title;
+				$description = Text::_('COM_KUNENA_VIEW_CATEGORIES_DEFAULT') . ' - ' . KunenaConfig::getInstance()->board_title;
 				$this->setDescription($description);
 			}
 

@@ -4,7 +4,7 @@
  * @package         Kunena.Site
  * @subpackage      Controller.Widget
  *
- * @copyright       Copyright (C) 2008 - 2018 Kunena Team. All rights reserved.
+ * @copyright       Copyright (C) 2008 - 2019 Kunena Team. All rights reserved.
  * @license         https://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link            https://www.kunena.org
  **/
@@ -99,6 +99,12 @@ class ComponentKunenaControllerWidgetLoginDisplay extends KunenaControllerDispla
 	public $profile_edit_url;
 
 	/**
+	 * @var
+	 * @since Kunena 5.1
+	 */
+	public $plglogin;
+
+	/**
 	 * Prepare login display.
 	 *
 	 * @return boolean
@@ -112,6 +118,9 @@ class ComponentKunenaControllerWidgetLoginDisplay extends KunenaControllerDispla
 
 		$login = KunenaLogin::getInstance();
 
+		$params = new JRegistry($login->getParams());
+		$this->plglogin = $params->get('login', '1');
+
 		if (!$login->enabled())
 		{
 			return false;
@@ -120,7 +129,7 @@ class ComponentKunenaControllerWidgetLoginDisplay extends KunenaControllerDispla
 		$this->me   = KunenaUserHelper::getMyself();
 		$this->name = ($this->me->exists() ? 'Widget/Login/Logout' : 'Widget/Login/Login');
 
-		$this->my = Factory::getUser();
+		$this->my = Factory::getApplication()->getIdentity();
 
 		if ($this->my->guest)
 		{

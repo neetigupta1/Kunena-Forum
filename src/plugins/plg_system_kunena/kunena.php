@@ -5,27 +5,31 @@
  * @package         Kunena.Plugins
  * @subpackage      System
  *
- * @copyright       Copyright (C) 2008 - 2018 Kunena Team. All rights reserved.
+ * @copyright       Copyright (C) 2008 - 2019 Kunena Team. All rights reserved.
  * @license         https://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link            https://www.kunena.org
  **/
 defined('_JEXEC') or die();
 
+use Joomla\CMS\Component\ComponentHelper;
 use Joomla\CMS\Factory;
+use Joomla\CMS\Filter\InputFilter;
 use Joomla\CMS\Language\Text;
+use Joomla\CMS\Plugin\CMSPlugin;
+use Joomla\CMS\Plugin\PluginHelper;
 
 /**
  * Class plgSystemKunena
  * @since Kunena
  */
-class plgSystemKunena extends \Joomla\CMS\Plugin\CMSPlugin
+class plgSystemKunena extends CMSPlugin
 {
 	/**
-	 * @param   object $subject Subject
-	 * @param   array  $config  Config
+	 * @param   object  $subject  Subject
+	 * @param   array   $config   Config
 	 *
-	 * @throws Exception
 	 * @since Kunena
+	 * @throws Exception
 	 */
 	public function __construct(&$subject, $config)
 	{
@@ -40,7 +44,7 @@ class plgSystemKunena extends \Joomla\CMS\Plugin\CMSPlugin
 		jimport('joomla.application.component.helper');
 
 		// Check if Kunena component is installed/enabled
-		if (!\Joomla\CMS\Component\ComponentHelper::isEnabled('com_kunena'))
+		if (!ComponentHelper::isEnabled('com_kunena'))
 		{
 			return;
 		}
@@ -63,7 +67,7 @@ class plgSystemKunena extends \Joomla\CMS\Plugin\CMSPlugin
 		{
 			if ($app->scope == 'com_kunena')
 			{
-				if (!\Joomla\CMS\Plugin\PluginHelper::isEnabled('kunena', 'powered'))
+				if (!PluginHelper::isEnabled('kunena', 'powered'))
 				{
 					$styles = <<<EOF
 		.layout#kunena + div { display: block !important;}
@@ -88,11 +92,11 @@ EOF;
 	/**
 	 * @internal
 	 *
-	 * @param   string  $context Context
-	 * @param   boolean $params  Params
+	 * @param   string   $context  Context
+	 * @param   boolean  $params   Params
 	 *
-	 * @since Kunena
 	 * @return void
+	 * @since Kunena
 	 */
 	public function onKunenaGetConfiguration($context, &$params)
 	{
@@ -103,14 +107,14 @@ EOF;
 	}
 
 	/**
-	 * @param   mixed   $user    User
-	 * @param   boolean $isnew   Is new
-	 * @param   boolean $success Success
-	 * @param   string  $msg     Message
+	 * @param   mixed    $user     User
+	 * @param   boolean  $isnew    Is new
+	 * @param   boolean  $success  Success
+	 * @param   string   $msg      Message
 	 *
 	 * @return void
-	 * @throws Exception
 	 * @since Kunena
+	 * @throws Exception
 	 */
 	public function onUserAfterSave($user, $isnew, $success, $msg)
 	{
@@ -130,14 +134,14 @@ EOF;
 	/**
 	 * Prevent downgrades to Kunena 1.7 and older releases
 	 *
-	 * @param   string $method   method
-	 * @param   string $type     type
-	 * @param   string $manifest manifest
-	 * @param   int    $eid      id
+	 * @param   string  $method    method
+	 * @param   string  $type      type
+	 * @param   string  $manifest  manifest
+	 * @param   int     $eid       id
 	 *
-	 * @return boolean|null
-	 * @throws Exception
+	 * @return boolean|void
 	 * @since Kunena
+	 * @throws Exception
 	 */
 	public function onExtensionBeforeInstall($method, $type, $manifest, $eid)
 	{
@@ -153,12 +157,12 @@ EOF;
 	/**
 	 * Prevent downgrades to Kunena 1.7 and older releases
 	 *
-	 * @param   boolean $type     type
-	 * @param   string  $manifest manifest
+	 * @param   boolean  $type      type
+	 * @param   string   $manifest  manifest
 	 *
 	 * @return boolean
-	 * @throws Exception
 	 * @since Kunena
+	 * @throws Exception
 	 */
 	public function onExtensionBeforeUpdate($type, $manifest)
 	{
@@ -168,7 +172,7 @@ EOF;
 		}
 
 		// Generate component name
-		$name    = strtolower(\Joomla\CMS\Filter\InputFilter::getInstance()->clean((string) $manifest->name, 'cmd'));
+		$name    = strtolower(InputFilter::getInstance()->clean((string) $manifest->name, 'cmd'));
 		$element = (substr($name, 0, 4) == "com_") ? $name : "com_{$name}";
 
 		if ($element != 'com_kunena')
@@ -200,23 +204,50 @@ EOF;
 	}
 
 	/**
+	 * Adds the Kunena Privacy Information to Joomla Privacy plugin.
+	 *
+	 * @return array
+	 *
+	 * @since Kunena 5.1.6
+	 */
+	public function onPrivacyCollectAdminCapabilities()
+	{
+		$capabilities = array(
+			'Kunena' => array(
+				Text::_('PLG_SYSTEM_KUNENA_PRIVACY_CAPABILITY_EMAIL'),
+				Text::_('PLG_SYSTEM_KUNENA_PRIVACY_CAPABILITY_IP_ADDRESS'),
+				Text::_('PLG_SYSTEM_KUNENA_PRIVACY_CAPABILITY_USERPROFILE'),
+				Text::_('PLG_SYSTEM_KUNENA_PRIVACY_CAPABILITY_POSTS'),
+				Text::_('PLG_SYSTEM_KUNENA_PRIVACY_CAPABILITY_RATINGS'),
+				Text::_('PLG_SYSTEM_KUNENA_PRIVACY_CAPABILITY_STATISTICS'),
+				Text::_('PLG_SYSTEM_KUNENA_PRIVACY_CAPABILITY_COOKIES'),
+				Text::_('PLG_SYSTEM_KUNENA_PRIVACY_CAPABILITY_LOGS'),
+				Text::_('PLG_SYSTEM_KUNENA_PRIVACY_CAPABILITY_SOCIAL')
+			),
+		);
+
+		return $capabilities;
+	}
+
+	/**
 	 * Runs all Joomla content plugins on a single KunenaForumMessage
 	 *
 	 * @access protected
 	 * @see    self::onKunenaPrepare()
-	 * @since  Kunena 2.0
 	 *
-	 * @param   string $text   String to run events on
-	 * @param   object $params \Joomla\Registry\Registry object holding eventual parameters
-	 * @param   int    $page   An integer holding page number
+	 * @param   string  $text    String to run events on
+	 * @param   object  $params  Joomla\Registry\Registry object holding eventual parameters
+	 * @param   int     $page    An integer holding page number
 	 *
 	 * @return object KunenaForumMessage
+	 * @since  Kunena 2.0
+	 *
 	 * @throws Exception
 	 */
 	protected function runJoomlaContentEvent(&$text, &$params, $page = 0)
 	{
 
-		\Joomla\CMS\Plugin\PluginHelper::importPlugin('content');
+		PluginHelper::importPlugin('content');
 
 		$row       = new stdClass;
 		$row->text = &$text;

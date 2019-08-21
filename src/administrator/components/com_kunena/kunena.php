@@ -4,7 +4,7 @@
  *
  * @package        Kunena.Administrator
  *
- * @copyright      Copyright (C) 2008 - 2018 Kunena Team. All rights reserved.
+ * @copyright      Copyright (C) 2008 - 2019 Kunena Team. All rights reserved.
  * @license        https://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link           https://www.kunena.org
  **/
@@ -14,7 +14,7 @@ use Joomla\CMS\Factory;
 use Joomla\CMS\Language\Text;
 
 // Access check.
-if (!Factory::getUser()->authorise('core.manage', 'com_kunena'))
+if (!Factory::getApplication()->getIdentity()->authorise('core.manage', 'com_kunena'))
 {
 	throw new KunenaExceptionAuthorise(Text::_('COM_KUNENA_NO_ACCESS'), 401);
 }
@@ -29,6 +29,11 @@ if (is_file(__DIR__ . '/install.php'))
 		return;
 	}
 }
+
+// Display time it took to create the entire page in the footer.
+$kunena_profiler = KunenaProfiler::instance('Kunena');
+$kunena_profiler->start('Total Time');
+KUNENA_PROFILER ? $kunena_profiler->mark('afterLoad') : null;
 
 $app = Factory::getApplication();
 
@@ -77,3 +82,21 @@ $controller->redirect();
 
 // Remove custom error handlers.
 KunenaError::cleanup();
+
+// Display profiler information.
+$kunena_profiler->stop('Total Time');
+
+if (KUNENA_PROFILER)
+{
+	echo '<div class="kprofiler">';
+	echo "<h3>Kunena Profile Information</h3>";
+
+	foreach ($kunena_profiler->getAll() as $item)
+	{
+		echo sprintf("Kunena %s: %0.3f / %0.3f seconds (%d calls)<br/>", $item->name, $item->getInternalTime(),
+			$item->getTotalTime(), $item->calls
+		);
+	}
+
+	echo '</div>';
+}

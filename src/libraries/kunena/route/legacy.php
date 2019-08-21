@@ -4,7 +4,7 @@
  * @package       Kunena.Framework
  * @subpackage    Route
  *
- * @copyright     Copyright (C) 2008 - 2018 Kunena Team. All rights reserved.
+ * @copyright     Copyright (C) 2008 - 2019 Kunena Team. All rights reserved.
  * @license       https://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link          https://www.kunena.org
  **/
@@ -102,7 +102,7 @@ abstract class KunenaRouteLegacy
 		$uri  = Uri::getInstance($item->link);
 		$view = $uri->getVar('func', $uri->getVar('view'));
 
-		$params = new \Joomla\Registry\Registry($item->params);
+		$params = new Joomla\Registry\Registry($item->params);
 
 		if (self::convert($uri, 0))
 		{
@@ -150,8 +150,8 @@ abstract class KunenaRouteLegacy
 	 */
 	public static function convert($uri, $showstart = 1)
 	{
-		// Make sure that input is \Joomla\CMS\Uri\Uri to legacy Kunena func=xxx
-		if (!($uri instanceof \Joomla\CMS\Uri\Uri))
+		// Make sure that input is Joomla\CMS\Uri\Uri to legacy Kunena func=xxx
+		if (!($uri instanceof Joomla\CMS\Uri\Uri))
 		{
 			return false;
 		}

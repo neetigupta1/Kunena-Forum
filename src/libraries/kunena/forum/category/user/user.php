@@ -4,13 +4,14 @@
  * @package       Kunena.Framework
  * @subpackage    Forum.Category.User
  *
- * @copyright     Copyright (C) 2008 - 2018 Kunena Team. All rights reserved.
+ * @copyright     Copyright (C) 2008 - 2019 Kunena Team. All rights reserved.
  * @license       https://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link          https://www.kunena.org
  **/
 defined('_JEXEC') or die();
 
 use Joomla\CMS\Factory;
+use Joomla\CMS\Object\CMSObject;
 
 /**
  * Class KunenaForumCategoryUser
@@ -23,7 +24,7 @@ use Joomla\CMS\Factory;
  * @property string $params
  * @since Kunena
  */
-class KunenaForumCategoryUser extends JObject
+class KunenaForumCategoryUser extends CMSObject
 {
 	/**
 	 * @var boolean
@@ -70,7 +71,7 @@ class KunenaForumCategoryUser extends JObject
 	 * @param   string $type   The categories table name to be used
 	 * @param   string $prefix The categories table prefix to be used
 	 *
-	 * @return \Joomla\CMS\Table\Table|TableKunenaUserCategories        The categories table object
+	 * @return Joomla\CMS\Table\Table|TableKunenaUserCategories        The categories table object
 	 * @since Kunena
 	 */
 	public function getTable($type = 'KunenaUserCategories', $prefix = 'Table')
@@ -85,7 +86,7 @@ class KunenaForumCategoryUser extends JObject
 		}
 
 		// Create the user table object
-		return \Joomla\CMS\Table\Table::getInstance($tabletype ['name'], $tabletype ['prefix']);
+		return Joomla\CMS\Table\Table::getInstance($tabletype ['name'], $tabletype ['prefix']);
 	}
 
 	/**
@@ -158,9 +159,13 @@ class KunenaForumCategoryUser extends JObject
 		}
 
 		// Store the category data in the database
-		if (!$result = $table->store())
+		try
 		{
-			$this->setError($table->getError());
+			$result = $table->store();
+		}
+		catch (Exception $e)
+		{
+			KunenaError::displayDatabaseError($e);
 		}
 
 		// Fill up KunenaForumCategoryUser object in case we created a new category.
@@ -213,6 +218,7 @@ class KunenaForumCategoryUser extends JObject
 	 *
 	 * @return boolean    True on success
 	 * @since Kunena
+	 * @throws Exception
 	 */
 	public function delete()
 	{
@@ -224,11 +230,13 @@ class KunenaForumCategoryUser extends JObject
 		// Create the table object
 		$table = $this->getTable();
 
-		$result = $table->delete(array('category_id' => $this->category_id, 'user_id' => $this->user_id));
-
-		if (!$result)
+		try
 		{
-			$this->setError($table->getError());
+			$result = $table->delete(array('category_id' => $this->category_id, 'user_id' => $this->user_id));
+		}
+		catch (Exception $e)
+		{
+			KunenaError::displayDatabaseError($e);
 		}
 
 		$this->_exists = false;

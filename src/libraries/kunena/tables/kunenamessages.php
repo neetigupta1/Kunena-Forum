@@ -4,7 +4,7 @@
  * @package       Kunena.Framework
  * @subpackage    Tables
  *
- * @copyright     Copyright (C) 2008 - 2018 Kunena Team. All rights reserved.
+ * @copyright     Copyright (C) 2008 - 2019 Kunena Team. All rights reserved.
  * @license       https://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link          https://www.kunena.org
  **/
@@ -192,13 +192,13 @@ class TableKunenaMessages extends KunenaTable
 		}
 
 		// Load the user data.
-		$query = $this->_db->getQuery(true);
-		$query->select(array('m.*', 't.message'));
-		$query->from($this->_db->quoteName('#__kunena_messages', 'm'));
-		$query->innerJoin($this->_db->quoteName('#__kunena_messages_text', 't') .
-			' ON ' . $this->_db->quoteName('m.id') . ' = ' . $this->_db->quoteName('t.mesid')
-		);
-		$query->where($this->_db->quoteName('m.id') . '=' . $this->$k);
+		$query = $this->_db->getQuery(true)
+			->select(array('m.*', 't.message'))
+			->from($this->_db->quoteName('#__kunena_messages', 'm'))
+			->innerJoin($this->_db->quoteName('#__kunena_messages_text', 't') .
+				' ON ' . $this->_db->quoteName('m.id') . ' = ' . $this->_db->quoteName('t.mesid')
+			)
+			->where($this->_db->quoteName('m.id') . ' = ' . (int) $this->$k);
 		$this->_db->setQuery($query);
 
 		try
@@ -240,6 +240,7 @@ class TableKunenaMessages extends KunenaTable
 	/**
 	 * @return boolean
 	 * @since Kunena
+	 * @throws Exception
 	 */
 	public function check()
 	{
@@ -248,7 +249,7 @@ class TableKunenaMessages extends KunenaTable
 		if (!$category->exists())
 		{
 			// TODO: maybe we should have own error message? or not?
-			$this->setError(Text::sprintf('COM_KUNENA_LIB_TABLE_TOPICS_ERROR_CATEGORY_INVALID', $this->catid));
+			throw new RuntimeException(Text::sprintf('COM_KUNENA_LIB_TABLE_TOPICS_ERROR_CATEGORY_INVALID', $this->catid));
 		}
 		else
 		{
@@ -259,14 +260,14 @@ class TableKunenaMessages extends KunenaTable
 
 		if (!$this->subject)
 		{
-			$this->setError(Text::_('COM_KUNENA_LIB_TABLE_MESSAGES_ERROR_NO_SUBJECT'));
+			throw new UnexpectedValueException(Text::_('COM_KUNENA_LIB_TABLE_MESSAGES_ERROR_NO_SUBJECT'));
 		}
 
 		$this->message = trim($this->message);
 
 		if (!$this->message)
 		{
-			$this->setError(Text::_('COM_KUNENA_LIB_TABLE_MESSAGES_ERROR_NO_MESSAGE'));
+			throw new UnexpectedValueException(Text::_('COM_KUNENA_LIB_TABLE_MESSAGES_ERROR_NO_MESSAGE'));
 		}
 
 		if (!$this->time)
@@ -276,7 +277,7 @@ class TableKunenaMessages extends KunenaTable
 
 		$this->modified_reason = trim($this->modified_reason);
 
-		return $this->getError() == '';
+		return true;
 	}
 
 	/**
@@ -304,9 +305,9 @@ class TableKunenaMessages extends KunenaTable
 
 		if ($update)
 		{
-			$query->update($this->_db->quoteName('#__kunena_messages_text'));
-			$query->set($this->_db->quoteName('message') . '=' . $this->_db->quote($this->message));
-			$query->where($this->_db->quoteName('mesid') . '=' . $this->$k);
+			$query->update($this->_db->quoteName('#__kunena_messages_text'))
+				->set($this->_db->quoteName('message') . ' = ' . $this->_db->quote($this->message))
+				->where($this->_db->quoteName('mesid') . ' = ' . (int) $this->$k);
 		}
 		else
 		{
@@ -317,7 +318,7 @@ class TableKunenaMessages extends KunenaTable
 						$this->_db->quoteName('message'),
 					)
 				)
-				->values($this->$k . ', ' . $this->_db->quote($this->message));
+				->values((int) $this->$k . ', ' . $this->_db->quote($this->message));
 		}
 
 		$this->_db->setQuery($query);

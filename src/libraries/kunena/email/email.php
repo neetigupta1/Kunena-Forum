@@ -4,7 +4,7 @@
  * @package       Kunena.Framework
  * @subpackage    Email
  *
- * @copyright     Copyright (C) 2008 - 2018 Kunena Team. All rights reserved.
+ * @copyright     Copyright (C) 2008 - 2019 Kunena Team. All rights reserved.
  * @license       https://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link          https://www.kunena.org
  **/
@@ -19,7 +19,7 @@ use Joomla\CMS\Log\Log;
 abstract class KunenaEmail
 {
 	/**
-	 * @param   \Joomla\CMS\Mail\Mail $mail      mail
+	 * @param   Joomla\CMS\Mail\Mail $mail      mail
 	 * @param   array                 $receivers receivers
 	 *
 	 * @return boolean
@@ -44,10 +44,10 @@ abstract class KunenaEmail
 		// If we hide email addresses from other users, we need to add TO address to prevent email from becoming spam.
 		if ($email_recipient_count > 1
 			&& $email_recipient_privacy == 'bcc'
-			&& \Joomla\CMS\Mail\MailHelper::isEmailAddress($config->get('email_visible_address'))
+			&& Joomla\CMS\Mail\MailHelper::isEmailAddress($config->get('email_visible_address'))
 		)
 		{
-			$mail->AddAddress($config->email_visible_address, \Joomla\CMS\Mail\MailHelper::cleanAddress($config->board_title));
+			$mail->AddAddress($config->email_visible_address, Joomla\CMS\Mail\MailHelper::cleanAddress($config->board_title));
 
 			// Also make sure that email receiver limits are not violated (TO + CC + BCC = limit).
 			if ($email_recipient_count > 9)

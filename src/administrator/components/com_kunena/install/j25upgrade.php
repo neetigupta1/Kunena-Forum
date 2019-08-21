@@ -4,7 +4,7 @@
  *
  * @package        Kunena.Installer
  *
- * @copyright      Copyright (C) 2008 - 2018 Kunena Team. All rights reserved.
+ * @copyright      Copyright (C) 2008 - 2019 Kunena Team. All rights reserved.
  * @license        https://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link           https://www.kunena.org
  **/
@@ -47,8 +47,8 @@ class jUpgradeComponentKunena extends jUpgradeExtensions
 	 */
 	protected function detectExtension()
 	{
-		// Install Kunena 2.0 only into Joomla 3.4
-		return version_compare(JVERSION, '3.4', '>=');
+		// Install Kunena 2.0 only into Joomla 4
+		return version_compare(JVERSION, '4.0', '>=');
 	}
 
 	/**
@@ -217,7 +217,7 @@ class jUpgradeComponentKunena extends jUpgradeExtensions
 		jimport('joomla.environment.uri');
 
 		// Get component object
-		$component = \Joomla\CMS\Table\Table::getInstance('extension', '\Joomla\CMS\Table\Table', array('dbo' => $this->db_new));
+		$component = Joomla\CMS\Table\Table::getInstance('extension', 'Joomla\CMS\Table\Table', array('dbo' => $this->db_new));
 		$component->load(array('type' => 'component', 'element' => $this->name));
 
 		// First fix all broken menu items
@@ -292,7 +292,7 @@ class jUpgradeComponentKunena extends jUpgradeExtensions
 				$menuitem->link = 'index.php?' . implode('&', $query_string);
 
 				// Save menu object
-				$menu = \Joomla\CMS\Table\Table::getInstance('menu', '\Joomla\CMS\Table\Table', array('dbo' => $this->db_new));
+				$menu = Joomla\CMS\Table\Table::getInstance('menu', 'Joomla\CMS\Table\Table', array('dbo' => $this->db_new));
 				$menu->bind(get_object_vars($menuitem), array('tree', 'query'));
 				$success = $menu->check();
 

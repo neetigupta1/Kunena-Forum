@@ -4,7 +4,7 @@
  * @package       Kunena.Framework
  * @subpackage    Template
  *
- * @copyright     Copyright (C) 2008 - 2018 Kunena Team. All rights reserved.
+ * @copyright     Copyright (C) 2008 - 2019 Kunena Team. All rights reserved.
  * @license       https://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link          https://www.kunena.org
  **/
@@ -28,7 +28,7 @@ class KunenaTemplateLegacy
 	}
 }
 
-$app = Factory::getApplication('Site');
+$app = Factory::getApplication()->isClient('site');
 
 if (!defined('DS'))
 {
@@ -36,7 +36,7 @@ if (!defined('DS'))
 }
 
 // Default values
-define('KUNENA_TEMPLATE_DEFAULT', 'crypsis');
+define('KUNENA_TEMPLATE_DEFAULT', 'aurelia');
 
 // File system paths
 define('KUNENA_COMPONENT_RELPATH', 'components/' . KUNENA_COMPONENT_NAME);

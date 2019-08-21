@@ -5,7 +5,7 @@
  * @package         Kunena.Administrator
  * @subpackage      Models
  *
- * @copyright       Copyright (C) 2008 - 2018 Kunena Team. All rights reserved.
+ * @copyright       Copyright (C) 2008 - 2019 Kunena Team. All rights reserved.
  * @license         https://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link            https://www.kunena.org
  **/
@@ -13,6 +13,7 @@ defined('_JEXEC') or die();
 
 use Joomla\CMS\HTML\HTMLHelper;
 use Joomla\CMS\Factory;
+use Joomla\CMS\Filesystem\Folder;
 
 jimport('joomla.application.component.modellist');
 
@@ -25,8 +26,8 @@ class KunenaAdminModelSmiley extends KunenaModel
 {
 	/**
 	 * @return  mixed
-	 * @throws Exception
 	 * @since Kunena
+	 * @throws Exception
 	 */
 	public function getSmileyspaths()
 	{
@@ -35,7 +36,7 @@ class KunenaAdminModelSmiley extends KunenaModel
 		$selected = $this->getSmiley();
 
 		$smileypath = $template->getSmileyPath();
-		$files1     = (array) KunenaFolder::Files(JPATH_SITE . '/' . $smileypath, false, false, false, array('index.php', 'index.html'));
+		$files1     = (array) Folder::Files(JPATH_SITE . '/' . $smileypath, false, false, false, array('index.php', 'index.html'));
 		$files1     = (array) array_flip($files1);
 
 		foreach ($files1 as $key => &$path)
@@ -44,7 +45,7 @@ class KunenaAdminModelSmiley extends KunenaModel
 		}
 
 		$smileypath = 'media/kunena/emoticons/';
-		$files2     = (array) KunenaFolder::Files(JPATH_SITE . '/' . $smileypath, false, false, false, array('index.php', 'index.html'));
+		$files2     = (array) Folder::Files(JPATH_SITE . '/' . $smileypath, false, false, false, array('index.php', 'index.html'));
 		$files2     = (array) array_flip($files2);
 
 		foreach ($files2 as $key => &$path)
@@ -62,16 +63,16 @@ class KunenaAdminModelSmiley extends KunenaModel
 			$smiley_list[] = HTMLHelper::_('select.option', $path, $file);
 		}
 
-		$list = HTMLHelper::_('select.genericlist', $smiley_list, 'smiley_url', 'class="inputbox" onchange="update_smiley(this.options[selectedIndex].value);" onmousemove="update_smiley(this.options[selectedIndex].value);"', 'value', 'text', !empty($selected->location) ? $smiley_images[$selected->location] : '');
+		$list = HTMLHelper::_('select.genericlist', $smiley_list, 'smiley_url', 'class="inputbox form-control" onchange="update_smiley(this.options[selectedIndex].value);" onmousemove="update_smiley(this.options[selectedIndex].value);"', 'value', 'text', !empty($selected->location) ? $smiley_images[$selected->location] : '');
 
 		return $list;
 	}
 
 	/**
-	 * @return  mixed|null
+	 * @return  mixed|void
 	 *
-	 * @throws Exception
 	 * @since Kunena
+	 * @throws Exception
 	 */
 	public function getSmiley()
 	{
@@ -81,7 +82,11 @@ class KunenaAdminModelSmiley extends KunenaModel
 
 		if ($id)
 		{
-			$db->setQuery("SELECT * FROM #__kunena_smileys WHERE id={$db->quote($id)}");
+			$query = $db->getQuery(true);
+			$query->select('*')
+				->from($db->quoteName('#__kunena_smileys'))
+				->where('id=' . $db->quote($id));
+			$db->setQuery($query);
 
 			try
 			{

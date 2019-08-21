@@ -4,7 +4,7 @@
  * @package         Kunena.Site
  * @subpackage      Controller.Topic
  *
- * @copyright       Copyright (C) 2008 - 2018 Kunena Team. All rights reserved.
+ * @copyright       Copyright (C) 2008 - 2019 Kunena Team. All rights reserved.
  * @license         https://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link            https://www.kunena.org
  **/
@@ -13,6 +13,7 @@ defined('_JEXEC') or die;
 use Joomla\CMS\Factory;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\Session\Session;
+use Joomla\CMS\Object\CMSObject;
 
 /**
  * Class ComponentKunenaControllerTopicItemActionsDisplay
@@ -63,7 +64,7 @@ class ComponentKunenaControllerTopicItemActionsDisplay extends KunenaControllerD
 
 		$userTopic          = $this->topic->getUserTopic();
 		$this->template     = KunenaFactory::getTemplate();
-		$this->topicButtons = new JObject;
+		$this->topicButtons = new CMSObject;
 
 		$this->ktemplate = KunenaFactory::getTemplate();
 		$fullactions     = $this->ktemplate->params->get('fullactions');
@@ -325,9 +326,9 @@ class ComponentKunenaControllerTopicItemActionsDisplay extends KunenaControllerD
 			}
 		}
 
-		\Joomla\CMS\Plugin\PluginHelper::importPlugin('kunena');
+		Joomla\CMS\Plugin\PluginHelper::importPlugin('kunena');
 
-		Factory::getApplication()->triggerEvent('onKunenaGetButtons', array('topic.action', $this->topicButtons, $this));
+		$this->app->triggerEvent('onKunenaGetButtons', array('topic.action', $this->topicButtons, $this));
 	}
 
 	/**
@@ -350,7 +351,7 @@ class ComponentKunenaControllerTopicItemActionsDisplay extends KunenaControllerD
 	{
 		return KunenaLayout::factory('Widget/Button')
 			->setProperties(array('url'   => KunenaRoute::_($url), 'name' => $name,
-								  'scope' => $scope, 'type' => $type, 'primary' => $primary, 'normal' => $normal, 'icon' => $icon,)
+								  'scope' => $scope, 'type' => $type, 'primary' => $primary, 'normal' => $normal, 'icon' => $icon, )
 			);
 	}
 }

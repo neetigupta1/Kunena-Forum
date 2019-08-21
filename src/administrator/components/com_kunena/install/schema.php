@@ -4,7 +4,7 @@
  *
  * @package        Kunena.Installer
  *
- * @copyright      Copyright (C) 2008 - 2018 Kunena Team. All rights reserved.
+ * @copyright      Copyright (C) 2008 - 2019 Kunena Team. All rights reserved.
  * @license        https://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link           https://www.kunena.org
  **/
@@ -24,7 +24,7 @@ jimport('joomla.application.component.model');
  *
  * @since  K1.6
  */
-class KunenaModelSchema extends \Joomla\CMS\MVC\Model\BaseDatabaseModel
+class KunenaModelSchema extends Joomla\CMS\MVC\Model\BaseDatabaseModel
 {
 	/**
 	 * Flag to indicate model state initialization.

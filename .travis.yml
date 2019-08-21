@@ -1,28 +1,30 @@
+dist: xenial
+services:
+  - mysql
 language: php
 php:
-- 5.6
-- 7.0
-- 7.1
+  - "7.2"
+  - "7.3"
 addons:
-  firefox: "59.0.2"
-  sonarcloud:
-      organization: "kunena-forum"
-      token:
-        secure: "5236152baa004029e309405ee0af8e30ac1add88"
-      branches:
-        - K5.1
-jdk:
-  - oraclejdk8
+  chrome: "stable"
+before_install:
+  - sudo mysql -e 'CREATE DATABASE IF NOT EXISTS test_joomla;'
+  - sudo mysql -e "use mysql; update user set authentication_string=PASSWORD('joomla_ut') where User='root'; update user set plugin='mysql_native_password';FLUSH PRIVILEGES;"
+  - sudo mysql_upgrade -u root -pjoomla_ut
+  - sudo service mysql restart
 script:
-  - sonar-scanner
-cache:
-  directories:
-    - '$HOME/.sonar/cache'
-before_script:
-
-script:
-# Build
-# Disable tests for now vendor/bin/phing -f build/phing/build.xml
-# Disable tests for now mv tests/acceptance.suite.dist.yml tests/acceptance.suite.yml
-# Disable tests for now vendor/bin/robo run:tests --use-htaccess
-- sonar-scanner
+  # Build
+  - composer install
+  - vendor/bin/phing -f build/phing/build.xml
+  - git clone https://github.com/joomla/joomla-cms.git ./tests/test-install
+  - cd tests/test-install
+  - git checkout 4.0-dev
+  - composer install
+  - npm install
+  - ./node_modules/.bin/selenium-standalone install
+  - cd ../
+  - mv ./acceptance.suite.yml ./test-install/tests/Codeception/acceptance.suite.yml
+  - cd test-install
+  - ./node_modules/.bin/selenium-standalone start &
+  - ./libraries/vendor/bin/codecept run acceptance ./tests/Codeception/acceptance/install
+  - ./libraries/vendor/bin/codecept run acceptance ./tests/Codeception/acceptance/install/kunenaCest

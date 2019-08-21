@@ -4,7 +4,7 @@
  * @package       Kunena.Administrator.Template
  * @subpackage    Categories
  *
- * @copyright     Copyright (C) 2008 - 2018 Kunena Team. All rights reserved.
+ * @copyright     Copyright (C) 2008 - 2019 Kunena Team. All rights reserved.
  * @license       https://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link          https://www.kunena.org
  **/
@@ -36,13 +36,13 @@ class KunenaRequest
 	 * Returns controller.
 	 *
 	 * @param   string              $path    Controller path.
-	 * @param   \Joomla\Input\Input $input   input
+	 * @param   Joomla\Input\Input $input   input
 	 * @param   mixed               $options options
 	 *
 	 * @return  KunenaControllerBase|KunenaControllerDisplay
 	 * @since Kunena
 	 */
-	public static function factory($path, \Joomla\Input\Input $input = null, $options = null)
+	public static function factory($path, Joomla\Input\Input $input = null, $options = null)
 	{
 		// Normalize input.
 		$words = ucwords(strtolower(trim(preg_replace('/[^a-z0-9_]+/i', ' ', (string) $path))));

@@ -5,20 +5,21 @@
  * @package         Kunena.Framework
  * @subpackage      Forum.Topic
  *
- * @copyright       Copyright (C) 2008 - 2018 Kunena Team. All rights reserved.
+ * @copyright       Copyright (C) 2008 - 2019 Kunena Team. All rights reserved.
  * @license         https://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link            https://www.kunena.org
  **/
 defined('_JEXEC') or die();
 
 use Joomla\CMS\Factory;
+use Joomla\CMS\Object\CMSObject;
 
 /**
  * Kunena Forum Topic Rate Class
  *
  * @since 5.0
  */
-class KunenaForumTopicRate extends JObject
+class KunenaForumTopicRate extends CMSObject
 {
 	/**
 	 * @var integer
@@ -45,6 +46,12 @@ class KunenaForumTopicRate extends JObject
 	public $time = null;
 
 	/**
+	 * @var integer
+	 * @since Kunena
+	 */
+	public $rate;
+
+	/**
 	 * @var boolean
 	 * @since Kunena
 	 */
@@ -63,9 +70,10 @@ class KunenaForumTopicRate extends JObject
 	protected $users = array();
 
 	/**
-	 * @param   int $identifier identifier
+	 * @param   int  $identifier  identifier
 	 *
 	 * @since Kunena
+	 * @throws Exception
 	 */
 	public function __construct($identifier = 0)
 	{
@@ -77,10 +85,11 @@ class KunenaForumTopicRate extends JObject
 	/**
 	 * Method to load a KunenaForumTopicPoll object by id.
 	 *
-	 * @param   int $id The poll id to be loaded.
+	 * @param   int  $id  The poll id to be loaded.
 	 *
 	 * @return boolean
 	 * @since Kunena
+	 * @throws Exception
 	 */
 	public function load($id)
 	{
@@ -102,7 +111,7 @@ class KunenaForumTopicRate extends JObject
 	 * @param   string $type   Polls table name to be used.
 	 * @param   string $prefix Polls table prefix to be used.
 	 *
-	 * @return boolean|\Joomla\CMS\Table\Table|KunenaTable|TableKunenaRate
+	 * @return boolean|Joomla\CMS\Table\Table|KunenaTable|TableKunenaRate
 	 * @since Kunena
 	 */
 	public function getTable($type = 'KunenaRate', $prefix = 'Table')
@@ -117,7 +126,7 @@ class KunenaForumTopicRate extends JObject
 		}
 
 		// Create the user table object
-		return \Joomla\CMS\Table\Table::getInstance($tabletype ['name'], $tabletype ['prefix']);
+		return Joomla\CMS\Table\Table::getInstance($tabletype ['name'], $tabletype ['prefix']);
 	}
 
 	/**
@@ -141,7 +150,7 @@ class KunenaForumTopicRate extends JObject
 	 *
 	 * @param   string $user user
 	 *
-	 * @return boolean|\Joomla\CMS\Response\JsonResponse
+	 * @return boolean|Joomla\CMS\Response\JsonResponse
 	 * @throws Exception
 	 * @internal param int $userid
 	 *
@@ -158,37 +167,37 @@ class KunenaForumTopicRate extends JObject
 		{
 			$exception = new RuntimeException('COM_KUNENA_RATE_LOGIN', 500);
 
-			return new \Joomla\CMS\Response\JsonResponse($exception);
+			return new Joomla\CMS\Response\JsonResponse($exception);
 		}
 
 		if ($user->isBanned())
 		{
 			$exception = new RuntimeException('COM_KUNENA_RATE_NOT_ALLOWED_WHEN_BANNED', 500);
 
-			return new \Joomla\CMS\Response\JsonResponse($exception);
+			return new Joomla\CMS\Response\JsonResponse($exception);
 		}
 
 		if ($user->userid == $topic->first_post_userid)
 		{
 			$exception = new RuntimeException('COM_KUNENA_RATE_NOT_YOURSELF', 500);
 
-			return new \Joomla\CMS\Response\JsonResponse($exception);
+			return new Joomla\CMS\Response\JsonResponse($exception);
 		}
 
 		if ($this->exists($user->userid))
 		{
 			$exception = new RuntimeException('COM_KUNENA_RATE_ALLREADY', 500);
 
-			return new \Joomla\CMS\Response\JsonResponse($exception);
+			return new Joomla\CMS\Response\JsonResponse($exception);
 		}
 
 		$time  = Factory::getDate();
 		$query = $this->_db->getQuery(true);
-		$query->insert('#__kunena_rate')
-			->set('topic_id=' . $this->_db->quote($this->topic_id))
-			->set("userid={$this->_db->quote($user->userid)}")
-			->set("rate={$this->_db->quote($this->stars)}")
-			->set("time={$this->_db->quote($time->toSQL())}");
+		$query->insert($this->_db->quoteName('#__kunena_rate'))
+			->set($this->_db->quoteName('topic_id') . ' = ' . $this->_db->quote($this->topic_id))
+			->set($this->_db->quoteName('userid') . ' = ' . $this->_db->quote($user->userid))
+			->set($this->_db->quoteName('rate') . ' = ' . $this->_db->quote($this->stars))
+			->set($this->_db->quoteName('time') . ' = ' . $this->_db->quote($time->toSQL()));
 		$this->_db->setQuery($query);
 
 		try
@@ -199,11 +208,11 @@ class KunenaForumTopicRate extends JObject
 			$topic = KunenaForumTopicHelper::get($this->topic_id);
 			$activityIntegration->onAfterRate($user->userid, $topic);
 
-			$response = new \Joomla\CMS\Response\JsonResponse(null, 'COM_KUNENA_RATE_SUCCESSFULLY_SAVED');
+			$response = new Joomla\CMS\Response\JsonResponse(null, 'COM_KUNENA_RATE_SUCCESSFULLY_SAVED');
 		}
 		catch (Exception $e)
 		{
-			$response = new \Joomla\CMS\Response\JsonResponse($e);
+			$response = new Joomla\CMS\Response\JsonResponse($e);
 		}
 
 		return $response;
@@ -221,11 +230,10 @@ class KunenaForumTopicRate extends JObject
 	 */
 	public function getUsers($start = 0, $limit = 0)
 	{
-		/*
-		if ($this->users === false)
-			{  */
 		$query = $this->_db->getQuery(true);
-		$query->select('*')->from($this->_db->quoteName('#__kunena_rate'))->where($this->_db->quoteName('topic_id') . '=' . $this->_db->Quote($this->topic_id));
+		$query->select('*')
+			->from($this->_db->quoteName('#__kunena_rate'))
+			->where($this->_db->quoteName('topic_id') . ' = ' . $this->_db->quote($this->topic_id));
 		$this->_db->setQuery($query, $start, $limit);
 
 		try
@@ -241,10 +249,6 @@ class KunenaForumTopicRate extends JObject
 		{
 			$this->_add($user->userid, $user->time);
 		}
-
-		// }
-
-		// Return $this->users;
 	}
 
 	/**
@@ -279,7 +283,7 @@ class KunenaForumTopicRate extends JObject
 	 */
 	public function getTopicUserRate()
 	{
-		$me = KunenaFactory::getUser();
+		$me = KunenaFactory::getApplication()->getIdentity();
 
 		if ($this->userid == $me->userid)
 		{

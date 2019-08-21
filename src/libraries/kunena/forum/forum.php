@@ -4,7 +4,7 @@
  * @package       Kunena.Framework
  * @subpackage    Forum
  *
- * @copyright     Copyright (C) 2008 - 2018 Kunena Team. All rights reserved.
+ * @copyright     Copyright (C) 2008 - 2019 Kunena Team. All rights reserved.
  * @license       https://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link          https://www.kunena.org
  **/
@@ -28,26 +28,32 @@ abstract class KunenaForum
 	 * @since Kunena
 	 */
 	const PUBLISHED = 0;
+
 	/**
 	 * @since Kunena
 	 */
 	const UNAPPROVED = 1;
+
 	/**
 	 * @since Kunena
 	 */
 	const DELETED = 2;
+
 	/**
 	 * @since Kunena
 	 */
 	const TOPIC_DELETED = 3;
+
 	/**
 	 * @since Kunena
 	 */
 	const TOPIC_CREATION = 4;
+
 	/**
 	 * @since Kunena
 	 */
 	const MODERATOR = 1;
+
 	/**
 	 * @since Kunena
 	 */
@@ -103,15 +109,15 @@ abstract class KunenaForum
 	 * @see   KunenaForum::isCompatible()
 	 * @see   KunenaForum::setup()
 	 *
-	 * @param   boolean $checkAdmin True if administrator is considered as a special case.
+	 * @param   boolean  $checkAdmin  True if administrator is considered as a special case.
 	 *
 	 * @return boolean True if online.
-	 * @throws Exception
 	 * @since Kunena
+	 * @throws Exception
 	 */
 	public static function enabled($checkAdmin = true)
 	{
-		if (!\Joomla\CMS\Component\ComponentHelper::isEnabled('com_kunena'))
+		if (!Joomla\CMS\Component\ComponentHelper::isEnabled('com_kunena'))
 		{
 			return false;
 		}
@@ -197,9 +203,9 @@ abstract class KunenaForum
 	 *
 	 * Alternatively you could use method_exists() to check that the new API is in there.
 	 *
+	 * @return void
 	 * @since 2.0.0-BETA2
 	 * @throws Exception
-	 * @return void
 	 */
 	public static function setup()
 	{
@@ -245,7 +251,7 @@ abstract class KunenaForum
 	 *
 	 * @see   KunenaForum::installed()
 	 *
-	 * @param   string $version Minimum required version.
+	 * @param   string  $version  Minimum required version.
 	 *
 	 * @return boolean Yes, if it is safe to use Kunena Framework.
 	 * @since Kunena
@@ -392,14 +398,14 @@ abstract class KunenaForum
 	 *
 	 * </code>
 	 *
-	 * @param   string          $viewName Name of the view.
-	 * @param   string          $layout   Name of the layout.
-	 * @param   null|string     $template Name of the template file.
-	 * @param   array|JRegistry $params   Extra parameters to control the model.
+	 * @param   string           $viewName  Name of the view.
+	 * @param   string           $layout    Name of the layout.
+	 * @param   null|string      $template  Name of the template file.
+	 * @param   array|JRegistry  $params    Extra parameters to control the model.
 	 *
-	 * @throws Exception
-	 * @since Kunena
 	 * @return void
+	 * @since Kunena
+	 * @throws Exception
 	 */
 	public static function display($viewName, $layout = 'default', $template = null, $params = array())
 	{
@@ -448,13 +454,13 @@ abstract class KunenaForum
 
 		// @var KunenaView $view
 
-		if ($params instanceof \Joomla\Registry\Registry)
+		if ($params instanceof Joomla\Registry\Registry)
 		{
 			// Do nothing
 		}
 		else
 		{
-			$params = new \Joomla\Registry\Registry($params);
+			$params = new Joomla\Registry\Registry($params);
 		}
 
 		$params->set('layout', $layout);

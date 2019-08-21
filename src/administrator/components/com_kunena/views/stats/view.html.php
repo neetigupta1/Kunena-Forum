@@ -5,7 +5,7 @@
  * @package         Kunena.Administrator
  * @subpackage      Views
  *
- * @copyright       Copyright (C) 2008 - 2018 Kunena Team. All rights reserved.
+ * @copyright       Copyright (C) 2008 - 2019 Kunena Team. All rights reserved.
  * @license         https://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link            https://www.kunena.org
  **/
@@ -31,7 +31,7 @@ class KunenaAdminViewStats extends KunenaView
 	{
 		JToolbarHelper::title(Text::_('COM_KUNENA'), 'kunena.png');
 
-		$document = Factory::getDocument();
+		$document = Factory::getApplication()->getDocument();
 		$document->setTitle(Text::_('COM_KUNENA_STAT_FORUMSTATS') . ' - ' . $this->config->board_title);
 
 		$kunena_stats = KunenaForumStatistics::getInstance();

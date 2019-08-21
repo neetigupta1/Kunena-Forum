@@ -4,7 +4,7 @@
  * @package       Kunena.Framework
  * @subpackage    Tables
  *
- * @copyright     Copyright (C) 2008 - 2018 Kunena Team. All rights reserved.
+ * @copyright     Copyright (C) 2008 - 2019 Kunena Team. All rights reserved.
  * @license       https://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link          https://www.kunena.org
  **/
@@ -111,7 +111,7 @@ class TableKunenaAnnouncements extends KunenaTable
 
 			if (!$user->exists())
 			{
-				$this->setError(Text::sprintf('COM_KUNENA_LIB_TABLE_ANNOUNCEMENTS_ERROR_USER_INVALID', (int) $user->userid));
+				throw new RuntimeException(Text::sprintf('COM_KUNENA_LIB_TABLE_ANNOUNCEMENTS_ERROR_USER_INVALID', (int) $user->userid));
 			}
 		}
 		else
@@ -138,7 +138,7 @@ class TableKunenaAnnouncements extends KunenaTable
 
 		if (!$this->title)
 		{
-			$this->setError(Text::_('COM_KUNENA_LIB_TABLE_ANNOUNCEMENTS_ERROR_NO_TITLE'));
+			throw new UnexpectedValueException(Text::_('COM_KUNENA_LIB_TABLE_ANNOUNCEMENTS_ERROR_NO_TITLE'));
 		}
 
 		$this->sdescription = trim($this->sdescription);
@@ -146,9 +146,9 @@ class TableKunenaAnnouncements extends KunenaTable
 
 		if (!$this->sdescription)
 		{
-			$this->setError(Text::_('COM_KUNENA_LIB_TABLE_ANNOUNCEMENTS_ERROR_NO_DESCRIPTION'));
+			throw new UnexpectedValueException(Text::_('COM_KUNENA_LIB_TABLE_ANNOUNCEMENTS_ERROR_NO_DESCRIPTION'));
 		}
 
-		return $this->getError() == '';
+		return true;
 	}
 }

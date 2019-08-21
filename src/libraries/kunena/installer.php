@@ -3,7 +3,7 @@
  * Kunena Component
  * @package        Kunena.Framework
  *
- * @copyright      Copyright (C) 2008 - 2018 Kunena Team. All rights reserved.
+ * @copyright      Copyright (C) 2008 - 2019 Kunena Team. All rights reserved.
  * @license        https://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link           https://www.kunena.org
  **/
@@ -34,7 +34,7 @@ class KunenaInstaller
 	 *
 	 * @param   string $version version
 	 *
-	 * @return  boolean  True if version can be safely downgraded.
+	 * @return  boolean|void  True if version can be safely downgraded.
 	 * @since Kunena
 	 */
 	public static function canDowngrade($version)
@@ -76,7 +76,12 @@ class KunenaInstaller
 
 		// Get installed version.
 		$db = Factory::getDBO();
-		$db->setQuery("SELECT version FROM {$db->quoteName('#__kunena_version')} WHERE state='' ORDER BY id DESC", 0, 1);
+		$query  = $db->getQuery(true);
+		$query->select('version')
+			->from($db->quoteName('#__kunena_version'))
+			->where($db->quoteName('state') . "=''")
+			->order($db->quoteName('id') . ' DESC');
+		$db->setQuery($query, 0, 1);
 		$version = $db->loadResult();
 
 		return $version;

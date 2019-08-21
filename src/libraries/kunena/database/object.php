@@ -4,19 +4,20 @@
  * @package       Kunena.Framework
  * @subpackage    Object
  *
- * @copyright     Copyright (C) 2008 - 2018 Kunena Team. All rights reserved.
+ * @copyright     Copyright (C) 2008 - 2019 Kunena Team. All rights reserved.
  * @license       https://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link          https://www.kunena.org
  **/
 defined('_JEXEC') or die();
 
 use Joomla\CMS\Factory;
+use Joomla\CMS\Object\CMSObject;
 
 /**
  * Class KunenaDatabaseObject
  * @since Kunena
  */
-abstract class KunenaDatabaseObject extends JObject
+abstract class KunenaDatabaseObject extends CMSObject
 {
 	/**
 	 * @var null
@@ -51,11 +52,13 @@ abstract class KunenaDatabaseObject extends JObject
 	/**
 	 * Class constructor, overridden in descendant classes.
 	 *
-	 * @param   mixed $properties   Associative array to set the initial properties of the object.
-	 *                              If not profided, default values will be used.
-	 *
 	 * @internal
+	 *
+	 * @param   mixed  $properties  Associative array to set the initial properties of the object.
+	 *                              If not provided, default values will be used.
+	 *
 	 * @since Kunena
+	 * @throws Exception
 	 */
 	public function __construct($properties = null)
 	{
@@ -86,7 +89,7 @@ abstract class KunenaDatabaseObject extends JObject
 	 *
 	 * This method optionally takes an array of properties to ignore or allow when binding.
 	 *
-	 * @param   array   $src     An associative array or object to bind to the \Joomla\CMS\Table\Table instance.
+	 * @param   array   $src     An associative array or object to bind to the Joomla\CMS\Table\Table instance.
 	 * @param   array   $fields  An optional array list of properties to ignore / include only while binding.
 	 * @param   boolean $include True to include only listed fields, false to ignore listed fields.
 	 *
@@ -152,16 +155,21 @@ abstract class KunenaDatabaseObject extends JObject
 		$isNew = !$this->_exists;
 
 		// Check the table object.
-		if (!$table->check())
+		try
 		{
-			$this->setError($table->getError());
-
-			return $this->_saving = false;
+			if (!$table->check())
+			{
+				return $this->_saving = false;
+			}
+		}
+		catch (Exception $e)
+		{
+			throw new Exception($e->getMessage());
 		}
 
 		// Include the Kunena plugins for the on save events.
 
-		\Joomla\CMS\Plugin\PluginHelper::importPlugin('kunena');
+		Joomla\CMS\Plugin\PluginHelper::importPlugin('kunena');
 
 		// Trigger the onKunenaBeforeSave event.
 		$result = Factory::getApplication()->triggerEvent('onKunenaBeforeSave', array("com_kunena.{$this->_name}", &$table, $isNew));
@@ -215,21 +223,22 @@ abstract class KunenaDatabaseObject extends JObject
 	/**
 	 * Method to get the table object.
 	 *
-	 * @return  \Joomla\CMS\Table\Table|KunenaTable  The table object.
+	 * @return  Joomla\CMS\Table\Table|KunenaTable  The table object.
 	 * @since Kunena
 	 */
 	protected function getTable()
 	{
-		return \Joomla\CMS\Table\Table::getInstance($this->_table, 'Table');
+		return Joomla\CMS\Table\Table::getInstance($this->_table, 'Table');
 	}
 
 	/**
 	 * Method to load object from the database.
 	 *
-	 * @param   mixed $id Id to be loaded.
+	 * @param   mixed  $id  Id to be loaded.
 	 *
 	 * @return  boolean  True on success.
 	 * @since Kunena
+	 * @throws Exception
 	 */
 	public function load($id = null)
 	{
@@ -291,7 +300,7 @@ abstract class KunenaDatabaseObject extends JObject
 
 		// Include the Kunena plugins for the on save events.
 
-		\Joomla\CMS\Plugin\PluginHelper::importPlugin('kunena');
+		Joomla\CMS\Plugin\PluginHelper::importPlugin('kunena');
 
 		// Trigger the onKunenaBeforeDelete event.
 		$result = Factory::getApplication()->triggerEvent('onKunenaBeforeDelete', array("com_kunena.{$this->_name}", $table));
@@ -330,9 +339,12 @@ abstract class KunenaDatabaseObject extends JObject
 	{
 		$return = $this->_exists;
 
-		if ($exists !== null)
+		// Load properties from database.
+		if (!empty($this->id))
 		{
-			$this->_exists = (bool) $exists;
+			$this->_exists = true;
+
+			return true;
 		}
 
 		return $return;

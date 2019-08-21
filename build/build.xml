@@ -5,7 +5,7 @@
 
   @package		Kunena
   @subpackage	com_kunena
-  @copyright	Copyright (C) 2008 - 2018 Kunena Team. All rights reserved.
+  @copyright	Copyright (C) 2008 - 2019 Kunena Team. All rights reserved.
   				portions (C) 2007 MjazTools. All rights reserved.
   @license		GNU General Public License <https://www.gnu.org/copyleft/gpl.html>
   @link			https://www.kunena.org
@@ -45,7 +45,6 @@
 		<mkdir dir="${tmp_dir}" />
 		<mkdir dir="${tmp_dir}/languages_extra" />
 		<mkdir dir="${tmp_dir}/languages_extra/language" />
-		<mkdir dir="${tmp_dir}/crypsisb3" />
 		<mkdir dir="${build_dir}" />
 		<mkdir dir="${package_dir}" />
 		<mkdir dir="${package_dir}/archive" />
@@ -74,7 +73,7 @@
 
 		<taskdef resource="net/sf/antcontrib/antlib.xml" classpath="${project_dir}/build/lib/ant-contrib-1.0b3.jar"/>
 
-		<xmlproperty file="${project_dir}/pkg_kunena.xml" collapseAttributes="true" prefix="xml" keepRoot="false" />
+		<xmlproperty file="${project_dir}/src/pkg_kunena.xml" collapseAttributes="true" prefix="xml" keepRoot="false" />
 		<tstamp>
 			<format property="str.datefmt" pattern="${cfg.datefmt}" locale="${cfg.dateloc}" />
 		</tstamp>
@@ -104,20 +103,6 @@
 			<istrue value="${cfg.bz2}" />
 		</condition>
 
-		<copy todir="${tmp_dir}/packages/lib_kunena" overwrite="true">
-			<fileset dir="${project_dir}/src/libraries/kunena"/>
-		</copy>
-		<copy todir="${tmp_dir}/packages/plg_system_kunena" overwrite="true">
-			<fileset dir="${project_dir}/src/plugins/plg_system_kunena"/>
-		</copy>
-		<copy todir="${tmp_dir}/packages/plg_quickicon_kunena" overwrite="true">
-			<fileset dir="${project_dir}/src/plugins/plg_quickicon_kunena"/>
-		</copy>
-		<copy todir="${tmp_dir}/packages/kunena_media" overwrite="true">
-			<fileset dir="${project_dir}/src/media/kunena">
-				<exclude name="${project_dir}/src/media/kunena/external/**"/>
-			</fileset>
-		</copy>
 		<copy todir="${tmp_dir}/packages/com_kunena">
 			<fileset dir="${project_dir}/${kunena.admin}">
 				<exclude name="language/**"/>
@@ -129,6 +114,56 @@
 				<exclude name="template/**/params.ini"/>
 			</fileset>
 		</copy>
+		<copy todir="${tmp_dir}/packages/kunena_media" overwrite="true">
+			<fileset dir="${project_dir}/src/media/kunena">
+				<exclude name="${project_dir}/src/media/kunena/external/**"/>
+			</fileset>
+		</copy>
+		<copy todir="${tmp_dir}/packages/lib_kunena" overwrite="true">
+			<fileset dir="${project_dir}/src/libraries/kunena"/>
+		</copy>
+		<copy todir="${tmp_dir}/packages/plg_finder_kunena" overwrite="true">
+			<fileset dir="${project_dir}/src/plugins/plg_finder_kunena"/>
+		</copy>
+		<copy todir="${tmp_dir}/packages/plg_kunena_altauserpoints" overwrite="true">
+			<fileset dir="${project_dir}/src/plugins/plg_kunena_altauserpoints"/>
+		</copy>
+		<copy todir="${tmp_dir}/packages/plg_kunena_community" overwrite="true">
+			<fileset dir="${project_dir}/src/plugins/plg_kunena_community"/>
+		</copy>
+		<copy todir="${tmp_dir}/packages/plg_kunena_comprofiler" overwrite="true">
+			<fileset dir="${project_dir}/src/plugins/plg_kunena_comprofiler"/>
+		</copy>
+		<copy todir="${tmp_dir}/packages/plg_kunena_easyblog" overwrite="true">
+			<fileset dir="${project_dir}/src/plugins/plg_kunena_easyblog"/>
+		</copy>
+		<copy todir="${tmp_dir}/packages/plg_kunena_easyprofile" overwrite="true">
+			<fileset dir="${project_dir}/src/plugins/plg_kunena_easyprofile"/>
+		</copy>
+		<copy todir="${tmp_dir}/packages/plg_kunena_easysocial" overwrite="true">
+			<fileset dir="${project_dir}/src/plugins/plg_kunena_easysocial"/>
+		</copy>
+		<copy todir="${tmp_dir}/packages/plg_kunena_finder" overwrite="true">
+			<fileset dir="${project_dir}/src/plugins/plg_kunena_finder"/>
+		</copy>
+		<copy todir="${tmp_dir}/packages/plg_kunena_gravatar" overwrite="true">
+			<fileset dir="${project_dir}/src/plugins/plg_kunena_gravatar"/>
+		</copy>
+		<copy todir="${tmp_dir}/packages/plg_kunena_joomla" overwrite="true">
+			<fileset dir="${project_dir}/src/plugins/plg_kunena_joomla"/>
+		</copy>
+		<copy todir="${tmp_dir}/packages/plg_kunena_kunena" overwrite="true">
+			<fileset dir="${project_dir}/src/plugins/plg_kunena_kunena"/>
+		</copy>
+		<copy todir="${tmp_dir}/packages/plg_kunena_uddeim" overwrite="true">
+			<fileset dir="${project_dir}/src/plugins/plg_kunena_uddeim"/>
+		</copy>
+		<copy todir="${tmp_dir}/packages/plg_quickicon_kunena" overwrite="true">
+			<fileset dir="${project_dir}/src/plugins/plg_quickicon_kunena"/>
+		</copy>
+		<copy todir="${tmp_dir}/packages/plg_system_kunena" overwrite="true">
+			<fileset dir="${project_dir}/src/plugins/plg_system_kunena"/>
+		</copy>
 	</target>
 
 	<target name="build" depends="init">
@@ -138,27 +173,6 @@
 		<filter token="kunenaversionname" value="${xml.versionname}" />
 
 		<!-- Add version information to all xml files and forum.php -->
-		<copy todir="${tmp_dir}/packages/lib_kunena" overwrite="true" filtering="true">
-			<fileset dir="${project_dir}/src/libraries/kunena">
-				<include name="forum/forum.php"/>
-				<include name="**/*.xml"/>
-			</fileset>
-		</copy>
-		<copy todir="${tmp_dir}/packages/plg_system_kunena" overwrite="true" filtering="true">
-			<fileset dir="${project_dir}/src/plugins/plg_system_kunena">
-				<include name="**/*.xml"/>
-			</fileset>
-		</copy>
-		<copy todir="${tmp_dir}/packages/plg_quickicon_kunena" overwrite="true" filtering="true">
-			<fileset dir="${project_dir}/src/plugins/plg_quickicon_kunena">
-				<include name="**/*.xml"/>
-			</fileset>
-		</copy>
-		<copy todir="${tmp_dir}/packages/kunena_media" overwrite="true" filtering="true">
-			<fileset dir="${project_dir}/src/media/kunena">
-				<include name="**/*.xml"/>
-			</fileset>
-		</copy>
 		<copy todir="${tmp_dir}/packages/com_kunena" overwrite="true" filtering="true">
 			<fileset dir="${project_dir}/${kunena.admin}">
 				<include name="**/*.xml"/>
@@ -171,6 +185,87 @@
 				<exclude name="language/**/*.xml"/>
 			</fileset>
 		</copy>
+		<copy todir="${tmp_dir}/packages/kunena_media" overwrite="true" filtering="true">
+			<fileset dir="${project_dir}/src/media/kunena">
+				<include name="**/*.xml"/>
+			</fileset>
+		</copy>
+		<copy todir="${tmp_dir}/packages/lib_kunena" overwrite="true" filtering="true">
+			<fileset dir="${project_dir}/src/libraries/kunena">
+				<include name="forum/forum.php"/>
+				<include name="**/*.xml"/>
+			</fileset>
+		</copy>
+		<copy todir="${tmp_dir}/packages/plg_finder_kunena" overwrite="true" filtering="true">
+			<fileset dir="${project_dir}/src/plugins/plg_finder_kunena">
+				<include name="**/*.xml"/>
+			</fileset>
+		</copy>
+		<copy todir="${tmp_dir}/packages/plg_kunena_altauserpoints" overwrite="true" filtering="true">
+			<fileset dir="${project_dir}/src/plugins/plg_kunena_altauserpoints">
+				<include name="**/*.xml"/>
+			</fileset>
+		</copy>
+		<copy todir="${tmp_dir}/packages/plg_kunena_community" overwrite="true" filtering="true">
+			<fileset dir="${project_dir}/src/plugins/plg_kunena_community">
+				<include name="**/*.xml"/>
+			</fileset>
+		</copy>
+		<copy todir="${tmp_dir}/packages/plg_kunena_comprofiler" overwrite="true" filtering="true">
+			<fileset dir="${project_dir}/src/plugins/plg_kunena_comprofiler">
+				<include name="**/*.xml"/>
+			</fileset>
+		</copy>
+		<copy todir="${tmp_dir}/packages/plg_kunena_easyblog" overwrite="true" filtering="true">
+			<fileset dir="${project_dir}/src/plugins/plg_kunena_easyblog">
+				<include name="**/*.xml"/>
+			</fileset>
+		</copy>
+		<copy todir="${tmp_dir}/packages/plg_kunena_easyprofile" overwrite="true" filtering="true">
+			<fileset dir="${project_dir}/src/plugins/plg_kunena_easyprofile">
+				<include name="**/*.xml"/>
+			</fileset>
+		</copy>
+		<copy todir="${tmp_dir}/packages/plg_kunena_easysocial" overwrite="true" filtering="true">
+			<fileset dir="${project_dir}/src/plugins/plg_kunena_easysocial">
+				<include name="**/*.xml"/>
+			</fileset>
+		</copy>
+		<copy todir="${tmp_dir}/packages/plg_kunena_finder" overwrite="true" filtering="true">
+			<fileset dir="${project_dir}/src/plugins/plg_kunena_finder">
+				<include name="**/*.xml"/>
+			</fileset>
+		</copy>
+		<copy todir="${tmp_dir}/packages/plg_kunena_gravatar" overwrite="true" filtering="true">
+			<fileset dir="${project_dir}/src/plugins/plg_kunena_gravatar">
+				<include name="**/*.xml"/>
+			</fileset>
+		</copy>
+		<copy todir="${tmp_dir}/packages/plg_kunena_joomla" overwrite="true" filtering="true">
+			<fileset dir="${project_dir}/src/plugins/plg_kunena_joomla">
+				<include name="**/*.xml"/>
+			</fileset>
+		</copy>
+		<copy todir="${tmp_dir}/packages/plg_kunena_kunena" overwrite="true" filtering="true">
+			<fileset dir="${project_dir}/src/plugins/plg_kunena_kunena">
+				<include name="**/*.xml"/>
+			</fileset>
+		</copy>
+		<copy todir="${tmp_dir}/packages/plg_kunena_uddeim" overwrite="true" filtering="true">
+			<fileset dir="${project_dir}/src/plugins/plg_kunena_uddeim">
+				<include name="**/*.xml"/>
+			</fileset>
+		</copy>
+		<copy todir="${tmp_dir}/packages/plg_quickicon_kunena" overwrite="true" filtering="true">
+			<fileset dir="${project_dir}/src/plugins/plg_quickicon_kunena">
+				<include name="**/*.xml"/>
+			</fileset>
+		</copy>
+		<copy todir="${tmp_dir}/packages/plg_system_kunena" overwrite="true" filtering="true">
+			<fileset dir="${project_dir}/src/plugins/plg_system_kunena">
+				<include name="**/*.xml"/>
+			</fileset>
+		</copy>
 
 		<!-- Move files needed by the installer -->
 		<copy file="${project_dir}/src/pkg_kunena.xml" todir="${build_dir}" overwrite="true" filtering="true" />
@@ -178,6 +273,7 @@
 		<copy file="${project_dir}/COPYRIGHT.php" todir="${build_dir}" overwrite="true" filtering="true" />
 		<copy file="${project_dir}/README.md" tofile="${build_dir}/README.txt" overwrite="true" filtering="true" />
 		<copy file="${project_dir}/LICENSE.txt" tofile="${build_dir}/LICENSE.txt" overwrite="true" filtering="true" />
+
 		<!--copy todir="${build_dir}/install" overwrite="true" filtering="true">
 			<fileset dir="${project_dir}/${kunena.admin}/install" />
 		</copy-->
@@ -199,6 +295,7 @@
 	<target name="minify" depends="build">
 		<yui-compressor warn="false" munge="true" charset="UTF-8" fromdir="${tmp_dir}/packages/com_kunena/site" todir="${tmp_dir}/packages/com_kunena/site">
 			<exclude name="**/*-min.js" />
+			<exclude name="**/markitup.editor.js" />
 			<exclude name="**/*.min.js" />
 			<exclude name="**/*-min.css" />
 			<exclude name="**/*.min.css" />
@@ -333,14 +430,25 @@
 		<language tag="zh-CN" />
 		<language tag="zh-TW" />
 
-		<archive destfile="${build_dir}/packages/plg_system_kunena${str.version}" basedir="${tmp_dir}/packages/plg_system_kunena" />
-		<archive destfile="${build_dir}/packages/plg_quickicon_kunena${str.version}" basedir="${tmp_dir}/packages/plg_quickicon_kunena" />
-		<archive destfile="${build_dir}/packages/lib_kunena${str.version}" basedir="${tmp_dir}/packages/lib_kunena" />
 		<archive destfile="${build_dir}/packages/com_kunena${str.version}" basedir="${tmp_dir}/packages/com_kunena" />
 		<archive destfile="${build_dir}/packages/kunena_media${str.version}" basedir="${tmp_dir}/packages/kunena_media" />
+		<archive destfile="${build_dir}/packages/lib_kunena${str.version}" basedir="${tmp_dir}/packages/lib_kunena" />
+		<archive destfile="${build_dir}/packages/plg_finder_kunena${str.version}" basedir="${tmp_dir}/packages/plg_finder_kunena" />
+		<archive destfile="${build_dir}/packages/plg_kunena_altauserpoints${str.version}" basedir="${tmp_dir}/packages/plg_kunena_altauserpoints" />
+		<archive destfile="${build_dir}/packages/plg_kunena_community${str.version}" basedir="${tmp_dir}/packages/plg_kunena_community" />
+		<archive destfile="${build_dir}/packages/plg_kunena_comprofiler${str.version}" basedir="${tmp_dir}/packages/plg_kunena_comprofiler" />
+		<archive destfile="${build_dir}/packages/plg_kunena_easyblog${str.version}" basedir="${tmp_dir}/packages/plg_kunena_easyblog" />
+		<archive destfile="${build_dir}/packages/plg_kunena_easyprofile${str.version}" basedir="${tmp_dir}/packages/plg_kunena_easyprofile" />
+		<archive destfile="${build_dir}/packages/plg_kunena_easysocial${str.version}" basedir="${tmp_dir}/packages/plg_kunena_easysocial" />
+		<archive destfile="${build_dir}/packages/plg_kunena_finder${str.version}" basedir="${tmp_dir}/packages/plg_kunena_finder" />
+		<archive destfile="${build_dir}/packages/plg_kunena_gravatar${str.version}" basedir="${tmp_dir}/packages/plg_kunena_gravatar" />
+		<archive destfile="${build_dir}/packages/plg_kunena_joomla${str.version}" basedir="${tmp_dir}/packages/plg_kunena_joomla" />
+		<archive destfile="${build_dir}/packages/plg_kunena_kunena${str.version}" basedir="${tmp_dir}/packages/plg_kunena_kunena" />
+		<archive destfile="${build_dir}/packages/plg_kunena_uddeim${str.version}" basedir="${tmp_dir}/packages/plg_kunena_uddeim" />
+		<archive destfile="${build_dir}/packages/plg_system_kunena${str.version}" basedir="${tmp_dir}/packages/plg_system_kunena" />
+		<archive destfile="${build_dir}/packages/plg_quickicon_kunena${str.version}" basedir="${tmp_dir}/packages/plg_quickicon_kunena" />
 		<archive destfile="${str.destfile}" basedir="${build_dir}" />
 		<archive destfile="${str.destlangfile}" basedir="${tmp_dir}/languages_extra" />
-		<archive destfile="${package_dir}/tmpl_kunena_crypsisb3${str.fileversion}" basedir="${tmp_dir}/crypsisb3" />
 	</target>
 
 	<target name="info" depends="copy">

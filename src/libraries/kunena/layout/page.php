@@ -4,7 +4,7 @@
  * @package       Kunena.Administrator.Template
  * @subpackage    Categories
  *
- * @copyright     Copyright (C) 2008 - 2018 Kunena Team. All rights reserved.
+ * @copyright     Copyright (C) 2008 - 2019 Kunena Team. All rights reserved.
  * @license       https://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link          https://www.kunena.org
  **/
@@ -114,7 +114,7 @@ class KunenaLayoutPage extends KunenaLayout
 	 * @since Kunena
 	 * @throws Exception
 	 */
-	public function execute($path, \Joomla\Input\Input $input = null, $options = null)
+	public function execute($path, Joomla\Input\Input $input = null, $options = null)
 	{
 		return $this->request($path, $input, $options)->execute();
 	}
@@ -129,7 +129,7 @@ class KunenaLayoutPage extends KunenaLayout
 	 * @return  KunenaControllerDisplay
 	 * @since Kunena
 	 */
-	public function request($path, \Joomla\Input\Input $input = null, $options = null)
+	public function request($path, Joomla\Input\Input $input = null, $options = null)
 	{
 		return KunenaRequest::factory($path . '/Display', $input, $options ? $options : $this->getOptions())
 			->setPrimary()->set('layout', $this->getLayout());
@@ -145,7 +145,6 @@ class KunenaLayoutPage extends KunenaLayout
 	 * @return $this
 	 * @throws Exception
 	 * @since Kunena
-	 * @throws null
 	 */
 	public function addBreadcrumb($text, $uri, $ignore = true)
 	{

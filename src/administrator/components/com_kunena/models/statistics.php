@@ -4,7 +4,7 @@
  * @package       Kunena.Administrator
  * @subpackage    Models
  *
- * @copyright     Copyright (C) 2008 - 2018 Kunena Team. All rights reserved.
+ * @copyright     Copyright (C) 2008 - 2019 Kunena Team. All rights reserved.
  * @license       https://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link          https://www.kunena.org
  **/
@@ -19,15 +19,17 @@ jimport('joomla.application.component.model');
  *
  * @since 5.0
  */
-class KunenaAdminModelStatistics extends \Joomla\CMS\MVC\Model\ListModel
+class KunenaAdminModelStatistics extends Joomla\CMS\MVC\Model\ListModel
 {
 	/**
 	 * Constructor.
 	 *
-	 * @param   array $config An optional associative array of configuration settings.
-	 *
 	 * @see        JController
+	 *
+	 * @param   array  $config  An optional associative array of configuration settings.
+	 *
 	 * @since      Kunena
+	 * @throws Exception
 	 */
 	public function __construct($config = array())
 	{
@@ -50,8 +52,8 @@ class KunenaAdminModelStatistics extends \Joomla\CMS\MVC\Model\ListModel
 	 *
 	 * @return  integer  The total number of items available in the data set.
 	 *
-	 * @throws Exception
 	 * @since   3.1
+	 * @throws Exception
 	 */
 	public function getTotal()
 	{
@@ -82,7 +84,7 @@ class KunenaAdminModelStatistics extends \Joomla\CMS\MVC\Model\ListModel
 	 * different modules that might need different sets of data or different
 	 * ordering requirements.
 	 *
-	 * @param   string $id A prefix for the store id.
+	 * @param   string  $id  A prefix for the store id.
 	 *
 	 * @return    string        A store id.
 	 * @since Kunena
@@ -100,11 +102,11 @@ class KunenaAdminModelStatistics extends \Joomla\CMS\MVC\Model\ListModel
 	/**
 	 * Build a finder query to load the list data.
 	 *
-	 * @param   string $field field
+	 * @param   string  $field  field
 	 *
 	 * @return KunenaLogFinder
-	 * @throws Exception
 	 * @since Kunena
+	 * @throws Exception
 	 */
 	protected function getFinder($field = 'user_id')
 	{
@@ -137,8 +139,8 @@ class KunenaAdminModelStatistics extends \Joomla\CMS\MVC\Model\ListModel
 
 		if ($start || $stop)
 		{
-			$start = $start ? new \Joomla\CMS\Date\Date($start) : null;
-			$stop  = $stop ? new \Joomla\CMS\Date\Date($stop . ' +1 day') : null;
+			$start = $start ? new Joomla\CMS\Date\Date($start) : null;
+			$stop  = $stop ? new Joomla\CMS\Date\Date($stop . ' +1 day') : null;
 			$finder->filterByTime($start, $stop);
 		}
 
@@ -165,8 +167,8 @@ class KunenaAdminModelStatistics extends \Joomla\CMS\MVC\Model\ListModel
 	 *
 	 * @return  KunenaUser  List of KunenaUser objects found.
 	 *
-	 * @throws Exception
 	 * @since   3.1
+	 * @throws Exception
 	 */
 	public function getItems()
 	{
@@ -281,11 +283,11 @@ class KunenaAdminModelStatistics extends \Joomla\CMS\MVC\Model\ListModel
 	/**
 	 * Method to auto-populate the model state.
 	 *
-	 * @param   null $ordering  ordering
-	 * @param   null $direction direction
+	 * @param   null  $ordering   ordering
+	 * @param   null  $direction  direction
 	 *
-	 * @throws Exception
 	 * @since Kunena
+	 * @throws Exception
 	 */
 	protected function populateState($ordering = null, $direction = null)
 	{
@@ -299,8 +301,8 @@ class KunenaAdminModelStatistics extends \Joomla\CMS\MVC\Model\ListModel
 			$this->context .= '.' . $layout;
 		}
 
-		$now   = new \Joomla\CMS\Date\Date;
-		$month = new \Joomla\CMS\Date\Date('-1 month');
+		$now   = new Joomla\CMS\Date\Date;
+		$month = new Joomla\CMS\Date\Date('-1 month');
 
 		$filter_active = '';
 

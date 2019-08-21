@@ -5,7 +5,7 @@
  * @package         Kunena.Site
  * @subpackage      Models
  *
- * @copyright       Copyright (C) 2008 - 2018 Kunena Team. All rights reserved.
+ * @copyright       Copyright (C) 2008 - 2019 Kunena Team. All rights reserved.
  * @license         https://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link            https://www.kunena.org
  **/
@@ -117,7 +117,7 @@ class KunenaModelTopics extends KunenaModel
 		}
 		else
 		{
-			if (Factory::getDocument()->getType() != 'feed')
+			if (Factory::getApplication()->getDocument()->getType() != 'feed')
 			{
 				// Get configuration from menu item.
 				$latestcategory    = $params->get('topics_categories', '');
@@ -170,7 +170,7 @@ class KunenaModelTopics extends KunenaModel
 		$this->setState('list.categories.in', $latestcategory_in);
 
 		// Selection time.
-		if (Factory::getDocument()->getType() != 'feed')
+		if (Factory::getApplication()->getDocument()->getType() != 'feed')
 		{
 			// Selection time from user state / menu item / url parameter / configuration.
 			if (!$this->me->exists() || $this->me->exists() && $this->me->userListtime == -2)
@@ -356,7 +356,7 @@ class KunenaModelTopics extends KunenaModel
 			'orderby'   => $lastpost ? 'tt.last_post_time DESC' : 'tt.first_post_time DESC',
 			'starttime' => $time,
 			'hold'      => $hold,
-			'where'     => $where,);
+			'where'     => $where, );
 
 		list($this->total, $this->topics) = KunenaForumTopicHelper::getLatestTopics($latestcategory, $limitstart, $limit, $params);
 
@@ -416,7 +416,7 @@ class KunenaModelTopics extends KunenaModel
 			'started'    => $started,
 			'posted'     => $posts,
 			'favorited'  => $favorites,
-			'subscribed' => $subscriptions,);
+			'subscribed' => $subscriptions, );
 
 		list($this->total, $this->topics) = KunenaForumTopicHelper::getLatestTopics($latestcategory, $limitstart, $limit, $params);
 

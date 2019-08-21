@@ -4,7 +4,7 @@
  * @package       Kunena.Framework
  * @subpackage    Forum.Category.User
  *
- * @copyright     Copyright (C) 2008 - 2018 Kunena Team. All rights reserved.
+ * @copyright     Copyright (C) 2008 - 2019 Kunena Team. All rights reserved.
  * @license       https://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link          https://www.kunena.org
  **/
@@ -137,7 +137,11 @@ abstract class KunenaForumCategoryUserHelper
 
 		$idlist = implode(',', $ids);
 		$db     = Factory::getDBO();
-		$query  = "SELECT * FROM #__kunena_user_categories WHERE user_id={$db->quote($user->userid)} AND category_id IN ({$idlist})";
+		$query  = $db->getQuery(true);
+		$query->select('*')
+			->from($db->quoteName('#__kunena_user_categories'))
+			->where($db->quoteName('user_id') . ' = ' . $db->quote($user->userid))
+			->andWhere($db->quoteName('category_id') . ' IN (' . $idlist . ')');
 		$db->setQuery($query);
 
 		try
@@ -194,7 +198,7 @@ abstract class KunenaForumCategoryUserHelper
 			}
 			else
 			{
-				$insertList[] = "{$db->quote($user->userid)}, {$db->quote($item->category_id)}, {$db->quote($time)}";
+				$insertList[] = $db->quote($user->userid) . ', ' . $db->quote($item->category_id) . ', ' . $db->quote($time);
 			}
 		}
 
@@ -203,23 +207,39 @@ abstract class KunenaForumCategoryUserHelper
 			$idlist = implode(',', $updateList);
 			$query  = $db->getQuery(true);
 			$query
-				->update('#__kunena_user_categories')
-				->set("allreadtime={$db->quote($time)}")
-				->where("user_id={$db->quote($user->userid)}")
-				->where("category_id IN ({$idlist})");
+				->update($db->quoteName('#__kunena_user_categories'))
+				->set('allreadtime = ' . $db->quote($time))
+				->where('user_id = ' . $db->quote($user->userid))
+				->where($db->quoteName('category_id') . ' IN (' . $idlist . ')');
 			$db->setQuery($query);
-			$db->execute();
+
+			try
+			{
+				$db->execute();
+			}
+			catch (JDatabaseExceptionExecuting $e)
+			{
+				KunenaError::displayDatabaseError($e);
+			}
 		}
 
 		if ($insertList)
 		{
 			$query = $db->getQuery(true);
 			$query
-				->insert('#__kunena_user_categories')
+				->insert($db->quoteName('#__kunena_user_categories'))
 				->columns('user_id, category_id, allreadtime')
 				->values($insertList);
 			$db->setQuery($query);
-			$db->execute();
+
+			try
+			{
+				$db->execute();
+			}
+			catch (JDatabaseExceptionExecuting $e)
+			{
+				KunenaError::displayDatabaseError($e);
+			}
 		}
 	}
 }

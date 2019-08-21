@@ -5,7 +5,7 @@
  * @package         Kunena.Administrator
  * @subpackage      Views
  *
- * @copyright       Copyright (C) 2008 - 2018 Kunena Team. All rights reserved.
+ * @copyright       Copyright (C) 2008 - 2019 Kunena Team. All rights reserved.
  * @license         https://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link            https://www.kunena.org
  **/
@@ -100,7 +100,7 @@ class KunenaAdminViewCategories extends KunenaView
 		$this->sortFields          = $this->getSortFields();
 		$this->sortDirectionFields = $this->getSortDirectionFields();
 
-		$this->user              = Factory::getUser();
+		$this->user              = Factory::getApplication()->getIdentity();
 		$this->me                = KunenaUserHelper::getMyself();
 		$this->userId            = $this->user->get('id');
 		$this->filterSearch      = $this->escape($this->state->get('filter.search'));
@@ -130,7 +130,7 @@ class KunenaAdminViewCategories extends KunenaView
 		$this->pagination   = $this->get('AdminNavigation');
 
 		// Get the toolbar object instance
-		$bar = \Joomla\CMS\Toolbar\Toolbar::getInstance('toolbar');
+		$bar = Joomla\CMS\Toolbar\Toolbar::getInstance('toolbar');
 
 		JToolbarHelper::title(Text::_('COM_KUNENA') . ': ' . Text::_('COM_KUNENA_CATEGORY_MANAGER'), 'list-view');
 		JToolbarHelper::spacer();
@@ -142,20 +142,13 @@ class KunenaAdminViewCategories extends KunenaView
 		JToolbarHelper::unpublish();
 		JToolbarHelper::divider();
 
-		if (version_compare(JVERSION, '4.0', '>'))
-		{
-			HTMLHelper::_('bootstrap.renderModal', 'moderateModal');
-		}
-		else
-		{
-			HTMLHelper::_('bootstrap.modal', 'moderateModal');
-		}
+		HTMLHelper::_('bootstrap.renderModal', 'moderateModal');
 
 		$title = Text::_('COM_KUNENA_VIEW_CATEGORIES_CONFIRM_BEFORE_DELETE');
 		$dhtml = "<button data-toggle=\"modal\" data-target=\"#catconfirmdelete\" class=\"btn btn-small button-trash\">
 					<i class=\"icon-trash\" title=\"$title\"> </i>
 						$title</button>";
-						$bar->appendButton('Custom', $dhtml, 'confirmdelete');
+		$bar->appendButton('Custom', $dhtml, 'confirmdelete');
 
 		JToolbarHelper::spacer();
 		$help_url = 'https://docs.kunena.org/en/setup/sections-categories';

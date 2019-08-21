@@ -4,7 +4,7 @@
  * @package       Kunena.Framework
  * @subpackage    Tables
  *
- * @copyright     Copyright (C) 2008 - 2018 Kunena Team. All rights reserved.
+ * @copyright     Copyright (C) 2008 - 2019 Kunena Team. All rights reserved.
  * @license       https://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link          https://www.kunena.org
  **/
@@ -113,26 +113,26 @@ class TableKunenaAttachments extends KunenaTable
 		$user    = KunenaUserHelper::get($this->userid);
 		$message = KunenaForumMessageHelper::get($this->mesid);
 
-		if ($this->userid != 0 && !$user->exists())
+		if ($user->userid != 0 && !$user->exists())
 		{
-			$this->setError(Text::sprintf('COM_KUNENA_LIB_TABLE_ATTACHMENTS_ERROR_USER_INVALID', (int) $user->userid));
+			throw new RuntimeException(Text::sprintf('COM_KUNENA_LIB_TABLE_ATTACHMENTS_ERROR_USER_INVALID', (int) $user->userid));
 		}
 
 		if ($message->id && !$message->exists())
 		{
-			$this->setError(Text::sprintf('COM_KUNENA_LIB_TABLE_ATTACHMENTS_ERROR_MESSAGE_INVALID', (int) $message->id));
+			throw new RuntimeException(Text::sprintf('COM_KUNENA_LIB_TABLE_ATTACHMENTS_ERROR_MESSAGE_INVALID', (int) $message->id));
 		}
 
 		$this->folder = trim($this->folder, '/');
 
 		if (!$this->folder)
 		{
-			$this->setError(Text::_('COM_KUNENA_LIB_TABLE_ATTACHMENTS_ERROR_NO_FOLDER'));
+			throw new UnexpectedValueException(Text::_('COM_KUNENA_LIB_TABLE_ATTACHMENTS_ERROR_NO_FOLDER'));
 		}
 
 		if (!$this->filename)
 		{
-			$this->setError(Text::_('COM_KUNENA_LIB_TABLE_ATTACHMENTS_ERROR_NO_FILENAME'));
+			throw new UnexpectedValueException(Text::_('COM_KUNENA_LIB_TABLE_ATTACHMENTS_ERROR_NO_FILENAME'));
 		}
 
 		if (!$this->filename_real)
@@ -144,7 +144,7 @@ class TableKunenaAttachments extends KunenaTable
 
 		if (!is_file($file))
 		{
-			$this->setError(Text::sprintf('COM_KUNENA_LIB_TABLE_ATTACHMENTS_ERROR_FILE_MISSING', "{$this->folder}/{$this->filename}"));
+			throw new UnexpectedValueException(Text::sprintf('COM_KUNENA_LIB_TABLE_ATTACHMENTS_ERROR_FILE_MISSING', "{$this->folder}/{$this->filename}"));
 		}
 		else
 		{
@@ -164,6 +164,6 @@ class TableKunenaAttachments extends KunenaTable
 			}
 		}
 
-		return $this->getError() == '';
+		return true;
 	}
 }

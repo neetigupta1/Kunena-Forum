@@ -5,7 +5,7 @@
  * @package         Kunena.Site
  * @subpackage      Views
  *
- * @copyright       Copyright (C) 2008 - 2018 Kunena Team. All rights reserved.
+ * @copyright       Copyright (C) 2008 - 2019 Kunena Team. All rights reserved.
  * @license         https://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link            https://www.kunena.org
  **/
@@ -170,7 +170,7 @@ class KunenaViewCommon extends KunenaView
 		$options            = array();
 		$options []         = HTMLHelper::_('select.option', '0', Text::_('COM_KUNENA_FORUM_TOP'));
 		$cat_params         = array('sections' => 1, 'catid' => 0);
-		$this->categorylist = HTMLHelper::_('kunenaforum.categorylist', 'catid', 0, $options, $cat_params, 'class="inputbox fbs" size="1" onchange = "this.form.submit()"', 'value', 'text', $this->catid);
+		$this->categorylist = HTMLHelper::_('kunenaforum.categorylist', 'catid', 0, $options, $cat_params, 'class="form-control fbs" size="1" onchange = "this.form.submit()"', 'value', 'text', $this->catid);
 
 		$result = $this->loadTemplateFile($tpl);
 
@@ -443,7 +443,7 @@ class KunenaViewCommon extends KunenaView
 
 			if (isset($rss_params))
 			{
-				$document = Factory::getDocument();
+				$document = Factory::getApplication()->getDocument();
 				$document->addCustomTag('<link rel="alternate" type="application/rss+xml" title="' . Text::_('COM_KUNENA_LISTCAT_RSS') . '" href="' . $this->getRSSURL($rss_params) . '" />');
 				$this->rss = $this->getRSSLink($this->getIcon('krss', Text::_('COM_KUNENA_LISTCAT_RSS')), 'follow', $rss_params);
 			}
@@ -491,7 +491,7 @@ class KunenaViewCommon extends KunenaView
 			return ' ';
 		}
 
-		$this->parameters = new \Joomla\Registry\Registry;
+		$this->parameters = new Joomla\Registry\Registry;
 		$this->parameters->set('showAllChildren', $this->ktemplate->params->get('menu_showall', 0));
 		$this->parameters->set('menutype', $basemenu->menutype);
 		$this->parameters->set('startLevel', $basemenu->level + 1);
@@ -522,7 +522,7 @@ class KunenaViewCommon extends KunenaView
 			return;
 		}
 
-		$my         = Factory::getUser();
+		$my         = Factory::getApplication()->getIdentity();
 		$cache      = Factory::getCache('com_kunena', 'output');
 		$cachekey   = "{$this->ktemplate->name}.common.loginbox.u{$my->id}";
 		$cachegroup = 'com_kunena.template';
@@ -579,7 +579,8 @@ class KunenaViewCommon extends KunenaView
 			// $cache->store($contents, $cachekey, $cachegroup);
 		}
 
-		$contents = preg_replace_callback('|\[K=(\w+)(?:\:([\w-_]+))?\]|', array($this, 'fillLoginBoxInfo'), $contents);
+		$contents = preg_replace_callback('|\[K=(\w+)(?:\:([\w_-]+))?\]|', array($this, 'fillLoginBoxInfo'), $contents);
+
 		echo $contents;
 	}
 
@@ -693,7 +694,7 @@ class KunenaViewCommon extends KunenaView
 	 */
 	public function getStatsLink($name, $class = '', $rel = 'follow')
 	{
-		$my = KunenaFactory::getUser();
+		$my = KunenaFactory::getApplication()->getIdentity();
 
 		if (KunenaFactory::getConfig()->statslink_allowed == 0 && $my->userid == 0)
 		{
@@ -715,7 +716,7 @@ class KunenaViewCommon extends KunenaView
 	 */
 	public function getUserlistLink($action, $name, $rel = 'nofollow', $class = '')
 	{
-		$my = KunenaFactory::getUser();
+		$my = KunenaFactory::getApplication()->getIdentity();
 
 		if ($name == $this->memberCount)
 		{

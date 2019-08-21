@@ -3,7 +3,7 @@
  * Kunena Component
  * @package        Kunena.Framework
  *
- * @copyright      Copyright (C) 2008 - 2018 Kunena Team. All rights reserved.
+ * @copyright      Copyright (C) 2008 - 2019 Kunena Team. All rights reserved.
  * @license        https://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link           https://www.kunena.org
  **/
@@ -49,9 +49,9 @@ abstract class KunenaError
 	public static $format;
 
 	/**
-	 * @throws Exception
-	 * @since Kunena
 	 * @return void
+	 * @since Kunena
+	 * @throws Exception
 	 */
 	public static function initialize()
 	{
@@ -74,20 +74,13 @@ abstract class KunenaError
 			@ini_set('display_errors', 1);
 			self::$handler = true;
 
-			if (version_compare(JVERSION, '4.0', '<'))
-			{
-				@error_reporting(E_ALL | E_STRICT);
-				Factory::getDbo()->setDebug(true);
-				set_error_handler(array('KunenaError', 'errorHandler'));
-			}
-
 			self::$enabled++;
 		}
 	}
 
 	/**
-	 * @since Kunena
 	 * @return void
+	 * @since Kunena
 	 */
 	public static function cleanup()
 	{
@@ -102,12 +95,12 @@ abstract class KunenaError
 	}
 
 	/**
-	 * @param   string $msg   msg
-	 * @param   string $where where
+	 * @param   string  $msg    msg
+	 * @param   string  $where  where
 	 *
-	 * @throws Exception
-	 * @since Kunena
 	 * @return void
+	 * @since Kunena
+	 * @throws Exception
 	 */
 	public static function error($msg, $where = 'default')
 	{
@@ -119,12 +112,12 @@ abstract class KunenaError
 	}
 
 	/**
-	 * @param   string $msg   msg
-	 * @param   string $where where
+	 * @param   string  $msg    msg
+	 * @param   string  $where  where
 	 *
-	 * @throws Exception
-	 * @since Kunena
 	 * @return void
+	 * @since Kunena
+	 * @throws Exception
 	 */
 	public static function warning($msg, $where = 'default')
 	{
@@ -138,48 +131,42 @@ abstract class KunenaError
 	/**
 	 * Return different error if it's an admin or a simple user
 	 *
-	 * @param   void $exception exception
+	 * @param   Exception|JDatabaseExceptionExecuting  $exception  exception
 	 *
 	 * @return void
-	 * @throws Exception
 	 * @since 5.0
+	 * @throws Exception
 	 */
 	public static function displayDatabaseError($exception)
 	{
-		if (version_compare(JVERSION, '4.0', '>'))
-		{
-			return false;
-		}
-
 		$app = Factory::getApplication();
-		$db  = Factory::getDBO();
 
 		if (Factory::getApplication()->isClient('administrator'))
 		{
-			$app->enqueueMessage($exception->getMessage(), 'error');
+			$app->enqueueMessage('Exception throw at line ' . $exception->getLine() . ' in file ' . $exception->getFile() . ' with message ' . $exception->getMessage(), 'error');
 		}
-		elseif (self::$debug || self::$admin)
+		elseif (!JDEBUG && !KunenaFactory::getConfig()->debug && !self::$admin)
 		{
 			$app->enqueueMessage('Kunena ' . Text::sprintf('COM_KUNENA_INTERNAL_ERROR_ADMIN',
 					'<a href="https://www.kunena.org/">www.kunena.org</a>'), 'error');
 		}
-		elseif (KunenaFactory::getUser()->isAdmin() && Factory::getApplication()->isClient('site'))
+		elseif (KunenaFactory::getApplication()->getIdentity()->isAdmin() && Factory::getApplication()->isClient('site'))
 		{
-			$app->enqueueMessage($exception->getMessage(), 'error');
+			$app->enqueueMessage('Exception throw at line ' . $exception->getLine() . ' in file ' . $exception->getFile() . ' with message ' . $exception->getMessage(), 'error');
 		}
 		else
 		{
 			$app->enqueueMessage('Kunena ' . Text::_('COM_KUNENA_INTERNAL_ERROR'), 'error');
 		}
 
-		KunenaLog::log(KunenaLog::TYPE_ERROR, KunenaLog::LOG_ERROR_FATAL, $exception);
+		KunenaLog::log(KunenaLog::TYPE_ERROR, KunenaLog::LOG_ERROR_FATAL, 'Exception throw at line ' . $exception->getLine() . ' in file ' . $exception->getFile() . ' with message ' . $exception->getMessage());
 	}
 
 	/**
-	 * @param   string $errno   errorno
-	 * @param   string $errstr  errorstr
-	 * @param   string $errfile errorfile
-	 * @param   string $errline errorline
+	 * @param   string  $errno    errorno
+	 * @param   string  $errstr   errorstr
+	 * @param   string  $errfile  errorfile
+	 * @param   string  $errline  errorline
 	 *
 	 * @return boolean
 	 * @since Kunena
@@ -237,11 +224,11 @@ abstract class KunenaError
 	}
 
 	/**
-	 * @param   mixed $debug debug
+	 * @param   mixed  $debug  debug
 	 *
 	 * @return void
-	 * @throws Exception
 	 * @since Kunena
+	 * @throws Exception
 	 */
 	public static function shutdownHandler($debug)
 	{
@@ -309,7 +296,7 @@ abstract class KunenaError
 			{
 				header('Content-type: application/json');
 
-				// Emulate \Joomla\CMS\Response\JsonResponse.
+				// Emulate Joomla\CMS\Response\JsonResponse.
 				$response           = new StdClass;
 				$response->success  = false;
 				$response->message  = '500 ' . $errorMsg;

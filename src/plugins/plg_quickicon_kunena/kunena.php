@@ -5,19 +5,22 @@
  * @package         Kunena.Plugins
  * @subpackage      QuickIcon
  *
- * @copyright       Copyright (C) 2008 - 2018 Kunena Team. All rights reserved.
+ * @copyright       Copyright (C) 2008 - 2019 Kunena Team. All rights reserved.
  * @license         https://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link            https://www.kunena.org
  **/
 defined('_JEXEC') or die();
 
 use Joomla\CMS\Language\Text;
+use Joomla\CMS\Factory;
+use Joomla\CMS\Plugin\CMSPlugin;
+use Joomla\CMS\Router\Route;
 
 /**
  * Class plgQuickiconKunena
  * @since       Kunena
  */
-class plgQuickiconKunena extends JPlugin
+class plgQuickiconKunena extends CMSPlugin
 {
 	/**
 	 * plgQuickiconKunena constructor.
@@ -51,7 +54,7 @@ class plgQuickiconKunena extends JPlugin
 	 */
 	public function onGetIcons($context)
 	{
-		if ($context != $this->params->get('context', 'mod_quickicon') || !JFactory::getUser()->authorise('core.manage', 'com_kunena'))
+		if ($context != $this->params->get('context', 'mod_quickicon') || !Factory::getUser()->authorise('core.manage', 'com_kunena'))
 		{
 			return null;
 		}
@@ -60,10 +63,10 @@ class plgQuickiconKunena extends JPlugin
 
 		$updateInfo = null;
 
-		if (KunenaForum::installed() && JFactory::getUser()->authorise('core.manage', 'com_installer'))
+		if (KunenaForum::installed() && Factory::getUser()->authorise('core.manage', 'com_installer'))
 		{
 			$updateSite = 'https://update.kunena.org/%';
-			$db         = JFactory::getDbo();
+			$db         = Factory::getDbo();
 
 			$query = $db->getQuery(true)
 				->select('*')
@@ -109,12 +112,7 @@ class plgQuickiconKunena extends JPlugin
 
 		if (!KunenaForum::installed())
 		{
-			$icon = 'warning';
-
-			if (version_compare(JVERSION, '4.0', '>'))
-			{
-				$icon = 'fa fa-warning';
-			}
+			$icon = 'fa fa-warning';
 
 			// Not fully installed
 			$img  = $useIcons ? $icon : 'kunena/icons/icon-48-kupdate-alert-white.png';
@@ -124,12 +122,7 @@ class plgQuickiconKunena extends JPlugin
 		elseif ($updateInfo === null)
 		{
 			// Unsupported
-			$icon = 'remove';
-
-			if (version_compare(JVERSION, '4.0', '>'))
-			{
-				$icon = 'fa fa-remove';
-			}
+			$icon = 'fa fa-remove';
 
 			$img  = $useIcons ? $icon : 'kunena/icons/kunena-logo-48-white.png';
 			$icon = 'kunena/icons/kunena-logo-48-white.png';
@@ -193,14 +186,11 @@ class plgQuickiconKunena extends JPlugin
 			$text = Text::_('COM_KUNENA');
 		}
 
-		// Use one line in J!3.0.
-		if (version_compare(JVERSION, '3.0', '>'))
-		{
-			$text = preg_replace('|<br />|', ' - ', $text);
-		}
+		// Use one line in J!4.0.
+		$text = preg_replace('|<br />|', ' - ', $text);
 
 		return array(array(
-			'link'   => JRoute::_($link),
+			'link'   => Route::_($link),
 			'image'  => $img,
 			'text'   => $text,
 			'icon'   => $icon,

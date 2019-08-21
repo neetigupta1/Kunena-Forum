@@ -3,43 +3,62 @@
  * Kunena Component
  * @package        Kunena.Framework
  *
- * @copyright      Copyright (C) 2008 - 2018 Kunena Team. All rights reserved.
+ * @copyright      Copyright (C) 2008 - 2019 Kunena Team. All rights reserved.
  * @license        https://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link           https://www.kunena.org
  **/
 defined('_JEXEC') or die();
 
 use Joomla\CMS\Factory;
+use Joomla\CMS\Object\CMSObject;
 
 /**
  * Class KunenaSession
  * @since Kunena
  */
-class KunenaSession extends JObject
+class KunenaSession extends CMSObject
 {
 	/**
-	 * @var mixed
 	 * @since Kunena
+	 * @var mixed
 	 */
 	private static $_instance;
 
 	/**
-	 * @var boolean
 	 * @since Kunena
+	 * @var boolean
 	 */
 	protected $_exists = false;
 
 	/**
-	 * @var boolean
 	 * @since Kunena
+	 * @var boolean
 	 */
 	protected $_sessiontimeout = false;
 
 	/**
-	 * @var int|string
 	 * @since Kunena
+	 * @var integer|string
 	 */
 	protected $allreadtime;
+
+	/**
+	 * @var integer|string
+	 * @since Kunena
+	 */
+	public $lasttime;
+
+	/**
+	 * @var integer|string
+	 * @since Kunena
+	 */
+	public $currvisit;
+
+	/**
+	 * @var integer|string
+	 * @since Kunena
+	 */
+	public $readtopics;
 
 	/**
 	 * @param   mixed|null $identifier identifier
@@ -125,7 +144,7 @@ class KunenaSession extends JObject
 		}
 
 		// Create the user table object
-		return \Joomla\CMS\Table\Table::getInstance($tabletype['name'], $tabletype['prefix']);
+		return Joomla\CMS\Table\Table::getInstance($tabletype['name'], $tabletype['prefix']);
 	}
 
 	/**
@@ -140,7 +159,7 @@ class KunenaSession extends JObject
 	{
 		if (!self::$_instance)
 		{
-			$my              = Factory::getUser();
+			$my              = Factory::getApplication()->getIdentity();
 			self::$_instance = new KunenaSession($userid !== null ? $userid : $my->id);
 
 			if ($update)
@@ -153,9 +172,9 @@ class KunenaSession extends JObject
 	}
 
 	/**
+	 * @return void
 	 * @since Kunena
 	 * @throws Exception
-	 * @return void
 	 */
 	public function updateSessionInfo()
 	{
@@ -211,11 +230,16 @@ class KunenaSession extends JObject
 		$table->exists($this->_exists);
 
 		// Check and store the object.
-		if (!$table->check())
+		try
 		{
-			$this->setError($table->getError());
-
-			return false;
+			if (!$table->check())
+			{
+				return false;
+			}
+		}
+		catch (Exception $e)
+		{
+			throw new RuntimeException($e->getMessage());
 		}
 
 		// Are we creating a new user
@@ -233,7 +257,7 @@ class KunenaSession extends JObject
 			$this->setError($table->getError());
 		}
 
-		// Set the id for the \Joomla\CMS\User\User object in case we created a new user.
+		// Set the id for the Joomla\CMS\User\User object in case we created a new user.
 		if (empty($this->userid))
 		{
 			$this->userid = $table->get('userid');
@@ -244,6 +268,7 @@ class KunenaSession extends JObject
 
 		if ($userCategory->allreadtime != $this->allreadtime)
 		{
+			$userCategory->params = '';
 			$userCategory->allreadtime = $this->allreadtime;
 			$userCategory->save();
 		}
@@ -296,8 +321,8 @@ class KunenaSession extends JObject
 	}
 
 	/**
-	 * @since Kunena
 	 * @return void
+	 * @since Kunena
 	 */
 	public function markAllCategoriesRead()
 	{

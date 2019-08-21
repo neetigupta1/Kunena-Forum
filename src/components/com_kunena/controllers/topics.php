@@ -5,7 +5,7 @@
  * @package         Kunena.Site
  * @subpackage      Controllers
  *
- * @copyright       Copyright (C) 2008 - 2018 Kunena Team. All rights reserved.
+ * @copyright       Copyright (C) 2008 - 2019 Kunena Team. All rights reserved.
  * @license         https://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link            https://www.kunena.org
  **/
@@ -54,7 +54,7 @@ class KunenaControllerTopics extends KunenaController
 
 		$message = '';
 		$ids     = array_keys($this->app->input->get('topics', array(), 'post', 'array'));
-		ArrayHelper::toInteger($ids);
+		$ids     = ArrayHelper::toInteger($ids);
 
 		$topics = KunenaForumTopicHelper::getTopics($ids);
 
@@ -97,7 +97,11 @@ class KunenaControllerTopics extends KunenaController
 				}
 
 				$db    = Factory::getDBO();
-				$query = "DELETE a.* FROM #__kunena_attachments AS a LEFT JOIN #__kunena_messages AS m ON a.mesid=m.id WHERE m.id IS NULL";
+				$query = $db->getQuery(true)
+					->delete('a.*')
+					->from($db->quoteName('#__kunena_attachments', 'a'))
+					->leftJoin($db->quoteName('#__kunena_messages', 'm') . ' ON a.mesid=m.id')
+					->where('m.id IS NULL');
 				$db->setQuery($query);
 
 				try
@@ -152,7 +156,7 @@ class KunenaControllerTopics extends KunenaController
 		}
 
 		$ids = array_keys($this->app->input->get('topics', array(), 'post', 'array'));
-		ArrayHelper::toInteger($ids);
+		$ids = ArrayHelper::toInteger($ids);
 
 		$message = '';
 		$topics  = KunenaForumTopicHelper::getTopics($ids);
@@ -216,7 +220,7 @@ class KunenaControllerTopics extends KunenaController
 		}
 
 		$ids = array_keys($this->app->input->get('topics', array(), 'post', 'array'));
-		ArrayHelper::toInteger($ids);
+		$ids = ArrayHelper::toInteger($ids);
 
 		$message = '';
 		$topics  = KunenaForumTopicHelper::getTopics($ids);
@@ -280,7 +284,7 @@ class KunenaControllerTopics extends KunenaController
 		}
 
 		$ids = array_keys($this->app->input->get('topics', array(), 'post', 'array'));
-		ArrayHelper::toInteger($ids);
+		$ids = ArrayHelper::toInteger($ids);
 
 		$message = '';
 		$topics  = KunenaForumTopicHelper::getTopics($ids);
@@ -345,12 +349,12 @@ class KunenaControllerTopics extends KunenaController
 		}
 
 		$topics_ids = array_keys($this->app->input->get('topics', array(), 'post', 'array'));
-		ArrayHelper::toInteger($topics_ids);
+		$topics_ids = ArrayHelper::toInteger($topics_ids);
 
 		$topics = KunenaForumTopicHelper::getTopics($topics_ids);
 
 		$messages_ids = array_keys($this->app->input->get('posts', array(), 'post', 'array'));
-		ArrayHelper::toInteger($messages_ids);
+		$messages_ids = ArrayHelper::toInteger($messages_ids);
 
 		$messages = KunenaForumMessageHelper::getMessages($messages_ids);
 
@@ -450,7 +454,7 @@ class KunenaControllerTopics extends KunenaController
 		}
 
 		$ids = array_keys($this->app->input->get('topics', array(), 'post', 'array'));
-		ArrayHelper::toInteger($ids);
+		$ids = ArrayHelper::toInteger($ids);
 
 		$topics = KunenaForumTopicHelper::getTopics($ids);
 
@@ -496,18 +500,20 @@ class KunenaControllerTopics extends KunenaController
 			return;
 		}
 
+		$userid = $this->app->input->getInt('userid');
+
 		$ids = array_keys($this->app->input->get('topics', array(), 'post', 'array'));
-		ArrayHelper::toInteger($ids);
+		$ids = ArrayHelper::toInteger($ids);
 
 		$topics = KunenaForumTopicHelper::getTopics($ids);
 
-		if (KunenaForumTopicHelper::subscribe(array_keys($topics), 0))
+		if (KunenaForumTopicHelper::subscribe(array_keys($topics), 0, $userid))
 		{
 			$this->app->enqueueMessage(Text::_('COM_KUNENA_USER_UNSUBSCRIBE_YES'));
 		}
 		else
 		{
-			$this->app->enqueueMessage(Text::_('COM_KUNENA_POST_NO_UNSUBSCRIBED_TOPIC'));
+			$this->app->enqueueMessage(Text::_('COM_KUNENA_POST_NO_UNSUBSCRIBED_TOPIC'), 'notice');
 		}
 
 		$this->setRedirectBack();
@@ -529,7 +535,7 @@ class KunenaControllerTopics extends KunenaController
 		}
 
 		$ids = array_keys($this->app->input->get('posts', array(), 'post', 'array'));
-		ArrayHelper::toInteger($ids);
+		$ids = ArrayHelper::toInteger($ids);
 
 		$success  = 0;
 		$messages = KunenaForumMessageHelper::getMessages($ids);
@@ -577,8 +583,8 @@ class KunenaControllerTopics extends KunenaController
 			return;
 		}
 
-		$ids = array_keys($this->app->input->get('posts', array(), 'post', 'array'));
-		ArrayHelper::toInteger($ids);
+		$ids = array_keys($this->app->input->get('topics', array(), 'post', 'array'));
+		$ids = ArrayHelper::toInteger($ids);
 
 		$success  = 0;
 		$messages = KunenaForumMessageHelper::getMessages($ids);
@@ -626,7 +632,7 @@ class KunenaControllerTopics extends KunenaController
 		}
 
 		$ids = array_keys($this->app->input->get('posts', array(), 'post', 'array'));
-		ArrayHelper::toInteger($ids);
+		$ids = ArrayHelper::toInteger($ids);
 
 		$success  = 0;
 		$messages = KunenaForumMessageHelper::getMessages($ids);
@@ -674,7 +680,7 @@ class KunenaControllerTopics extends KunenaController
 		}
 
 		$ids = array_keys($this->app->input->get('posts', array(), 'post', 'array'));
-		ArrayHelper::toInteger($ids);
+		$ids = ArrayHelper::toInteger($ids);
 
 		$success  = 0;
 		$messages = KunenaForumMessageHelper::getMessages($ids);

@@ -5,14 +5,12 @@
  * @package         Kunena.Site
  * @subpackage      Controllers
  *
- * @copyright       Copyright (C) 2008 - 2018 Kunena Team. All rights reserved.
+ * @copyright       Copyright (C) 2008 - 2019 Kunena Team. All rights reserved.
  * @license         https://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link            https://www.kunena.org
  **/
 defined('_JEXEC') or die();
 
-use Joomla\CMS\Factory;
-use Joomla\CMS\Language\Text;
 use Joomla\CMS\Uri\Uri;
 
 /**
@@ -23,10 +21,10 @@ use Joomla\CMS\Uri\Uri;
 class KunenaControllerMisc extends KunenaController
 {
 	/**
-	 * @param   array $config config
+	 * @param   array  $config  config
 	 *
-	 * @throws Exception
 	 * @since Kunena
+	 * @throws Exception
 	 */
 	public function __construct($config = array())
 	{
@@ -34,14 +32,14 @@ class KunenaControllerMisc extends KunenaController
 	}
 
 	/**
-	 * @throws Exception
 	 * @since Kunena
+	 * @throws Exception
 	 * @throws null
 	 */
 	public function template()
 	{
-		$name = Factory::getApplication()->input->getString('name',
-			Factory::getApplication()->input->cookie->getString('kunena_template', '')
+		$name = $this->input->getString('name',
+			$this->input->cookie->getString('kunena_template', '')
 		);
 
 		if ($name)
@@ -50,7 +48,7 @@ class KunenaControllerMisc extends KunenaController
 
 			if (!is_readable(KPATH_SITE . "/template/{$name}/config/template.xml"))
 			{
-				$name = 'crypsis';
+				$name = 'aurelia';
 			}
 
 			setcookie('kunena_template', $name, 0, Uri::root(true) . '/', '', true);

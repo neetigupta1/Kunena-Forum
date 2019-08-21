@@ -4,13 +4,14 @@
  * @package       Kunena.Framework
  * @subpackage    Forum.Topic.User.Read
  *
- * @copyright     Copyright (C) 2008 - 2018 Kunena Team. All rights reserved.
+ * @copyright     Copyright (C) 2008 - 2019 Kunena Team. All rights reserved.
  * @license       https://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link          https://www.kunena.org
  **/
 defined('_JEXEC') or die();
 
 use Joomla\CMS\Factory;
+use Joomla\CMS\Object\CMSObject;
 
 /**
  * Class KunenaForumTopicUserRead
@@ -22,7 +23,7 @@ use Joomla\CMS\Factory;
  * @property int $time
  * @since Kunena
  */
-class KunenaForumTopicUserRead extends JObject
+class KunenaForumTopicUserRead extends CMSObject
 {
 	/**
 	 * @var boolean
@@ -68,7 +69,7 @@ class KunenaForumTopicUserRead extends JObject
 	 * @param   string $type   Topics table name to be used.
 	 * @param   string $prefix Topics table prefix to be used.
 	 *
-	 * @return boolean|\Joomla\CMS\Table\Table|KunenaTable|TableKunenaUserRead
+	 * @return boolean|Joomla\CMS\Table\Table|KunenaTable|TableKunenaUserRead
 	 * @since Kunena
 	 */
 	public function getTable($type = 'KunenaUserRead', $prefix = 'Table')
@@ -83,7 +84,7 @@ class KunenaForumTopicUserRead extends JObject
 		}
 
 		// Create the user table object
-		return \Joomla\CMS\Table\Table::getInstance($tabletype ['name'], $tabletype ['prefix']);
+		return Joomla\CMS\Table\Table::getInstance($tabletype ['name'], $tabletype ['prefix']);
 	}
 
 	/**
@@ -230,6 +231,7 @@ class KunenaForumTopicUserRead extends JObject
 	 *
 	 * @return boolean    True on success.
 	 * @since Kunena
+	 * @throws Exception
 	 */
 	public function delete()
 	{

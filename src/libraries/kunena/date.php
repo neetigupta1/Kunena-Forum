@@ -3,7 +3,7 @@
  * Kunena Component
  * @package        Kunena.Framework
  *
- * @copyright      Copyright (C) 2008 - 2018 Kunena Team. All rights reserved.
+ * @copyright      Copyright (C) 2008 - 2019 Kunena Team. All rights reserved.
  * @license        https://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link           https://www.kunena.org
  **/
@@ -18,7 +18,7 @@ jimport('joomla.utilities.date');
  * Class KunenaDate
  * @since Kunena
  */
-class KunenaDate extends \Joomla\CMS\Date\Date
+class KunenaDate extends Joomla\CMS\Date\Date
 {
 	/**
 	 * @param   string $date date
@@ -50,8 +50,8 @@ class KunenaDate extends \Joomla\CMS\Date\Date
 	 * @param   string $class  class
 	 *
 	 * @return string
-	 * @throws Exception
 	 * @since Kunena
+	 * @throws Exception
 	 */
 	public function toSpan($mode = 'datetime_today', $title = 'ago', $offset = false, $class = '')
 	{
@@ -63,8 +63,8 @@ class KunenaDate extends \Joomla\CMS\Date\Date
 	 * @param   bool   $offset offset
 	 *
 	 * @return string
-	 * @throws Exception
 	 * @since Kunena
+	 * @throws Exception
 	 */
 	public function toKunena($mode = 'datetime_today', $offset = false)
 	{
@@ -107,7 +107,7 @@ class KunenaDate extends \Joomla\CMS\Date\Date
 		if (!$offset)
 		{
 			$app = Factory::getApplication();
-			$my  = Factory::getUser();
+			$my  = Factory::getApplication()->getIdentity();
 
 			if ($my->id)
 			{
@@ -175,12 +175,12 @@ class KunenaDate extends \Joomla\CMS\Date\Date
 			'w' => array(Text::_('COM_KUNENA_DATE_WEEK'), Text::_('COM_KUNENA_DATE_WEEKS')),
 			'd' => array(Text::_('COM_KUNENA_DATE_DAY'), Text::_('COM_KUNENA_DATE_DAYS')),
 			'h' => array(Text::_('COM_KUNENA_DATE_HOUR'), Text::_('COM_KUNENA_DATE_HOURS')),
-			'i' => array(Text::_('COM_KUNENA_DATE_MINUTE'), Text::_('COM_KUNENA_DATE_MINUTES')),);
+			'i' => array(Text::_('COM_KUNENA_DATE_MINUTE'), Text::_('COM_KUNENA_DATE_MINUTES')), );
 
 		// We only want to output two chunks of time here, eg: "x years, xx months" or "x days, xx hours"
 		$tick   = 0;
 		$output = '';
-		$diff   = $this->diff(new \Joomla\CMS\Date\Date);
+		$diff   = $this->diff(new Joomla\CMS\Date\Date);
 
 		foreach ($diff as $name => $count)
 		{

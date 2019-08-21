@@ -4,7 +4,7 @@
  * @package         Kunena.Site
  * @subpackage      Controller.Application
  *
- * @copyright       Copyright (C) 2008 - 2018 Kunena Team. All rights reserved.
+ * @copyright       Copyright (C) 2008 - 2019 Kunena Team. All rights reserved.
  * @license         https://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link            https://www.kunena.org
  **/
@@ -109,7 +109,7 @@ class ComponentKunenaControllerApplicationAjaxDefaultDisplay extends KunenaContr
 
 		$this->me       = KunenaUserHelper::getMyself();
 		$this->config   = KunenaConfig::getInstance();
-		$this->document = Factory::getDocument();
+		$this->document = Factory::getApplication()->getDocument();
 		$this->template = KunenaFactory::getTemplate();
 		$this->template->initialize();
 	}
@@ -163,6 +163,6 @@ class ComponentKunenaControllerApplicationAjaxDefaultDisplay extends KunenaContr
 		echo json_encode($response);
 
 		// It's much faster and safer to exit now than let Joomla to send the response.
-		Factory::getApplication()->close();
+		$this->app->close();
 	}
 }

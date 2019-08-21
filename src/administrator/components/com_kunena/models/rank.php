@@ -5,7 +5,7 @@
  * @package         Kunena.Administrator
  * @subpackage      Models
  *
- * @copyright       Copyright (C) 2008 - 2018 Kunena Team. All rights reserved.
+ * @copyright       Copyright (C) 2008 - 2019 Kunena Team. All rights reserved.
  * @license         https://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link            https://www.kunena.org
  **/
@@ -13,6 +13,7 @@ defined('_JEXEC') or die();
 
 use Joomla\CMS\HTML\HTMLHelper;
 use Joomla\CMS\Factory;
+use Joomla\CMS\Filesystem\Folder;
 
 jimport('joomla.application.component.modellist');
 
@@ -26,8 +27,8 @@ class KunenaAdminModelRank extends KunenaModel
 	/**
 	 * @return mixed
 	 *
-	 * @throws Exception
 	 * @since Kunena
+	 * @throws Exception
 	 */
 	public function getRankspaths()
 	{
@@ -36,7 +37,7 @@ class KunenaAdminModelRank extends KunenaModel
 		$selected = $this->getRank();
 
 		$rankpath = $template->getRankPath();
-		$files1   = (array) KunenaFolder::Files(JPATH_SITE . '/' . $rankpath, false, false, false, array('index.php', 'index.html'));
+		$files1   = (array) Folder::Files(JPATH_SITE . '/' . $rankpath, false, false, false, array('index.php', 'index.html'));
 		$files1   = (array) array_flip($files1);
 
 		foreach ($files1 as $key => &$path)
@@ -45,7 +46,7 @@ class KunenaAdminModelRank extends KunenaModel
 		}
 
 		$rankpath = 'media/kunena/ranks/';
-		$files2   = (array) KunenaFolder::Files(JPATH_SITE . '/' . $rankpath, false, false, false, array('index.php', 'index.html'));
+		$files2   = (array) Folder::Files(JPATH_SITE . '/' . $rankpath, false, false, false, array('index.php', 'index.html'));
 		$files2   = (array) array_flip($files2);
 
 		foreach ($files2 as $key => &$path)
@@ -63,16 +64,16 @@ class KunenaAdminModelRank extends KunenaModel
 			$rank_list[] = HTMLHelper::_('select.option', $path, $file);
 		}
 
-		$list = HTMLHelper::_('select.genericlist', $rank_list, 'rank_image', 'class="inputbox" onchange="update_rank(this.options[selectedIndex].value);" onmousemove="update_rank(this.options[selectedIndex].value);"', 'value', 'text', isset($selected->rank_image) ? $rank_images[$selected->rank_image] : '');
+		$list = HTMLHelper::_('select.genericlist', $rank_list, 'rank_image', 'class="inputbox form-control" onchange="update_rank(this.options[selectedIndex].value);" onmousemove="update_rank(this.options[selectedIndex].value);"', 'value', 'text', isset($selected->rank_image) ? $rank_images[$selected->rank_image] : '');
 
 		return $list;
 	}
 
 	/**
-	 * @return mixed|null
+	 * @return mixed|void
 	 *
-	 * @throws Exception
 	 * @since Kunena
+	 * @throws Exception
 	 */
 	public function getRank()
 	{
@@ -82,7 +83,11 @@ class KunenaAdminModelRank extends KunenaModel
 
 		if ($id)
 		{
-			$db->setQuery("SELECT * FROM #__kunena_ranks WHERE rank_id={$db->quote($id)}");
+			$query = $db->getQuery(true);
+			$query->select('*')
+				->from($db->quoteName('#__kunena_ranks'))
+				->where('rank_id=' . $db->quote($id));
+			$db->setQuery($query);
 
 			try
 			{

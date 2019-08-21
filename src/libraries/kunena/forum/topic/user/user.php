@@ -4,13 +4,14 @@
  * @package       Kunena.Framework
  * @subpackage    Forum.Topic.User
  *
- * @copyright     Copyright (C) 2008 - 2018 Kunena Team. All rights reserved.
+ * @copyright     Copyright (C) 2008 - 2019 Kunena Team. All rights reserved.
  * @license       https://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link          https://www.kunena.org
  **/
 defined('_JEXEC') or die();
 
 use Joomla\CMS\Factory;
+use Joomla\CMS\Object\CMSObject;
 
 /**
  * Class KunenaForumTopicUser
@@ -26,7 +27,7 @@ use Joomla\CMS\Factory;
  * @property string $params
  * @since Kunena
  */
-class KunenaForumTopicUser extends JObject
+class KunenaForumTopicUser extends CMSObject
 {
 	/**
 	 * @var boolean
@@ -72,7 +73,7 @@ class KunenaForumTopicUser extends JObject
 	 * @param   string $type   Topics table name to be used.
 	 * @param   string $prefix Topics table prefix to be used.
 	 *
-	 * @return boolean|\Joomla\CMS\Table\Table|KunenaTable|TableKunenaUserTopics
+	 * @return boolean|Joomla\CMS\Table\Table|KunenaTable|TableKunenaUserTopics
 	 * @since Kunena
 	 */
 	public function getTable($type = 'KunenaUserTopics', $prefix = 'Table')
@@ -87,7 +88,7 @@ class KunenaForumTopicUser extends JObject
 		}
 
 		// Create the user table object
-		return \Joomla\CMS\Table\Table::getInstance($tabletype ['name'], $tabletype ['prefix']);
+		return Joomla\CMS\Table\Table::getInstance($tabletype ['name'], $tabletype ['prefix']);
 	}
 
 	/**
@@ -163,6 +164,7 @@ class KunenaForumTopicUser extends JObject
 	 *
 	 * @return boolean    True on success.
 	 * @since Kunena
+	 * @throws Exception
 	 */
 	public function delete()
 	{
@@ -208,7 +210,7 @@ class KunenaForumTopicUser extends JObject
 	 * @param   KunenaForumMessage $message   message
 	 * @param   int                $postDelta postdelta
 	 *
-	 * @return boolean|null
+	 * @return boolean|void
 	 * @throws Exception
 	 * @since Kunena
 	 */
@@ -231,9 +233,14 @@ class KunenaForumTopicUser extends JObject
 		}
 		elseif (!$message || (($message->hold || $message->thread != $this->topic_id) && $this->last_post_id == $message->id))
 		{
-			$query = "SELECT COUNT(*) AS posts, MAX(id) AS last_post_id, MAX(IF(parent=0,1,0)) AS owner
-					FROM #__kunena_messages WHERE userid={$this->_db->quote($this->user_id)} AND thread={$this->_db->quote($this->topic_id)} AND moved=0 AND hold=0
-					GROUP BY userid, thread";
+			$query = $this->_db->getQuery(true);
+			$query->select('COUNT(*) AS posts, MAX(id) AS last_post_id, MAX(IF(parent=0,1,0)) AS owner')
+				->from($this->_db->quoteName('#__kunena_messages'))
+				->where($this->_db->quoteName('userid') . ' = ' . $this->_db->quote($this->user_id))
+				->andWhere($this->_db->quoteName('thread') . ' = ' . $this->_db->quote($this->topic_id))
+				->andWhere($this->_db->quoteName('moved') . ' = 0')
+				->andWhere($this->_db->quoteName('hold') . ' = 0')
+				->group('userid, thread');
 			$this->_db->setQuery($query, 0, 1);
 
 			try

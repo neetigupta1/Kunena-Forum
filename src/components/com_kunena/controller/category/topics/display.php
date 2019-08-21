@@ -4,7 +4,7 @@
  * @package         Kunena.Site
  * @subpackage      Controller.Category
  *
- * @copyright       Copyright (C) 2008 - 2018 Kunena Team. All rights reserved.
+ * @copyright       Copyright (C) 2008 - 2019 Kunena Team. All rights reserved.
  * @license         https://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link            https://www.kunena.org
  **/
@@ -13,6 +13,8 @@ defined('_JEXEC') or die;
 use Joomla\CMS\Factory;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\Uri\Uri;
+use Joomla\CMS\MVC\Controller\BaseController;
+use Joomla\CMS\Filesystem\File;
 
 /**
  * Class ComponentKunenaControllerApplicationMiscDisplay
@@ -89,7 +91,7 @@ class ComponentKunenaControllerCategoryTopicsDisplay extends KunenaControllerDis
 		if (!$Itemid && $format != 'feed' && KunenaConfig::getInstance()->sef_redirect)
 		{
 			$itemid     = KunenaRoute::fixMissingItemID();
-			$controller = JControllerLegacy::getInstance("kunena");
+			$controller = BaseController::getInstance("kunena");
 			$controller->setRedirect(KunenaRoute::_("index.php?option=com_kunena&view=category&catid={$catid}&Itemid={$itemid}", false));
 			$controller->redirect();
 		}
@@ -185,7 +187,7 @@ class ComponentKunenaControllerCategoryTopicsDisplay extends KunenaControllerDis
 
 		$this->pagination = new KunenaPagination($this->total, $limitstart, $limit);
 		$this->pagination->setDisplayedPages(5);
-		$doc  = Factory::getDocument();
+		$doc  = Factory::getApplication()->getDocument();
 		$page = $this->pagination->pagesCurrent;
 
 		if ($page > 1)
@@ -227,13 +229,12 @@ class ComponentKunenaControllerCategoryTopicsDisplay extends KunenaControllerDis
 		$categoryText = $this->category->name;
 		$categorydesc = $this->category->description;
 
-		$app       = Factory::getApplication();
-		$menu_item = $app->getMenu()->getActive();
-		$doc       = Factory::getDocument();
+		$menu_item = $this->app->getMenu()->getActive();
+		$doc       = Factory::getApplication()->getDocument();
 		$config    = Factory::getConfig();
 		$robots    = $config->get('robots');
 
-		if (JFile::exists(JPATH_SITE . '/' . KunenaConfig::getInstance()->emailheader))
+		if (File::exists(JPATH_SITE . '/' . KunenaConfig::getInstance()->emailheader))
 		{
 			$image = Uri::base() . KunenaConfig::getInstance()->emailheader;
 			$this->setMetaData('og:image', $image, 'property');
@@ -314,7 +315,17 @@ class ComponentKunenaControllerCategoryTopicsDisplay extends KunenaControllerDis
 			}
 			else
 			{
-				$keywords = Text::_('COM_KUNENA_CATEGORIES') . ", {$parentText}, {$categoryText}, {$this->config->board_title}";
+				if (!empty($parentText))
+				{
+					$parentText = ',' . $parentText;
+				}
+
+				if (!empty($categoryText))
+				{
+					$categoryText = ',' . $categoryText;
+				}
+
+				$keywords = Text::_('COM_KUNENA_CATEGORIES') . $parentText . $categoryText . ',' . $this->config->board_title;
 				$this->setKeywords($keywords);
 			}
 

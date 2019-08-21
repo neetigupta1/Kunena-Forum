@@ -4,7 +4,7 @@
  * @package         Kunena.Site
  * @subpackage      Controller.Application
  *
- * @copyright       Copyright (C) 2008 - 2018 Kunena Team. All rights reserved.
+ * @copyright       Copyright (C) 2008 - 2019 Kunena Team. All rights reserved.
  * @license         https://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link            https://www.kunena.org
  **/
@@ -209,6 +209,6 @@ class ComponentKunenaControllerApplicationAttachmentDefaultDisplay extends Kunen
 
 		$this->me       = KunenaUserHelper::getMyself();
 		$this->config   = KunenaConfig::getInstance();
-		$this->document = Factory::getDocument();
+		$this->document = Factory::getApplication()->getDocument();
 	}
 }

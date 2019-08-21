@@ -4,21 +4,18 @@
  * @package         Kunena.Framework
  * @subpackage      File
  *
- * @copyright       Copyright (C) 2008 - 2018 Kunena Team. All rights reserved.
+ * @copyright       Copyright (C) 2008 - 2019 Kunena Team. All rights reserved.
  * @license         https://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link            https://www.kunena.org
  **/
 defined('_JEXEC') or die;
 
-jimport('joomla.filesystem.file');
-
 /**
  * Class KunenaFile
  *
- * @see   JFile
  * @since Kunena
  */
-class KunenaFile extends JFile
+class KunenaFile
 {
 	/**
 	 * @param   string $file file
@@ -28,16 +25,8 @@ class KunenaFile extends JFile
 	 */
 	public static function getMime($file)
 	{
-		// Check if file is an image.
-		$info = @getimagesize($file);
-
-		if ($info)
+		if (function_exists('finfo_open'))
 		{
-			$type = $info['mime'];
-		}
-		elseif (function_exists('finfo_open'))
-		{
-			// We have fileinfo.
 			$finfo = finfo_open(FILEINFO_MIME_TYPE);
 			$type  = finfo_file($finfo, $file);
 			finfo_close($finfo);

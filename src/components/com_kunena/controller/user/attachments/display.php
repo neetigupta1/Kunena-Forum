@@ -4,7 +4,7 @@
  * @package         Kunena.Site
  * @subpackage      Controller.User
  *
- * @copyright       Copyright (C) 2008 - 2018 Kunena Team. All rights reserved.
+ * @copyright       Copyright (C) 2008 - 2019 Kunena Team. All rights reserved.
  * @license         https://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link            https://www.kunena.org
  **/
@@ -39,7 +39,7 @@ class ComponentKunenaControllerUserAttachmentsDisplay extends KunenaControllerDi
 	public $profile;
 
 	/**
-	 * @var array|KunenaAttachments[]
+	 * @var array
 	 * @since Kunena
 	 */
 	public $attachments;
@@ -76,7 +76,7 @@ class ComponentKunenaControllerUserAttachmentsDisplay extends KunenaControllerDi
 
 		if ($this->embedded)
 		{
-			$this->moreUri = new \Joomla\CMS\Uri\Uri('index.php?option=com_kunena&view=user&layout=attachments&userid=' . $userid . '&limit=' . $limit);
+			$this->moreUri = new Joomla\CMS\Uri\Uri('index.php?option=com_kunena&view=user&layout=attachments&userid=' . $userid . '&limit=' . $limit);
 			$this->moreUri->setVar('Itemid', KunenaRoute::getItemID($this->moreUri));
 		}
 
@@ -134,8 +134,7 @@ class ComponentKunenaControllerUserAttachmentsDisplay extends KunenaControllerDi
 	 */
 	protected function prepareDocument()
 	{
-		$app       = Factory::getApplication();
-		$menu_item = $app->getMenu()->getActive();
+		$menu_item = $this->app->getMenu()->getActive();
 
 		if ($menu_item)
 		{

@@ -5,7 +5,7 @@
  * @package         Kunena.Administrator
  * @subpackage      Controllers
  *
- * @copyright       Copyright (C) 2008 - 2018 Kunena Team. All rights reserved.
+ * @copyright       Copyright (C) 2008 - 2019 Kunena Team. All rights reserved.
  * @license         https://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link            https://www.kunena.org
  **/
@@ -14,6 +14,7 @@ defined('_JEXEC') or die();
 use Joomla\CMS\Factory;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\Log\Log;
+use Joomla\CMS\Router\Route;
 use Joomla\CMS\Session\Session;
 use Joomla\Utilities\ArrayHelper;
 
@@ -33,16 +34,15 @@ class KunenaAdminControllerPlugins extends KunenaController
 	/**
 	 * Construct
 	 *
-	 * @param   array $config config
-	 *
-	 * @throws Exception
+	 * @param   array  $config  config
 	 *
 	 * @since    2.0
+	 * @throws Exception
+	 *
 	 */
 	public function __construct($config = array())
 	{
 		$this->option = 'com_kunena';
-		$this->input  = Factory::getApplication()->input;
 
 		parent::__construct($config);
 		$this->baseurl     = 'administrator/index.php?option=com_kunena&view=plugins';
@@ -72,8 +72,8 @@ class KunenaAdminControllerPlugins extends KunenaController
 	 *
 	 * @return  void
 	 *
-	 * @throws Exception
 	 * @since   12.2
+	 * @throws Exception
 	 */
 	public function publish()
 	{
@@ -97,7 +97,7 @@ class KunenaAdminControllerPlugins extends KunenaController
 			$model = $this->getModel();
 
 			// Make sure the item ids are integers
-			ArrayHelper::toInteger($cid);
+			$cid = ArrayHelper::toInteger($cid);
 
 			// Publish the items.
 			if (!$model->publish($cid, $value))
@@ -132,15 +132,15 @@ class KunenaAdminControllerPlugins extends KunenaController
 
 		$extension    = $this->input->get('extension');
 		$extensionURL = ($extension) ? '&extension=' . $extension : '';
-		$this->setRedirect(JRoute::_('index.php?option=' . $this->option . '&view=' . $this->view_list . $extensionURL, false));
+		$this->setRedirect(Route::_('index.php?option=' . $this->option . '&view=' . $this->view_list . $extensionURL, false));
 	}
 
 	/**
 	 * Getmodel
 	 *
-	 * @param   string $name   name
-	 * @param   string $prefix prefix
-	 * @param   array  $config config
+	 * @param   string  $name    name
+	 * @param   string  $prefix  prefix
+	 * @param   array   $config  config
 	 *
 	 * @return object
 	 *
@@ -161,8 +161,8 @@ class KunenaAdminControllerPlugins extends KunenaController
 	 *
 	 * @return  boolean  True on success
 	 *
-	 * @throws Exception
 	 * @since   12.2
+	 * @throws Exception
 	 */
 	public function reorder()
 	{
@@ -181,7 +181,7 @@ class KunenaAdminControllerPlugins extends KunenaController
 		{
 			// Reorder failed.
 			$message = Text::sprintf('JLIB_APPLICATION_ERROR_REORDER_FAILED', $model->getError());
-			$this->setRedirect(JRoute::_('index.php?option=' . $this->option . '&view=' . $this->view_list, false), $message, 'error');
+			$this->setRedirect(Route::_('index.php?option=' . $this->option . '&view=' . $this->view_list, false), $message, 'error');
 
 			return false;
 		}
@@ -189,7 +189,7 @@ class KunenaAdminControllerPlugins extends KunenaController
 		{
 			// Reorder succeeded.
 			$message = Text::_('JLIB_APPLICATION_SUCCESS_ITEM_REORDERED');
-			$this->setRedirect(JRoute::_('index.php?option=' . $this->option . '&view=' . $this->view_list, false), $message);
+			$this->setRedirect(Route::_('index.php?option=' . $this->option . '&view=' . $this->view_list, false), $message);
 
 			return true;
 		}
@@ -224,7 +224,7 @@ class KunenaAdminControllerPlugins extends KunenaController
 		{
 			// Reorder failed
 			$message = Text::sprintf('JLIB_APPLICATION_ERROR_REORDER_FAILED', $model->getError());
-			$this->setRedirect(JRoute::_('index.php?option=' . $this->option . '&view=' . $this->view_list, false), $message, 'error');
+			$this->setRedirect(Route::_('index.php?option=' . $this->option . '&view=' . $this->view_list, false), $message, 'error');
 
 			return false;
 		}
@@ -232,7 +232,7 @@ class KunenaAdminControllerPlugins extends KunenaController
 		{
 			// Reorder succeeded.
 			$this->setMessage(Text::_('JLIB_APPLICATION_SUCCESS_ORDERING_SAVED'));
-			$this->setRedirect(JRoute::_('index.php?option=' . $this->option . '&view=' . $this->view_list, false));
+			$this->setRedirect(Route::_('index.php?option=' . $this->option . '&view=' . $this->view_list, false));
 
 			return true;
 		}
@@ -243,8 +243,8 @@ class KunenaAdminControllerPlugins extends KunenaController
 	 *
 	 * @return  boolean  True on success
 	 *
-	 * @throws Exception
 	 * @since   12.2
+	 * @throws Exception
 	 */
 	public function checkin()
 	{
@@ -261,7 +261,7 @@ class KunenaAdminControllerPlugins extends KunenaController
 		{
 			// Checkin failed.
 			$message = Text::sprintf('JLIB_APPLICATION_ERROR_CHECKIN_FAILED', $model->getError());
-			$this->setRedirect(JRoute::_('index.php?option=' . $this->option . '&view=' . $this->view_list, false), $message, 'error');
+			$this->setRedirect(Route::_('index.php?option=' . $this->option . '&view=' . $this->view_list, false), $message, 'error');
 
 			return false;
 		}
@@ -272,7 +272,7 @@ class KunenaAdminControllerPlugins extends KunenaController
 
 			// Checkin succeeded.
 			$message = Text::plural($this->text_prefix . '_N_ITEMS_CHECKED_IN', count($ids));
-			$this->setRedirect(JRoute::_('index.php?option=' . $this->option . '&view=' . $this->view_list, false), $message);
+			$this->setRedirect(Route::_('index.php?option=' . $this->option . '&view=' . $this->view_list, false), $message);
 
 			return true;
 		}
@@ -290,6 +290,6 @@ class KunenaAdminControllerPlugins extends KunenaController
 		$editor->initializeHMVC();
 
 		$message = 'Sync done';
-		$this->setRedirect(JRoute::_('index.php?option=' . $this->option . '&view=' . $this->view_list, false), $message);
+		$this->setRedirect(Route::_('index.php?option=' . $this->option . '&view=' . $this->view_list, false), $message);
 	}
 }

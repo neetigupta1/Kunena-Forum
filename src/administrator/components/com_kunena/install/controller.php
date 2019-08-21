@@ -4,7 +4,7 @@
  *
  * @package        Kunena.Installer
  *
- * @copyright      Copyright (C) 2008 - 2018 Kunena Team. All rights reserved.
+ * @copyright      Copyright (C) 2008 - 2019 Kunena Team. All rights reserved.
  * @license        https://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link           https://www.kunena.org
  **/
@@ -13,13 +13,15 @@ defined('_JEXEC') or die();
 use Joomla\CMS\Factory;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\Session\Session;
+use Joomla\CMS\Filesystem\File;
+use Joomla\CMS\Filesystem\Folder;
 
 /**
  * The Kunena Installer Controller
  *
  * @since  1.6
  */
-class KunenaControllerInstall extends \Joomla\CMS\MVC\Controller\BaseController
+class KunenaControllerInstall extends Joomla\CMS\MVC\Controller\BaseController
 {
 	/**
 	 * @var null
@@ -34,7 +36,7 @@ class KunenaControllerInstall extends \Joomla\CMS\MVC\Controller\BaseController
 	protected $steps = null;
 
 	/**
-	 * @var bool|\Joomla\CMS\MVC\Model\BaseDatabaseModel|null
+	 * @var boolean|Joomla\CMS\MVC\Model\BaseDatabaseModel|null
 	 * @since Kunena
 	 */
 	protected $model = null;
@@ -55,13 +57,63 @@ class KunenaControllerInstall extends \Joomla\CMS\MVC\Controller\BaseController
 	}
 
 	/**
-	 * @param   bool $cachable  cachable
-	 * @param   bool $urlparams urlparams
+	 * @param $exception
 	 *
-	 * @return \Joomla\CMS\MVC\Controller\BaseController|void
-	 *
-	 * @throws Exception
+	 * @return boolean
 	 * @since Kunena
+	 */
+	public static function exceptionHandler($exception)
+	{
+		self::error('', 'Uncaught Exception: ' . $exception->getMessage());
+
+		return true;
+	}
+
+	/**
+	 * @param $type
+	 * @param $errstr
+	 *
+	 * @since Kunena
+	 */
+	public static function error($type, $errstr)
+	{
+		$model = Joomla\CMS\MVC\Model\BaseDatabaseModel::getInstance('Install', 'KunenaModel');
+		$model->addStatus($type, false, $errstr);
+		echo json_encode(array('success' => false, 'html' => $errstr));
+	}
+
+	/**
+	 * @param $errno
+	 * @param $errstr
+	 * @param $errfile
+	 * @param $errline
+	 *
+	 * @return boolean
+	 * @since Kunena
+	 */
+	public static function errorHandler($errno, $errstr, $errfile, $errline)
+	{
+		// Self::error('', "Fatal Error: $errstr in $errfile on line $errline");
+		switch ($errno)
+		{
+			case E_ERROR:
+			case E_USER_ERROR:
+				self::error('', "Fatal Error: $errstr in $errfile on line $errline");
+
+				return true;
+		}
+
+		return false;
+	}
+
+	/**
+	 * @param   bool  $cachable   cachable
+	 * @param   bool  $urlparams  urlparams
+	 *
+	 * @return Joomla\CMS\MVC\Controller\BaseController|void
+	 *
+	 * @since Kunena
+	 * @throws Exception
 	 */
 	public function display($cachable = false, $urlparams = false)
 	{
@@ -73,7 +125,7 @@ class KunenaControllerInstall extends \Joomla\CMS\MVC\Controller\BaseController
 			$view->addTemplatePath(__DIR__ . '/tmpl');
 			$view->setModel($this->model, true);
 			$view->setLayout(Factory::getApplication()->input->getWord('layout', 'default'));
-			$view->document = Factory::getDocument();
+			$view->document = Factory::getApplication()->getDocument();
 			$view->display();
 
 			// Display Toolbar. View must have setToolBar method
@@ -85,8 +137,8 @@ class KunenaControllerInstall extends \Joomla\CMS\MVC\Controller\BaseController
 	}
 
 	/**
-	 * @throws Exception
 	 * @since Kunena
+	 * @throws Exception
 	 */
 	public function run()
 	{
@@ -163,7 +215,7 @@ class KunenaControllerInstall extends \Joomla\CMS\MVC\Controller\BaseController
 		$log = ob_get_contents();
 		ob_end_clean();
 
-		Factory::getDocument()->setMimeEncoding('application/json');
+		Factory::getApplication()->getDocument()->setMimeEncoding('application/json');
 		Factory::getApplication()->setHeader('Content-Disposition', 'attachment;filename="kunena-install.json"');
 		Factory::getApplication()->sendHeaders();
 
@@ -187,8 +239,22 @@ class KunenaControllerInstall extends \Joomla\CMS\MVC\Controller\BaseController
 	}
 
 	/**
-	 * @throws Exception
+	 * @return mixed|null
 	 * @since Kunena
+	 */
+	public function runStep()
+	{
+		if (empty($this->steps[$this->step]['step']))
+		{
+			return;
+		}
+
+		return call_user_func(array($this->model, "step" . $this->steps[$this->step]['step']));
+	}
+
+	/**
+	 * @since Kunena
+	 * @throws Exception
 	 */
 	public function uninstall()
 	{
@@ -210,23 +276,23 @@ class KunenaControllerInstall extends \Joomla\CMS\MVC\Controller\BaseController
 			jimport('joomla.filesystem.folder');
 			jimport('joomla.filesystem.file');
 
-			$installer = new \Joomla\CMS\Installer\Installer;
-			$component = \Joomla\CMS\Component\ComponentHelper::getComponent('com_kunena');
+			$installer = new Joomla\CMS\Installer\Installer;
+			$component = Joomla\CMS\Component\ComponentHelper::getComponent('com_kunena');
 			$installer->uninstall('component', $component->id);
 
-			if (JFolder::exists(KPATH_MEDIA))
+			if (Folder::exists(KPATH_MEDIA))
 			{
-				JFolder::delete(KPATH_MEDIA);
+				Folder::delete(KPATH_MEDIA);
 			}
 
-			if (JFolder::exists(JPATH_ROOT . '/plugins/kunena'))
+			if (Folder::exists(JPATH_ROOT . '/plugins/kunena'))
 			{
-				JFolder::delete(JPATH_ROOT . '/plugins/kunena');
+				Folder::delete(JPATH_ROOT . '/plugins/kunena');
 			}
 
-			if (JFile::exists(JPATH_ADMINISTRATOR . '/manifests/packages/pkg_kunena.xml'))
+			if (File::exists(JPATH_ADMINISTRATOR . '/manifests/packages/pkg_kunena.xml'))
 			{
-				JFile::delete(JPATH_ADMINISTRATOR . '/manifests/packages/pkg_kunena.xml');
+				File::delete(JPATH_ADMINISTRATOR . '/manifests/packages/pkg_kunena.xml');
 			}
 
 			$this->setRedirect('index.php?option=com_installer');
@@ -235,69 +301,5 @@ class KunenaControllerInstall extends \Joomla\CMS\MVC\Controller\BaseController
 		{
 			$this->setRedirect('index.php?option=com_kunena&view=install');
 		}
-	}
-
-	/**
-	 * @return mixed|null
-	 * @since Kunena
-	 */
-	public function runStep()
-	{
-		if (empty($this->steps[$this->step]['step']))
-		{
-			return;
-		}
-
-		return call_user_func(array($this->model, "step" . $this->steps[$this->step]['step']));
-	}
-
-	/**
-	 * @param $type
-	 * @param $errstr
-	 *
-	 * @since Kunena
-	 */
-	public static function error($type, $errstr)
-	{
-		$model = \Joomla\CMS\MVC\Model\BaseDatabaseModel::getInstance('Install', 'KunenaModel');
-		$model->addStatus($type, false, $errstr);
-		echo json_encode(array('success' => false, 'html' => $errstr));
-	}
-
-	/**
-	 * @param $exception
-	 *
-	 * @return boolean
-	 * @since Kunena
-	 */
-	public static function exceptionHandler($exception)
-	{
-		self::error('', 'Uncaught Exception: ' . $exception->getMessage());
-
-		return true;
-	}
-
-	/**
-	 * @param $errno
-	 * @param $errstr
-	 * @param $errfile
-	 * @param $errline
-	 *
-	 * @return boolean
-	 * @since Kunena
-	 */
-	public static function errorHandler($errno, $errstr, $errfile, $errline)
-	{
-		// Self::error('', "Fatal Error: $errstr in $errfile on line $errline");
-		switch ($errno)
-		{
-			case E_ERROR:
-			case E_USER_ERROR:
-				self::error('', "Fatal Error: $errstr in $errfile on line $errline");
-
-				return true;
-		}
-
-		return false;
 	}
 }

@@ -4,7 +4,7 @@
  * @package         Kunena.Site
  * @subpackage      Controller.Message
  *
- * @copyright       Copyright (C) 2008 - 2018 Kunena Team. All rights reserved.
+ * @copyright       Copyright (C) 2008 - 2019 Kunena Team. All rights reserved.
  * @license         https://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link            https://www.kunena.org
  **/
@@ -12,6 +12,8 @@ defined('_JEXEC') or die;
 
 use Joomla\CMS\Factory;
 use Joomla\CMS\Session\Session;
+use Joomla\CMS\Object\CMSObject;
+use Joomla\CMS\Plugin\PluginHelper;
 
 /**
  * Class ComponentKunenaControllerCategoryIndexActionsDisplay
@@ -61,7 +63,7 @@ class ComponentKunenaControllerCategoryIndexActionsDisplay extends KunenaControl
 		$layout = "index.php?option=com_kunena&view=topic&layout=%s&catid={$catid}";
 
 		$this->template        = KunenaFactory::getTemplate();
-		$this->categoryButtons = new JObject;
+		$this->categoryButtons = new CMSObject;
 
 		// Is user allowed to post new topic?
 		if ($this->category->isAuthorised('topic.create'))
@@ -98,9 +100,9 @@ class ComponentKunenaControllerCategoryIndexActionsDisplay extends KunenaControl
 			}
 		}
 
-		\Joomla\CMS\Plugin\PluginHelper::importPlugin('kunena');
+		PluginHelper::importPlugin('kunena');
 
-		Factory::getApplication()->triggerEvent('onKunenaGetButtons', array('category.action', $this->categoryButtons, $this));
+		$this->app->triggerEvent('onKunenaGetButtons', array('category.action', $this->categoryButtons, $this));
 	}
 
 	/**

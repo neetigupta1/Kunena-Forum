@@ -4,7 +4,7 @@
  * @package         Kunena.Site
  * @subpackage      Controller.Category
  *
- * @copyright       Copyright (C) 2008 - 2018 Kunena Team. All rights reserved.
+ * @copyright       Copyright (C) 2008 - 2019 Kunena Team. All rights reserved.
  * @license         https://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link            https://www.kunena.org
  **/
@@ -58,12 +58,19 @@ class ComponentKunenaControllerCategorySubscriptionsDisplay extends KunenaContro
 	{
 		parent::before();
 
+		require_once KPATH_SITE . '/models/category.php';
+		$this->model = new KunenaModelCategory(array(), $this->input);
+		$this->model->initialize($this->getOptions(), $this->getOptions()->get('embedded', false));
+		$this->state   = $this->model->getState();
+
 		$me = KunenaUserHelper::getMyself();
 
 		if (!$me->exists())
 		{
 			throw new KunenaExceptionAuthorise(Text::_('COM_KUNENA_NO_ACCESS'), 401);
 		}
+
+		$this->user = KunenaUserHelper::get($this->state->get('user'));
 
 		$limit = $this->input->getInt('limit', 0);
 
@@ -79,7 +86,7 @@ class ComponentKunenaControllerCategorySubscriptionsDisplay extends KunenaContro
 			$limitstart = 0;
 		}
 
-		list($total, $this->categories) = KunenaForumCategoryHelper::getLatestSubscriptions($me->userid);
+		list($total, $this->categories) = KunenaForumCategoryHelper::getLatestSubscriptions($this->state->get('user'));
 
 		$topicIds = array();
 		$userIds  = array();
@@ -116,7 +123,7 @@ class ComponentKunenaControllerCategorySubscriptionsDisplay extends KunenaContro
 
 		$this->actions = $this->getActions();
 
-		$this->pagination = new \Joomla\CMS\Pagination\Pagination($total, $limitstart, $limit);
+		$this->pagination = new Joomla\CMS\Pagination\Pagination($total, $limitstart, $limit);
 
 		$this->headerText = Text::_('COM_KUNENA_CATEGORY_SUBSCRIPTIONS');
 	}
@@ -145,8 +152,7 @@ class ComponentKunenaControllerCategorySubscriptionsDisplay extends KunenaContro
 	 */
 	protected function prepareDocument()
 	{
-		$app       = Factory::getApplication();
-		$menu_item = $app->getMenu()->getActive();
+		$menu_item = $this->app->getMenu()->getActive();
 
 		$config = Factory::getConfig();
 		$robots = $config->get('robots');

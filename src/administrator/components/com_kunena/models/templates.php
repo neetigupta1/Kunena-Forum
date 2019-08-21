@@ -5,7 +5,7 @@
  * @package         Kunena.Administrator
  * @subpackage      Models
  *
- * @copyright       Copyright (C) 2008 - 2018 Kunena Team. All rights reserved.
+ * @copyright       Copyright (C) 2008 - 2019 Kunena Team. All rights reserved.
  * @license         https://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link            https://www.kunena.org
  **/
@@ -21,13 +21,13 @@ jimport('joomla.html.pagination');
  *
  * @since  2.0
  */
-class KunenaAdminModelTemplates extends \Joomla\CMS\MVC\Model\AdminModel
+class KunenaAdminModelTemplates extends Joomla\CMS\MVC\Model\AdminModel
 {
 	/**
-	 * @param   array $config config
+	 * @param   array  $config  config
 	 *
-	 * @throws Exception
 	 * @since Kunena
+	 * @throws Exception
 	 */
 	public function __construct($config = array())
 	{
@@ -38,14 +38,14 @@ class KunenaAdminModelTemplates extends \Joomla\CMS\MVC\Model\AdminModel
 	}
 
 	/**
-	 * @see   \Joomla\CMS\MVC\Model\FormModel::getForm()
+	 * @see   Joomla\CMS\MVC\Model\FormModel::getForm()
 	 *
-	 * @param   array $data     data
-	 * @param   bool  $loadData loadData
+	 * @param   array  $data      data
+	 * @param   bool   $loadData  loadData
 	 *
 	 * @return boolean|mixed
-	 * @throws Exception
 	 * @since Kunena
+	 * @throws Exception
 	 */
 	public function getForm($data = array(), $loadData = true)
 	{
@@ -67,8 +67,8 @@ class KunenaAdminModelTemplates extends \Joomla\CMS\MVC\Model\AdminModel
 	/**
 	 * @return array
 	 *
-	 * @throws Exception
 	 * @since Kunena
+	 * @throws Exception
 	 */
 	public function getTemplates()
 	{
@@ -110,7 +110,7 @@ class KunenaAdminModelTemplates extends \Joomla\CMS\MVC\Model\AdminModel
 	}
 
 	/**
-	 * @return boolean|null|string
+	 * @return boolean|void|string
 	 * @since Kunena
 	 */
 	public function getFileLessParsed()
@@ -130,7 +130,7 @@ class KunenaAdminModelTemplates extends \Joomla\CMS\MVC\Model\AdminModel
 	}
 
 	/**
-	 * @return boolean|null|string
+	 * @return boolean|void|string
 	 * @since Kunena
 	 */
 	public function getFileContentParsed()
@@ -157,7 +157,7 @@ class KunenaAdminModelTemplates extends \Joomla\CMS\MVC\Model\AdminModel
 	public function getFTPcredentials()
 	{
 		// Set FTP credentials, if given
-		$ftp = \Joomla\CMS\Client\ClientHelper::setCredentialsFromRequest('ftp');
+		$ftp = Joomla\CMS\Client\ClientHelper::setCredentialsFromRequest('ftp');
 
 		return $ftp;
 	}
@@ -180,7 +180,7 @@ class KunenaAdminModelTemplates extends \Joomla\CMS\MVC\Model\AdminModel
 
 		// Create the pagination object.
 		$limit = (int) $this->getState('list.limit') - (int) $this->getState('list.links');
-		$page  = new \Joomla\CMS\Pagination\Pagination($this->getTotal(), $this->getStart(), $limit);
+		$page  = new Joomla\CMS\Pagination\Pagination($this->getTotal(), $this->getStart(), $limit);
 
 		// Add the object to the internal cache.
 		$this->cache[$store] = $page;
@@ -189,7 +189,7 @@ class KunenaAdminModelTemplates extends \Joomla\CMS\MVC\Model\AdminModel
 	}
 
 	/**
-	 * @param   string $id id
+	 * @param   string  $id  id
 	 *
 	 * @return string
 	 * @since Kunena
@@ -206,7 +206,7 @@ class KunenaAdminModelTemplates extends \Joomla\CMS\MVC\Model\AdminModel
 	}
 
 	/**
-	 * @return object
+	 * @return integer
 	 * @since Kunena
 	 */
 	public function getTotal()
@@ -215,7 +215,7 @@ class KunenaAdminModelTemplates extends \Joomla\CMS\MVC\Model\AdminModel
 	}
 
 	/**
-	 * @return object
+	 * @return integer
 	 * @since Kunena
 	 */
 	public function getStart()
@@ -246,6 +246,11 @@ class KunenaAdminModelTemplates extends \Joomla\CMS\MVC\Model\AdminModel
 		$value = $this->getUserStateFromRequest($this->context . '.edit', 'name', '', 'cmd');
 		$this->setState('template', $value);
 
+		if (empty($this->app->getUserState('kunena.edit.templatename')))
+		{
+			$this->app->setUserState('kunena.edit.templatename', $value);
+		}
+
 		// List state information
 		$value = $this->getUserStateFromRequest($this->context . '.list.limit', 'limit', $this->app->get('list_limit'), 'int');
 		$this->setState('list.limit', $value);
@@ -258,16 +263,16 @@ class KunenaAdminModelTemplates extends \Joomla\CMS\MVC\Model\AdminModel
 	}
 
 	/**
-	 * @param          $key
-	 * @param          $request
-	 * @param   null   $default   default
-	 * @param   string $type      type
-	 * @param   bool   $resetPage resetPage
+	 * @param           $key
+	 * @param           $request
+	 * @param   null    $default    default
+	 * @param   string  $type       type
+	 * @param   bool    $resetPage  resetPage
 	 *
 	 * @return mixed|null
 	 *
-	 * @throws Exception
 	 * @since Kunena
+	 * @throws Exception
 	 */
 	public function getUserStateFromRequest($key, $request, $default = null, $type = 'none', $resetPage = true)
 	{
@@ -296,9 +301,9 @@ class KunenaAdminModelTemplates extends \Joomla\CMS\MVC\Model\AdminModel
 	}
 
 	/**
-	 * @see   \Joomla\CMS\MVC\Model\FormModel::loadFormData()
-	 * @since Kunena
+	 * @see   Joomla\CMS\MVC\Model\FormModel::loadFormData()
 	 * @return array|mixed
+	 * @since Kunena
 	 * @throws Exception
 	 */
 	protected function loadFormData()

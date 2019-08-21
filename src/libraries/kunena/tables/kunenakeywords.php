@@ -4,7 +4,7 @@
  * @package       Kunena.Framework
  * @subpackage    Tables
  *
- * @copyright     Copyright (C) 2008 - 2018 Kunena Team. All rights reserved.
+ * @copyright     Copyright (C) 2008 - 2019 Kunena Team. All rights reserved.
  * @license       https://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link          https://www.kunena.org
  **/
@@ -65,9 +65,9 @@ class TableKunenaKeywords extends KunenaTable
 
 		if (!$this->name)
 		{
-			$this->setError(Text::_('COM_KUNENA_LIB_TABLE_KEYWORDS_ERROR_EMPTY'));
+			throw new UnexpectedValueException;
 		}
 
-		return $this->getError() == '';
+		return true;
 	}
 }

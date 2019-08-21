@@ -4,7 +4,7 @@
  * @package         Kunena.Site
  * @subpackage      Controller.Topic
  *
- * @copyright       Copyright (C) 2008 - 2018 Kunena Team. All rights reserved.
+ * @copyright       Copyright (C) 2008 - 2019 Kunena Team. All rights reserved.
  * @license         https://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link            https://www.kunena.org
  **/
@@ -13,6 +13,9 @@ defined('_JEXEC') or die;
 use Joomla\CMS\Factory;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\Uri\Uri;
+use Joomla\CMS\Router\Route;
+use Joomla\CMS\MVC\Controller\BaseController;
+use Joomla\CMS\Filesystem\File;
 
 /**
  * Class ComponentKunenaControllerTopicListRecentDisplay
@@ -66,7 +69,7 @@ class ComponentKunenaControllerTopicListRecentDisplay extends ComponentKunenaCon
 				$itemidfix = KunenaRoute::fixMissingItemID();
 			}
 
-			$controller = JControllerLegacy::getInstance("kunena");
+			$controller = BaseController::getInstance("kunena");
 			$controller->setRedirect(KunenaRoute::_("index.php?option=com_kunena&view=topics&mode={$this->state->get('list.mode')}&Itemid={$itemidfix}", false));
 			$controller->redirect();
 		}
@@ -80,11 +83,11 @@ class ComponentKunenaControllerTopicListRecentDisplay extends ComponentKunenaCon
 		}
 		elseif ($time == 0)
 		{
-			$time = new \Joomla\CMS\Date\Date(KunenaFactory::getSession()->lasttime);
+			$time = new Joomla\CMS\Date\Date(KunenaFactory::getSession()->lasttime);
 		}
 		else
 		{
-			$time = new \Joomla\CMS\Date\Date(Factory::getDate()->toUnix() - ($time * 3600));
+			$time = new Joomla\CMS\Date\Date(Factory::getDate()->toUnix() - ($time * 3600));
 		}
 
 		if ($holding)
@@ -156,7 +159,7 @@ class ComponentKunenaControllerTopicListRecentDisplay extends ComponentKunenaCon
 
 		$this->pagination = new KunenaPagination($finder->count(), $start, $limit);
 
-		$doc = Factory::getDocument();
+		$doc = Factory::getApplication()->getDocument();
 
 		$page = $this->pagination->pagesCurrent;
 
@@ -227,7 +230,7 @@ class ComponentKunenaControllerTopicListRecentDisplay extends ComponentKunenaCon
 					$this->headerText = Text::_('COM_KUNENA_VIEW_TOPICS_DEFAULT_MODE_TOPICS');
 				}
 
-				$canonicalUrl = 'index.php?option=com_kunena&view=topics&mode=topics';
+				$canonicalUrl = KunenaRoute::_('index.php?option=com_kunena&view=topics&mode=topics');
 				break;
 			case 'sticky' :
 				if (!empty($title) && $pageheading)
@@ -239,7 +242,7 @@ class ComponentKunenaControllerTopicListRecentDisplay extends ComponentKunenaCon
 					$this->headerText = Text::_('COM_KUNENA_VIEW_TOPICS_DEFAULT_MODE_STICKY');
 				}
 
-				$canonicalUrl = 'index.php?option=com_kunena&view=topics&mode=sticky';
+				$canonicalUrl = KunenaRoute::_('index.php?option=com_kunena&view=topics&mode=sticky');
 				break;
 			case 'locked' :
 				if (!empty($title) && $pageheading)
@@ -251,7 +254,7 @@ class ComponentKunenaControllerTopicListRecentDisplay extends ComponentKunenaCon
 					$this->headerText = Text::_('COM_KUNENA_VIEW_TOPICS_DEFAULT_MODE_LOCKED');
 				}
 
-				$canonicalUrl = 'index.php?option=com_kunena&view=topics&mode=locked';
+				$canonicalUrl = KunenaRoute::_('index.php?option=com_kunena&view=topics&mode=locked');
 				break;
 			case 'noreplies' :
 				if (!empty($title) && $pageheading)
@@ -263,7 +266,7 @@ class ComponentKunenaControllerTopicListRecentDisplay extends ComponentKunenaCon
 					$this->headerText = Text::_('COM_KUNENA_VIEW_TOPICS_DEFAULT_MODE_NOREPLIES');
 				}
 
-				$canonicalUrl = 'index.php?option=com_kunena&view=topics&mode=noreplies';
+				$canonicalUrl = KunenaRoute::_('index.php?option=com_kunena&view=topics&mode=noreplies');
 				break;
 			case 'unapproved' :
 				if (!empty($title) && $pageheading)
@@ -275,7 +278,7 @@ class ComponentKunenaControllerTopicListRecentDisplay extends ComponentKunenaCon
 					$this->headerText = Text::_('COM_KUNENA_VIEW_TOPICS_DEFAULT_MODE_UNAPPROVED');
 				}
 
-				$canonicalUrl = 'index.php?option=com_kunena&view=topics&mode=unapproved';
+				$canonicalUrl = KunenaRoute::_('index.php?option=com_kunena&view=topics&mode=unapproved');
 				break;
 			case 'deleted' :
 				if (!empty($title) && $pageheading)
@@ -287,7 +290,7 @@ class ComponentKunenaControllerTopicListRecentDisplay extends ComponentKunenaCon
 					$this->headerText = Text::_('COM_KUNENA_VIEW_TOPICS_DEFAULT_MODE_DELETED');
 				}
 
-				$canonicalUrl = 'index.php?option=com_kunena&view=topics&mode=deleted';
+				$canonicalUrl = KunenaRoute::_('index.php?option=com_kunena&view=topics&mode=deleted');
 				break;
 			case 'replies' :
 			default :
@@ -300,11 +303,11 @@ class ComponentKunenaControllerTopicListRecentDisplay extends ComponentKunenaCon
 					$this->headerText = Text::_('COM_KUNENA_VIEW_TOPICS_DEFAULT_MODE_TOPICS');
 				}
 
-				$canonicalUrl = 'index.php?option=com_kunena&view=topics&mode=replies';
+				$canonicalUrl = KunenaRoute::_('index.php?option=com_kunena&view=topics&mode=replies');
 				break;
 		}
 
-		$doc = Factory::getDocument();
+		$doc = Factory::getApplication()->getDocument();
 
 		foreach ($doc->_links as $key => $value)
 		{
@@ -340,12 +343,11 @@ class ComponentKunenaControllerTopicListRecentDisplay extends ComponentKunenaCon
 
 		$config    = Factory::getConfig();
 		$robots    = $config->get('robots');
-		$app       = Factory::getApplication();
-		$menu_item = $app->getMenu()->getActive();
+		$menu_item = $this->app->getMenu()->getActive();
 
 		$this->setMetaData('og:url', Uri::current(), 'property');
 
-		if (JFile::exists(JPATH_SITE . '/' . KunenaConfig::getInstance()->emailheader))
+		if (File::exists(JPATH_SITE . '/' . KunenaConfig::getInstance()->emailheader))
 		{
 			$image = Uri::base() . KunenaConfig::getInstance()->emailheader;
 			$this->setMetaData('og:image', $image, 'property');

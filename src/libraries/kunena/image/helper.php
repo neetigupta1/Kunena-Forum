@@ -4,11 +4,14 @@
  * @package         Kunena.Framework
  * @subpackage      Image
  *
- * @copyright       Copyright (C) 2008 - 2018 Kunena Team. All rights reserved.
+ * @copyright       Copyright (C) 2008 - 2019 Kunena Team. All rights reserved.
  * @license         https://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link            https://www.kunena.org
  **/
 defined('_JEXEC') or die;
+
+use Joomla\CMS\Filesystem\File;
+use Joomla\CMS\Filesystem\Folder;
 
 /**
  * Helper class for image manipulation.
@@ -36,7 +39,7 @@ class KunenaImageHelper
 		try
 		{
 			// Create target directory if it does not exist.
-			if (!KunenaFolder::exists($folder) && !KunenaFolder::create($folder))
+			if (!Folder::exists($folder) && !Folder::create($folder))
 			{
 				return false;
 			}
@@ -85,7 +88,7 @@ class KunenaImageHelper
 				unset($image);
 
 				// Move new file to its proper location.
-				if (!KunenaFile::move($temp, "{$folder}/{$filename}"))
+				if (!File::move($temp, "{$folder}/{$filename}"))
 				{
 					unlink($temp);
 
@@ -95,7 +98,7 @@ class KunenaImageHelper
 			else
 			{
 				// Copy original file to the new location.
-				if (!KunenaFile::copy($file, "{$folder}/{$filename}"))
+				if (!File::copy($file, "{$folder}/{$filename}"))
 				{
 					return false;
 				}

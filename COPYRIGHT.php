@@ -3,11 +3,11 @@
  * Kunena Component
  * @package Kunena.Site
  *
- * @copyright (C) 2008 - 2018 Kunena Team. All rights reserved.
+ * @copyright (C) 2008 - 2019 Kunena Team. All rights reserved.
  * @license https://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link https://www.kunena.org
  **/
-die ();
+die();
 ?>
 <!--
 

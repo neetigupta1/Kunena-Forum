@@ -5,7 +5,7 @@
  * @package         Kunena.Site
  * @subpackage      Controllers
  *
- * @copyright       Copyright (C) 2008 - 2018 Kunena Team. All rights reserved.
+ * @copyright       Copyright (C) 2008 - 2019 Kunena Team. All rights reserved.
  * @license         https://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link            https://www.kunena.org
  **/
@@ -195,7 +195,7 @@ class KunenaControllerAnnouncement extends KunenaController
 		}
 
 		$cid = $this->app->input->get('cid', (array) $this->app->input->getInt('id'), 'post', 'array');
-		ArrayHelper::toInteger($cid);
+		$cid = ArrayHelper::toInteger($cid);
 
 		foreach ($cid as $id)
 		{
@@ -251,19 +251,35 @@ class KunenaControllerAnnouncement extends KunenaController
 			return;
 		}
 
-		$now                    = new \Joomla\CMS\Date\Date;
+		$now                    = new Joomla\CMS\Date\Date;
 		$fields                 = array();
-		$fields['title']        = $this->app->input->getString('title', '', 'post', 'raw');
-		$fields['description']  = $this->app->input->getString('description', '', 'post', 'raw');
-		$fields['sdescription'] = $this->app->input->getString('sdescription', '', 'post', 'raw');
-		$fields['created']      = $this->app->input->getString('created', $now->toSql());
-		$fields['publish_up']   = $this->app->input->getString('publish_up', $now->toSql());
-		$fields['publish_down'] = $this->app->input->getString('publish_down', $now->toSql());
+		$fields['title']        = $this->app->input->getString('title', '');
+		$fields['description']  = $this->app->input->getString('description', '');
+		$fields['sdescription'] = $this->app->input->getString('sdescription', '');
+		$fields['created']      = $this->app->input->getString('created');
+		$fields['publish_up']   = $this->app->input->getString('publish_up');
+		$fields['publish_down'] = $this->app->input->getString('publish_down');
 		$fields['published']    = $this->app->input->getInt('published', 1);
 		$fields['showdate']     = $this->app->input->getInt('showdate', 1);
 
 		$id           = $this->app->input->getInt('id');
 		$announcement = KunenaForumAnnouncementHelper::get($id);
+
+		if ($fields['created'] == null)
+		{
+			$fields['created'] = $now->toSql();
+		}
+
+		if ($fields['publish_up'] == null)
+		{
+			$fields['publish_up'] = $now->toSql();
+		}
+
+		if ($fields['publish_down'] == null)
+		{
+			$fields['publish_down'] = '1000-01-01 00:00:00';
+		}
+
 		$announcement->bind($fields);
 
 		try

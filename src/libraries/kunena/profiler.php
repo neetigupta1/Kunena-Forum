@@ -3,7 +3,7 @@
  * Kunena Component
  * @package        Kunena.Framework
  *
- * @copyright      Copyright (C) 2008 - 2018 Kunena Team. All rights reserved.
+ * @copyright      Copyright (C) 2008 - 2019 Kunena Team. All rights reserved.
  * @license        https://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link           https://www.kunena.org
  **/
@@ -15,23 +15,23 @@ jimport('joomla.error.profiler');
  * Class KunenaProfiler
  * @since Kunena
  */
-class KunenaProfiler extends \Joomla\CMS\Profiler\Profiler
+class KunenaProfiler extends Joomla\CMS\Profiler\Profiler
 {
 	/**
-	 * @var array
 	 * @since Kunena
+	 * @var array
 	 */
 	protected static $_instances = array();
 
 	/**
-	 * @var array
 	 * @since Kunena
+	 * @var array
 	 */
 	protected $_kstart = array();
 
 	/**
-	 * @var array|KunenaProfilerItem[]
 	 * @since Kunena
+	 * @var array|KunenaProfilerItem[]
 	 */
 	protected $_heap = array();
 
@@ -57,8 +57,8 @@ class KunenaProfiler extends \Joomla\CMS\Profiler\Profiler
 	/**
 	 * @param   string $name name
 	 *
-	 * @since Kunena
 	 * @return void
+	 * @since Kunena
 	 */
 	public function start($name)
 	{
@@ -90,9 +90,13 @@ class KunenaProfiler extends \Joomla\CMS\Profiler\Profiler
 	{
 		$item = array_pop($this->_heap);
 
-		if (!$item || $item->name != $name)
+		if (!$item)
 		{
 			trigger_error(__CLASS__ . '::' . __FUNCTION__ . "('$name') is missing start()");
+		}
+		elseif ($item->name != $name)
+		{
+			$item->start(microtime(true));
 		}
 
 		$delta = $item->stop(microtime(true));
@@ -145,14 +149,14 @@ class KunenaProfiler extends \Joomla\CMS\Profiler\Profiler
 class KunenaProfilerItem
 {
 	/**
-	 * @var array|KunenaProfilerItem[]
 	 * @since Kunena
+	 * @var array|KunenaProfilerItem[]
 	 */
 	protected static $_instances = array();
 
 	/**
-	 * @var array
 	 * @since Kunena
+	 * @var array
 	 */
 	public $start = array();
 
@@ -224,8 +228,8 @@ class KunenaProfilerItem
 	/**
 	 * @param   boolean $starttime start time
 	 *
-	 * @since Kunena
 	 * @return mixed
+	 * @since Kunena
 	 */
 	public function start($starttime)
 	{
@@ -257,10 +261,10 @@ class KunenaProfilerItem
 	}
 
 	/**
-	 * @param   void $delta delta
+	 * @param   float $delta delta
 	 *
-	 * @since Kunena
 	 * @return void
+	 * @since Kunena
 	 */
 	public function external($delta)
 	{

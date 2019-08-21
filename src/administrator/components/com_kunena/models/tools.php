@@ -5,7 +5,7 @@
  * @package         Kunena.Administrator
  * @subpackage      Models
  *
- * @copyright       Copyright (C) 2008 - 2018 Kunena Team. All rights reserved.
+ * @copyright       Copyright (C) 2008 - 2019 Kunena Team. All rights reserved.
  * @license         https://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link            https://www.kunena.org
  **/
@@ -15,6 +15,7 @@ use Joomla\CMS\HTML\HTMLHelper;
 use Joomla\CMS\Factory;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\Uri\Uri;
+use Joomla\CMS\Filesystem\Folder;
 
 jimport('joomla.application.component.model');
 require_once __DIR__ . '/cpanel.php';
@@ -185,7 +186,7 @@ class KunenaAdminModelTools extends KunenaAdminModelCpanel
 		$cat_params['unpublished'] = 1;
 		$cat_params['action']      = 'admin';
 
-		$forum = HTMLHelper::_('kunenaforum.categorylist', 'prune_forum[]', 0, null, $cat_params, 'class="inputbox" multiple="multiple"', 'value', 'text');
+		$forum = HTMLHelper::_('kunenaforum.categorylist', 'prune_forum[]', 0, null, $cat_params, 'class="inputbox form-control" multiple="multiple"', 'value', 'text');
 
 		return $forum;
 	}
@@ -201,7 +202,7 @@ class KunenaAdminModelTools extends KunenaAdminModelCpanel
 		$trashdelete [] = HTMLHelper::_('select.option', '0', Text::_('COM_KUNENA_TRASH_USERMESSAGES'));
 		$trashdelete [] = HTMLHelper::_('select.option', '1', Text::_('COM_KUNENA_DELETE_PERMANENTLY'));
 
-		return HTMLHelper::_('select.genericlist', $trashdelete, 'trashdelete', 'class="inputbox" size="1"', 'value', 'text', 0);
+		return HTMLHelper::_('select.genericlist', $trashdelete, 'trashdelete', 'class="inputbox form-control" size="1"', 'value', 'text', 0);
 	}
 
 	/**
@@ -221,7 +222,7 @@ class KunenaAdminModelTools extends KunenaAdminModelCpanel
 		$contoloptions [] = HTMLHelper::_('select.option', 'deleted', Text::_('COM_KUNENA_A_PRUNE_DELETED'));
 		$contoloptions [] = HTMLHelper::_('select.option', 'shadow', Text::_('COM_KUNENA_A_PRUNE_SHADOW'));
 
-		return HTMLHelper::_('select.genericlist', $contoloptions, 'controloptions', 'class="inputbox" size="1"', 'value', 'text', 'normal');
+		return HTMLHelper::_('select.genericlist', $contoloptions, 'controloptions', 'class="inputbox form-control" size="1"', 'value', 'text', 'normal');
 	}
 
 	/**
@@ -235,17 +236,17 @@ class KunenaAdminModelTools extends KunenaAdminModelCpanel
 		$optionsticky [] = HTMLHelper::_('select.option', '0', Text::_('COM_KUNENA_A_NO'));
 		$optionsticky [] = HTMLHelper::_('select.option', '1', Text::_('COM_KUNENA_A_YES'));
 
-		return HTMLHelper::_('select.genericlist', $optionsticky, 'keepsticky', 'class="inputbox" size="1"', 'value', 'text', 1);
+		return HTMLHelper::_('select.genericlist', $optionsticky, 'keepsticky', 'class="inputbox form-control" size="1"', 'value', 'text', 1);
 	}
 
 	/**
 	 * Method to generate the report configuration with anonymous data
 	 *
+	 * @return string
 	 * @since 5.0
 	 *
-	 * @return string
-	 * @throws Exception
 	 * @since Kunena
+	 * @throws Exception
 	 */
 	public function getSystemReportAnonymous()
 	{
@@ -268,11 +269,11 @@ class KunenaAdminModelTools extends KunenaAdminModelCpanel
 	/**
 	 * Initialize data to generate configuration report
 	 *
+	 * @return void
 	 * @since 5.0
 	 *
-	 * @return void
-	 * @throws Exception
 	 * @since Kunena
+	 * @throws Exception
 	 */
 	protected function getReportData()
 	{
@@ -327,7 +328,7 @@ class KunenaAdminModelTools extends KunenaAdminModelCpanel
 		}
 		else
 		{
-			$this->mbstring = '[u]mbstring:[/u] [color=#FF0000]Not installed[/color]';
+			$this->mbstring = '[u]mbstring:[/u] ❌ [color=#FF0000]Not installed[/color]';
 		}
 
 		if (extension_loaded('gd'))
@@ -337,7 +338,7 @@ class KunenaAdminModelTools extends KunenaAdminModelCpanel
 		}
 		else
 		{
-			$this->gd_support = '[u]GD:[/u] [color=#FF0000]Not installed[/color]';
+			$this->gd_support = '[u]GD:[/u] ❌ [color=#FF0000]Not installed[/color]';
 		}
 
 		$this->maxExecTime       = ini_get('max_execution_time');
@@ -460,20 +461,44 @@ class KunenaAdminModelTools extends KunenaAdminModelCpanel
 	}
 
 	/**
+	 * Method to put readable correctly the kunena template params
+	 *
+	 * @return    string
+	 * @since 5.1.1
+	 */
+	protected function getKunenaTemplateParams($params)
+	{
+		$template_params = json_decode($params);
+
+		$ktemplate_params = '[table]';
+
+		foreach ($template_params as $param => $value)
+		{
+			$ktemplate_params .= '[tr][td][b]' . $param . '[/b][/td][td]' . $value . '[/td][/tr]';
+		}
+
+		$ktemplate_params .= '[table]';
+
+		return $ktemplate_params;
+	}
+
+	/**
 	 * Method to get the default joomla template.
 	 *
-	 * @return boolean|stdClass
+	 * @return boolean|stdClass|void
 	 *
-	 * @throws Exception
 	 * @since    1.6
+	 * @throws Exception
 	 */
 	protected function _getJoomlaTemplate()
 	{
 		$db = Factory::getDBO();
 
 		// Get Joomla! frontend assigned template
-		$query = "SELECT template FROM #__template_styles WHERE client_id=0 AND home=1";
-
+		$query = $db->getQuery(true);
+		$query->select('template')
+			->from($db->quoteName('#__template_styles'))
+			->where('client_id=0 AND home=1');
 		$db->setQuery($query);
 
 		try
@@ -566,10 +591,10 @@ class KunenaAdminModelTools extends KunenaAdminModelCpanel
 	/**
 	 * Method to check the tables collation.
 	 *
-	 * @return    string
+	 * @return    string|void
 	 *
-	 * @throws Exception
 	 * @since    1.6
+	 * @throws Exception
 	 */
 	protected function _getTablesCollation()
 	{
@@ -608,7 +633,7 @@ class KunenaAdminModelTools extends KunenaAdminModelCpanel
 						{
 							if (!empty($row->Collation) && !preg_match('`utf8`', $row->Collation))
 							{
-								$collation .= $table . ' [color=#FF0000]have wrong collation of type ' . $row->Collation . ' [/color] on field ' . $row->Field . '  ';
+								$collation .= $table . ' ❌ [color=#FF0000]have wrong collation of type ' . $row->Collation . ' [/color] on field ' . $row->Field . '  ';
 							}
 						}
 					}
@@ -618,7 +643,7 @@ class KunenaAdminModelTools extends KunenaAdminModelCpanel
 						{
 							if (!empty($row->Collation) && !preg_match('`utf8`', $row->Collation))
 							{
-								$collation .= $table . ' [color=#FF0000]have wrong collation of type ' . $row->Collation . ' [/color] on field ' . $row->Field . '  ';
+								$collation .= $table . ' ❌ [color=#FF0000]have wrong collation of type ' . $row->Collation . ' [/color] on field ' . $row->Field . '  ';
 							}
 						}
 					}
@@ -628,7 +653,7 @@ class KunenaAdminModelTools extends KunenaAdminModelCpanel
 
 		if (empty($collation))
 		{
-			$collation = 'The collation of your table fields are correct';
+			$collation = '✔ The collation of your table fields are correct';
 		}
 
 		return $collation;
@@ -679,7 +704,7 @@ class KunenaAdminModelTools extends KunenaAdminModelCpanel
 	 */
 	protected function _getJoomlaLanguagesInstalled()
 	{
-		$languages  = \Joomla\CMS\Language\LanguageHelper::getKnownLanguages();
+		$languages  = Joomla\CMS\Language\LanguageHelper::getKnownLanguages();
 		$table_lang = '[table]';
 		$table_lang .= '[tr][th]Joomla! languages installed:[/th][/tr]';
 
@@ -696,8 +721,8 @@ class KunenaAdminModelTools extends KunenaAdminModelCpanel
 	/**
 	 * Return extension version string if installed.
 	 *
-	 * @param   string $extension extension
-	 * @param   string $name      name
+	 * @param   string  $extension  extension
+	 * @param   string  $name       name
 	 *
 	 * @return    string
 	 *
@@ -727,7 +752,7 @@ class KunenaAdminModelTools extends KunenaAdminModelCpanel
 	/**
 	 * Tries to find the extension manifest file and returns version
 	 *
-	 * @param   $path $path    Path to extension directory
+	 * @param   $path  $path    Path to extension directory
 	 *
 	 * @return  string  Version number
 	 * @since Kunena
@@ -742,14 +767,14 @@ class KunenaAdminModelTools extends KunenaAdminModelCpanel
 		elseif (is_dir($path))
 		{
 			// Get an array of all the XML files from the directory
-			$xmlfiles = KunenaFolder::files($path, '\.xml$', 1, true);
+			$xmlfiles = Folder::files($path, '\.xml$', 1, true);
 		}
 
 		$version = null;
 
 		if (!empty($xmlfiles))
 		{
-			$installer = \Joomla\CMS\Installer\Installer::getInstance();
+			$installer = Joomla\CMS\Installer\Installer::getInstance();
 
 			foreach ($xmlfiles as $file)
 			{
@@ -780,11 +805,11 @@ class KunenaAdminModelTools extends KunenaAdminModelCpanel
 
 		foreach ($plugins_list as $name => $desc)
 		{
-			$plugin = \Joomla\CMS\Plugin\PluginHelper::getPlugin('kunena', $name);
+			$plugin = Joomla\CMS\Plugin\PluginHelper::getPlugin('kunena', $name);
 
 			if ($plugin)
 			{
-				$pluginParams = new \Joomla\Registry\Registry($plugin->params);
+				$pluginParams = new Joomla\Registry\Registry($plugin->params);
 				$params       = $pluginParams->toArray();
 
 				if (!empty($params))
@@ -816,8 +841,8 @@ class KunenaAdminModelTools extends KunenaAdminModelCpanel
 	 * Method to generate all the report configuration.
 	 *
 	 * @return    string
-	 * @throws Exception
 	 * @since    1.6
+	 * @throws Exception
 	 */
 	public function getSystemReport()
 	{
@@ -836,27 +861,5 @@ class KunenaAdminModelTools extends KunenaAdminModelCpanel
 	    | [u]Kunena detailed configuration:[/u] [spoiler] ' . $this->kconfigsettings . '[/spoiler]| [u]Kunena integration settings:[/u][spoiler] ' . implode(' ', $this->integration_settings) . '[/spoiler]| [u]Joomla! detailed language files installed:[/u][spoiler] ' . $this->joomlalanguages . '[/spoiler][/quote]' . $this->thirdpartytext . ' ' . $this->seftext . ' ' . $this->plgtext . ' ' . $this->modtext;
 
 		return $report;
-	}
-
-	/**
-	 * Method to put readable correctly the kunena template params
-	 *
-	 * @return    string
-	 * @since 5.1.1
-	 */
-	protected function getKunenaTemplateParams($params)
-	{
-		$template_params = json_decode($params);
-
-		$ktemplate_params = '[table]';
-
-		foreach ($template_params as $param => $value)
-		{
-			$ktemplate_params .= '[tr][td][b]' . $param . '[/b][/td][td]' . $value . '[/td][/tr]';
-		}
-
-		$ktemplate_params .= '[table]';
-
-		return $ktemplate_params;
 	}
 }

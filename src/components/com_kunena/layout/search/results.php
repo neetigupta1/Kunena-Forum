@@ -5,7 +5,7 @@
  * @package         Kunena.Site
  * @subpackage      Layout.Search
  *
- * @copyright       Copyright (C) 2008 - 2018 Kunena Team. All rights reserved.
+ * @copyright       Copyright (C) 2008 - 2019 Kunena Team. All rights reserved.
  * @license         https://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link            https://www.kunena.org
  **/
@@ -31,12 +31,12 @@ class KunenaLayoutSearchResults extends KunenaLayout
 	public function displayRows()
 	{
 		// Run events
-		$params = new \Joomla\Registry\Registry;
+		$params = new Joomla\Registry\Registry;
 		$params->set('ksource', 'kunena');
 		$params->set('kunena_view', 'search');
 		$params->set('kunena_layout', 'default');
 
-		\Joomla\CMS\Plugin\PluginHelper::importPlugin('kunena');
+		Joomla\CMS\Plugin\PluginHelper::importPlugin('kunena');
 		Factory::getApplication()->triggerEvent('onKunenaPrepare', array('kunena.messages', &$this->results, &$params, 0));
 
 		foreach ($this->results as $this->message)

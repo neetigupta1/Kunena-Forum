@@ -2,10 +2,10 @@
 /**
  * Kunena Component
  *
- * @package         Kunena.Template.Crypsis
+ * @package         Kunena.Template.Aurelia
  * @subpackage      Layout.Email
  *
- * @copyright   (C) 2008 - 2018 Kunena Team. All rights reserved.
+ * @copyright   (C) 2008 - 2019 Kunena Team. All rights reserved.
  * @license         https://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link            https://www.kunena.org
  **/
@@ -17,7 +17,7 @@ use Joomla\CMS\Uri\Uri;
 $config            = KunenaConfig::getInstance();
 $author            = $this->message->getAuthor();
 $subject           = $this->message->subject ? $this->message->subject : $this->message->getTopic()->subject;
-$this->messageLink = Uri::getInstance()->toString(array('scheme', 'host', 'port')) . $this->message->getUrl(null, false);
+$this->messageLink = Uri::getInstance()->toString(array('scheme', 'host', 'port')) . $this->message->getUrl(null, false) . $config->utm_source ? '?utm_source=' . $config->board_title . '&utm_medium=Email&utm_campaign=Subscription' : '';
 
 $msg1 = $this->message->parent ? Text::_('COM_KUNENA_POST_EMAIL_NOTIFICATION1') : Text::_('COM_KUNENA_POST_EMAIL_NOTIFICATION1_CAT');
 $msg2 = $this->message->parent ? Text::_('COM_KUNENA_POST_EMAIL_NOTIFICATION2') : Text::_('COM_KUNENA_POST_EMAIL_NOTIFICATION2_CAT');
@@ -167,7 +167,7 @@ if (!$config->plain_email) :
 								<p><?php echo Text::_('COM_KUNENA_CATEGORY') . " : " . $this->message->getCategory()->name; ?></p>
 								<p><?php echo Text::_('COM_KUNENA_VIEW_POSTED') . " : " . $author->getName('???', false); ?></p>
 
-								<p>URL :
+								<p><?php echo Text::_('COM_KUNENA_EMAIL_URL'); ?>
 									<a href="<?php echo $this->messageLink; ?>"><b><?php echo $this->messageLink; ?></b></a>
 								</p>
 							</div>
@@ -249,7 +249,9 @@ if (!$config->plain_email) :
 {$msg1} {$config->board_title}
 
 {$this->text('COM_KUNENA_MESSAGE_SUBJECT')} : {$subject}
+
 {$this->text('COM_KUNENA_CATEGORY')} : {$this->message->getCategory()->name}
+
 {$this->text('COM_KUNENA_VIEW_POSTED')} : {$author->getName('???', false)}
 
 URL: {$this->messageLink}

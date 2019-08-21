@@ -1,18 +1,48 @@
 <?php
 /**
  * Kunena Component
+ *
  * @package         Kunena.Installer
  * @subpackage      Template
  *
- * @copyright       Copyright (C) 2008 - 2018 Kunena Team. All rights reserved.
+ * @copyright       Copyright (C) 2008 - 2019 Kunena Team. All rights reserved.
  * @license         https://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link            https://www.kunena.org
  **/
 defined('_JEXEC') or die();
 
+use Joomla\CMS\Factory;
+use Joomla\CMS\HTML\HTMLHelper;
 use Joomla\CMS\Language\Text;
+use Joomla\CMS\Router\Route;
 use Joomla\CMS\Session\Session;
 
+HTMLHelper::_('bootstrap.framework');
+HTMLHelper::_('jquery.framework');
+
+$document = Factory::getApplication()->getDocument();
+$document->addScriptDeclaration(
+	'
+	jQuery(document).ready(function ($) {
+	jQuery(\'#kunena-toggle\')
+        .click(function (e) {
+          jQuery(\'#kunena-container\')
+            .toggleClass(\'hidden\');
+          e.preventDefault();
+        });
+      jQuery(\'#kunena-component\')
+        .click(function (e) {
+          window.location.href = "' . Route::_('index.php?option=com_kunena', false) . '";
+          e.preventDefault();
+        });
+      jQuery(\'#kunena-installer\')
+        .click(function (e) {
+          window.location.href = \'#Close\';
+          e.preventDefault();
+        });
+      window.kunenainstall();
+	});
+');
 ?>
 <div id="kunena" style="max-width:530px;">
 	<div id="kunena-install">
@@ -26,12 +56,12 @@ use Joomla\CMS\Session\Session;
 	</div>
 	<div>
 		<button id="kunena-toggle" class="btn"
-				style="float: left;"><?php echo Text::_('COM_KUNENA_INSTALL_DETAILS'); ?></button>
+		        style="float: left;"><?php echo Text::_('COM_KUNENA_INSTALL_DETAILS'); ?></button>
 		<div class="pull-right">
 			<button id="kunena-component" class="btn kunena-close"
-					disabled="disabled"><?php echo Text::_('COM_KUNENA_INSTALL_TO_KUNENA'); ?></button>
+			        disabled="disabled"><?php echo Text::_('COM_KUNENA_INSTALL_TO_KUNENA'); ?></button>
 			<button id="kunena-installer" class="btn kunena-close" disabled="disabled" data-dismiss="modal"
-					aria-hidden="true"><?php echo Text::_('COM_KUNENA_INSTALL_CLOSE'); ?></button>
+			        aria-hidden="true"><?php echo Text::_('COM_KUNENA_INSTALL_CLOSE'); ?></button>
 		</div>
 		<div id="kunena-container" class="hidden">
 			<p class="clr clearfix"></p>
@@ -44,7 +74,8 @@ use Joomla\CMS\Session\Session;
 </div>
 <script>
 	window.kunenaAddItems = function (log) {
-		jQuery('#kunena-details').html(log);
+		jQuery('#kunena-details')
+			.html(log);
 	};
 	window.kunenainstall = function () {
 		var kunenaInstall = jQuery('#kunena-install');
@@ -55,13 +86,14 @@ use Joomla\CMS\Session\Session;
 			type: 'POST',
 			dataType: 'json',
 			timeout: '180000', // 3 minutes
-			url: '<?php echo JRoute::_('index.php?option=com_kunena&view=install&task=run', false)?>',
+			url: '<?php echo Route::_('index.php?option=com_kunena&view=install&task=run', false)?>',
 			data: '<?php echo Session::getFormToken(); ?>=1',
 			cache: false,
 			error: function (xhr, ajaxOptions, thrownError) {
 				kunenaInstall.html('<h2><?php echo Text::_('COM_KUNENA_INSTALL_ERROR_MESSAGE', true); ?></h2><div><?php echo Text::_('COM_KUNENA_INSTALL_ERROR_DETAILS', true); ?></div><div>' + xhr.responseText + '</div>');
 				kunenaProgress.addClass('bar-danger');
-				jQuery('#kunena-installer').show();
+				jQuery('#kunena-installer')
+					.show();
 			},
 			beforeSend: function () {
 				kunenaProgress.css('width', '1%');
@@ -82,38 +114,30 @@ use Joomla\CMS\Session\Session;
 						window.kunenainstall();
 						return;
 					} else {
-						kunenaInstall.find('h2').text('<?php echo Text::_('COM_KUNENA_INSTALL_SUCCESS_MESSAGE', true); ?>');
-						kunenaProgress.parent().removeClass('active');
+						kunenaInstall.find('h2')
+							.text('<?php echo Text::_('COM_KUNENA_INSTALL_SUCCESS_MESSAGE', true); ?>');
+						kunenaProgress.parent()
+							.removeClass('active');
 						kunenaProgress.addClass('bar-success');
-						jQuery('#kunena-component').addClass('btn-success');
-						window.location.href = '<?php echo JRoute::_('index.php?option=com_kunena', false)?>';
+						jQuery('#kunena-component')
+							.addClass('btn-outline-success');
+						window.location.href = '<?php echo Route::_('index.php?option=com_kunena', false)?>';
 					}
-					jQuery('.kunena-close').removeAttr('disabled');
+					jQuery('.kunena-close')
+						.removeAttr('disabled');
 				} else {
-					kunenaProgress.parent().removeClass('active');
-					kunenaInstall.find('h2').text('<?php echo Text::_('COM_KUNENA_INSTALL_ERROR_MESSAGE', true); ?>');
+					kunenaProgress.parent()
+						.removeClass('active');
+					kunenaInstall.find('h2')
+						.text('<?php echo Text::_('COM_KUNENA_INSTALL_ERROR_MESSAGE', true); ?>');
 					kunenaDescription.html(json.error);
 					kunenaProgress.addClass('bar-danger');
-					jQuery('#kunena-installer').removeAttr('disabled');
-					jQuery('#kunena-container').removeClass('hidden');
+					jQuery('#kunena-installer')
+						.removeAttr('disabled');
+					jQuery('#kunena-container')
+						.removeClass('hidden');
 				}
 			}
 		});
 	};
-
-	jQuery(document).ready(function () {
-		jQuery('#kunena-toggle').click(function (e) {
-			jQuery('#kunena-container').toggleClass('hidden');
-			e.preventDefault();
-		});
-		jQuery('#kunena-component').click(function (e) {
-			window.location.href = '<?php echo JRoute::_('index.php?option=com_kunena', false)?>';
-			e.preventDefault();
-		});
-		jQuery('#kunena-installer').click(function (e) {
-			window.location.href = '#Close';
-			e.preventDefault();
-		});
-		window.kunenainstall();
-	});
 </script>

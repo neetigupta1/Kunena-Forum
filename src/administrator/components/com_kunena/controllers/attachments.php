@@ -5,7 +5,7 @@
  * @package         Kunena.Administrator
  * @subpackage      Controllers
  *
- * @copyright       Copyright (C) 2008 - 2018 Kunena Team. All rights reserved.
+ * @copyright       Copyright (C) 2008 - 2019 Kunena Team. All rights reserved.
  * @license         https://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link            https://www.kunena.org
  **/
@@ -23,19 +23,19 @@ use Joomla\Utilities\ArrayHelper;
 class KunenaAdminControllerAttachments extends KunenaController
 {
 	/**
+	 * @var null|string
 	 * @since    2.0.0-BETA2
 	 *
-	 * @var null|string
 	 */
 	protected $baseurl = null;
 
 	/**
 	 * Constructor
 	 *
-	 * @param   array $config Construct
+	 * @param   array  $config  Construct
 	 *
-	 * @throws Exception
 	 * @since 2.0
+	 * @throws Exception
 	 */
 	public function __construct($config = array())
 	{
@@ -46,11 +46,11 @@ class KunenaAdminControllerAttachments extends KunenaController
 	/**
 	 * Delete
 	 *
-	 * @throws Exception
-	 *
 	 * @return void
 	 *
 	 * @since 2.0
+	 * @throws Exception
+	 *
 	 * @throws null
 	 */
 	public function delete()
@@ -82,7 +82,7 @@ class KunenaAdminControllerAttachments extends KunenaController
 			$attachments = array($attachment->id, 1);
 			$attach      = array();
 			$removeList  = array_keys(array_diff_key($attachments, $attach));
-			ArrayHelper::toInteger($removeList);
+			$removeList  = ArrayHelper::toInteger($removeList);
 			$message->removeAttachments($removeList);
 			$message->save();
 

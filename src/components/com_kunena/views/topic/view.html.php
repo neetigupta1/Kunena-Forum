@@ -5,18 +5,20 @@
  * @package       Kunena.Site
  * @subpackage    Views
  *
- * @copyright     Copyright (C) 2008 - 2018 Kunena Team. All rights reserved.
+ * @copyright     Copyright (C) 2008 - 2019 Kunena Team. All rights reserved.
  * @license       https://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link          https://www.kunena.org
  **/
 defined('_JEXEC') or die();
 
+use Joomla\CMS\Router\Route;
 use Joomla\String\StringHelper;
 use Joomla\CMS\Factory;
 use Joomla\CMS\HTML\HTMLHelper;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\Session\Session;
 use Joomla\CMS\Uri\Uri;
+use Joomla\CMS\Object\CMSObject;
 
 /**
  * Topic View
@@ -160,12 +162,12 @@ class KunenaViewTopic extends KunenaView
 		}
 
 		// Run events
-		$params = new \Joomla\Registry\Registry;
+		$params = new Joomla\Registry\Registry;
 		$params->set('ksource', 'kunena');
 		$params->set('kunena_view', 'topic');
 		$params->set('kunena_layout', 'default');
 
-		\Joomla\CMS\Plugin\PluginHelper::importPlugin('kunena');
+		Joomla\CMS\Plugin\PluginHelper::importPlugin('kunena');
 
 		Factory::getApplication()->triggerEvent('onKunenaPrepare', array('kunena.topic', &$this->topic, &$params, 0));
 		Factory::getApplication()->triggerEvent('onKunenaPrepare', array('kunena.messages', &$this->messages, &$params, 0));
@@ -297,7 +299,7 @@ class KunenaViewTopic extends KunenaView
 							'sections'    => 0,
 							'direction'   => 1,
 							'hide_lonely' => 1,
-							'action'      => 'topic.create',);
+							'action'      => 'topic.create', );
 
 		$this->catid    = $this->state->get('item.catid');
 		$this->category = KunenaForumCategoryHelper::get($this->catid);
@@ -384,12 +386,12 @@ class KunenaViewTopic extends KunenaView
 		}
 
 		// Run events
-		$params = new \Joomla\Registry\Registry;
+		$params = new Joomla\Registry\Registry;
 		$params->set('ksource', 'kunena');
 		$params->set('kunena_view', 'topic');
 		$params->set('kunena_layout', 'reply');
 
-		\Joomla\CMS\Plugin\PluginHelper::importPlugin('kunena');
+		Joomla\CMS\Plugin\PluginHelper::importPlugin('kunena');
 
 		Factory::getApplication()->triggerEvent('onKunenaPrepare', array('kunena.topic', &$this->topic, &$params, 0));
 
@@ -451,12 +453,12 @@ class KunenaViewTopic extends KunenaView
 		}
 
 		// Run events
-		$params = new \Joomla\Registry\Registry;
+		$params = new Joomla\Registry\Registry;
 		$params->set('ksource', 'kunena');
 		$params->set('kunena_view', 'topic');
 		$params->set('kunena_layout', 'reply');
 
-		\Joomla\CMS\Plugin\PluginHelper::importPlugin('kunena');
+		Joomla\CMS\Plugin\PluginHelper::importPlugin('kunena');
 
 		Factory::getApplication()->triggerEvent('onKunenaPrepare', array('kunena.topic', &$this->topic, &$params, 0));
 		$this->_prepareDocument('edit');
@@ -507,14 +509,14 @@ class KunenaViewTopic extends KunenaView
 		if (!isset($profiles [$key]))
 		{
 			// Run events
-			$params = new \Joomla\Registry\Registry;
+			$params = new Joomla\Registry\Registry;
 
 			// Modify profile values by integration
 			$params->set('ksource', 'kunena');
 			$params->set('kunena_view', 'topic');
 			$params->set('kunena_layout', $this->state->get('layout'));
 
-			\Joomla\CMS\Plugin\PluginHelper::importPlugin('kunena');
+			Joomla\CMS\Plugin\PluginHelper::importPlugin('kunena');
 
 			Factory::getApplication()->triggerEvent('onKunenaPrepare', array('kunena.user', &$this->profile, &$params, 0));
 
@@ -618,7 +620,7 @@ class KunenaViewTopic extends KunenaView
 		$task   = "index.php?option=com_kunena&view=topic&task=%s&catid={$catid}&id={$id}&" . Session::getFormToken() . '=1';
 		$layout = "index.php?option=com_kunena&view=topic&layout=%s&catid={$catid}&id={$id}";
 
-		$this->topicButtons = new JObject;
+		$this->topicButtons = new CMSObject;
 
 		// Reply topic
 		if ($this->topic->isAuthorised('reply'))
@@ -691,7 +693,7 @@ class KunenaViewTopic extends KunenaView
 			}
 		}
 
-		\Joomla\CMS\Plugin\PluginHelper::importPlugin('kunena');
+		Joomla\CMS\Plugin\PluginHelper::importPlugin('kunena');
 
 		Factory::getApplication()->triggerEvent('onKunenaGetButtons', array('topic.action', $this->topicButtons, $this));
 
@@ -718,7 +720,7 @@ class KunenaViewTopic extends KunenaView
 		$task   = "index.php?option=com_kunena&view=topic&task=%s&catid={$catid}&id={$id}&mesid={$mesid}&userid={$targetuserid}&" . Session::getFormToken() . '=1';
 		$layout = "index.php?option=com_kunena&view=topic&layout=%s&catid={$catid}&id={$id}&mesid={$mesid}";
 
-		$this->messageButtons = new JObject;
+		$this->messageButtons = new CMSObject;
 		$this->message_closed = null;
 
 		// Reply / Quote
@@ -771,7 +773,7 @@ class KunenaViewTopic extends KunenaView
 			$this->message->isAuthorised('delete') ? $this->messageButtons->set('delete', $this->getButton(sprintf($task, 'delete'), 'delete', 'message', 'moderation')) : null;
 		}
 
-		\Joomla\CMS\Plugin\PluginHelper::importPlugin('kunena');
+		Joomla\CMS\Plugin\PluginHelper::importPlugin('kunena');
 
 		Factory::getApplication()->triggerEvent('onKunenaGetButtons', array('message.action', $this->messageButtons, $this));
 
@@ -887,7 +889,7 @@ class KunenaViewTopic extends KunenaView
 				{
 					if (!empty($this->message->ip))
 					{
-						$this->ipLink = '<a href="https://www.geoiptool.com/en/?ip=' . $this->message->ip . '" target="_blank" rel="nofollow noopener noreferrer"> IP: ' . $this->message->ip . '</a>';
+						$this->ipLink = '<a href="https://www.geoiptool.de/en/?ip=' . $this->message->ip . '" target="_blank" rel="nofollow noopener noreferrer"> IP: ' . $this->message->ip . '</a>';
 					}
 					else
 					{
@@ -1077,12 +1079,12 @@ class KunenaViewTopic extends KunenaView
 		KunenaUserHelper::loadUsers($userlist);
 
 		// Run events
-		$params = new \Joomla\Registry\Registry;
+		$params = new Joomla\Registry\Registry;
 		$params->set('ksource', 'kunena');
 		$params->set('kunena_view', 'topic');
 		$params->set('kunena_layout', 'history');
 
-		\Joomla\CMS\Plugin\PluginHelper::importPlugin('kunena');
+		Joomla\CMS\Plugin\PluginHelper::importPlugin('kunena');
 
 		Factory::getApplication()->triggerEvent('onKunenaPrepare', array('kunena.messages', &$this->history, &$params, 0));
 
@@ -1112,7 +1114,7 @@ class KunenaViewTopic extends KunenaView
 		{
 			// Parse route.
 			$vars = $this->app->getRouter()->parse($uri);
-			$uri  = new \Joomla\CMS\Uri\Uri('index.php');
+			$uri  = new Joomla\CMS\Uri\Uri('index.php');
 			$uri->setQuery($vars);
 
 			// Make sure we do not return into a task.
@@ -1129,7 +1131,7 @@ class KunenaViewTopic extends KunenaView
 			$uri->setFragment($anchor);
 		}
 
-		$this->app->redirect(JRoute::_($uri->toString()));
+		$this->app->redirect(Route::_($uri->toString()));
 	}
 
 	/**

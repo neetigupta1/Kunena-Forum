@@ -4,13 +4,15 @@
  * @package         Kunena.Site
  * @subpackage      Controller.Application
  *
- * @copyright       Copyright (C) 2008 - 2018 Kunena Team. All rights reserved.
+ * @copyright       Copyright (C) 2008 - 2019 Kunena Team. All rights reserved.
  * @license         https://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link            https://www.kunena.org
  **/
 defined('_JEXEC') or die;
 
 use Joomla\CMS\Factory;
+use Joomla\CMS\MVC\Controller\BaseController;
+use Joomla\CMS\Component\ComponentHelper;
 
 /**
  * Class ComponentKunenaControllerApplicationMiscDisplay
@@ -35,17 +37,15 @@ class ComponentKunenaControllerApplicationMiscDefaultDisplay extends KunenaContr
 	 * Return custom display layout.
 	 *
 	 * @return KunenaLayout
-	 * @throws Exception
 	 * @since Kunena
+	 * @throws Exception
 	 */
 	protected function display()
 	{
-		$app       = Factory::getApplication();
-		$menu_item = $app->getMenu()->getActive();
+		$menu_item = $this->app->getMenu()->getActive();
 
-		$doc             = Factory::getDocument();
-		$config          = Factory::getApplication('site');
-		$componentParams = $config->getParams('com_config');
+		$doc             = Factory::getApplication()->getDocument();
+		$componentParams = ComponentHelper::getParams('com_config');
 		$robots          = $componentParams->get('robots');
 
 		if ($robots == '')
@@ -76,34 +76,23 @@ class ComponentKunenaControllerApplicationMiscDefaultDisplay extends KunenaContr
 			if (!empty($params_title))
 			{
 				$title = $params->get('page_title');
-				$this->setTitle($title);
+				$doc->setTitle($title);
 			}
 			else
 			{
 				$title = $this->config->board_title;
-				$this->setTitle($title);
-			}
-
-			if (!empty($params_keywords))
-			{
-				$keywords = $params->get('menu-meta_keywords');
-				$this->setKeywords($keywords);
-			}
-			else
-			{
-				$keywords = $this->config->board_title;
-				$this->setKeywords($keywords);
+				$doc->setTitle($title);
 			}
 
 			if (!empty($params_description))
 			{
 				$description = $params->get('menu-meta_description');
-				$this->setDescription($description);
+				$doc->setDescription($description);
 			}
 			else
 			{
 				$description = $this->config->board_title;
-				$this->setDescription($description);
+				$doc->setDescription($description);
 			}
 
 			if (!empty($params_robots))
@@ -133,7 +122,7 @@ class ComponentKunenaControllerApplicationMiscDefaultDisplay extends KunenaContr
 	{
 		parent::before();
 
-		$params       = $this->app->getParams('com_kunena');
+		$params       = ComponentHelper::getParams('com_kunena');
 		$this->header = $params->get('page_title');
 		$Itemid       = $this->input->getInt('Itemid');
 
@@ -155,7 +144,7 @@ class ComponentKunenaControllerApplicationMiscDefaultDisplay extends KunenaContr
 				$itemidfix = KunenaRoute::fixMissingItemID();
 			}
 
-			$controller = JControllerLegacy::getInstance("kunena");
+			$controller = BaseController::getInstance("kunena");
 			$controller->setRedirect(KunenaRoute::_("index.php?option=com_kunena&view=misc&Itemid={$itemidfix}", false));
 			$controller->redirect();
 		}
@@ -183,7 +172,7 @@ class ComponentKunenaControllerApplicationMiscDefaultDisplay extends KunenaContr
 				$cache = Factory::getCache('com_kunena', 'callback');
 				$cache->setLifeTime(180);
 
-				return $cache->call(array('KunenaHtmlParser', 'parseBBCode'), $body);
+				return $cache->get(array('KunenaHtmlParser', 'parseBBCode'), array($body));
 			};
 		}
 	}

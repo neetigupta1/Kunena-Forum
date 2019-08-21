@@ -4,14 +4,16 @@
  * @package         Kunena.Site
  * @subpackage      Controller.Topic
  *
- * @copyright       Copyright (C) 2008 - 2018 Kunena Team. All rights reserved.
+ * @copyright       Copyright (C) 2008 - 2019 Kunena Team. All rights reserved.
  * @license         https://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link            https://www.kunena.org
  **/
 defined('_JEXEC') or die;
 
+use Joomla\CMS\Component\ComponentHelper;
 use Joomla\CMS\Factory;
 use Joomla\CMS\Language\Text;
+use Joomla\CMS\MVC\Controller\BaseController;
 
 /**
  * Class ComponentKunenaControllerTopicListDisplay
@@ -24,8 +26,8 @@ class ComponentKunenaControllerTopicListUnreadDisplay extends ComponentKunenaCon
 	 * Prepare topic list for moderators.
 	 *
 	 * @return void
-	 * @throws Exception
 	 * @since Kunena
+	 * @throws Exception
 	 * @throws null
 	 */
 	protected function before()
@@ -41,7 +43,7 @@ class ComponentKunenaControllerTopicListUnreadDisplay extends ComponentKunenaCon
 		$access         = KunenaAccess::getInstance();
 		$start          = $this->state->get('list.start');
 		$limit          = $this->state->get('list.limit');
-		$params         = $this->app->getParams('com_kunena');
+		$params         = ComponentHelper::getParams('com_kunena');
 		$Itemid         = $this->input->getInt('Itemid');
 		$this->embedded = $this->getOptions()->get('embedded', true);
 
@@ -54,11 +56,11 @@ class ComponentKunenaControllerTopicListUnreadDisplay extends ComponentKunenaCon
 		}
 		elseif ($time == 0)
 		{
-			$time = new \Joomla\CMS\Date\Date(KunenaFactory::getSession()->lasttime);
+			$time = new Joomla\CMS\Date\Date(KunenaFactory::getSession()->lasttime);
 		}
 		else
 		{
-			$time = new \Joomla\CMS\Date\Date(Factory::getDate()->toUnix() - ($time * 3600));
+			$time = new Joomla\CMS\Date\Date(Factory::getDate()->toUnix() - ($time * 3600));
 		}
 
 		if (!$Itemid && KunenaConfig::getInstance()->sef_redirect)
@@ -79,7 +81,7 @@ class ComponentKunenaControllerTopicListUnreadDisplay extends ComponentKunenaCon
 				$itemidfix = KunenaRoute::fixMissingItemID();
 			}
 
-			$controller = JControllerLegacy::getInstance("kunena");
+			$controller = BaseController::getInstance("kunena");
 			$controller->setRedirect(KunenaRoute::_("index.php?option=com_kunena&view=topics&layout=unread&Itemid={$itemidfix}", false));
 			$controller->redirect();
 		}
@@ -92,11 +94,8 @@ class ComponentKunenaControllerTopicListUnreadDisplay extends ComponentKunenaCon
 			->filterByTime($time)
 			->order('id', 0)
 			->filterByUserAccess($this->me)
+			->filterByUserUnread($this->me)
 			->find();
-
-		$this->pagination = new KunenaPagination($finder->count(), $start, $limit);
-
-		$limitnew = $finder->count();
 
 		$mesIds = array();
 
@@ -117,7 +116,7 @@ class ComponentKunenaControllerTopicListUnreadDisplay extends ComponentKunenaCon
 
 		$this->topics = $list;
 
-		$this->pagination = new KunenaPagination($limitnew, $start, $limit);
+		$this->pagination = new KunenaPagination($finder->count(), $start, $limit);
 
 		if ($this->moreUri)
 		{

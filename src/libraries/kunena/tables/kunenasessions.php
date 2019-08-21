@@ -4,7 +4,7 @@
  * @package       Kunena.Framework
  * @subpackage    Tables
  *
- * @copyright     Copyright (C) 2008 - 2018 Kunena Team. All rights reserved.
+ * @copyright     Copyright (C) 2008 - 2019 Kunena Team. All rights reserved.
  * @license       https://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link          https://www.kunena.org
  **/
@@ -76,11 +76,12 @@ class TableKunenaSessions extends KunenaTable
 	}
 
 	/**
-	 * @param   null $oid   oid
-	 * @param   bool $reset reset
+	 * @param   null  $oid    oid
+	 * @param   bool  $reset  reset
 	 *
 	 * @return boolean
 	 * @since Kunena
+	 * @throws Exception
 	 */
 	public function load($oid = null, $reset = true)
 	{
@@ -103,9 +104,9 @@ class TableKunenaSessions extends KunenaTable
 
 		if (!$user->exists())
 		{
-			$this->setError(Text::sprintf('COM_KUNENA_LIB_TABLE_SESSIONS_ERROR_USER_INVALID', (int) $user->userid));
+			throw new RuntimeException(Text::sprintf('COM_KUNENA_LIB_TABLE_SESSIONS_ERROR_USER_INVALID', (int) $user->userid));
 		}
 
-		return $this->getError() == '';
+		return true;
 	}
 }

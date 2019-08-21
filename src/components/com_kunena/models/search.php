@@ -5,7 +5,7 @@
  * @package         Kunena.Site
  * @subpackage      Models
  *
- * @copyright       Copyright (C) 2008 - 2018 Kunena Team. All rights reserved.
+ * @copyright       Copyright (C) 2008 - 2019 Kunena Team. All rights reserved.
  * @license         https://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link            https://www.kunena.org
  **/
@@ -49,11 +49,6 @@ class KunenaModelSearch extends KunenaModel
 		// Get search word list
 		$value = Joomla\String\StringHelper::trim($this->app->input->get('query', '', 'string'));
 
-		if (empty($value))
-		{
-			$value = Joomla\String\StringHelper::trim($this->app->input->get('q', '', 'string'));
-		}
-
 		if ($value == Text::_('COM_KUNENA_GEN_SEARCH_BOX'))
 		{
 			$value = '';
@@ -70,7 +65,7 @@ class KunenaModelSearch extends KunenaModel
 		$value = Factory::getApplication()->input->getInt('starteronly', 0);
 		$this->setState('query.starteronly', $value);
 
-		if (!$this->config->pubprofile && !Factory::getUser()->guest || $this->config->pubprofile)
+		if (!$this->config->pubprofile && !Factory::getApplication()->getIdentity()->guest || $this->config->pubprofile)
 		{
 			$value = Factory::getApplication()->input->getInt('exactname', 0);
 			$this->setState('query.exactname', $value);
@@ -106,21 +101,21 @@ class KunenaModelSearch extends KunenaModel
 		if (isset($_POST ['query']) || isset($_POST ['searchword']))
 		{
 			$value = Factory::getApplication()->input->get('catids', array(0), 'post', 'array');
-			ArrayHelper::toInteger($value);
+			$value = ArrayHelper::toInteger($value);
 		}
 		else
 		{
 			$value = Factory::getApplication()->input->getString('catids', '0', 'get');
 			$value = explode(' ', $value);
-			ArrayHelper::toInteger($value);
+			$value = ArrayHelper::toInteger($value);
 		}
 
 		$this->setState('query.catids', $value);
 
-		if (isset($_POST ['q']) || isset($_POST ['searchword']))
+		if (isset($_POST ['searchword']))
 		{
 			$value = Factory::getApplication()->input->get('ids', array(0), 'post', 'array');
-			ArrayHelper::toInteger($value);
+			$value = ArrayHelper::toInteger($value);
 
 			if ($value[0] > 0)
 			{
@@ -131,7 +126,7 @@ class KunenaModelSearch extends KunenaModel
 		{
 			$value = Factory::getApplication()->input->getString('ids', '0', 'get');
 			$value = explode(' ', (int) $value);
-			ArrayHelper::toInteger($value);
+			$value = ArrayHelper::toInteger($value);
 
 			if ($value[0] > 0)
 			{
@@ -200,7 +195,7 @@ class KunenaModelSearch extends KunenaModel
 			}
 		}
 
-		if (!$this->config->pubprofile && !Factory::getUser()->guest || $this->config->pubprofile)
+		if (!$this->config->pubprofile && !Factory::getApplication()->getIdentity()->guest || $this->config->pubprofile)
 		{
 			// User searching
 			$username = $this->getState('query.searchuser');
@@ -460,7 +455,7 @@ class KunenaModelSearch extends KunenaModel
 		// Turn internal state into URL, but ignore default values
 		$defaults = array('titleonly' => 0, 'searchuser' => '', 'exactname' => 0, 'childforums' => 0, 'starteronly' => 0,
 						  'replyless' => 0, 'replylimit' => 0, 'searchdate' => '365', 'beforeafter' => 'after', 'sortby' => 'lastpost',
-						  'order'     => 'dec', 'catids' => '0', 'show' => '0', 'topic_id' => 0, 'ids' => 0, 'searchatdate' => '',);
+						  'order'     => 'dec', 'catids' => '0', 'show' => '0', 'topic_id' => 0, 'ids' => 0, 'searchatdate' => '', );
 
 		$url_params = '';
 		$state      = $this->getState();

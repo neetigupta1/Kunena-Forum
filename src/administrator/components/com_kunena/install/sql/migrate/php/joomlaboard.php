@@ -4,7 +4,7 @@
  *
  * @package        Kunena.Installer
  *
- * @copyright      Copyright (C) 2008 - 2018 Kunena Team. All rights reserved.
+ * @copyright      Copyright (C) 2008 - 2019 Kunena Team. All rights reserved.
  * @license        https://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link           https://www.kunena.org
  **/
@@ -21,7 +21,7 @@ class KunenaMigratorJoomlaboard
 	 * @since Kunena
 	 */
 	protected $versions = array(
-		array('version' => '1.0', 'date' => '0000-00-00', 'table' => 'sb_messages', 'column' => 'id'),
+		array('version' => '1.0', 'date' => '1000-01-01', 'table' => 'sb_messages', 'column' => 'id'),
 	);
 
 	/**
