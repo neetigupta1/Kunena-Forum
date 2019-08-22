@@ -45,6 +45,7 @@ class KunenaViewTopic extends KunenaView
 			$response->avatar  = $user->getAvatarImage($template->params->get('avatarType'), 'thumb');
 			$response->rank    = $user->getRank($topic->getCategory()->id, 'title');
 			$response->time    = KunenaDate::getInstance($message->time)->toKunena('config_post_dateformat');
+			$response->unread  = $topic->unread;
 
 			$list[] = $response;
 		}

@@ -8,6 +8,73 @@
  **/
 
 jQuery(document).ready(function ($) {
+	var url = Joomla.getOptions('kunena_topicurl_ajax');
+
+	function ajaxTopics() {
+		jQuery.ajax({
+			type: 'GET',
+			url: url,
+			async: true,
+			dataType: 'json',
+			success: function(data){
+				document.getElementById("ksubject").textContent = data['Count'].subject;
+				ajaxTopics2();
+			},
+			error: function(jqXHR, textStatus, errorThrown){
+				alert('Oopsie, something went wrong because: ' + errorThrown);
+			}
+		});
+	}
+
+	function ajaxTopics2() {
+		jQuery.ajax({
+			type: 'GET',
+			url: url,
+			async: true,
+			dataType: 'json',
+			success: function(data){
+				var tblSomething = $('#tblSomething2');
+				document.getElementById("ksubject").textContent = data['Count'].subject;
+				$.each(data['Messages'], function(idx, obj){
+					tblSomething += '<tr>';
+					$.each(obj, function(key, value){
+						if (key === 'unread')
+						{
+							if (value !== 0)
+							{
+								tblSomething += '<td class=k'+ key +' style="background-color: green">' + value + '</td>';
+							}
+							else
+							{
+								tblSomething += '';
+							}
+						}
+						else
+						{
+							tblSomething += '<td class=k'+ key +'>' + value + '</td>';
+						}
+					});
+					tblSomething += '</tr>';
+				});
+
+				$('#tblSomething2').html(tblSomething);
+
+				setTimeout(function(){
+					ajaxTopics2();
+				}, 6000);
+			},
+			error: function(jqXHR, textStatus, errorThrown){
+				alert('Oopsie, something went wrong because: ' + errorThrown);
+			}
+		});
+	}
+
+	ajaxTopics();
+
+	//Reload on button click
+	$('#myBtn').click(function(){
+		ajaxTopics();
+	});
 
 	/* To hide or open spoiler on click */
 	$('.kspoiler').each(function (index) {
