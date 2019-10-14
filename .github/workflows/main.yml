@@ -34,11 +34,10 @@ jobs:
         - my_docker_volume:/volume_mount
       options: --cpus 1
     steps:
-    - uses: actions/checkout@v1
+    - uses: docker://joomlaprojects/docker-images:php7.2
     - name: Start CI Tests
       run: echo Install composer & codestyle check
     - name: phpcs v3
-      uses: docker://joomlaprojects/docker-images:php7.2
       run: |
        ./vendor/bin/phpcs --extensions=php -p --standard=./vendor/kunena/codestyle/Kunena ./src
 
