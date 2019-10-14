@@ -5,6 +5,9 @@ on: [push, pull_request]
 jobs:
   build:
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node_version: 11
     container:
       image: joomlaprojects/docker-images:systemtests
       env:
@@ -13,11 +16,17 @@ jobs:
     - uses: actions/checkout@v1
     - name: Start CI Tests
       run: echo Tests started for Kunena Forum
-    - name: Composer & Npm Install
+    - name: Composer
       run: |
-       composer validate --no-check-all --strict
-       composer install --no-progress --no-suggest
-       npm install selenium-standalone
+          composer validate --no-check-all --strict
+          composer install --no-progress --no-suggest
+    - name: Use Node.js
+      uses: actions/setup-node@v1
+      with:
+        version: 11
+    - name: npm install, build and test
+      run: |
+        npm install
 
   cs:
     runs-on: ubuntu-latest
