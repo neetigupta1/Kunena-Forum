@@ -20,10 +20,11 @@ jobs:
         ./vendor/bin/phpcs --config-set ignore_errors_on_exit 1
         ./vendor/bin/phpcs --config-set ignore_warnings_on_exit 1
         ./vendor/bin/phpcs --extensions=php -p --standard=./vendor/kunena/codestyle/Kunena ./src
-    - name: npm install
-      uses: actions/setup-node@v1
+
+    - uses: actions/setup-node@v1
         with:
           node-version: '10.x'
+    - name: npm install
       run: |
         npm install npm@latest -g
         npm install
