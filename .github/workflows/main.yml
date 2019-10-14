@@ -6,8 +6,8 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
+    - uses: actions/checkout@v1
     - name: Start CI Tests
-      uses: actions/checkout@v1
       run: echo Tests started for Kunena Forum
     - name: Composer install
       run: |
