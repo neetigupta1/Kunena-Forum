@@ -11,8 +11,9 @@ jobs:
       run: echo Tests started for Kunena Forum
     - name: Composer
       run: |
-          composer validate --no-check-all --strict
-          composer install --no-progress --no-suggest
+        composer validate --no-check-all --strict
+        composer install --no-progress --no-suggest
+        ./vendor/bin/phpcs --extensions=php -p --standard=./vendor/kunena/codestyle/Kunena ./src
     - uses: actions/setup-node@v1
       with:
         node-version: '10.x'
@@ -20,8 +21,3 @@ jobs:
       run: |
         npm install npm@latest -g
         npm install
-    - name: Run Codestyle
-      using: docker
-      image: joomlaprojects/docker-images:systemtests
-      run: |
-        ./vendor/bin/phpcs --extensions=php -p --standard=./vendor/kunena/codestyle/Kunena ./src
