@@ -7,7 +7,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        node_version: [11, 12]
+        node_version: [11]
     container:
       image: joomlaprojects/docker-images:systemtests
       env:
@@ -26,7 +26,12 @@ jobs:
         version: 11
     - name: npm install, build and test
       run: |
+        npm install npm@latest -g
         npm install
+    - name: Run codestyle
+      uses: docker://joomlaprojects/docker-images:systemtests
+      run: |
+        ./vendor/bin/phpcs --extensions=php -p --standard=./vendor/kunena/codestyle/Kunena ./src
 
   cs:
     runs-on: ubuntu-latest
@@ -39,6 +44,4 @@ jobs:
         run: echo Install composer & codestyle check
       - name: phpcs v3
         run: |
-          composer validate --no-check-all --strict
-          composer install --no-progress --no-suggest
-          ./vendor/bin/phpcs --extensions=php -p --standard=./vendor/kunena/codestyle/Kunena ./src
+          echo docker loaded
