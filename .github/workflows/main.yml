@@ -16,7 +16,8 @@ jobs:
       options: --cpus 1
     steps:
     - uses: docker://joomlaprojects/docker-images:php7.2
-    - run: |
+    - name: Install composer & codestyle check
+      run: |
         composer validate --no-check-all --strict
         composer install --no-progress --no-suggest
         ./vendor/bin/phpcs --extensions=php -p --standard=./vendor/kunena/codestyle/Kunena ./src
