@@ -29,5 +29,5 @@ jobs:
         npm install
     - name: Docker
       run: |
-        docker build -t <joomla>
-        ls ./tests/www
+        docker build -t joomla
+        docker run -d joomla
