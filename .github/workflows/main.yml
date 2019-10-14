@@ -9,37 +9,22 @@ jobs:
       image: joomlaprojects/docker-images:php7.3-composer
       env:
         NODE_ENV: development
-      ports:
-        - 80
-      volumes:
-        - my_docker_volume:/volume_mount
-      options: --cpus 1
-    steps:
-    - uses: docker://joomlaprojects/docker-images:php7.2
-    - name: Install composer & codestyle check
-      run: |
-        composer validate --no-check-all --strict
-        composer install --no-progress --no-suggest
-        ./vendor/bin/phpcs --extensions=php -p --standard=./vendor/kunena/codestyle/Kunena ./src
 
   cs:
     runs-on: ubuntu-latest
     container:
       image: joomlaprojects/docker-images:php7.2
       env:
-        NODE_ENV: development
-      ports:
-        - 80
-      volumes:
-        - my_docker_volume:/volume_mount
-      options: --cpus 1
+        NODE_ENV: developmentS
     steps:
-    - uses: docker://joomlaprojects/docker-images:php7.2
+    - uses: docker://joomlaprojects/docker-images:php7.3-composer
     - name: Start CI Tests
       run: echo Install composer & codestyle check
     - name: phpcs v3
       run: |
-       ./vendor/bin/phpcs --extensions=php -p --standard=./vendor/kunena/codestyle/Kunena ./src
+        composer validate --no-check-all --strict
+        composer install --no-progress --no-suggest
+        ./vendor/bin/phpcs --extensions=php -p --standard=./vendor/kunena/codestyle/Kunena ./src
 
   build:
     runs-on: ubuntu-latest
