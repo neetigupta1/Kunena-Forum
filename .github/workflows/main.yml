@@ -5,10 +5,6 @@ on: [push, pull_request]
 jobs:
   build:
     runs-on: ubuntu-latest
-    container:
-      image: joomlaprojects/docker-images:systemtests
-      env:
-        NODE_ENV: development
     steps:
     - uses: actions/checkout@v1
     - name: Start CI Tests
@@ -25,7 +21,7 @@ jobs:
         npm install npm@latest -g
         npm install
     - name: Run Codestyle
-      using: 'docker'
-      image: 'joomlaprojects/docker-images:systemtests'
+      using: docker
+      image: joomlaprojects/docker-images:systemtests
       run: |
         ./vendor/bin/phpcs --extensions=php -p --standard=./vendor/kunena/codestyle/Kunena ./src
