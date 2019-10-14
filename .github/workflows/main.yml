@@ -3,10 +3,10 @@ name: CI
 on: [push, pull_request]
 
 jobs:
-  cs:
-     runs-on: ubuntu-latest
-     container:
-      image: joomlaprojects/docker-images:php7.2
+  composer:
+    runs-on: ubuntu-latest
+    container:
+      image: joomlaprojects/docker-images:php7.3-composer
       env:
         NODE_ENV: development
       ports:
@@ -14,13 +14,31 @@ jobs:
       volumes:
         - my_docker_volume:/volume_mount
       options: --cpus 1
-     steps:
-      - uses: actions/checkout@v1
-      - name: phpcs v3
+    steps:
         run: |
-         composer validate --no-check-all --strict
-         composer install --no-progress --no-suggest
-         ./vendor/bin/phpcs --extensions=php -p --standard=./vendor/kunena/codestyle/Kunena ./src
+          composer validate --no-check-all --strict
+          composer install --no-progress --no-suggest
+          ./vendor/bin/phpcs --extensions=php -p --standard=./vendor/kunena/codestyle/Kunena ./src
+
+  cs:
+    runs-on: ubuntu-latest
+    container:
+      image: joomlaprojects/docker-images:php7.2
+        depends_on: [ composer ]
+      env:
+        NODE_ENV: development
+      ports:
+        - 80
+      volumes:
+        - my_docker_volume:/volume_mount
+      options: --cpus 1
+    steps:
+    - uses: actions/checkout@v1
+    - name: Start CI Tests
+      run: echo Install composer & codestyle check
+    - name: phpcs v3
+      run: |
+       ./vendor/bin/phpcs --extensions=php -p --standard=./vendor/kunena/codestyle/Kunena ./src
 
   build:
     runs-on: ubuntu-latest
