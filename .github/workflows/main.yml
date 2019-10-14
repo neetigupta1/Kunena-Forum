@@ -5,9 +5,6 @@ on: [push, pull_request]
 jobs:
   build:
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        node_version: [11]
     container:
       image: joomlaprojects/docker-images:systemtests
       env:
@@ -15,33 +12,20 @@ jobs:
     steps:
     - uses: actions/checkout@v1
     - name: Start CI Tests
-      run: echo Tests started for Kunena Forum
+    - run: echo Tests started for Kunena Forum
     - name: Composer
-      run: |
+    - run: |
           composer validate --no-check-all --strict
           composer install --no-progress --no-suggest
-    - name: Use Node.js
-      uses: actions/setup-node@v1
+    - uses: actions/setup-node@v1
       with:
-        version: 11
+        node-version: '10.x'
     - name: npm install, build and test
-      run: |
+    - run: |
         npm install npm@latest -g
         npm install
     - name: Run Codestyle
-      uses: docker://joomlaprojects/docker-images:systemtests
+      using: 'docker'
+      image: 'joomlaprojects/docker-images:systemtests'
     - run: |
         ./vendor/bin/phpcs --extensions=php -p --standard=./vendor/kunena/codestyle/Kunena ./src
-
-  cs:
-    runs-on: ubuntu-latest
-    container:
-      image: joomlaprojects/docker-images:systemtests
-      env:
-        NODE_ENV: development
-    steps:
-      - name: Start CI Tests
-        run: echo Install composer & codestyle check
-      - name: phpcs v3
-        run: |
-          echo docker loaded
