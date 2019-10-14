@@ -3,49 +3,12 @@ name: CI
 on: [push, pull_request]
 
 jobs:
-  composer:
-    runs-on: ubuntu-latest
-    container:
-      image: joomlaprojects/docker-images:php7.3-composer
-      env:
-        NODE_ENV: development
-    steps:
-      - uses: docker://joomlaprojects/docker-images:php7.2
-      - name: Start CI Tests
-        run: echo Install composer & codestyle check
-      - name: phpcs v3
-        run: |
-          composer validate --no-check-all --strict
-          composer install --no-progress --no-suggest
-          ./vendor/bin/phpcs --extensions=php -p --standard=./vendor/kunena/codestyle/Kunena ./src
-
-  cs:
-    runs-on: ubuntu-latest
-    container:
-      image: joomlaprojects/docker-images:php7.2
-      env:
-        NODE_ENV: developmentS
-    steps:
-    - uses: docker://joomlaprojects/docker-images:php7.3-composer
-    - name: Start CI Tests
-      run: echo Install composer & codestyle check
-    - name: phpcs v3
-      run: |
-        composer validate --no-check-all --strict
-        composer install --no-progress --no-suggest
-        ./vendor/bin/phpcs --extensions=php -p --standard=./vendor/kunena/codestyle/Kunena ./src
-
   build:
     runs-on: ubuntu-latest
     container:
-      image: joomlaprojects/docker-tools:develop
+      image: joomlaprojects/docker-images:systemtests
       env:
         NODE_ENV: development
-      ports:
-        - 80
-      volumes:
-        - my_docker_volume:/volume_mount
-      options: --cpus 1
     steps:
     - uses: actions/checkout@v1
     - name: Start CI Tests
@@ -56,3 +19,17 @@ jobs:
        composer install --no-progress --no-suggest
        npm install selenium-standalone
 
+  cs:
+    runs-on: ubuntu-latest
+    container:
+      image: joomlaprojects/docker-images:systemtests
+      env:
+        NODE_ENV: development
+    steps:
+      - name: Start CI Tests
+        run: echo Install composer & codestyle check
+      - name: phpcs v3
+        run: |
+          composer validate --no-check-all --strict
+          composer install --no-progress --no-suggest
+          ./vendor/bin/phpcs --extensions=php -p --standard=./vendor/kunena/codestyle/Kunena ./src
