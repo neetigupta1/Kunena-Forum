@@ -28,9 +28,9 @@ jobs:
       run: |
         npm install npm@latest -g
         npm install
-    - name: Run codestyle
+    - name: Run Codestyle
       uses: docker://joomlaprojects/docker-images:systemtests
-      run: |
+    - run: |
         ./vendor/bin/phpcs --extensions=php -p --standard=./vendor/kunena/codestyle/Kunena ./src
 
   cs:
