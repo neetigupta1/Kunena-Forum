@@ -9,6 +9,15 @@ jobs:
       image: joomlaprojects/docker-images:php7.3-composer
       env:
         NODE_ENV: development
+    steps:
+      - uses: docker://joomlaprojects/docker-images:php7.2
+      - name: Start CI Tests
+        run: echo Install composer & codestyle check
+      - name: phpcs v3
+        run: |
+          composer validate --no-check-all --strict
+          composer install --no-progress --no-suggest
+          ./vendor/bin/phpcs --extensions=php -p --standard=./vendor/kunena/codestyle/Kunena ./src
 
   cs:
     runs-on: ubuntu-latest
