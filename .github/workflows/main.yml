@@ -31,7 +31,7 @@ jobs:
       run: |
         docker build -t www:joomla .
         docker run -d www:joomla
-    - name: Docker
-        run: |
-          ls ./tests
-          ls ./tests/www
+    - name: Check dirs
+      run: |
+        ls ./tests
+        ls ./tests/www
