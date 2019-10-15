@@ -45,6 +45,11 @@ jobs:
         npm install
         cd ../../
         ls ./tests/www
+        ping http://localhost
+        ping http://localhost/tests
+        ping http://localhost/tests/www
+        ping http://localhost/tests/joomla-cms
+        ping http://localhost/tests/joomla
     - name: Codeception
       run: |
         ./vendor/bin/codecept run acceptance ./tests/Codeception/acceptance/install
