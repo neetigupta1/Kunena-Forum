@@ -40,8 +40,6 @@ jobs:
         git clone -b 4.0-dev https://github.com/joomla/joomla-cms.git .
         composer install
         npm install
-        cd ../../
-        ls ./tests/www
       continue-on-error: true
     - name: Codeception
       run: |
