@@ -35,8 +35,8 @@ jobs:
         docker run -d www:joomla
     - name: Install Joomla
       run: |
-        mkdir -p ./tests/www/test-install
-        cd ./tests/www/test-install
+        mkdir -p ./tests/www
+        cd ./tests/www
         git clone -b 4.0-dev https://github.com/joomla/joomla-cms.git .
         composer install
         npm install
@@ -46,7 +46,8 @@ jobs:
     - name: Codeception
       run: |
         bash ./tests/Codeception/drone-system-run.sh
-        ls .
+        ls ./
+        echo ping
         ping -c3  http://localhost
         ping -c3  http://localhost/tests
         ping -c3  http://localhost/tests/www
