@@ -42,14 +42,15 @@ jobs:
         npm install
         cd ../../
         ls ./tests/www
-        ping http://localhost
-        ping http://localhost/tests
-        ping http://localhost/tests/www
-        ping http://localhost/tests/joomla-cms
-        ping http://localhost/tests/joomla
-        ping http://localhost/tests/test-install
-        ping http://localhost/tests/www/test-install
       continue-on-error: true
     - name: Codeception
       run: |
         bash ./tests/Codeception/drone-system-run.sh
+        ls .
+        ping -c3  http://localhost
+        ping -c3  http://localhost/tests
+        ping -c3  http://localhost/tests/www
+        ping -c3  http://localhost/tests/joomla-cms
+        ping -c3  http://localhost/tests/joomla
+        ping -c3  http://localhost/tests/test-install
+        ping -c3  http://localhost/tests/www/test-install

@@ -34,13 +34,7 @@ echo "${HEADER}"
 echo "-------------------------------"
 tput sgr0 -T xterm
 
-echo "[RUNNER] Prepare test environment"
-
 # Switch to Joomla base directory
-
-echo "[RUNNER] Copy files to test installation"
-chown -R www-data ./tests/www/test-install/
-
 echo "[RUNNER] Start Apache & Chrome"
 apache2ctl -D FOREGROUND &
 google-chrome --version
@@ -51,5 +45,6 @@ echo "[RUNNER] Start Selenium"
 sleep 5
 
 echo "[RUNNER] Run Codeception"
-php .vendor/bin/codecept build
-php .vendor/bin/codecept run --fail-fast --steps --debug tests/Codeception/acceptance/01-install
+ls ./
+php ./vendor/bin/codecept build
+php ./vendor/bin/codecept run --fail-fast --steps --debug ./tests/Codeception/acceptance/01-install
