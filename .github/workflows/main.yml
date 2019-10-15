@@ -29,9 +29,6 @@ jobs:
         /usr/bin/Xvfb :99 -screen 0 1024x768x24 > /dev/null 2>&1 &
         npm install npm@latest -g
         npm install selenium-standalone
-        ./node_modules/.bin/selenium-standalone install --drivers.chrome.version=77.0.3865.40 --drivers.chrome.baseURL=https://chromedriver.storage.googleapis.com
-        echo start selenium
-        ./node_modules/.bin/selenium-standalone start --drivers.chrome.version=77.0.3865.40 --drivers.chrome.baseURL=https://chromedriver.storage.googleapis.com > /dev/null 2>&1 &
     - name: Docker
       run: |
         docker build -t www:joomla .
@@ -50,7 +47,7 @@ jobs:
         ping http://localhost/tests/www
         ping http://localhost/tests/joomla-cms
         ping http://localhost/tests/joomla
+      continue-on-error: true
     - name: Codeception
       run: |
-        ./vendor/bin/codecept run acceptance ./tests/Codeception/acceptance/install
-
+        bash ./tests/Codeception/drone-system-run.sh
