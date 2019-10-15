@@ -26,12 +26,22 @@ jobs:
     - name: npm install
       run: |
         npm install npm@latest -g
-        npm install
+        npm install selenium-standalone
+        ./node_modules/.bin/selenium-standalone install --drivers.chrome.version=77.0.3865.40 --drivers.chrome.baseURL=https://chromedriver.storage.googleapis.com
+        ./node_modules/.bin/selenium-standalone start --drivers.chrome.version=77.0.3865.40 --drivers.chrome.baseURL=https://chromedriver.storage.googleapis.com
     - name: Docker
       run: |
         docker build -t www:joomla .
         docker run -d www:joomla
-    - name: Check dirs
+    - name: Install Joomla
       run: |
-        ls ./tests
-        ls ./tests/www
+        mkdir -p ./tests/www
+        cd ./tests/www
+        git clone -b 4.0-dev https://github.com/joomla/joomla-cms.git .
+        composer install
+        npm install
+        cd ../../
+    - name: Codeception
+      run: |
+        ./vendor/bin/codecept run acceptance ./tests/Codeception/acceptance/install
+

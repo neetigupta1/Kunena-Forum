@@ -1,5 +1,4 @@
 <?php
-
 /**
  * Kunena Package
  *
@@ -12,14 +11,30 @@
 class KunenaCest
 {
 	/**
+	 * Install Joomla, disable statistics and enable Error Reporting.
+	 *
+	 * @param   AcceptanceTester  $I  The AcceptanceTester Object
+	 *
+	 * @since   3.7.3
+	 *
+	 * @return  void
+	 */
+	public function installJoomla(AcceptanceTester $I)
+	{
+		$I->am('Administrator');
+		$I->installJoomlaRemovingInstallationFolder();
+	}
+
+	/**
 	 * Install Kunena
 	 *
 	 * @param AcceptanceTester $I
 	 *
 	 * @return KunenaCest
 	 */
-	public function Kunena(\AcceptanceTester $I)
+	public function Kunena(AcceptanceTester $I)
 	{
+		$I->am('Administrator');
 		$I->doAdministratorLogin();
 		$I->amOnPage('/administrator/index.php?option=com_installer');
 		$I->waitForText('Extensions: Install', '30', ['css' => 'H1']);
