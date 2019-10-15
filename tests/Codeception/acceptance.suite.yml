@@ -12,7 +12,7 @@ modules:
         - Helper\JoomlaDb
     config:
         JoomlaBrowser:
-            url: 'http://localhost/tests/www'     # the url that points to the joomla installation at /tests/system/joomla-cms
+            url: 'http://localhost/test-install'     # the url that points to the joomla installation at /tests/system/joomla-cms
             browser: 'chrome'
             window_size: 1920x1080
             capabilities:
@@ -39,7 +39,7 @@ modules:
             password: 'joomla_ut'
             prefix: 'jos_'
         Helper\Acceptance:
-            url: 'http://localhost/tests/www'   # the url that points to the joomla installation at /tests/system/joomla-cms - we need it twice here
+            url: 'http://localhost/test-install'   # the url that points to the joomla installation at /tests/system/joomla-cms - we need it twice here
             MicrosoftEdgeInsiders: false           # set this to true, if you are on Windows Insiders
             cmsPath: '/tests/www'                # ; If you want to setup your test website (document root) in a different folder, you can do that here.
             localUser: 'www-data'                          # (Linux / Mac only) If you want to set a different owner for the CMS test folder

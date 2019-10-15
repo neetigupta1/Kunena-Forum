@@ -1,7 +1,5 @@
 #!/usr/bin/env bash
 set -e
-JOOMLA_BASE=$1
-DB_ENGINE=$2
 HEADER=$(cat <<'EOF'
 ......._......................._........
 ......| |.....................| |.......
@@ -39,11 +37,9 @@ tput sgr0 -T xterm
 echo "[RUNNER] Prepare test environment"
 
 # Switch to Joomla base directory
-cd $JOOMLA_BASE
 
 echo "[RUNNER] Copy files to test installation"
-rsync -a --exclude-from=tests/Codeception/exclude.txt $JOOMLA_BASE/ /tests/www/test-install/
-chown -R www-data /tests/www/test-install/
+chown -R www-data ./tests/www/test-install/
 
 echo "[RUNNER] Start Apache & Chrome"
 apache2ctl -D FOREGROUND &
@@ -55,5 +51,5 @@ echo "[RUNNER] Start Selenium"
 sleep 5
 
 echo "[RUNNER] Run Codeception"
-php libraries/vendor/bin/codecept build
-php libraries/vendor/bin/codecept run --fail-fast --steps --debug --env $DB_ENGINE tests/Codeception/acceptance/install
+php .vendor/bin/codecept build
+php .vendor/bin/codecept run --fail-fast --steps --debug tests/Codeception/acceptance/01-install
