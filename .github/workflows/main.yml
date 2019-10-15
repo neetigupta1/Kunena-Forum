@@ -41,5 +41,6 @@ jobs:
         cd ../../
     - name: Codeception
       run: |
+        ls ./tests/www
         ./vendor/bin/codecept run acceptance ./tests/Codeception/acceptance/install
 
