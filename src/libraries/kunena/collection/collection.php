@@ -10,7 +10,7 @@
  * @link          https://www.kunena.org
  **/
 
-namespace Joomla\Component\Kunena;
+namespace Joomla\Component\Kunena\Libraries\Collection;
 
 use ArrayAccess;
 use ArrayIterator;
@@ -26,7 +26,7 @@ defined('_JEXEC') or die();
  *
  * @since   Kunena 6.0
  */
-class KunenaCollection implements ArrayAccess, Countable, IteratorAggregate
+class Collection implements ArrayAccess, Countable, IteratorAggregate
 {
 	/**
 	 * The items in the collection.

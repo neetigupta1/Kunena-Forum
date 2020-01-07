@@ -9,15 +9,13 @@
  * @link           https://www.kunena.org
  **/
 
-namespace Joomla\Component\Kunena;
+namespace Joomla\Component\Kunena\Administrator\Install;
 
 defined('_JEXEC') or die();
 
 use Joomla\CMS\Factory;
 use Joomla\CMS\Uri\Uri;
 use function defined;
-// KUNENA FORUM INSTALLER
-
 
 $app  = Factory::getApplication();
 $view = $app->input->getCmd('view');

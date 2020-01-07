@@ -10,7 +10,7 @@
  * @link            https://www.kunena.org
  **/
 
-namespace Joomla\Component\Kunena;
+namespace Joomla\Component\Kunena\Libraries\Upload;
 
 defined('_JEXEC') or die;
 
@@ -29,7 +29,7 @@ use StdClass;
  *
  * @since   Kunena 4.0
  */
-class KunenaUpload
+class Upload
 {
 	/**
 	 * @var     array

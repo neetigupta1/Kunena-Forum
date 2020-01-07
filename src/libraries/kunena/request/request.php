@@ -10,7 +10,7 @@
  * @link          https://www.kunena.org
  **/
 
-namespace Joomla\Component\Kunena;
+namespace Joomla\Component\Kunena\Libraries\Request;
 
 defined('_JEXEC') or die();
 
@@ -38,7 +38,7 @@ use function defined;
  * @see     KunenaLayout
  * @since   Kunena 6.0
  */
-class KunenaRequest
+class Request
 {
 	/**
 	 * Returns controller.

@@ -10,11 +10,11 @@
  * @link            https://www.kunena.org
  **/
 
-namespace Joomla\Component\Kunena;
+namespace Joomla\Component\Kunena\Libraries\User;
 
 defined('_JEXEC') or die();
 
-KunenaUserHelper::initialize();
+Helper::initialize();
 
 use BadMethodCallException;
 use Exception;
@@ -35,7 +35,7 @@ use function defined;
  *
  * @since   Kunena 4.0
  */
-abstract class KunenaUserHelper
+abstract class Helper
 {
 	/**
 	 * @var     array|KunenaUser[]

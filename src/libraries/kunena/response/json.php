@@ -10,19 +10,18 @@
  * @link          https://www.kunena.org
  **/
 
-namespace Joomla\Component\Kunena;
+namespace Joomla\Component\Kunena\Libraries\Response;
 
 defined('_JEXEC') or die;
 
 use Exception;
-Config::getInstance()enaCompatResponseJson;
 
 /**
  * Kunena JSON Response, extends Joomla\CMS\Response\JsonResponse.
  *
  * @since   Kunena 6.0
  */
-class KunenaResponseJson extends KunenaCompatResponseJson
+class ResponseJson extends KunenaCompatResponseJson
 {
 	/**
 	 * @var     integer

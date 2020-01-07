@@ -10,7 +10,7 @@
  * @link            https://www.kunena.org
  **/
 
-namespace Joomla\Component\Kunena;
+namespace Joomla\Component\Kunena\Libraries\Attachment;
 
 defined('_JEXEC') or die();
 
@@ -50,7 +50,7 @@ use function defined;
  *
  * @since   Kunena 4.0
  */
-class KunenaAttachment extends KunenaDatabaseObject
+class Attachment extends KunenaDatabaseObject
 {
 	// Higher protection level means that the attachment is visible to less people.
 	// Protection level can be checked as bitmask: PROTECTION_ACL + PROTECTION_FRIENDS.

@@ -10,13 +10,12 @@
  * @link            https://www.kunena.org
  **/
 
-namespace Joomla\Component\Kunena;
+namespace Joomla\Component\Kunena\Libraries\User;
 
 defined('_JEXEC') or die();
 
 use Exception;
 use Joomla\CMS\Date\Date;
-Config::getInstance()enaDatabaseObjectFinder;
 use function defined;
 
 /**
@@ -24,7 +23,7 @@ use function defined;
  *
  * @since   Kunena 6.0
  */
-class KunenaUserFinder extends KunenaDatabaseObjectFinder
+class Finder extends KunenaDatabaseObjectFinder
 {
 	/**
 	 * @var     string

@@ -10,7 +10,7 @@
  * @link          https://www.kunena.org
  **/
 
-namespace Joomla\Component\Kunena;
+namespace Joomla\Component\Kunena\Libraries\Log;
 
 defined('_JEXEC') or die();
 
@@ -23,7 +23,7 @@ use function defined;
  *
  * @since 5.0
  */
-class KunenaLog
+class Log
 {
 	/**
 	 * @since   Kunena 5.0

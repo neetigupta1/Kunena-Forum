@@ -10,7 +10,7 @@
  * @link          https://www.kunena.org
  **/
 
-namespace Joomla\Component\Kunena;
+namespace Joomla\Component\Kunena\Libraries\Database\Object;
 
 defined('_JEXEC') or die;
 
@@ -27,7 +27,7 @@ use Joomla\Database\DatabaseQuery;
  *
  * @since   Kunena 6.0
  */
-abstract class KunenaDatabaseObjectFinder
+abstract class Finder
 {
 	/**
 	 * Table associated with the model.

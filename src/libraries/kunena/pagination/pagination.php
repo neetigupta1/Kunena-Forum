@@ -11,7 +11,7 @@
  * @link            https://www.kunena.org
  **/
 
-namespace Joomla\Component\Kunena;
+namespace Joomla\Component\Kunena\Libraries\Pagination;
 
 defined('_JEXEC') or die();
 
@@ -32,7 +32,7 @@ use function defined;
  * @subpackage  Pagination
  * @since       1.5
  */
-class KunenaPagination
+class Pagination
 {
 	/**
 	 * @var    integer  The record number to start displaying from.

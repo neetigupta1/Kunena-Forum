@@ -10,7 +10,7 @@
  * @link          http://www.kunena.org
  **/
 
-namespace Joomla\Component\Kunena;
+namespace Joomla\Component\Kunena\Libraries\Tables;
 
 defined('_JEXEC') or die();
 

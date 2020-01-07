@@ -9,7 +9,7 @@
  * @link           https://www.kunena.org
  **/
 
-namespace Joomla\Component\Kunena;
+namespace Joomla\Component\Kunena\Libraries;
 
 defined('_JEXEC') or die();
 
@@ -28,7 +28,7 @@ use function defined;
  *
  * @since   Kunena 2.0
  */
-class KunenaModel extends BaseDatabaseModel
+class Model extends BaseDatabaseModel
 {
 	/**
 	 * @var     string JSite|JAdministrator

@@ -11,7 +11,7 @@
  * @link            https://www.kunena.org
  **/
 
-namespace Joomla\Component\Kunena;
+namespace Joomla\Component\Kunena\Libraries\Menu;
 
 defined('_JEXEC') or die();
 
@@ -30,7 +30,7 @@ KunenaMenuFix::initialize();
  *
  * @since   Kunena 6.0
  */
-abstract class KunenaMenuFix
+abstract class Fix
 {
 	/**
 	 * @var     array|StdClass[]

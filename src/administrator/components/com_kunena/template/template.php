@@ -9,7 +9,7 @@
  * @link            https://www.kunena.org
  **/
 
-namespace Joomla\Component\Kunena;
+namespace Joomla\Component\Kunena\Administrator;
 
 defined('_JEXEC') or die();
 

@@ -10,7 +10,7 @@
  * @link          https://www.kunena.org
  **/
 
-namespace Joomla\Component\Kunena;
+namespace Joomla\Component\Kunena\Libraries\Attachment;
 
 defined('_JEXEC') or die();
 
@@ -23,7 +23,7 @@ use function defined;
  *
  * @since   Kunena 5.0
  */
-class KunenaAttachmentFinder extends KunenaDatabaseObjectFinder
+class Finder extends KunenaDatabaseObjectFinder
 {
 	/**
 	 * @var     string

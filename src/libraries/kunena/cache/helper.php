@@ -10,7 +10,7 @@
  * @link          https://www.kunena.org
  **/
 
-namespace Joomla\Component\Kunena;
+namespace Joomla\Component\Kunena\Libraries\Cache;
 
 defined('_JEXEC') or die();
 
@@ -20,11 +20,11 @@ use Joomla\CMS\Filesystem\Folder;
 use function defined;
 
 /**
- * Class KunenaCacheHelper has helper functions to clear all caches that affects Kunena.
+ * Class Helper has helper functions to clear all caches that affects Kunena.
  *
  * @since   Kunena 6.0
  */
-abstract class KunenaCacheHelper
+abstract class Helper
 {
 	/**
 	 * Clear all cache types. Please avoid using this function except after installation and

@@ -10,7 +10,7 @@
  * @link          https://www.kunena.org
  **/
 
-namespace Joomla\Component\Kunena;
+namespace Joomla\Component\Kunena\Libraries\User;
 
 defined('_JEXEC') or die();
 
@@ -45,7 +45,7 @@ use function defined;
  *
  * @since   Kunena 6.0
  */
-class KunenaUserBan extends CMSObject
+class Ban extends CMSObject
 {
 	/**
 	 * @return  void

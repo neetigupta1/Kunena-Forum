@@ -9,7 +9,7 @@
  * @link           https://www.kunena.org
  **/
 
-namespace Joomla\Component\Kunena;
+namespace Joomla\Component\Kunena\Libraries;
 
 defined('_JEXEC') or die();
 
@@ -29,7 +29,7 @@ use function defined;
  *
  * @since   Kunena 6.0
  */
-class KunenaView extends HtmlView
+class View extends HtmlView
 {
 	/**
 	 * @var     Document|null

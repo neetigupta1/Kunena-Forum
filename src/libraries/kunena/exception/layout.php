@@ -10,15 +10,18 @@
  * @link          https://www.kunena.org
  **/
 
-namespace Joomla\Component\Kunena;
+namespace Joomla\Component\Kunena\Libraries\Exception;
 
-\defined('_JEXEC') or die();
+defined('_JEXEC') or die();
+
+use RuntimeException;
+use function defined;
 
 /**
  * Class KunenaExceptionLayout
  *
  * @since   Kunena 6.0
  */
-class KunenaExceptionLayout extends RuntimeException
+class Layout extends RuntimeException
 {
 }

@@ -10,7 +10,7 @@
  * @link            https://www.kunena.org
  **/
 
-namespace Joomla\Component\Kunena;
+namespace Joomla\Component\Kunena\Libraries\Image;
 
 defined('_JEXEC') or die;
 
@@ -23,7 +23,7 @@ use Joomla\CMS\Filesystem\Folder;
  *
  * @since   Kunena 6.0
  */
-class KunenaImageHelper
+class Helper
 {
 	/**
 	 * Create new re-sized version of the original image.

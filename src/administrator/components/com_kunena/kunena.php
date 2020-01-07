@@ -9,12 +9,15 @@
  * @link           https://www.kunena.org
  **/
 
-namespace Joomla\Component\Kunena;
+namespace Joomla\Component\Kunena\Administrator;
 
 defined('_JEXEC') or die();
 
 use Joomla\CMS\Factory;
 use Joomla\CMS\Language\Text;
+use Joomla\Component\Kunena\Libraries\Exception\KunenaExceptionAuthorise;
+use Joomla\Component\Kunena\Libraries\KunenaForum;
+use Joomla\Component\Kunena\Libraries\KunenaProfiler;
 use function defined;
 
 // Access check.
@@ -24,7 +27,7 @@ if (!Factory::getApplication()->getIdentity()->authorise('core.manage', 'com_kun
 }
 
 // Display time it took to create the entire page in the footer.
-$kunena_profiler = Kunena\KunenaProfiler::instance('Kunena');
+$kunena_profiler = KunenaProfiler::instance('Kunena');
 $kunena_profiler->start('Total Time');
 KUNENA_PROFILER ? $kunena_profiler->mark('afterLoad') : null;
 
@@ -66,15 +69,15 @@ if ($app->input->getCmd('view') == 'uninstall')
 KunenaForum::setup();
 
 // Initialize custom error handlers.
-KunenaError::initialize();
+\Joomla\Component\Kunena\Administrator\KunenaError::initialize();
 
 // Kunena has been successfully installed: Load our main controller.
-$controller = KunenaController::getInstance();
+$controller = \Joomla\Component\Kunena\Administrator\Install\Controller\KunenaController::getInstance();
 $controller->execute($app->input->getCmd('task'));
 $controller->redirect();
 
 // Remove custom error handlers.
-KunenaError::cleanup();
+\Joomla\Component\Kunena\Administrator\KunenaError::cleanup();
 
 // Display profiler information.
 $kunena_profiler->stop('Total Time');

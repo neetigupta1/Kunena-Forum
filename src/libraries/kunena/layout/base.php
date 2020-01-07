@@ -10,7 +10,7 @@
  * @link            https://www.kunena.org
  **/
 
-namespace Joomla\Component\Kunena;
+namespace Joomla\Component\Kunena\Libraries\Layout;
 
 defined('_JEXEC') or die();
 
@@ -19,8 +19,8 @@ use InvalidArgumentException;
 use Joomla\CMS\Factory;
 use Joomla\CMS\Layout\BaseLayout;
 use Joomla\CMS\Log\Log;
+use Joomla\Component\Kunena\Libraries\Compat\LayoutBase;
 use Joomla\Input\Input;
-Config::getInstance()enaCompatLayoutBase;
 use RuntimeException;
 use Throwable;
 use function defined;
@@ -51,7 +51,7 @@ use function defined;
  *
  * @since   Kunena 6.0
  */
-class KunenaLayoutBase extends KunenaCompatLayoutBase
+class Base extends LayoutBase
 {
 	/**
 	 * Layout name.

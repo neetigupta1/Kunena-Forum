@@ -10,7 +10,7 @@
  * @link          https://www.kunena.org
  **/
 
-namespace Joomla\Component\Kunena;
+namespace Joomla\Component\Kunena\Libraries\Forum\Category;
 
 defined('_JEXEC') or die();
 
@@ -23,14 +23,14 @@ use RuntimeException;
 use function defined;
 
 /**
- * Class KunenaForumCategoryHelper
+ * Class CategoryHelper
  *
  * @since   Kunena 6.0
  */
-abstract class KunenaForumCategoryHelper
+abstract class Helper
 {
 	/**
-	 * @var     KunenaForumCategory[]
+	 * @var     Category[]
 	 * @since   Kunena 6.0
 	 */
 	public static $_instances;
@@ -64,7 +64,7 @@ abstract class KunenaForumCategoryHelper
 		{
 			$cache = Factory::getCache('com_kunena', 'callback');
 			$cache->setLifeTime(180);
-			self::$_instances = $cache->call(['KunenaForumCategoryHelper', 'loadCategories']);
+			self::$_instances = $cache->call(['CategoryHelper', 'loadCategories']);
 		}
 		else
 		{
@@ -165,7 +165,7 @@ abstract class KunenaForumCategoryHelper
 	/**
 	 * @internal
 	 *
-	 * @param   KunenaForumCategory  $instance  instance
+	 * @param   Category  $instance  instance
 	 *
 	 * @return  void
 	 *
@@ -194,7 +194,7 @@ abstract class KunenaForumCategoryHelper
 	/**
 	 * @param   mixed  $user  user
 	 *
-	 * @return  KunenaForumCategory[]
+	 * @return  Category[]
 	 *
 	 * @since   Kunena 6.0
 	 *
@@ -230,7 +230,7 @@ abstract class KunenaForumCategoryHelper
 	 * @param   bool        $reverse    reverse
 	 * @param   string      $authorise  authorise
 	 *
-	 * @return  array|KunenaForumCategory[]
+	 * @return  array|Category[]
 	 *
 	 * @since   Kunena 6.0
 	 *
@@ -314,7 +314,7 @@ abstract class KunenaForumCategoryHelper
 		$count = 0;
 
 		// Pre-load all items
-		$usercategories = KunenaForumCategoryUserHelper::getCategories($ids, $user);
+		$usercategories = CategoryUserHelper::getCategories($ids, $user);
 
 		foreach ($usercategories as $usercategory)
 		{
@@ -522,7 +522,7 @@ abstract class KunenaForumCategoryHelper
 	 * @param   string      $accesstype  accesstype
 	 * @param   bool|array  $groupids    groupids
 	 *
-	 * @return  KunenaForumCategory[]
+	 * @return  Category[]
 	 *
 	 * @since   Kunena 6.0
 	 */
@@ -555,7 +555,7 @@ abstract class KunenaForumCategoryHelper
 	 * @param   int    $levels  levels
 	 * @param   array  $params  params
 	 *
-	 * @return  KunenaForumCategory[]
+	 * @return  Category[]
 	 *
 	 * @since   Kunena 6.0
 	 *
@@ -608,7 +608,7 @@ abstract class KunenaForumCategoryHelper
 	 * @param   int    $levels  levels
 	 * @param   array  $params  params
 	 *
-	 * @return  KunenaForumCategory[]
+	 * @return  Category[]
 	 *
 	 * @since   Kunena 6.0
 	 *
@@ -655,12 +655,12 @@ abstract class KunenaForumCategoryHelper
 	}
 
 	/**
-	 * Returns the global KunenaForumCategory object, only creating it if it doesn't already exist.
+	 * Returns the global Category object, only creating it if it doesn't already exist.
 	 *
 	 * @param   int   $identifier  The category to load - Can be only an integer.
 	 * @param   bool  $reload      Reload category from the database.
 	 *
-	 * @return  KunenaForumCategory  The Category object.
+	 * @return  Category  The Category object.
 	 *
 	 * @since   Kunena 1.6
 	 *
@@ -670,7 +670,7 @@ abstract class KunenaForumCategoryHelper
 	{
 		KUNENA_PROFILER ? KunenaProfiler::instance()->start('function ' . __CLASS__ . '::' . __FUNCTION__ . '()') : null;
 
-		if ($identifier instanceof KunenaForumCategory)
+		if ($identifier instanceof Category)
 		{
 			KUNENA_PROFILER ? KunenaProfiler::instance()->stop('function ' . __CLASS__ . '::' . __FUNCTION__ . '()') : null;
 
@@ -680,7 +680,7 @@ abstract class KunenaForumCategoryHelper
 		if (!is_numeric($identifier))
 		{
 			KUNENA_PROFILER ? KunenaProfiler::instance()->stop('function ' . __CLASS__ . '::' . __FUNCTION__ . '()') : null;
-			$category = new KunenaForumCategory;
+			$category = new Category;
 			$category->load();
 
 			return $category;
@@ -690,7 +690,7 @@ abstract class KunenaForumCategoryHelper
 
 		if (empty(self::$_instances [$id]))
 		{
-			self::$_instances [$id] = new KunenaForumCategory(['id' => $id]);
+			self::$_instances [$id] = new Category(['id' => $id]);
 			self::$_instances [$id]->load();
 		}
 		elseif ($reload)
@@ -708,7 +708,7 @@ abstract class KunenaForumCategoryHelper
 	 * @param   int    $levels   levels
 	 * @param   array  $params   params
 	 *
-	 * @return  array|KunenaForumCategory[]
+	 * @return  array|Category[]
 	 *
 	 * @since   Kunena 6.0
 	 *
@@ -753,7 +753,7 @@ abstract class KunenaForumCategoryHelper
 	 * @param   array  $params    params
 	 * @param   bool   $optimize  optimize
 	 *
-	 * @return  array|KunenaForumCategory[]
+	 * @return  array|Category[]
 	 *
 	 * @since   Kunena 6.0
 	 *
@@ -765,7 +765,7 @@ abstract class KunenaForumCategoryHelper
 
 		foreach ($parents as $parent)
 		{
-			if ($parent instanceof KunenaForumCategory)
+			if ($parent instanceof Category)
 			{
 				$parent = $parent->id;
 			}
@@ -1126,4 +1126,4 @@ abstract class KunenaForumCategoryHelper
 	}
 }
 
-KunenaForumCategoryHelper::initialize();
+CategoryHelper::initialize();

@@ -14,7 +14,7 @@
  * Taken from Joomla Platform 11.1
  */
 
-namespace Joomla\Component\Kunena;
+namespace Joomla\Component\Kunena\Libraries\Html\Html;
 
 defined('_JEXEC') or die();
 
@@ -29,7 +29,7 @@ use Joomla\CMS\Table\Table;
  *
  * @since   Kunena 6.0
  */
-abstract class JHtmlKunenaGrid
+abstract class Grid
 {
 	/**
 	 * Display a boolean setting widget.

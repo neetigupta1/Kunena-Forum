@@ -10,7 +10,7 @@
  * @link            https://www.kunena.org
  **/
 
-namespace Joomla\Component\Kunena;
+namespace Joomla\Component\Kunena\Libraries\File;
 
 defined('_JEXEC') or die;
 
@@ -19,7 +19,7 @@ defined('_JEXEC') or die;
  *
  * @since   Kunena 6.0
  */
-class KunenaFile
+class File
 {
 	/**
 	 * @param   string  $file  file

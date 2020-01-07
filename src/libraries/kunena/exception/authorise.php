@@ -10,7 +10,7 @@
  * @link          https://www.kunena.org
  **/
 
-namespace Joomla\Component\Kunena;
+namespace Joomla\Component\Kunena\Libraries\Exception;
 
 defined('_JEXEC') or die();
 
@@ -22,7 +22,7 @@ use function defined;
  *
  * @since   Kunena 6.0
  */
-class KunenaExceptionAuthorise extends RuntimeException
+class Authorise extends RuntimeException
 {
 	/**
 	 * @var     array

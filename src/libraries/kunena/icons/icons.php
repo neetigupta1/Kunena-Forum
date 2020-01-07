@@ -10,7 +10,7 @@
  * @link       https://www.kunena.org
  **/
 
-namespace Joomla\Component\Kunena;
+namespace Joomla\Component\Kunena\Libraries\Icons;
 
 defined('_JEXEC') or die();
 
@@ -24,7 +24,7 @@ use function defined;
  *
  * @since   Kunena 5.0
  */
-class KunenaIcons
+class Icons
 {
 	/**
 	 * Return the arrow down icon

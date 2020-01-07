@@ -10,7 +10,7 @@
  * @link          https://www.kunena.org
  **/
 
-namespace Joomla\Component\Kunena;
+namespace Joomla\Component\Kunena\Libraries\Forum\Topic\User\Read;
 
 defined('_JEXEC') or die();
 
@@ -31,7 +31,7 @@ use function defined;
  * @property int $time
  * @property int $user_id
  */
-class KunenaForumTopicUserRead extends CMSObject
+class Read extends CMSObject
 {
 	/**
 	 * @var     boolean

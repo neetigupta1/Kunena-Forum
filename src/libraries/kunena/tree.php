@@ -9,7 +9,7 @@
  * @link           https://www.kunena.org
  **/
 
-namespace Joomla\Component\Kunena;
+namespace Joomla\Component\Kunena\Libraries;
 
 use Iterator;
 use function defined;
@@ -21,7 +21,7 @@ defined('_JEXEC') or die();
  *
  * @since   Kunena 6.0
  */
-class KunenaTree implements Iterator
+class Tree implements Iterator
 {
 	/**
 	 * @var     array

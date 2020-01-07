@@ -10,7 +10,7 @@
  * @link          https://www.kunena.org
  **/
 
-namespace Joomla\Component\Kunena;
+namespace Joomla\Component\Kunena\Libraries\Controller\Application;
 
 defined('_JEXEC') or die();
 
@@ -22,6 +22,7 @@ use Joomla\CMS\Language\Text;
 use Joomla\CMS\Layout\BaseLayout;
 use Joomla\CMS\Pathway\Pathway;
 use Joomla\CMS\Plugin\PluginHelper;
+use Joomla\Component\Kunena\Libraries\Config;
 use RuntimeException;
 use function defined;
 
@@ -30,7 +31,7 @@ use function defined;
  *
  * @since   Kunena 6.0
  */
-class KunenaControllerApplicationDisplay extends KunenaControllerDisplay
+class Display extends KunenaControllerDisplay
 {
 	/**
 	 * @var     Config

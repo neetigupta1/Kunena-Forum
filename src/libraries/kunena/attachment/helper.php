@@ -10,7 +10,7 @@
  * @link          https://www.kunena.org
  **/
 
-namespace Joomla\Component\Kunena;
+namespace Joomla\Component\Kunena\Libraries\Attachment;
 
 defined('_JEXEC') or die();
 
@@ -18,6 +18,7 @@ use Exception;
 use Joomla\CMS\Factory;
 use Joomla\CMS\Filesystem\File;
 use Joomla\Database\Exception\ExecutionFailureException;
+use Joomla\Component\Kunena\Libraries\Attachment\Attachment;
 use RuntimeException;
 use function defined;
 
@@ -26,10 +27,10 @@ use function defined;
  *
  * @since   Kunena 6.0
  */
-abstract class KunenaAttachmentHelper
+abstract class Helper
 {
 	/**
-	 * @var     KunenaAttachment[]
+	 * @var     Attachment[]
 	 * @since   Kunena 6.0
 	 */
 	protected static $_instances = [];
@@ -41,12 +42,12 @@ abstract class KunenaAttachmentHelper
 	protected static $_messages = [];
 
 	/**
-	 * Returns KunenaAttachment object.
+	 * Returns Attachment object.
 	 *
 	 * @param   int   $identifier  The attachment to load - Can be only an integer.
 	 * @param   bool  $reload      reloaded
 	 *
-	 * @return  KunenaAttachment
+	 * @return  Attachment
 	 *
 	 * @since   Kunena 6.0
 	 *
@@ -54,7 +55,7 @@ abstract class KunenaAttachmentHelper
 	 */
 	public static function get($identifier = null, $reload = false)
 	{
-		if ($identifier instanceof KunenaAttachment)
+		if ($identifier instanceof Attachment)
 		{
 			return $identifier;
 		}
@@ -63,12 +64,12 @@ abstract class KunenaAttachmentHelper
 
 		if ($id < 1)
 		{
-			return new KunenaAttachment;
+			return new Attachment;
 		}
 
 		if (empty(self::$_instances[$id]))
 		{
-			$instance = new KunenaAttachment;
+			$instance = new Attachment;
 
 			// Only load messages which haven't been preloaded before (including missing ones).
 			$instance->load(!array_key_exists($id, self::$_instances) ? $id : null);
@@ -87,7 +88,7 @@ abstract class KunenaAttachmentHelper
 	 * @param   bool|array|int  $ids        ids
 	 * @param   string          $authorise  authorise
 	 *
-	 * @return  KunenaAttachment[]
+	 * @return  Attachment[]
 	 *
 	 * @since   Kunena 6.0
 	 *
@@ -192,7 +193,7 @@ abstract class KunenaAttachmentHelper
 	 *
 	 * @param   bool|string  $ids  ids
 	 *
-	 * @return  KunenaAttachment[]
+	 * @return  Attachment[]
 	 *
 	 * @since   Kunena 6.0
 	 *
@@ -290,7 +291,7 @@ abstract class KunenaAttachmentHelper
 	 * @param   bool|array|int  $ids        ids
 	 * @param   string          $authorise  authorise
 	 *
-	 * @return  KunenaAttachment[]
+	 * @return  Attachment[]
 	 *
 	 * @since   Kunena 6.0
 	 *
@@ -604,7 +605,7 @@ abstract class KunenaAttachmentHelper
 
 		try
 		{
-			$results = (array) $db->loadObjectList('id', 'KunenaAttachment');
+			$results = (array) $db->loadObjectList('id', 'Attachment');
 		}
 		catch (ExecutionFailureException $e)
 		{
@@ -677,7 +678,7 @@ abstract class KunenaAttachmentHelper
 	 * @param   mixed  $user    user
 	 * @param   array  $params  params
 	 *
-	 * @return  KunenaAttachment[]
+	 * @return  Attachment[]
 	 *
 	 * @since   Kunena 6.0
 	 *
@@ -721,7 +722,7 @@ abstract class KunenaAttachmentHelper
 
 		try
 		{
-			$results = $db->loadObjectList('id', 'KunenaAttachment');
+			$results = $db->loadObjectList('id', 'Attachment');
 		}
 		catch (RuntimeException $e)
 		{

@@ -10,7 +10,7 @@
  * @link            https://www.kunena.org
  **/
 
-namespace Joomla\Component\Kunena;
+namespace Joomla\Component\Kunena\Libraries\Layout;
 
 defined('_JEXEC') or die();
 
@@ -23,10 +23,10 @@ use function defined;
 /**
  * implements \Kunena specific functions for all layouts.
  *
- * @see     KunenaLayoutBase
+ * @see     Base
  * @since   Kunena 6.0
  */
-class KunenaLayout extends KunenaLayoutBase
+class Layout extends Base
 {
 	/**
 	 * Content to be appended after the main output.

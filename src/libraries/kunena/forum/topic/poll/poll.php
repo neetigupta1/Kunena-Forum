@@ -10,7 +10,7 @@
  * @link          https://www.kunena.org
  **/
 
-namespace Joomla\Component\Kunena;
+namespace Joomla\Component\Kunena\Libraries\Forum\Topic\Poll;
 
 defined('_JEXEC') or die();
 
@@ -35,7 +35,7 @@ use function defined;
  *
  * @since   Kunena 6.0
  */
-class KunenaForumTopicPoll extends CMSObject
+class Poll extends CMSObject
 {
 	/**
 	 * @var     boolean

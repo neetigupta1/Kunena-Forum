@@ -9,7 +9,7 @@
  * @license         https://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link            https://www.kunena.org
  **/
-namespace Joomla\Component\Kunena;
+namespace Joomla\Component\Kunena\Libraries\Html;
 
 defined('_JEXEC') or die();
 
@@ -19,7 +19,6 @@ use Joomla\CMS\Plugin\PluginHelper;
 use Joomla\Database\Exception\ExecutionFailureException;
 use Joomla\Registry\Registry;
 use Joomla\String\StringHelper;
-Config::getInstance()ena\KunenaBbcode;
 use stdClass;
 
 /**
@@ -27,7 +26,7 @@ use stdClass;
  *
  * @since   Kunena 6.0
  */
-abstract class KunenaHtmlParser
+abstract class Parser
 {
 	/**
 	 * @var     null

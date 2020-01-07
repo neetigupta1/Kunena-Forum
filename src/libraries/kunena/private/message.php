@@ -10,7 +10,7 @@
  * @link          http://www.kunena.org
  **/
 
-namespace Joomla\Component\Kunena;
+namespace Joomla\Component\Kunena\Libraries\KunenaPrivate;
 
 defined('_JEXEC') or die();
 
@@ -32,7 +32,7 @@ use function defined;
  *
  * @since   Kunena 6.0
  */
-class KunenaPrivateMessage extends KunenaDatabaseObject
+class Message extends KunenaDatabaseObject
 {
 	/**
 	 * @var     string

@@ -10,7 +10,7 @@
  * @link            https://www.kunena.org
  **/
 
-namespace Joomla\Component\Kunena;
+namespace Joomla\Component\Kunena\Libraries;
 
 defined('_JEXEC') or die;
 
@@ -19,3 +19,12 @@ defined('_JEXEC') or die;
  *
  */
 define('KPATH_FRAMEWORK', __DIR__);
+
+/**
+ * Class KunenaAccess
+ *
+ * @since   Kunena 6.0
+ */
+class Bootstrap
+{
+}

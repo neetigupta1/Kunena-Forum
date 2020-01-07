@@ -10,7 +10,7 @@
  * @link          https://www.kunena.org
  **/
 
-namespace Joomla\Component\Kunena;
+namespace Joomla\Component\Kunena\Libraries\Route;
 
 defined('_JEXEC') or die();
 
@@ -29,7 +29,7 @@ require_once KPATH_SITE . '/router.php';
  *
  * @since   Kunena 6.0
  */
-abstract class KunenaRouteLegacy
+abstract class Legacy
 {
 	/**
 	 * @var     array

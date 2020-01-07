@@ -13,7 +13,7 @@
  * @link           http://www.bestofjoomla.com
  **/
 
-namespace Joomla\Component\Kunena;
+namespace Joomla\Component\Kunena\Libraries;
 
 defined('_JEXEC') or die();
 

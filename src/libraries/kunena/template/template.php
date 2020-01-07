@@ -10,7 +10,7 @@
  * @link            https://www.kunena.org
  **/
 
-namespace Joomla\Component\Kunena;
+namespace Joomla\Component\Kunena\Libraries\Template;
 
 defined('_JEXEC') or die();
 
@@ -37,7 +37,7 @@ use function defined;
  *
  * @since   Kunena 6.0
  */
-class KunenaTemplate extends CMSObject
+class Template extends CMSObject
 {
 	/**
 	 * @var     array

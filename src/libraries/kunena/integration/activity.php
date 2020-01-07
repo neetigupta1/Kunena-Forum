@@ -10,7 +10,7 @@
  * @link          https://www.kunena.org
  **/
 
-namespace Joomla\Component\Kunena;
+namespace Joomla\Component\Kunena\Libraries\Integration;
 
 defined('_JEXEC') or die();
 
@@ -24,7 +24,7 @@ use function defined;
  *
  * @since 3.0.4
  */
-class KunenaIntegrationActivity
+class Activity
 {
 	/**
 	 * @var     mixed

@@ -10,7 +10,7 @@
  * @link          https://www.kunena.org
  **/
 
-namespace Joomla\Component\Kunena;
+namespace Joomla\Component\Kunena\Libraries\Forum\Message\Thankyou;
 
 defined('_JEXEC') or die();
 
@@ -24,7 +24,7 @@ use function defined;
  *
  * @since 2.0
  */
-abstract class KunenaForumMessageThankyouHelper
+abstract class Helper
 {
 	/**
 	 * @var     KunenaForumMessageThankyou[]

@@ -10,7 +10,7 @@
  * @link          https://www.kunena.org
  **/
 
-namespace Joomla\Component\Kunena;
+namespace Joomla\Component\Kunena\Libraries\Activity;
 
 defined('_JEXEC') or die();
 
@@ -21,7 +21,7 @@ use function defined;
  *
  * @since   Kunena 2.0
  */
-class KunenaActivity
+class Activity
 {
 	/**
 	 * Triggered before posting a new topic.

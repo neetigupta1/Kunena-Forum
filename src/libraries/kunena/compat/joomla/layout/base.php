@@ -7,7 +7,7 @@
  * @license     GNU General Public License version 2 or later; see LICENSE.txt
  */
 
-namespace Joomla\Component\Kunena;
+namespace Joomla\Component\Kunena\Libraries\Compat;
 
 defined('JPATH_BASE') or die;
 
@@ -18,6 +18,6 @@ use Joomla\CMS\Layout\BaseLayout;
  *
  * @since   Kunena 6.0
  */
-class KunenaCompatLayoutBase extends BaseLayout
+class LayoutBase extends BaseLayout
 {
 }

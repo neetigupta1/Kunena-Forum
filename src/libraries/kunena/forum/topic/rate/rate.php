@@ -10,7 +10,7 @@
  * @link            https://www.kunena.org
  **/
 
-namespace Joomla\Component\Kunena;
+namespace Joomla\Component\Kunena\Libraries\Forum\Topic\Rate;
 
 defined('_JEXEC') or die();
 
@@ -29,7 +29,7 @@ use function defined;
  *
  * @since 5.0
  */
-class KunenaForumTopicRate extends CMSObject
+class Rate extends CMSObject
 {
 	/**
 	 * @var     integer
