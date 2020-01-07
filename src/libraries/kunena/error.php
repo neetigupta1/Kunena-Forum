@@ -8,10 +8,16 @@
  * @license        https://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link           https://www.kunena.org
  **/
+
+namespace Kunena;
+
 defined('_JEXEC') or die();
 
+use Exception;
 use Joomla\CMS\Factory;
 use Joomla\CMS\Language\Text;
+use Joomla\Database\Exception\ExecutionFailureException;
+use function defined;
 
 /**
  * Class KunenaError
@@ -140,7 +146,7 @@ abstract class KunenaError
 	/**
 	 * Return different error if it's an admin or a simple user
 	 *
-	 * @param   Exception| Joomla\Database\Exception\ExecutionFailureException  $exception  exception
+	 * @param   Exception| ExecutionFailureException  $exception  exception
 	 *
 	 * @return  void
 	 *

@@ -9,10 +9,17 @@
  * @license       https://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link          https://www.kunena.org
  **/
+
+namespace Kunena;
+
 defined('_JEXEC') or die();
 
+use Exception;
 use Joomla\CMS\Factory;
 use Joomla\CMS\Object\CMSObject;
+use Joomla\CMS\Plugin\PluginHelper;
+use Joomla\CMS\Table\Table;
+use function defined;
 
 /**
  * Class KunenaDatabaseObject
@@ -176,7 +183,7 @@ abstract class KunenaDatabaseObject extends CMSObject
 		}
 
 		// Include the Kunena plugins for the on save events.
-		Joomla\CMS\Plugin\PluginHelper::importPlugin('kunena');
+		PluginHelper::importPlugin('kunena');
 
 		// Trigger the onKunenaBeforeSave event.
 		$result = Factory::getApplication()->triggerEvent('onKunenaBeforeSave', ["com_kunena.{$this->_name}", &$table, $isNew]);
@@ -235,13 +242,13 @@ abstract class KunenaDatabaseObject extends CMSObject
 	/**
 	 * Method to get the table object.
 	 *
-	 * @return  Joomla\CMS\Table\Table|KunenaTable  The table object.
+	 * @return  Table|KunenaTable  The table object.
 	 *
 	 * @since   Kunena 6.0
 	 */
 	protected function getTable()
 	{
-		return Joomla\CMS\Table\Table::getInstance($this->_table, 'Table');
+		return Table::getInstance($this->_table, 'Table');
 	}
 
 	/**
@@ -317,7 +324,7 @@ abstract class KunenaDatabaseObject extends CMSObject
 		$table->exists($this->_exists);
 
 		// Include the Kunena plugins for the on save events.
-		Joomla\CMS\Plugin\PluginHelper::importPlugin('kunena');
+		PluginHelper::importPlugin('kunena');
 
 		// Trigger the onKunenaBeforeDelete event.
 		$result = Factory::getApplication()->triggerEvent('onKunenaBeforeDelete', ["com_kunena.{$this->_name}", $table]);

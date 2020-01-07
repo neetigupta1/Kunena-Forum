@@ -9,11 +9,18 @@
  * @license         https://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link            https://www.kunena.org
  **/
+
+namespace Kunena;
+
 defined('_JEXEC') or die();
 
+use Exception;
+use InvalidArgumentException;
 use Joomla\CMS\Factory;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\Session\Session;
+use Joomla\CMS\Uri\Uri;
+use function defined;
 
 /**
  * Class KunenaForumAnnouncement
@@ -138,13 +145,13 @@ class KunenaForumAnnouncement extends KunenaDatabaseObject
 	 *
 	 * @param   string  $layout  layout
 	 *
-	 * @return  Joomla\CMS\Uri\Uri
+	 * @return  Uri
 	 *
 	 * @since   Kunena 6.0
 	 */
 	public function getUri($layout = 'default')
 	{
-		$uri = new Joomla\CMS\Uri\Uri('index.php?option=com_kunena&view=announcement');
+		$uri = new Uri('index.php?option=com_kunena&view=announcement');
 
 		if ($layout)
 		{
@@ -184,13 +191,13 @@ class KunenaForumAnnouncement extends KunenaDatabaseObject
 	 *
 	 * @param   string  $task  task
 	 *
-	 * @return  Joomla\CMS\Uri\Uri
+	 * @return  Uri
 	 *
 	 * @since   Kunena 6.0
 	 */
 	public function getTaskUri($task = null)
 	{
-		$uri = new Joomla\CMS\Uri\Uri('index.php?option=com_kunena&view=announcement');
+		$uri = new Uri('index.php?option=com_kunena&view=announcement');
 
 		if ($task)
 		{

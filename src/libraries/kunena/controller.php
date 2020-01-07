@@ -8,21 +8,29 @@
  * @license        https://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link           https://www.kunena.org
  **/
+
+namespace Kunena;
+
 defined('_JEXEC') or die();
 
+use Exception;
 use Joomla\CMS\Factory;
 use Joomla\CMS\Language\Text;
+use Joomla\CMS\MVC\Controller\BaseController;
+use Joomla\CMS\Plugin\PluginHelper;
 use Joomla\CMS\Uri\Uri;
 use Joomla\CMS\Log\Log;
 use Joomla\CMS\Router\Route;
 use Joomla\CMS\Application\CMSApplicationInterface;
+use KunenaVersion;
+use function defined;
 
 /**
  * Class KunenaController
  *
  * @since   Kunena 6.0
  */
-class KunenaController extends Joomla\CMS\MVC\Controller\BaseController
+class KunenaController extends BaseController
 {
 	/**
 	 * @var     CMSApplicationInterface
@@ -37,7 +45,7 @@ class KunenaController extends Joomla\CMS\MVC\Controller\BaseController
 	public $me = null;
 
 	/**
-	 * @var     KunenaConfig|null
+	 * @var     Config|null
 	 * @since   Kunena 6.0
 	 */
 	public $config = null;
@@ -53,7 +61,6 @@ class KunenaController extends Joomla\CMS\MVC\Controller\BaseController
 	{
 		parent::__construct($config);
 		$this->profiler = KunenaProfiler::instance('Kunena');
-		$this->config   = KunenaFactory::getConfig();
 		$this->me       = KunenaUserHelper::getMyself();
 
 		// Save user profile if it didn't exist.
@@ -335,9 +342,9 @@ class KunenaController extends Joomla\CMS\MVC\Controller\BaseController
 	 *
 	 * @param   boolean     $cachable   If true, the view output will be cached
 	 * @param   array|bool  $urlparams  An array of safe url parameters and their variable types, for valid values see
-	 *                                  {@link Joomla\CMS\Filter\InputFilter::clean()}.
+	 *                                  {@link \Joomla\CMS\Filter\InputFilter::clean()}.
 	 *
-	 * @return  Joomla\CMS\MVC\Controller\BaseController  A Joomla\CMS\MVC\Controller\BaseController object to
+	 * @return  BaseController  A Joomla\CMS\MVC\Controller\BaseController object to
 	 *                                                     support chaining.
 	 * @since   Kunena 6.0
 	 *
@@ -438,7 +445,7 @@ class KunenaController extends Joomla\CMS\MVC\Controller\BaseController
 			// Render the view.
 			if ($vFormat == 'html')
 			{
-				Joomla\CMS\Plugin\PluginHelper::importPlugin('kunena');
+				PluginHelper::importPlugin('kunena');
 				Factory::getApplication()->triggerEvent('onKunenaDisplay', ['start', $view]);
 				$view->displayAll();
 				Factory::getApplication()->triggerEvent('onKunenaDisplay', ['end', $view]);

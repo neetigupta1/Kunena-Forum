@@ -9,11 +9,19 @@
  * @license       https://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link          https://www.kunena.org
  **/
+
+namespace Kunena;
+
 defined('_JEXEC') or die();
 
+use Exception;
+use InvalidArgumentException;
 use Joomla\CMS\Document\Document;
 use Joomla\CMS\Factory;
 use Joomla\CMS\Language\Text;
+use Joomla\CMS\Layout\BaseLayout;
+
+use function defined;
 
 /**
  * Class KunenaControllerDisplay
@@ -35,7 +43,7 @@ abstract class KunenaControllerDisplay extends KunenaControllerBase
 	public $layout = 'default';
 
 	/**
-	 * @var     KunenaConfig
+	 * @var     Config
 	 * @since   Kunena 6.0
 	 */
 	public $config;
@@ -125,7 +133,7 @@ abstract class KunenaControllerDisplay extends KunenaControllerBase
 	/**
 	 * @see     KunenaControllerBase::execute()
 	 *
-	 * @return  Joomla\CMS\Layout\BaseLayout|KunenaLayout|null
+	 * @return  BaseLayout|KunenaLayout|null
 	 *
 	 * @since   Kunena 6.0
 	 *
@@ -183,7 +191,7 @@ abstract class KunenaControllerDisplay extends KunenaControllerBase
 	protected function before()
 	{
 		$this->layout = $this->input->getCmd('layout', 'default');
-		$this->config = KunenaConfig::getInstance();
+		$this->config = Config::getInstance();
 
 		if ($this->primary)
 		{
@@ -194,7 +202,7 @@ abstract class KunenaControllerDisplay extends KunenaControllerBase
 	/**
 	 * Initialize and display the layout.
 	 *
-	 * @return  Joomla\CMS\Layout\BaseLayout|KunenaLayout
+	 * @return  BaseLayout|KunenaLayout
 	 *
 	 * @since   Kunena 6.0
 	 *

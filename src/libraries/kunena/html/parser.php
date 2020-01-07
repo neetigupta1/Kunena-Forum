@@ -9,10 +9,18 @@
  * @license         https://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link            https://www.kunena.org
  **/
+namespace Kunena;
+
 defined('_JEXEC') or die();
 
+use Exception;
 use Joomla\CMS\Factory;
+use Joomla\CMS\Plugin\PluginHelper;
 use Joomla\Database\Exception\ExecutionFailureException;
+use Joomla\Registry\Registry;
+use Joomla\String\StringHelper;
+use Kunena\KunenaBbcode;
+use stdClass;
 
 /**
  * Class KunenaHtmlParser
@@ -124,9 +132,9 @@ abstract class KunenaHtmlParser
 			return false;
 		}
 
-		if ($len && Joomla\String\StringHelper::strlen($txt) > $len)
+		if ($len && StringHelper::strlen($txt) > $len)
 		{
-			$txt = Joomla\String\StringHelper::substr($txt, 0, $len) . ' ...';
+			$txt = StringHelper::substr($txt, 0, $len) . ' ...';
 		}
 
 		$txt = self::escape($txt);
@@ -165,7 +173,7 @@ abstract class KunenaHtmlParser
 		$event_target = (array) $config->get('jcontentevent_target', []);
 
 		$name   = '';
-		$plugin = Joomla\CMS\Plugin\PluginHelper::getPlugin('content');
+		$plugin = PluginHelper::getPlugin('content');
 
 		foreach ($plugin as $key => $value)
 		{
@@ -178,10 +186,10 @@ abstract class KunenaHtmlParser
 			$row->text =& $content;
 
 			// Run events
-			$params = new Joomla\Registry\Registry;
+			$params = new Registry;
 			$params->set('ksource', 'kunena');
 
-			Joomla\CMS\Plugin\PluginHelper::importPlugin('content');
+			PluginHelper::importPlugin('content');
 			Factory::getApplication()->triggerEvent('onContentPrepare', [$name, &$row, &$params, 0]);
 			$content = $row->text;
 		}
@@ -288,7 +296,7 @@ abstract class KunenaHtmlParser
 		$txt = preg_replace('/\[instagram(.*?)\](.*?)\[\/instagram]/s', '', $txt);
 		$txt = preg_replace('/\[soundcloud(.*?)\](.*?)\[\/soundcloud]/s', '', $txt);
 
-		if (Joomla\CMS\Plugin\PluginHelper::isEnabled('content', 'emailcloak'))
+		if (PluginHelper::isEnabled('content', 'emailcloak'))
 		{
 			$pattern     = "/[^@\s]*@[^@\s]*\.[^@\s]*/";
 			$replacement = ' ';

@@ -10,10 +10,17 @@
  * @license          https://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link             https://www.kunena.org
  **/
+
+namespace Kunena;
+
 defined('_JEXEC') or die();
 
+use Exception;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\Uri\Uri;
+use Joomla\String\StringHelper;
+use stdClass;
+use function defined;
 
 /**
  * Class KunenaActivityCommunity
@@ -49,7 +56,7 @@ class KunenaActivityCommunity extends KunenaActivity
 	 */
 	public function onAfterPost($message)
 	{
-		if (Joomla\String\StringHelper::strlen($message->message) > $this->params->get('activity_points_limit', 0))
+		if (StringHelper::strlen($message->message) > $this->params->get('activity_points_limit', 0))
 		{
 			CFactory::load('libraries', 'userpoints');
 			CUserPoints::assignPoint('com_kunena.thread.new');
@@ -165,7 +172,7 @@ class KunenaActivityCommunity extends KunenaActivity
 	 */
 	public function onAfterReply($message)
 	{
-		if (Joomla\String\StringHelper::strlen($message->message) > $this->params->get('activity_points_limit', 0))
+		if (StringHelper::strlen($message->message) > $this->params->get('activity_points_limit', 0))
 		{
 			CFactory::load('libraries', 'userpoints');
 			CUserPoints::assignPoint('com_kunena.thread.reply');

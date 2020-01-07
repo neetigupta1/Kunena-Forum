@@ -8,11 +8,17 @@
  * @license        https://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link           https://www.kunena.org
  **/
+
+namespace Kunena;
+
 defined('_JEXEC') or die();
 
+use DateTimeZone;
+use Exception;
 use Joomla\CMS\Factory;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\Date\Date;
+use function defined;
 
 /**
  * Class KunenaDate
@@ -188,7 +194,7 @@ class KunenaDate extends Date
 		// We only want to output two chunks of time here, eg: "x years, xx months" or "x days, xx hours"
 		$tick   = 0;
 		$output = '';
-		$diff   = $this->diff(new Joomla\CMS\Date\Date);
+		$diff   = $this->diff(new Date);
 
 		foreach ($diff as $name => $count)
 		{

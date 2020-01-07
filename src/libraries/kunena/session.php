@@ -8,10 +8,17 @@
  * @license        https://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link           https://www.kunena.org
  **/
+
+namespace Kunena;
+
 defined('_JEXEC') or die();
 
+use Exception;
 use Joomla\CMS\Factory;
 use Joomla\CMS\Object\CMSObject;
+use Joomla\CMS\Table\Table;
+use RuntimeException;
+use function defined;
 
 /**
  * Class KunenaSession
@@ -147,7 +154,7 @@ class KunenaSession extends CMSObject
 		}
 
 		// Create the user table object
-		return Joomla\CMS\Table\Table::getInstance($tabletype['name'], $tabletype['prefix']);
+		return Table::getInstance($tabletype['name'], $tabletype['prefix']);
 	}
 
 	/**

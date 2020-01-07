@@ -9,11 +9,18 @@
  * @license       https://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link          https://www.kunena.org
  **/
+
+namespace Kunena;
+
 defined('_JEXEC') or die();
 
+use InvalidArgumentException;
 use Joomla\CMS\Factory;
 use Joomla\Utilities\ArrayHelper;
 use Joomla\Database\DatabaseDriver;
+use RuntimeException;
+use UnexpectedValueException;
+use function defined;
 
 /**
  * Class KunenaTableMap

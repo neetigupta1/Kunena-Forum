@@ -9,11 +9,19 @@
  * @license       https://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link          https://www.kunena.org
  **/
+
+namespace Kunena;
+
 defined('_JEXEC') or die();
 
+use Exception;
+use Joomla\CMS\Date\Date;
 use Joomla\CMS\Language\Text;
+use Joomla\CMS\Table\Table;
 use Joomla\Database\Exception\ExecutionFailureException;
 use Joomla\Database\DatabaseDriver;
+use RuntimeException;
+use function defined;
 
 require_once __DIR__ . '/kunena.php';
 
@@ -23,16 +31,16 @@ require_once __DIR__ . '/kunena.php';
  *
  * @since   Kunena 6.0
  */
-class TableKunenaUserBans extends Joomla\CMS\Table\Table
+class TableKunenaUserBans extends Table
 {
 	/**
 	 * @since   Kunena 6.0
- */
+	 */
 	const ANY = 0;
 
 	/**
 	 * @since   Kunena 6.0
- */
+	 */
 	const ACTIVE = 1;
 
 	/**
@@ -146,7 +154,7 @@ class TableKunenaUserBans extends Joomla\CMS\Table\Table
 			return false;
 		}
 
-		$now      = new Joomla\CMS\Date\Date;
+		$now      = new Date;
 		$nullDate = $this->_db->getNullDate() ? $this->_db->quote($this->_db->getNullDate()) : 'NULL';
 
 		// Load the user data.
@@ -237,7 +245,7 @@ class TableKunenaUserBans extends Joomla\CMS\Table\Table
 			return false;
 		}
 
-		$now      = new Joomla\CMS\Date\Date;
+		$now      = new Date;
 		$nullDate = $this->_db->getNullDate() ? $this->_db->quote($this->_db->getNullDate()) : 'NULL';
 
 		// Load the user data.

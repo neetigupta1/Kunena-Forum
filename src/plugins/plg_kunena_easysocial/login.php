@@ -9,9 +9,13 @@
  * other free or open source software licenses.
  * See COPYRIGHT.php for copyright notices and details.
  */
+
+namespace Kunena;
+
 defined('_JEXEC') or die('Unauthorized Access');
 
 use Joomla\CMS\Component\ComponentHelper;
+use function defined;
 
 /**
  * @package     Kunena

@@ -9,10 +9,16 @@
  * @license         https://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link            https://www.kunena.org
  **/
+
+namespace Kunena;
+
 defined('_JEXEC') or die();
 
+use Exception;
 use Joomla\CMS\Factory;
 use Joomla\CMS\Router\Route;
+use RuntimeException;
+use function defined;
 
 /**
  * KunenaActivityAltaUserPoints class to handle profile integration with AltaUserPoints

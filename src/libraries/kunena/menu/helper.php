@@ -10,11 +10,17 @@
  * @license       https://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link          https://www.kunena.org
  **/
+
+namespace Kunena;
+
 defined('_JEXEC') or die();
 
+use Exception;
 use Joomla\CMS\Factory;
 use Joomla\CMS\Router\Route;
 use Joomla\CMS\Language\Multilanguage;
+use Joomla\Registry\Registry;
+use function defined;
 
 /**
  * Class KunenaMenuHelper
@@ -40,7 +46,7 @@ abstract class KunenaMenuHelper
 	 *
 	 * @see     modules/mod_menu/helper.php
 	 *
-	 * @param   Joomla\Registry\Registry  $params  The module options.
+	 * @param   Registry  $params  The module options.
 	 *
 	 * @return   array
 	 *
@@ -182,7 +188,7 @@ abstract class KunenaMenuHelper
 	/**
 	 * Get base menu item.
 	 *
-	 * @param   Joomla\Registry\Registry $params  The module options.
+	 * @param   Registry $params  The module options.
 	 *
 	 * @return  object
 	 *
@@ -214,7 +220,7 @@ abstract class KunenaMenuHelper
 	/**
 	 * Get active menu item.
 	 *
-	 * @param   Joomla\Registry\Registry $params  The module options.
+	 * @param   Registry $params  The module options.
 	 *
 	 * @return  object
 	 *

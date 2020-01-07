@@ -9,10 +9,15 @@
  * @license       https://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link          https://www.kunena.org
  **/
+
+namespace Kunena;
+
 defined('_JEXEC') or die();
 
+use Exception;
 use Joomla\CMS\Factory;
 use Joomla\CMS\Filesystem\Folder;
+use function defined;
 
 /**
  * Class KunenaCacheHelper has helper functions to clear all caches that affects Kunena.

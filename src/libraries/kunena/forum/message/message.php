@@ -9,16 +9,26 @@
  * @license       https://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link          https://www.kunena.org
  **/
+
+namespace Kunena;
+
 defined('_JEXEC') or die();
 
+use Exception;
+use InvalidArgumentException;
 use Joomla\CMS\Factory;
 use Joomla\CMS\Language\Text;
+use Joomla\CMS\Mail\Mail;
+use Joomla\CMS\Mail\MailHelper;
 use Joomla\CMS\Uri\Uri;
 use Joomla\CMS\Filesystem\File;
 use Joomla\CMS\Mail\MailTemplate;
+use Joomla\CMS\User\UserHelper;
 use Joomla\Database\Exception\ExecutionFailureException;
 use Joomla\CMS\Log\Log;
 use Joomla\Database\DatabaseDriver;
+use StdClass;
+use function defined;
 
 /**
  * Class KunenaForumMessage
@@ -309,7 +319,7 @@ class KunenaForumMessage extends KunenaDatabaseObject
 	/**
 	 * @param   null|KunenaForumCategory  $category  Fake category if needed. Used for aliases.
 	 *
-	 * @return  Joomla\CMS\Uri\Uri
+	 * @return  Uri
 	 *
 	 * @since   Kunena 6.0
 	 *
@@ -349,7 +359,7 @@ class KunenaForumMessage extends KunenaDatabaseObject
 		$message->ip      = KunenaUserHelper::getUserIp();
 
 		// Add IP to user.
-		if (KunenaConfig::getInstance()->iptracking)
+		if (Config::getInstance()->iptracking)
 		{
 			if (empty($user->ip))
 			{
@@ -357,7 +367,7 @@ class KunenaForumMessage extends KunenaDatabaseObject
 			}
 		}
 
-		if (KunenaConfig::getInstance()->allow_change_subject && $topic->first_post_userid == $message->userid || KunenaUserHelper::getMyself()->isModerator())
+		if (Config::getInstance()->allow_change_subject && $topic->first_post_userid == $message->userid || KunenaUserHelper::getMyself()->isModerator())
 		{
 			if (isset($fields['subject']))
 			{
@@ -450,7 +460,7 @@ class KunenaForumMessage extends KunenaDatabaseObject
 	 *
 	 * @since   Kunena 6.0
 	 *
-	 * @throws \PHPMailer\PHPMailer\Exception
+	 * @throws Exception
 	 */
 	public function notificationPost()
 	{
@@ -532,7 +542,7 @@ class KunenaForumMessage extends KunenaDatabaseObject
 
 				return false;
 			}
-			elseif (!Joomla\CMS\Mail\MailHelper::isEmailAddress($config->getEmail()))
+			elseif (!MailHelper::isEmailAddress($config->getEmail()))
 			{
 				KunenaError::warning(Text::_('COM_KUNENA_EMAIL_INVALID'));
 
@@ -547,7 +557,7 @@ class KunenaForumMessage extends KunenaDatabaseObject
 
 			foreach ($emailToList as $emailTo)
 			{
-				if (!$emailTo->email || !Joomla\CMS\Mail\MailHelper::isEmailAddress($emailTo->email))
+				if (!$emailTo->email || !MailHelper::isEmailAddress($emailTo->email))
 				{
 					continue;
 				}
@@ -556,13 +566,13 @@ class KunenaForumMessage extends KunenaDatabaseObject
 				$sentusers[]                         = $emailTo->id;
 			}
 
-			$mailsender  = Joomla\CMS\Mail\MailHelper::cleanAddress($config->board_title);
-			$mailsubject = Joomla\CMS\Mail\MailHelper::cleanSubject($topic->subject . " (" . $this->getCategory()->name . ")");
+			$mailsender  = MailHelper::cleanAddress($config->board_title);
+			$mailsubject = MailHelper::cleanSubject($topic->subject . " (" . $this->getCategory()->name . ")");
 			$subject     = $this->subject ? $this->subject : $topic->subject;
 
 			// Create email.
 			$user = Factory::getUser();
-			$mail = Joomla\CMS\Factory::getMailer();
+			$mail = Factory::getMailer();
 			$mail->setSubject($mailsubject);
 			$mail->setSender([$config->getEmail(), $mailsender]);
 			$app = Factory::getApplication();
@@ -681,7 +691,7 @@ class KunenaForumMessage extends KunenaDatabaseObject
 	/**
 	 * @param   null|KunenaForumCategory  $category  category
 	 *
-	 * @return  Joomla\CMS\Uri\Uri|boolean
+	 * @return  Uri|boolean
 	 *
 	 * @since   Kunena 6.0
 	 *
@@ -703,7 +713,7 @@ class KunenaForumMessage extends KunenaDatabaseObject
 
 	/**
 	 *
-	 * @param   Joomla\CMS\Mail\Mail   $mail          mail
+	 * @param   Mail   $mail          mail
 	 * @param   int                    $subscription  subscription
 	 * @param   string                 $subject       subject
 	 * @param   string                 $url           url
@@ -1565,7 +1575,7 @@ class KunenaForumMessage extends KunenaDatabaseObject
 			$this->name = trim($this->name);
 
 			// Unregistered or anonymous users: Do not allow existing username
-			$nicktaken = Joomla\CMS\User\UserHelper::getUserId($this->name);
+			$nicktaken = UserHelper::getUserId($this->name);
 
 			if (empty($this->name) || $nicktaken)
 			{
@@ -1583,7 +1593,7 @@ class KunenaForumMessage extends KunenaDatabaseObject
 		if ($this->email)
 		{
 			// Email address must be valid
-			if (!Joomla\CMS\Mail\MailHelper::isEmailAddress($this->email))
+			if (!MailHelper::isEmailAddress($this->email))
 			{
 				$this->setError(Text::sprintf('COM_KUNENA_LIB_MESSAGE_ERROR_EMAIL_INVALID'));
 

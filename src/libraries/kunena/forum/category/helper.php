@@ -9,11 +9,18 @@
  * @license       https://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link          https://www.kunena.org
  **/
+
+namespace Kunena;
+
 defined('_JEXEC') or die();
 
+use Exception;
 use Joomla\CMS\Factory;
 use Joomla\CMS\Language\Text;
 use Joomla\Database\Exception\ExecutionFailureException;
+use Joomla\String\StringHelper;
+use RuntimeException;
+use function defined;
 
 /**
  * Class KunenaForumCategoryHelper
@@ -53,7 +60,7 @@ abstract class KunenaForumCategoryHelper
 	{
 		KUNENA_PROFILER ? KunenaProfiler::instance()->start('function ' . __CLASS__ . '::' . __FUNCTION__ . '()') : null;
 
-		if (KunenaConfig::getInstance()->get('cache_cat'))
+		if (KunenaFactory::getConfig()->get('cache_cat'))
 		{
 			$cache = Factory::getCache('com_kunena', 'callback');
 			$cache->setLifeTime(180);
@@ -822,8 +829,8 @@ abstract class KunenaForumCategoryHelper
 
 				if (!$optimize)
 				{
-					$filtered |= isset($params['filter_title']) && (Joomla\String\StringHelper::stristr($instance->name, (string) $params['filter_title']) === false
-							&& Joomla\String\StringHelper::stristr($instance->alias, (string) $params['filter_title']) === false);
+					$filtered |= isset($params['filter_title']) && (StringHelper::stristr($instance->name, (string) $params['filter_title']) === false
+							&& StringHelper::stristr($instance->alias, (string) $params['filter_title']) === false);
 					$filtered |= isset($params['filter_type']);
 					$filtered |= isset($params['filter_access']) && ($instance->accesstype != 'joomla.level' || $instance->access != $params['filter_access']);
 					$filtered |= isset($params['filter_locked']) && $instance->locked != (int) $params['filter_locked'];
@@ -851,7 +858,7 @@ abstract class KunenaForumCategoryHelper
 					continue;
 				}
 
-				if (!empty($clist) || !$params['search'] || intval($params['search']) == $id || Joomla\String\StringHelper::stristr($instance->name, (string) $params['search']))
+				if (!empty($clist) || !$params['search'] || intval($params['search']) == $id || StringHelper::stristr($instance->name, (string) $params['search']))
 				{
 					if (!$filtered && (empty($clist) || $params['parents']))
 					{
@@ -1077,7 +1084,7 @@ abstract class KunenaForumCategoryHelper
 			return 0;
 		}
 
-		return Joomla\String\StringHelper::strcasecmp(self::$_instances[$a]->name, self::$_instances[$b]->name);
+		return StringHelper::strcasecmp(self::$_instances[$a]->name, self::$_instances[$b]->name);
 	}
 
 	/**
@@ -1095,7 +1102,7 @@ abstract class KunenaForumCategoryHelper
 			return 0;
 		}
 
-		return Joomla\String\StringHelper::strcasecmp(self::$_instances[$b]->name, self::$_instances[$a]->name);
+		return StringHelper::strcasecmp(self::$_instances[$b]->name, self::$_instances[$a]->name);
 	}
 
 	/**

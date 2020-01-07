@@ -9,13 +9,25 @@
  * @license         https://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link            https://www.kunena.org
  **/
+
+namespace Kunena;
+
 defined('_JEXEC') or die();
 
+use DateTime;
+use DateTimeZone;
+use Exception;
+use InvalidArgumentException;
+use Joomla\CMS\Application\CMSApplication;
+use Joomla\CMS\Date\Date;
 use Joomla\CMS\Factory;
 use Joomla\CMS\Language\Text;
+use Joomla\CMS\Pagination\Pagination;
 use Joomla\CMS\Uri\Uri;
 use Joomla\Database\Exception\ExecutionFailureException;
 use Joomla\Database\DatabaseDriver;
+use RuntimeException;
+use function defined;
 
 /**
  * Class KunenaForumTopic
@@ -921,7 +933,7 @@ class KunenaForumTopic extends KunenaDatabaseObject
 	 * @param   int       $display     display
 	 * @param   string    $prefix      prefix
 	 *
-	 * @return  Joomla\CMS\Pagination\Pagination|KunenaPagination
+	 * @return  Pagination|KunenaPagination
 	 *
 	 * @since   Kunena 6.0
 	 *
@@ -950,7 +962,7 @@ class KunenaForumTopic extends KunenaDatabaseObject
 	 * @param   mixed   $category  category
 	 * @param   string  $action    action
 	 *
-	 * @return  Joomla\CMS\Uri\Uri|void
+	 * @return  Uri|void
 	 *
 	 * @since   Kunena 6.0
 	 *
@@ -1583,7 +1595,7 @@ class KunenaForumTopic extends KunenaDatabaseObject
 		$this->_authfcache = $this->_authccache = $this->_authcache = [];
 
 		// Cleanup input
-		if (!($ids instanceof Joomla\CMS\Date\Date))
+		if (!($ids instanceof Date))
 		{
 			if (!is_array($ids))
 			{
@@ -1611,7 +1623,7 @@ class KunenaForumTopic extends KunenaDatabaseObject
 				->from($this->_db->quoteName('#__kunena_messages'))
 				->where($this->_db->quoteName('thread') . ' = ' . $this->_db->quote($this->id));
 
-			if ($ids instanceof Joomla\CMS\Date\Date)
+			if ($ids instanceof Date)
 			{
 				// All older messages will remain (including unapproved, deleted)
 				$query->where($this->_db->quoteName('time') . ' < ' . $this->_db->quote($ids->toUnix()));
@@ -1777,7 +1789,7 @@ class KunenaForumTopic extends KunenaDatabaseObject
 			$query->set($this->_db->quoteName('subject') . ' = ' . $this->_db->quote($subject));
 		}
 
-		if ($ids instanceof Joomla\CMS\Date\Date)
+		if ($ids instanceof Date)
 		{
 			// Move all newer messages (includes unapproved, deleted messages)
 			$query->where($this->_db->quoteName('time') . ' >= ' . $this->_db->quote($ids->toUnix()));
@@ -2248,7 +2260,7 @@ class KunenaForumTopic extends KunenaDatabaseObject
 
 		if (!$config->pollallowvoteone && $votes)
 		{
-			$time_zone   = Joomla\CMS\Application\CMSApplication::getInstance('site')->get('offset');
+			$time_zone   = CMSApplication::getInstance('site')->get('offset');
 			$objTimeZone = new DateTimeZone($time_zone);
 
 			// Check the time between two votes

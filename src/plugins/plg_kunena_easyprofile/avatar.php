@@ -9,11 +9,17 @@
  * @license         https://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link            https://www.kunena.org
  **/
+
+namespace Kunena;
+
 defined('_JEXEC') or die();
 
+use Exception;
 use Joomla\CMS\Factory;
 use Joomla\CMS\Uri\Uri;
 use Joomla\CMS\Router\Route;
+use Joomla\Registry\Registry;
+use function defined;
 
 /**
  * Class KunenaAvatarEasyprofile
@@ -90,7 +96,7 @@ class KunenaAvatarEasyprofile extends KunenaAvatar
 				->where('alias = \'avatar\'');
 			$db->setQuery($query);
 			$params   = $db->loadResult();
-			$registry = new Joomla\Registry\Registry;
+			$registry = new Registry;
 			$registry->loadString($params);
 			$params = $registry->toArray();
 

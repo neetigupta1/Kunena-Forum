@@ -9,11 +9,16 @@
  * other free or open source software licenses.
  * See COPYRIGHT.php for copyright notices and details.
  */
+
+namespace Kunena;
+
 defined('_JEXEC') or die('Unauthorized Access');
 
+use Exception;
 use Joomla\String\StringHelper;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\Uri\Uri;
+use function defined;
 
 /**
  * @package  Easysocial

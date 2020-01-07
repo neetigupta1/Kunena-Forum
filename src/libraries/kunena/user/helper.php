@@ -9,10 +9,18 @@
  * @license         https://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link            https://www.kunena.org
  **/
+
+namespace Kunena;
+
 defined('_JEXEC') or die();
 
 KunenaUserHelper::initialize();
 
+use BadMethodCallException;
+use Exception;
+use Joomla\CMS\Access\Access;
+use Joomla\CMS\User\User;
+use Joomla\CMS\User\UserHelper;
 use Joomla\Http\Response;
 use Joomla\Utilities\ArrayHelper;
 use Joomla\CMS\Factory;
@@ -20,6 +28,7 @@ use Joomla\Utilities\IpHelper;
 use Joomla\Http\Http;
 use Joomla\Http\Transport\Stream as StreamTransport;
 use Joomla\Database\Exception\ExecutionFailureException;
+use function defined;
 
 /**
  * Class KunenaUserHelper
@@ -172,7 +181,7 @@ abstract class KunenaUserHelper
 		}
 
 		// Find the user id
-		if ($identifier instanceof Joomla\CMS\User\User)
+		if ($identifier instanceof User)
 		{
 			$id = (int) $identifier->id;
 		}
@@ -184,7 +193,7 @@ abstract class KunenaUserHelper
 		else
 		{
 			// Slow, don't use usernames!
-			$id = (int) Joomla\CMS\User\UserHelper::getUserId((string) $identifier);
+			$id = (int) UserHelper::getUserId((string) $identifier);
 		}
 
 		// Always return fresh user if id is anonymous/not found
@@ -403,7 +412,7 @@ abstract class KunenaUserHelper
 
 			if (KunenaFactory::getConfig()->superadmin_userlist)
 			{
-				$filter = Joomla\CMS\Access\Access::getUsersByGroup(8);
+				$filter = Access::getUsersByGroup(8);
 				$query->where($db->quoteName('u.id') . ' NOT IN (' . implode(',', $filter) . ')');
 			}
 
@@ -840,7 +849,7 @@ abstract class KunenaUserHelper
 
 		if ($response->code == '200')
 		{
-			if (KunenaConfig::getInstance()->log_moderation)
+			if (KunenaFactory::getConfig()->log_moderation)
 			{
 				$log = KunenaLog::LOG_USER_REPORT_STOPFORUMSPAM;
 

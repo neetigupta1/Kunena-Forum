@@ -9,13 +9,19 @@
  * @license         https://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link            https://www.kunena.org
  **/
+
+namespace Kunena;
+
 defined('_JEXEC') or die();
 
+use Exception;
 use Joomla\CMS\Factory;
 use Joomla\CMS\HTML\HTMLHelper;
 use Joomla\CMS\Language\Text;
+use Joomla\CMS\Plugin\PluginHelper;
 use Joomla\Utilities\ArrayHelper;
 use Joomla\Database\Exception\ExecutionFailureException;
+use function defined;
 
 /**
  * Class KunenaAccess
@@ -81,8 +87,6 @@ class KunenaAccess
 	protected $moderatorsByUserid = null;
 
 	/**
-	 * @return  void
-	 *
 	 * @since   Kunena 6.0
 	 *
 	 * @throws  Exception
@@ -90,7 +94,7 @@ class KunenaAccess
 	public function __construct()
 	{
 		KUNENA_PROFILER ? KunenaProfiler::instance()->start('function ' . __CLASS__ . '::' . __FUNCTION__ . '()') : null;
-		Joomla\CMS\Plugin\PluginHelper::importPlugin('kunena');
+		PluginHelper::importPlugin('kunena');
 
 		$classes = Factory::getApplication()->triggerEvent('onKunenaGetAccessControl');
 
@@ -111,7 +115,7 @@ class KunenaAccess
 			}
 		}
 
-		if (KunenaConfig::getInstance()->get('cache_adm'))
+		if (Config::getInstance()->get('cache_adm'))
 		{
 			// Load administrators and moderators from cache
 			$cache = Factory::getCache('com_kunena', 'output');
@@ -182,7 +186,7 @@ class KunenaAccess
 		}
 
 		// FIXME: enable caching after fixing the issues
-		if (KunenaConfig::getInstance()->get('cache_adm'))
+		if (Config::getInstance()->get('cache_adm'))
 		{
 			// Store new data into cache
 			$cache = Factory::getCache('com_kunena', 'output');
@@ -969,7 +973,7 @@ jQuery(document).ready(function ($) {
 			$query->where("u.id IN ({$userlist})");
 
 			// Only send to users whose Joomla account is enabled to Receive System Emails
-			if (KunenaConfig::getInstance()->get('use_system_emails'))
+			if (Config::getInstance()->get('use_system_emails'))
 			{
 				$query->where("u.sendEmail = 1");
 			}

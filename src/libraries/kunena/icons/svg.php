@@ -9,9 +9,14 @@
  * @license    https://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link       https://www.kunena.org
  **/
+
+namespace Kunena;
+
 defined('_JEXEC') or die();
 
+use DOMDocument;
 use Joomla\CMS\Uri\Uri;
+use function defined;
 
 /**
  * Class KunenaSvgIcons
@@ -38,7 +43,7 @@ class KunenaSvgIcons
 			return;
 		}
 
-	    if ($group == 'default')
+		if ($group == 'default')
 		{
 			$file = Uri::root() . 'media/kunena/core/svg/' . $svgname;
 		}

@@ -9,11 +9,20 @@
  * @license       https://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link          https://www.kunena.org
  **/
+
+namespace Kunena;
+
 defined('_JEXEC') or die();
 
+use Closure;
+use InvalidArgumentException;
 use Joomla\CMS\Factory;
+use Joomla\CMS\Table\Table;
 use Joomla\Database\QueryInterface;
 use Joomla\Database\DatabaseDriver;
+use RuntimeException;
+use UnexpectedValueException;
+use function defined;
 
 /**
  * Abstract Table Object class
@@ -1052,7 +1061,7 @@ abstract class KunenaTableObject
 	public function isCheckedOut($with = 0, $against = null)
 	{
 		// Handle the non-static case.
-		if (isset($this) && ($this instanceof Joomla\CMS\Table\Table) && is_null($against))
+		if (isset($this) && ($this instanceof Table) && is_null($against))
 		{
 			$against = $this->get('checked_out');
 		}

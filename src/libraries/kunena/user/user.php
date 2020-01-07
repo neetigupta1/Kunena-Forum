@@ -9,19 +9,31 @@
  * @license         https://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link            https://www.kunena.org
  **/
+
+namespace Kunena;
+
 defined('_JEXEC') or die();
 
+use DateTimeZone;
+use Exception;
+use InvalidArgumentException;
 use Joomla\CMS\Component\ComponentHelper;
 use Joomla\CMS\Factory;
 use Joomla\CMS\HTML\HTMLHelper;
 use Joomla\CMS\Language\Text;
+use Joomla\CMS\Plugin\PluginHelper;
 use Joomla\CMS\Session\Session;
 use Joomla\CMS\Object\CMSObject;
 use Joomla\CMS\Image\Image;
 use Joomla\CMS\Date\Date;
 use Joomla\CMS\Access\Access;
+use Joomla\CMS\Table\Table;
+use Joomla\CMS\User\User;
 use Joomla\Database\Exception\ExecutionFailureException;
 use Joomla\Database\DatabaseDriver;
+use Joomla\Registry\Registry;
+use stdClass;
+use function defined;
 
 /**
  * Class KunenaUser
@@ -227,7 +239,7 @@ class KunenaUser extends CMSObject
 	 * @param   string  $type    The user table name to be used.
 	 * @param   string  $prefix  The user table prefix to be used.
 	 *
-	 * @return  Joomla\CMS\Table\Table|TableKunenaUsers    The user table object.
+	 * @return  Table|TableKunenaUsers    The user table object.
 	 *
 	 * @since   Kunena 6.0
 	 */
@@ -243,7 +255,7 @@ class KunenaUser extends CMSObject
 		}
 
 		// Create the user table object
-		return Joomla\CMS\Table\Table::getInstance($tabletype ['name'], $tabletype ['prefix']);
+		return Table::getInstance($tabletype ['name'], $tabletype ['prefix']);
 	}
 
 	/**
@@ -311,7 +323,7 @@ class KunenaUser extends CMSObject
 		$input     = $this->_app->input;
 		$method    = $input->getInt('userid');
 		$kuser     = KunenaFactory::getUser($method);
-		$config    = KunenaConfig::getInstance();
+		$config    = Config::getInstance();
 		$exception = null;
 
 		switch ($action)
@@ -352,7 +364,7 @@ class KunenaUser extends CMSObject
 		// Throw or return the exception.
 		if ($throw && $exception)
 		{
-			throw $exception;
+			throw new $exception;
 		}
 
 		return $exception;
@@ -443,7 +455,7 @@ class KunenaUser extends CMSObject
 		}
 		else
 		{
-			$usersConfig = Joomla\CMS\Plugin\PluginHelper::isEnabled('kunena', 'comprofiler');
+			$usersConfig = PluginHelper::isEnabled('kunena', 'comprofiler');
 
 			if ($usersConfig)
 			{
@@ -610,7 +622,7 @@ class KunenaUser extends CMSObject
 			$ktemplate     = KunenaFactory::getTemplate();
 			$topicicontype = $ktemplate->params->get('topicicontype');
 
-			if (KunenaConfig::getInstance()->avatar_type && $avatars->css)
+			if (KunenaFactory::getConfig()->avatar_type && $avatars->css)
 			{
 				if ($sizex == 20)
 				{
@@ -768,7 +780,7 @@ class KunenaUser extends CMSObject
 			return;
 		}
 
-		$config = KunenaConfig::getInstance();
+		$config = KunenaFactory::getConfig();
 		$me     = KunenaUserHelper::getMyself();
 
 		if (!$config->pubprofile && !$me->exists())
@@ -796,7 +808,7 @@ class KunenaUser extends CMSObject
 
 			if ($this->userid)
 			{
-				$user     = Joomla\CMS\User\User::getInstance($this->userid);
+				$user     = User::getInstance($this->userid);
 				$timezone = $user->getParam('timezone', $timezone);
 			}
 
@@ -1076,7 +1088,7 @@ class KunenaUser extends CMSObject
 	public function getEmail($profile)
 	{
 		$me     = KunenaUserHelper::getMyself();
-		$config = KunenaConfig::getInstance();
+		$config = KunenaFactory::getConfig();
 
 		if ($me->isModerator() || $me->isAdmin())
 		{
@@ -1112,7 +1124,7 @@ class KunenaUser extends CMSObject
 	{
 		if (!isset($this->_email))
 		{
-			$config = KunenaConfig::getInstance();
+			$config = KunenaFactory::getConfig();
 			$me     = KunenaUserHelper::getMyself();
 
 			$this->_email = '';
@@ -1231,7 +1243,7 @@ class KunenaUser extends CMSObject
 	 */
 	public function getSignature()
 	{
-		$config = KunenaConfig::getInstance();
+		$config = KunenaFactory::getConfig();
 
 		if (!$config->signature)
 		{
@@ -1240,7 +1252,7 @@ class KunenaUser extends CMSObject
 
 		if (!isset($this->_signature))
 		{
-			$this->_signature = KunenaHtmlParser::parseBBCode($this->signature, $this, KunenaConfig::getInstance()->maxsig);
+			$this->_signature = KunenaHtmlParser::parseBBCode($this->signature, $this, KunenaFactory::getConfig()->maxsig);
 		}
 
 		return $this->_signature;
@@ -1259,7 +1271,7 @@ class KunenaUser extends CMSObject
 	{
 		if ($this->userid)
 		{
-			$config = KunenaConfig::getInstance();
+			$config = KunenaFactory::getConfig();
 			$me     = KunenaUserHelper::getMyself();
 
 			if ($config->showkarma && $me->userid && $me->userid != $this->userid)
@@ -1348,12 +1360,12 @@ class KunenaUser extends CMSObject
 
 		$view->personalText = $this->getPersonalText();
 
-		$params = new Joomla\Registry\Registry;
+		$params = new Registry;
 		$params->set('ksource', 'kunena');
 		$params->set('kunena_view', 'topic');
 		$params->set('kunena_layout', $layout->getLayout());
 
-		Joomla\CMS\Plugin\PluginHelper::importPlugin('kunena');
+		PluginHelper::importPlugin('kunena');
 
 		Factory::getApplication()->triggerEvent('onKunenaSidebar', [$this->userid]);
 
@@ -1373,7 +1385,7 @@ class KunenaUser extends CMSObject
 	 */
 	public function getRank($catid = 0, $type = null, $special = null)
 	{
-		$config = KunenaConfig::getInstance();
+		$config = KunenaFactory::getConfig();
 
 		if (!$config->showranking)
 		{
@@ -1834,7 +1846,7 @@ class KunenaUser extends CMSObject
 	 */
 	public function getPersonalText()
 	{
-		$config = KunenaConfig::getInstance();
+		$config = KunenaFactory::getConfig();
 
 		if (!$config->personal)
 		{

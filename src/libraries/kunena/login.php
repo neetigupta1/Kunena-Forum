@@ -9,12 +9,19 @@
  * @license         https://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link            https://www.kunena.org
  **/
+
+namespace Kunena;
+
 defined('_JEXEC') or die();
 
+use Exception;
 use Joomla\CMS\Factory;
 use Joomla\CMS\Helper\AuthenticationHelper;
+use Joomla\CMS\Plugin\PluginHelper;
 use Joomla\Component\Users\Administrator\Model\UserModel;
 use Joomla\Component\Users\Administrator\Helper\UsersHelper;
+use Joomla\Registry\Registry;
+use function defined;
 
 /**
  * Class KunenaLogin
@@ -36,13 +43,14 @@ class KunenaLogin
 	protected $instances = [];
 
 	/**
-	 * @return  void
 	 *
 	 * @since   Kunena 6.0
+	 *
+	 * @throws Exception
 	 */
 	public function __construct()
 	{
-		Joomla\CMS\Plugin\PluginHelper::importPlugin('kunena');
+		PluginHelper::importPlugin('kunena');
 
 		$classes = Factory::getApplication()->triggerEvent('onKunenaGetLogin');
 
@@ -63,6 +71,8 @@ class KunenaLogin
 	 * @return  boolean|KunenaLogin
 	 *
 	 * @since   Kunena 6.0
+	 *
+	 * @throws  Exception
 	 */
 	public static function getInstance($integration = null)
 	{
@@ -290,7 +300,7 @@ class KunenaLogin
 	/**
 	 * Return the parameters of the plugin
 	 *
-	 * @return  Joomla\Registry\Registry|boolean
+	 * @return  Registry|boolean
 	 *
 	 * @since   Kunena 5.1
 	 */

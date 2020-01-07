@@ -8,12 +8,21 @@
  * @license        https://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link           https://www.kunena.org
  **/
+
+namespace Kunena;
+
 defined('_JEXEC') or die();
 
+use ComponentKunenaControllerSearchFormDisplay;
+use Exception;
+use Joomla\CMS\Application\CMSApplication;
+use Joomla\CMS\Document\Document;
 use Joomla\CMS\Factory;
 use Joomla\CMS\HTML\HTMLHelper;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\MVC\View\HtmlView;
+use LogicException;
+use function defined;
 
 /**
  * Kunena View Class
@@ -23,13 +32,13 @@ use Joomla\CMS\MVC\View\HtmlView;
 class KunenaView extends HtmlView
 {
 	/**
-	 * @var     Joomla\CMS\Document\Document|null
+	 * @var     Document|null
 	 * @since   Kunena 6.0
 	 */
 	public $document = null;
 
 	/**
-	 * @var     Joomla\CMS\Application\CMSApplication|null
+	 * @var     CMSApplication|null
 	 * @since   Kunena 6.0
 	 */
 	public $app = null;
@@ -41,7 +50,7 @@ class KunenaView extends HtmlView
 	public $me = null;
 
 	/**
-	 * @var     KunenaConfig|null
+	 * @var     Config|null
 	 * @since   Kunena 6.0
 	 */
 	public $config = null;

@@ -9,9 +9,15 @@
  * @license       https://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link          https://www.kunena.org
  **/
+
+namespace Kunena;
+
 defined('_JEXEC') or die();
 
+use Exception;
 use Joomla\CMS\Factory;
+use Joomla\CMS\Plugin\PluginHelper;
+use function defined;
 
 /**
  * Class KunenaProfile
@@ -39,7 +45,7 @@ class KunenaProfile
 	{
 		if (self::$instance === false)
 		{
-			Joomla\CMS\Plugin\PluginHelper::importPlugin('kunena');
+			PluginHelper::importPlugin('kunena');
 
 			$classes = Factory::getApplication()->triggerEvent('onKunenaGetProfile');
 
@@ -159,7 +165,7 @@ class KunenaProfile
 	 * @param   integer  $userid  userid
 	 * @param   bool     $xhtml   xhtml
 	 *
-	 * @return  void
+	 * @return  void|KunenaProfile
 	 *
 	 * @since   Kunena 6.0
 	 */

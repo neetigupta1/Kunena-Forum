@@ -9,10 +9,17 @@
  * @license       https://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link          https://www.kunena.org
  **/
+
+namespace Kunena;
+
 defined('_JEXEC') or die();
 
+use InvalidArgumentException;
+use Joomla\Input\Input;
+use function defined;
+
 /**
- * Implements Kunena Request class.
+ * implements \Kunena Request class.
  *
  * This class is part of Kunena HMVC implementation, allowing calls to
  * any display controller in the component.
@@ -36,15 +43,15 @@ class KunenaRequest
 	/**
 	 * Returns controller.
 	 *
-	 * @param   string              $path     Controller path.
-	 * @param   Joomla\Input\Input  $input    input
-	 * @param   mixed               $options  options
+	 * @param   string  $path     Controller path.
+	 * @param   Input   $input    input
+	 * @param   mixed   $options  options
 	 *
 	 * @return  KunenaControllerBase|KunenaControllerDisplay
 	 *
 	 * @since   Kunena 6.0
 	 */
-	public static function factory($path, Joomla\Input\Input $input = null, $options = null)
+	public static function factory($path, Input $input = null, $options = null)
 	{
 		// Normalize input.
 		$words = ucwords(strtolower(trim(preg_replace('/[^a-z0-9_]+/i', ' ', (string) $path))));

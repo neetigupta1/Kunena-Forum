@@ -10,11 +10,18 @@
  * @license         https://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link            https://www.kunena.org
  **/
+
+namespace Kunena;
+
 defined('_JEXEC') or die();
 
+use Exception;
 use Joomla\CMS\Factory;
 use Joomla\CMS\Language\Text;
+use Joomla\CMS\Table\Table;
 use Joomla\Database\Exception\ExecutionFailureException;
+use StdClass;
+use function defined;
 
 KunenaMenuFix::initialize();
 
@@ -269,7 +276,7 @@ abstract class KunenaMenuFix
 		{
 			$item = self::$items[$itemid];
 			KunenaRouteLegacy::convertMenuItem($item);
-			$table = Joomla\CMS\Table\Table::getInstance('menu');
+			$table = Table::getInstance('menu');
 			$table->load($item->id);
 			$data = [
 				'link'   => $item->link,
@@ -302,7 +309,7 @@ abstract class KunenaMenuFix
 			return false;
 		}
 
-		$table  = Joomla\CMS\Table\Table::getInstance('menu');
+		$table  = Table::getInstance('menu');
 		$result = $table->delete($itemid);
 		KunenaMenuHelper::cleanCache();
 

@@ -9,7 +9,12 @@
  * @license       http://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link          http://www.kunena.org
  **/
+
+namespace Kunena;
+
 defined('_JEXEC') or die();
+
+use function defined;
 
 /**
  * Private message mapping for user.

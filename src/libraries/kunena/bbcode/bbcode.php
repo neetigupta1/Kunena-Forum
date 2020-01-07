@@ -9,9 +9,19 @@
  * @license         https://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link            https://www.kunena.org
  **/
+
+namespace Kunena;
+
 defined('_JEXEC') or die();
 
+use Exception;
+use GeSHi;
+use Joomla\CMS\Document\HtmlDocument;
 use Joomla\CMS\Factory;
+use Joomla\CMS\Http\Http;
+use Joomla\CMS\Http\Transport\StreamTransport;
+use Joomla\CMS\Plugin\PluginHelper;
+use Joomla\Registry\Registry;
 use Joomla\String\StringHelper;
 use Joomla\CMS\HTML\HTMLHelper;
 use Joomla\CMS\Language\Text;
@@ -19,8 +29,12 @@ use Joomla\CMS\Uri\Uri;
 use Joomla\CMS\Router\Route;
 use Joomla\CMS\Filesystem\File;
 use Joomla\CMS\Filesystem\Folder;
+use Joomla\Uri\UriHelper;
 use Nbbc\BBCode;
+use Nbbc\BBCodeLibrary;
 use Joomla\Component\Content\Site\Helper\RouteHelper;
+use stdClass;
+use function defined;
 
 // TODO: add possibility to hide contents from these tags:
 // [hide], [confidential], [spoiler], [attachment], [code]
@@ -30,7 +44,7 @@ use Joomla\Component\Content\Site\Helper\RouteHelper;
  *
  * @since   6.0
  */
-class KunenaBbcode extends Nbbc\BBCode
+class KunenaBbcode extends BBCode
 {
 	/**
 	 * @var     integer
@@ -65,12 +79,12 @@ class KunenaBbcode extends Nbbc\BBCode
 	 *
 	 * @since   Kunena 6.0
 	 *
-	 * @throws  Exception
+	 * @throws Exception
 	 */
 	public function __construct($relative = true)
 	{
 		parent::__construct();
-		$this->defaults = new KunenaBbcodeLibrary;
+		$this->defaults = new KunenaBBCodeLibrary;
 
 		$this->tag_rules = $this->defaults->default_tag_rules;
 		$this->smileys   = $this->defaults->default_smileys;
@@ -86,7 +100,7 @@ class KunenaBbcode extends Nbbc\BBCode
 		$this->SetURLPattern($this->url_pattern);
 		$this->SetURLTarget('_blank');
 
-		Joomla\CMS\Plugin\PluginHelper::importPlugin('kunena');
+		PluginHelper::importPlugin('kunena');
 		Factory::getApplication()->triggerEvent('onKunenaBbcodeConstruct', [$this]);
 	}
 
@@ -337,10 +351,10 @@ class KunenaBbcode extends Nbbc\BBCode
 	 */
 	public function canCloakEmail(&$params)
 	{
-		if (Joomla\CMS\Plugin\PluginHelper::isEnabled('content', 'emailcloak'))
+		if (PluginHelper::isEnabled('content', 'emailcloak'))
 		{
-			$plugin = Joomla\CMS\Plugin\PluginHelper::getPlugin('content', 'emailcloak');
-			$params = new Joomla\Registry\Registry($plugin->params);
+			$plugin = PluginHelper::getPlugin('content', 'emailcloak');
+			$params = new Registry($plugin->params);
 
 			if ($params->get('mode', 1))
 			{
@@ -439,7 +453,7 @@ class KunenaBbcode extends Nbbc\BBCode
 
 					// We have a full, complete, and properly-formatted URL, with protocol.
 					// Now we need to apply the $this->url_pattern template to turn it into HTML.
-					$params = Joomla\Uri\UriHelper::parse_url($url);
+					$params = UriHelper::parse_url($url);
 
 					if (!$invalid && substr($url, 0, 7) == 'mailto:')
 					{
@@ -522,7 +536,7 @@ class KunenaBbcode extends Nbbc\BBCode
  *
  * @since   Kunena 6.0
  */
-class KunenaBbcodeLibrary extends Nbbc\BBCodeLibrary
+class KunenaBBCodeLibrary extends BBCodeLibrary
 {
 	/**
 	 * The bearer token to get tweet data
@@ -1117,12 +1131,12 @@ class KunenaBbcodeLibrary extends Nbbc\BBCodeLibrary
 
 		if (is_numeric($ItemID) && $config->ebay_api_key && ini_get('allow_url_fopen'))
 		{
-			$options = new Joomla\Registry\Registry;
+			$options = new Registry;
 
-			$transport = new Joomla\CMS\Http\Transport\StreamTransport($options);
+			$transport = new StreamTransport($options);
 
 			// Create a 'stream' transport.
-			$http = new Joomla\CMS\Http\Http($options, $transport);
+			$http = new Http($options, $transport);
 
 			$response = $http->get('http://open.api.ebay.com/shopping?callname=GetSingleItem&appid=' . $config->ebay_api_key . '&siteid=' . $config->ebay_language . '&responseencoding=JSON&ItemID=' . $ItemID . '&version=889&trackingid=' . $config->ebay_affiliate_id . '&trackingpartnercode=9', null, '10');
 
@@ -1326,7 +1340,7 @@ class KunenaBbcodeLibrary extends Nbbc\BBCodeLibrary
 			$internal = true;
 		}
 
-		$smart = KunenaConfig::getInstance()->smartlinking;
+		$smart = Config::getInstance()->smartlinking;
 
 		if ($smart && $bbcode->get_title($url))
 		{
@@ -1542,7 +1556,7 @@ class KunenaBbcodeLibrary extends Nbbc\BBCodeLibrary
 
 		$document = Factory::getApplication()->getDocument();
 		$title    = $default ? $default : Text::_('COM_KUNENA_BBCODE_SPOILER');
-		$hidden   = ($document instanceof Joomla\CMS\Document\HtmlDocument);
+		$hidden   = ($document instanceof HtmlDocument);
 
 		$layout = KunenaLayout::factory('BBCode/Spoiler');
 
@@ -1740,7 +1754,7 @@ class KunenaBbcodeLibrary extends Nbbc\BBCodeLibrary
 		$document = Factory::getApplication()->getDocument();
 
 		// Display only link in activity streams etc..
-		if (!empty($bbcode->parent->forceMinimal) || !($document instanceof Joomla\CMS\Document\HtmlDocument) || KunenaFactory::getTemplate()->isHmvc() && !$config->get('maps'))
+		if (!empty($bbcode->parent->forceMinimal) || !($document instanceof HtmlDocument) || KunenaFactory::getTemplate()->isHmvc() && !$config->get('maps'))
 		{
 			$url = 'https://maps.google.com/?q=' . urlencode($bbcode->UnHTMLEncode($content));
 
@@ -1917,7 +1931,7 @@ class KunenaBbcodeLibrary extends Nbbc\BBCodeLibrary
 		{
 			// Get credentials to check if the user has right to see the article
 			$params   = $site->getParams('com_content');
-			$registry = new Joomla\Registry\Registry;
+			$registry = new Registry;
 			$registry->loadString($article->attribs);
 			$article->params = clone $params;
 			$article->params->merge($registry);
@@ -1981,7 +1995,7 @@ class KunenaBbcodeLibrary extends Nbbc\BBCodeLibrary
 
 						if (!empty($article->fulltext))
 						{
-							$link = '<a href="' . $url . '"class="readon">' . Text::sprintf('COM_KUNENA_LIB_BBCODE_ARTICLE_MORE') . '</a>';
+							$link = '<a href="' . $url . '" class="readon">' . Text::sprintf('COM_KUNENA_LIB_BBCODE_ARTICLE_MORE') . '</a>';
 						}
 						else
 						{
@@ -2002,7 +2016,7 @@ class KunenaBbcodeLibrary extends Nbbc\BBCodeLibrary
 				// Identify the source of the event to be Kunena itself
 				// this is important to avoid recursive event behaviour with our own plugins
 				$params->set('ksource', 'kunena');
-				Joomla\CMS\Plugin\PluginHelper::importPlugin('content');
+				PluginHelper::importPlugin('content');
 
 				Factory::getApplication()->triggerEvent('onContentPrepare', ['text', &$article, &$params, 0]);
 				$article->text       = HTMLHelper::_('string.truncate', $article->text, $bbcode->output_limit - $bbcode->text_length);
@@ -2261,7 +2275,7 @@ class KunenaBbcodeLibrary extends Nbbc\BBCodeLibrary
 
 			if ($vid_auto)
 			{
-				$vid ["type"] = Joomla\String\StringHelper::strtolower($vid_regs [1]);
+				$vid ["type"] = StringHelper::strtolower($vid_regs [1]);
 
 				switch ($vid ["type"])
 				{
@@ -2415,7 +2429,7 @@ class KunenaBbcodeLibrary extends Nbbc\BBCodeLibrary
 
 		foreach ($params as $vid_key => $vid_value)
 		{
-			if (in_array(Joomla\String\StringHelper::strtolower($vid_key), $vid_allowpar))
+			if (in_array(StringHelper::strtolower($vid_key), $vid_allowpar))
 			{
 				array_push($vid_par3, [6, $vid_key, $bbcode->HTMLEncode($vid_value)]);
 			}
@@ -2607,7 +2621,7 @@ class KunenaBbcodeLibrary extends Nbbc\BBCodeLibrary
 		$layout                                              = KunenaLayout::factory('BBCode/Attachment')
 			->set('attachment', $attachment)
 			->set('canLink', $bbcode->autolink_disable == 0);
-		$config                                              = KunenaConfig::getInstance();
+		$config                                              = Config::getInstance();
 		$bbcode->parent->inline_attachments[$attachment->id] = $attachment;
 
 		if (!$attachment->exists() || !$attachment->getPath())
@@ -2971,12 +2985,12 @@ class KunenaBbcodeLibrary extends Nbbc\BBCodeLibrary
 
 			$url = 'https://api.twitter.com/oauth2/token';
 
-			$options = new Joomla\Registry\Registry;
+			$options = new Registry;
 
-			$transport = new Joomla\CMS\Http\Transport\StreamTransport($options);
+			$transport = new StreamTransport($options);
 
 			// Create a 'stream' transport.
-			$http = new Joomla\CMS\Http\Http($options, $transport);
+			$http = new Http($options, $transport);
 
 			$headers = [
 				'Authorization' => "Basic " . $b64_bearer_token_credentials,
@@ -3009,12 +3023,12 @@ class KunenaBbcodeLibrary extends Nbbc\BBCodeLibrary
 		{
 			$url = 'https://api.twitter.com/1.1/statuses/show.json?id=' . $tweetid;
 
-			$options = new Joomla\Registry\Registry;
+			$options = new Registry;
 
-			$transport = new Joomla\CMS\Http\Transport\StreamTransport($options);
+			$transport = new StreamTransport($options);
 
 			// Create a 'stream' transport.
-			$http = new Joomla\CMS\Http\Http($options, $transport);
+			$http = new Http($options, $transport);
 
 			$headers = [
 				'Authorization' => "Bearer " . $this->token,

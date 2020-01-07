@@ -9,11 +9,21 @@
  * @license       https://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link          https://www.kunena.org
  **/
+
+namespace Kunena;
+
 defined('_JEXEC') or die();
 
+use Exception;
+use Joomla\CMS\Document\HtmlDocument;
 use Joomla\CMS\Factory;
 use Joomla\CMS\HTML\HTMLHelper;
 use Joomla\CMS\Language\Text;
+use Joomla\CMS\Layout\BaseLayout;
+use Joomla\CMS\Pathway\Pathway;
+use Joomla\CMS\Plugin\PluginHelper;
+use RuntimeException;
+use function defined;
 
 /**
  * Class KunenaControllerApplicationDisplay
@@ -23,7 +33,7 @@ use Joomla\CMS\Language\Text;
 class KunenaControllerApplicationDisplay extends KunenaControllerDisplay
 {
 	/**
-	 * @var     KunenaConfig
+	 * @var     Config
 	 * @since   Kunena 6.0
 	 */
 	public $config;
@@ -41,7 +51,7 @@ class KunenaControllerApplicationDisplay extends KunenaControllerDisplay
 	protected $content;
 
 	/**
-	 * @var     Joomla\CMS\Pathway\Pathway
+	 * @var     Pathway
 	 * @since   Kunena 6.0
 	 */
 	protected $breadcrumb;
@@ -59,13 +69,13 @@ class KunenaControllerApplicationDisplay extends KunenaControllerDisplay
 	protected $template;
 
 	/**
-	 * @var     Joomla\CMS\Document\HtmlDocument
+	 * @var     HtmlDocument
 	 * @since   Kunena 6.0
 	 */
 	protected $document;
 
 	/**
-	 * @return  Joomla\CMS\Layout\BaseLayout
+	 * @return  BaseLayout
 	 *
 	 * @since   Kunena 6.0
 	 *
@@ -241,7 +251,7 @@ class KunenaControllerApplicationDisplay extends KunenaControllerDisplay
 		KunenaFactory::loadLanguage('com_kunena.views');
 
 		$this->me       = KunenaUserHelper::getMyself();
-		$this->config   = KunenaConfig::getInstance();
+		$this->config   = Config::getInstance();
 		$this->document = Factory::getApplication()->getDocument();
 		$this->template = KunenaFactory::getTemplate();
 		$this->template->initialize();
@@ -433,7 +443,7 @@ class KunenaControllerApplicationDisplay extends KunenaControllerDisplay
 
 		$credits .= '</div>';
 
-		if (Joomla\CMS\Plugin\PluginHelper::isEnabled('kunena', 'powered'))
+		if (PluginHelper::isEnabled('kunena', 'powered'))
 		{
 			$credits = '';
 		}

@@ -9,11 +9,6 @@
  * @license         https://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link            https://www.kunena.org
  **/
-
-/** @var KunenaForumCategory $section */
-/** @var KunenaForumCategory $category */
-/** @var KunenaForumCategory $subcategory */
-
 defined('_JEXEC') or die;
 
 use Joomla\CMS\Language\Text;

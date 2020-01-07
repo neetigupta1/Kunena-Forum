@@ -9,10 +9,16 @@
  * @license       https://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link          https://www.kunena.org
  **/
+
+namespace Kunena;
+
 defined('_JEXEC') or die();
 
+use Exception;
+use Joomla\CMS\Date\Date;
 use Joomla\Database\QueryInterface;
 use Joomla\Database\Exception\ExecutionFailureException;
+use function defined;
 
 /**
  * Class KunenaLogFinder
@@ -40,14 +46,14 @@ class KunenaLogFinder extends KunenaDatabaseObjectFinder
 	/**
 	 * Filter by time.
 	 *
-	 * @param   Joomla\CMS\Date\Date  $starting  Starting date or null if older than ending date.
-	 * @param   Joomla\CMS\Date\Date  $ending    Ending date or null if newer than starting date.
+	 * @param   Date  $starting  Starting date or null if older than ending date.
+	 * @param   Date  $ending    Ending date or null if newer than starting date.
 	 *
 	 * @return  $this
 	 *
 	 * @since   Kunena 5.0
 	 */
-	public function filterByTime(Joomla\CMS\Date\Date $starting = null, Joomla\CMS\Date\Date $ending = null)
+	public function filterByTime(Date $starting = null, Date $ending = null)
 	{
 		if ($starting && $ending)
 		{

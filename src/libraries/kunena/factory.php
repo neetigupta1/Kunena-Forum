@@ -8,9 +8,15 @@
  * @license        https://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link           https://www.kunena.org
  **/
+
+namespace Kunena;
+
 defined('_JEXEC') or die();
 
+use Exception;
 use Joomla\CMS\Factory;
+use KunenaAdminTemplate;
+use function defined;
 
 /**
  * Class KunenaFactory
@@ -236,9 +242,9 @@ abstract class KunenaFactory
 	/**
 	 * Get a Kunena configuration object
 	 *
-	 * Returns the global {@link KunenaConfig} object, only creating it if it doesn't already exist.
+	 * Returns the global {@link Config} object, only creating it if it doesn't already exist.
 	 *
-	 * @return  KunenaConfig
+	 * @return  Config
 	 *
 	 * @since   Kunena 6.0
 	 *
@@ -246,7 +252,7 @@ abstract class KunenaFactory
 	 */
 	public static function getConfig()
 	{
-		return KunenaConfig::getInstance();
+		return Config::getInstance();
 	}
 
 	/**

@@ -9,13 +9,19 @@
  * @license         https://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link            https://www.kunena.org
  **/
+
+namespace Kunena;
+
 defined('_JEXEC') or die();
 
+use Exception;
 use Joomla\CMS\HTML\HTMLHelper;
 use Joomla\CMS\Language\Text;
+use RunTimeException;
+use function defined;
 
 /**
- * Implements Kunena specific functions for all layouts.
+ * implements \Kunena specific functions for all layouts.
  *
  * @see     KunenaLayoutBase
  * @since   Kunena 6.0
@@ -280,7 +286,7 @@ class KunenaLayout extends KunenaLayoutBase
 						break;
 					case 'unread':
 					case 'last':
-						if (!KunenaUserHelper::getMyself()->userid && KunenaConfig::getInstance()->teaser)
+						if (!KunenaUserHelper::getMyself()->userid && Config::getInstance()->teaser)
 						{
 							$title = KunenaHtmlParser::stripBBCode($topic->first_post_message, 200, false);
 						}
@@ -360,7 +366,7 @@ class KunenaLayout extends KunenaLayoutBase
 
 		if (!$content)
 		{
-			if (KunenaConfig::getInstance()->disable_re)
+			if (Config::getInstance()->disable_re)
 			{
 				$content = KunenaHtmlParser::parseText($lastTopic->subject, $length);
 			}

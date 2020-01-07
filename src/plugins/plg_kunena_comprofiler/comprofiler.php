@@ -9,17 +9,24 @@
  * @license         https://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link            https://www.kunena.org
  **/
+
+namespace Kunena;
+
 defined('_JEXEC') or die();
 
+use Exception;
 use Joomla\CMS\Factory;
 use Joomla\CMS\Language\Text;
+use Joomla\CMS\Plugin\CMSPlugin;
+use Joomla\CMS\Plugin\PluginHelper;
+use function defined;
 
 /**
  * Class plgKunenaComprofiler
  *
  * @since   Kunena 6.0
  */
-class plgKunenaComprofiler extends Joomla\CMS\Plugin\CMSPlugin
+class plgKunenaComprofiler extends CMSPlugin
 {
 	/**
 	 * @var     string
@@ -52,7 +59,7 @@ class plgKunenaComprofiler extends Joomla\CMS\Plugin\CMSPlugin
 		// Do not load if CommunityBuilder is not installed
 		if ((!file_exists(JPATH_SITE . '/libraries/CBLib/CBLib/Core/CBLib.php')) || (!file_exists(JPATH_ADMINISTRATOR . '/components/com_comprofiler/plugin.foundation.php')))
 		{
-			if (Joomla\CMS\Plugin\PluginHelper::isEnabled('kunena', 'comprofiler'))
+			if (PluginHelper::isEnabled('kunena', 'comprofiler'))
 			{
 				$db    = Factory::getDBO();
 				$query = $db->getQuery(true);

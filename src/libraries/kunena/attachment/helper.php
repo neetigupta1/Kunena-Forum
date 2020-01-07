@@ -9,11 +9,17 @@
  * @license       https://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link          https://www.kunena.org
  **/
+
+namespace Kunena;
+
 defined('_JEXEC') or die();
 
+use Exception;
 use Joomla\CMS\Factory;
 use Joomla\CMS\Filesystem\File;
 use Joomla\Database\Exception\ExecutionFailureException;
+use RuntimeException;
+use function defined;
 
 /**
  * Kunena Attachment Helper Class
@@ -361,7 +367,7 @@ abstract class KunenaAttachmentHelper
 	{
 		if (is_null($protected))
 		{
-			$protected = (bool) KunenaConfig::getInstance()->attachment_protection;
+			$protected = (bool) Config::getInstance()->attachment_protection;
 		}
 
 		if ($protected)

@@ -9,12 +9,18 @@
  * @license       https://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link          https://www.kunena.org
  **/
+
+namespace Kunena;
+
 defined('_JEXEC') or die();
 
+use Exception;
 use Joomla\CMS\Factory;
+use Joomla\Input\Input;
+use function defined;
 
 /**
- * Implements Kunena specific functions for page layouts.
+ * implements \Kunena specific functions for page layouts.
  *
  * @see     KunenaLayout
  *
@@ -120,7 +126,7 @@ class KunenaLayoutPage extends KunenaLayout
 	 *
 	 * @throws  Exception
 	 */
-	public function execute($path, Joomla\Input\Input $input = null, $options = null)
+	public function execute($path, Input $input = null, $options = null)
 	{
 		return $this->request($path, $input, $options)->execute();
 	}
@@ -136,7 +142,7 @@ class KunenaLayoutPage extends KunenaLayout
 	 *
 	 * @since   Kunena 6.0
 	 */
-	public function request($path, Joomla\Input\Input $input = null, $options = null)
+	public function request($path, Input $input = null, $options = null)
 	{
 		return KunenaRequest::factory($path . '/Display', $input, $options ? $options : $this->getOptions())
 			->setPrimary()->set('layout', $this->getLayout());

@@ -9,13 +9,20 @@
  * @license         https://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link            https://www.kunena.org
  **/
+
+namespace Kunena;
+
 defined('_JEXEC') or die();
 
+use Joomla\CMS\Access\Access;
 use Joomla\CMS\HTML\HTMLHelper;
 use Joomla\CMS\Factory;
 use Joomla\CMS\Language\Text;
+use Joomla\CMS\User\User;
 use Joomla\Utilities\ArrayHelper;
 use Joomla\Registry\Registry;
+use StdClass;
+use function defined;
 
 /**
  * Kunena Access Control for Joomla 2.5+
@@ -81,7 +88,7 @@ class KunenaAccessJoomla
 			$accessname = Text::sprintf($category->pub_recurse ? 'COM_KUNENA_A_GROUP_X_PLUS' : 'COM_KUNENA_A_GROUP_X_ONLY', $groupname ? Text::_($groupname) : Text::_('COM_KUNENA_NOBODY'));
 
 			$list["joomla.group.{$category->pub_access}"] = ['type'  => 'joomla.group', 'id' => $category->pub_access, 'alias' => $accessname,
-			                                                 'title' => $accessname];
+															 'title' => $accessname];
 
 			$groupname = $this->getGroupName($category->accesstype, $category->admin_access);
 
@@ -89,14 +96,14 @@ class KunenaAccessJoomla
 			{
 				$accessname                                     = Text::sprintf($category->admin_recurse ? 'COM_KUNENA_A_GROUP_X_PLUS' : 'COM_KUNENA_A_GROUP_X_ONLY', Text::_($groupname));
 				$list["joomla.group.{$category->admin_access}"] = ['type'  => 'joomla.group', 'id' => $category->admin_access, 'alias' => $accessname,
-				                                                   'title' => $accessname];
+																   'title' => $accessname];
 			}
 		}
 		else
 		{
 			$groupname                                = $this->getGroupName($category->accesstype, $category->access);
 			$list["joomla.level.{$category->access}"] = ['type'  => 'joomla.level', 'id' => $category->access, 'alias' => $groupname,
-			                                             'title' => $groupname];
+														 'title' => $groupname];
 		}
 
 		return $list;
@@ -297,7 +304,7 @@ class KunenaAccessJoomla
 		}
 
 		// Get all asset rules
-		$rules = Joomla\CMS\Access\Access::getAssetRules($asset, true);
+		$rules = Access::getAssetRules($asset, true);
 		$data  = $rules->getData();
 
 		// Get all action rules for the asset
@@ -409,7 +416,7 @@ class KunenaAccessJoomla
 	public function getAuthoriseActions(KunenaForumCategory $category, $userid)
 	{
 		$category->params = new Registry($category->params);
-		$groups           = (array) Joomla\CMS\Access\Access::getGroupsByUser($userid, true);
+		$groups           = (array) Access::getGroupsByUser($userid, true);
 		$post             = array_intersect($groups, (array) $category->params->get('access_post', [2, 6, 8]));
 		$reply            = array_intersect($groups, (array) $category->params->get('access_reply', [2, 6, 8]));
 
@@ -438,14 +445,14 @@ class KunenaAccessJoomla
 		$user = Factory::getUser($userid);
 
 		// WORKAROUND: Joomla! 2.5.6 bug returning NULL if $userid = 0 and session is corrupted.
-		if (!($user instanceof Joomla\CMS\User\User))
+		if (!($user instanceof User))
 		{
-			$user = Joomla\CMS\User\User::getInstance();
+			$user = User::getInstance();
 		}
 
 		$accesslevels = (array) $user->getAuthorisedViewLevels();
-		$groups_r     = (array) Joomla\CMS\Access\Access::getGroupsByUser($user->id, true);
-		$groups       = (array) Joomla\CMS\Access\Access::getGroupsByUser($user->id, false);
+		$groups_r     = (array) Access::getGroupsByUser($user->id, true);
+		$groups       = (array) Access::getGroupsByUser($user->id, false);
 
 		$catlist = [];
 

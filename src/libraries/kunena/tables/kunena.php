@@ -9,6 +9,16 @@
  * @license       https://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link          https://www.kunena.org
  **/
+
+namespace Kunena;
+
+use Exception;
+use InvalidArgumentException;
+use Joomla\CMS\Table\Table;
+use RuntimeException;
+use UnexpectedValueException;
+use function defined;
+
 defined('_JEXEC') or die();
 
 /**
@@ -16,7 +26,7 @@ defined('_JEXEC') or die();
  *
  * @since   Kunena 6.0
  */
-abstract class KunenaTable extends Joomla\CMS\Table\Table
+abstract class KunenaTable extends Table
 {
 	/**
 	 * @var     boolean

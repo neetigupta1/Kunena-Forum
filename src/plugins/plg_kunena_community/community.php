@@ -10,16 +10,22 @@
  * @license          https://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link             https://www.kunena.org
  **/
+
+namespace Kunena;
+
 defined('_JEXEC') or die();
 
 use Joomla\CMS\Factory;
+use Joomla\CMS\Plugin\CMSPlugin;
+use Joomla\CMS\Plugin\PluginHelper;
+use function defined;
 
 /**
  * Class plgKunenaCommunity
  *
  * @since   Kunena 6.0
  */
-class plgKunenaCommunity extends Joomla\CMS\Plugin\CMSPlugin
+class plgKunenaCommunity extends CMSPlugin
 {
 	/**
 	 * plgKunenaCommunity constructor.
@@ -42,7 +48,7 @@ class plgKunenaCommunity extends Joomla\CMS\Plugin\CMSPlugin
 
 		if (!is_file($path))
 		{
-			if (Joomla\CMS\Plugin\PluginHelper::isEnabled('kunena', 'community'))
+			if (PluginHelper::isEnabled('kunena', 'community'))
 			{
 				$db    = Factory::getDBO();
 				$query = $db->getQuery(true);

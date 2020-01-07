@@ -9,12 +9,18 @@
  * @license       https://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link          https://www.kunena.org
  **/
+
+namespace Kunena;
+
 defined('_JEXEC') or die();
 
+use Exception;
+use Joomla\CMS\Date\Date;
 use Joomla\CMS\Factory;
+use function defined;
 
 /**
- * Implements Kunena log entry.
+ * implements \Kunena log entry.
  *
  * @since 5.0
  */
@@ -47,7 +53,7 @@ class KunenaLogEntry
 		KunenaUser $user = null
 	)
 	{
-		$now = new Joomla\CMS\Date\Date;
+		$now = new Date;
 
 		$this->data = [
 			'type'        => (int) $type,

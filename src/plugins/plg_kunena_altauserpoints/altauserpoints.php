@@ -9,16 +9,22 @@
  * @license         https://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link            https://www.kunena.org
  **/
+
+namespace Kunena;
+
 defined('_JEXEC') or die();
 
 use Joomla\CMS\Factory;
+use Joomla\CMS\Plugin\CMSPlugin;
+use Joomla\CMS\Plugin\PluginHelper;
+use function defined;
 
 /**
  * plgKunenaAltaUserPoints class to handle integration with AltaUserPoints
  *
  * @since  5.0
  */
-class plgKunenaAltaUserPoints extends Joomla\CMS\Plugin\CMSPlugin
+class plgKunenaAltaUserPoints extends CMSPlugin
 {
 	/**
 	 * Constructor of plgKunenaAltaUserPoints class
@@ -40,7 +46,7 @@ class plgKunenaAltaUserPoints extends Joomla\CMS\Plugin\CMSPlugin
 
 		if (!file_exists($aup))
 		{
-			if (Joomla\CMS\Plugin\PluginHelper::isEnabled('kunena', 'altauserpoints'))
+			if (PluginHelper::isEnabled('kunena', 'altauserpoints'))
 			{
 				$db    = Factory::getDBO();
 				$query = $db->getQuery(true);

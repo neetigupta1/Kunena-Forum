@@ -8,8 +8,12 @@
  * @license        https://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link           https://www.kunena.org
  **/
+
+namespace Kunena;
+
 defined('_JEXEC') or die();
 
+use Exception;
 use Joomla\CMS\Component\ComponentHelper;
 use Joomla\CMS\Factory;
 use Joomla\CMS\Filter\InputFilter;
@@ -17,6 +21,7 @@ use Joomla\CMS\MVC\Model\BaseDatabaseModel;
 use Joomla\Registry\Registry;
 use Joomla\Input\Input;
 use Joomla\CMS\Object\CMSObject;
+use function defined;
 
 /**
  * Model for Kunena
@@ -38,7 +43,7 @@ class KunenaModel extends BaseDatabaseModel
 	public $me = null;
 
 	/**
-	 * @var     KunenaConfig
+	 * @var     Config
 	 * @since   Kunena 6.0
 	 */
 	public $config = null;
@@ -152,7 +157,7 @@ class KunenaModel extends BaseDatabaseModel
 	}
 
 	/**
-	 * @return  Joomla\Registry\Registry
+	 * @return  Registry
 	 *
 	 * @since   Kunena 6.0
 	 */

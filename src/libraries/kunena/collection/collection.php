@@ -9,6 +9,16 @@
  * @license       https://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link          https://www.kunena.org
  **/
+
+namespace Kunena;
+
+use ArrayAccess;
+use ArrayIterator;
+use Closure;
+use Countable;
+use IteratorAggregate;
+use function defined;
+
 defined('_JEXEC') or die();
 
 /**

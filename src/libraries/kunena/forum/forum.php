@@ -9,10 +9,19 @@
  * @license       https://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link          https://www.kunena.org
  **/
+
+namespace Kunena;
+
 defined('_JEXEC') or die();
 
+use Exception;
+use Joomla\CMS\Component\ComponentHelper;
 use Joomla\CMS\Factory;
 use Joomla\CMS\Log\Log;
+use Joomla\Registry\Registry;
+use KunenaViewCommon;
+use stdClass;
+use function defined;
 
 /**
  * class KunenaForum
@@ -135,7 +144,7 @@ abstract class KunenaForum
 	 */
 	public static function enabled($checkAdmin = true)
 	{
-		if (!Joomla\CMS\Component\ComponentHelper::isEnabled('com_kunena'))
+		if (!ComponentHelper::isEnabled('com_kunena'))
 		{
 			return false;
 		}
@@ -219,7 +228,7 @@ abstract class KunenaForum
 	 *    }
 	 * </code>
 	 *
-	 * @see   KunenaForum::installed()
+	 * @see     KunenaForum::installed()
 	 *
 	 * Alternatively you could use method_exists() to check that the new API is in there.
 	 *
@@ -487,9 +496,9 @@ abstract class KunenaForum
 
 		$view = new $view(['base_path' => KPATH_SITE]);
 
-		if (!($params instanceof Joomla\Registry\Registry))
+		if (!($params instanceof Registry))
 		{
-			$params = new Joomla\Registry\Registry($params);
+			$params = new Registry($params);
 		}
 
 		$params->set('layout', $layout);

@@ -12,14 +12,21 @@
  * Based on FireBoard Component
  * @link           http://www.bestofjoomla.com
  **/
+
+namespace Kunena;
+
 defined('_JEXEC') or die();
 
+use Exception;
 use Joomla\CMS\Factory;
 use Joomla\CMS\Object\CMSObject;
+use Joomla\CMS\Plugin\PluginHelper;
 use Joomla\Database\Exception\ExecutionFailureException;
+use Joomla\Registry\Registry;
+use function defined;
 
 /**
- * Class KunenaConfig
+ * Class Config
  *
  * @since   Kunena 6.0
  * @property int     $id
@@ -243,7 +250,7 @@ use Joomla\Database\Exception\ExecutionFailureException;
  * @property boolean $utm_source
  *
  */
-class KunenaConfig extends CMSObject
+class Config extends CMSObject
 {
 	/**
 	 * @var    integer  ID
@@ -1560,8 +1567,6 @@ class KunenaConfig extends CMSObject
 	public $utm_source = 0;
 
 	/**
-	 * @return  void
-	 *
 	 * @since   Kunena 6.0
 	 */
 	public function __construct()
@@ -1570,7 +1575,7 @@ class KunenaConfig extends CMSObject
 	}
 
 	/**
-	 * @return  KunenaConfig|mixed
+	 * @return  Config|mixed
 	 *
 	 * @since   Kunena 6.0
 	 *
@@ -1587,7 +1592,7 @@ class KunenaConfig extends CMSObject
 
 			if (!$instance)
 			{
-				$instance = new KunenaConfig;
+				$instance = new Config;
 				$instance->load();
 			}
 
@@ -1633,7 +1638,7 @@ class KunenaConfig extends CMSObject
 		// Perform custom validation of config data before we let anybody access it.
 		$this->check();
 
-		Joomla\CMS\Plugin\PluginHelper::importPlugin('kunena');
+		PluginHelper::importPlugin('kunena');
 		$plugins = [];
 		Factory::getApplication()->triggerEvent('onKunenaGetConfiguration', ['kunena.configuration', &$plugins]);
 		$this->plugins = [];
@@ -1644,7 +1649,7 @@ class KunenaConfig extends CMSObject
 			{
 				$this->bind($registry->toArray());
 			}
-			elseif ($name && $registry instanceof Joomla\Registry\Registry)
+			elseif ($name && $registry instanceof Registry)
 			{
 				$this->plugins[$name] = $registry;
 			}
@@ -1720,7 +1725,7 @@ class KunenaConfig extends CMSObject
 	 */
 	public function reset()
 	{
-		$instance = new KunenaConfig;
+		$instance = new Config;
 		$this->bind($instance->getProperties());
 	}
 
@@ -1729,13 +1734,13 @@ class KunenaConfig extends CMSObject
 	 *
 	 * @param   string  $name  Name of the plugin
 	 *
-	 * @return  Joomla\Registry\Registry
+	 * @return  Registry
 	 *
 	 * @since   Kunena 6.0
 	 */
 	public function getPlugin($name)
 	{
-		return isset($this->plugins[$name]) ? $this->plugins[$name] : new Joomla\Registry\Registry;
+		return isset($this->plugins[$name]) ? $this->plugins[$name] : new Registry;
 	}
 
 	/**

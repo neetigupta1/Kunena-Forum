@@ -9,9 +9,17 @@
  * @license       https://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link          https://www.kunena.org
  **/
+
+namespace Kunena;
+
 defined('_JEXEC') or die();
 
+use Joomla\Database\DatabaseDriver;
+use Exception;
 use Joomla\CMS\Language\Text;
+use RuntimeException;
+use UnexpectedValueException;
+use function defined;
 
 require_once __DIR__ . '/kunena.php';
 
@@ -96,7 +104,7 @@ class TableKunenaAttachments extends KunenaTable
 	public $inline = null;
 
 	/**
-	 * @param   JDatabaseDriver  $db  Database driver
+	 * @param   DatabaseDriver  $db  Database driver
 	 *
 	 * @since   Kunena 6.0
 	 */
@@ -110,7 +118,7 @@ class TableKunenaAttachments extends KunenaTable
 	 *
 	 * @since   Kunena 6.0
 	 *
-	 * @throws  Exception
+	 * @throws Exception
 	 */
 	public function check()
 	{

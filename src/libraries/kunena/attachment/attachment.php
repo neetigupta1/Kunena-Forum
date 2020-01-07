@@ -9,8 +9,15 @@
  * @license         https://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link            https://www.kunena.org
  **/
+
+namespace Kunena;
+
 defined('_JEXEC') or die();
 
+use Exception;
+use finfo;
+use InvalidArgumentException;
+use Joomla\CMS\Application\CMSApplication;
 use Joomla\CMS\Factory;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\Uri\Uri;
@@ -18,6 +25,8 @@ use Joomla\CMS\Filesystem\File;
 use Joomla\CMS\Filesystem\Folder;
 use Joomla\Image\Image;
 use Joomla\CMS\Table\Table;
+use RuntimeException;
+use function defined;
 
 /**
  * Class KunenaAttachment
@@ -526,7 +535,7 @@ class KunenaAttachment extends KunenaDatabaseObject
 	 */
 	public function getUrl($thumb = false, $inline = true, $escape = true)
 	{
-		$protect = (bool) KunenaConfig::getInstance()->attachment_protection;
+		$protect = (bool) Config::getInstance()->attachment_protection;
 
 		// Use direct URLs to the attachments if protection is turned off and file wasn't protected.
 		if (!$protect)
@@ -555,7 +564,7 @@ class KunenaAttachment extends KunenaDatabaseObject
 
 		$url = KunenaRoute::_("index.php?option=com_kunena&view=attachment&id={$this->id}{$thumb}{$download}&format=raw", $escape);
 
-		if (Joomla\CMS\Application\CMSApplication::getInstance('site')->get('sef_suffix'))
+		if (CMSApplication::getInstance('site')->get('sef_suffix'))
 		{
 			$url = preg_replace('/.html/', '', $url);
 		}
@@ -1052,7 +1061,7 @@ class KunenaAttachment extends KunenaDatabaseObject
 
 		if (!$user->exists())
 		{
-			$config = KunenaConfig::getInstance();
+			$config = Config::getInstance();
 
 			if ($this->isImage() && !$config->showimgforguest)
 			{

@@ -9,11 +9,16 @@
  * @license         https://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link            https://www.kunena.org
  **/
+
+namespace Kunena;
+
 defined('_JEXEC') or die;
 
+use Exception;
 use Joomla\CMS\HTML\HTMLHelper;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\Filesystem\Folder;
+use function defined;
 
 /**
  * KunenaLayoutTopicEditEditor
@@ -86,7 +91,7 @@ class KunenaLayoutWidgetEditor extends KunenaLayout
 	{
 		$this->ktemplate  = KunenaFactory::getTemplate();
 		$templatesettings = $this->ktemplate->params;
-		$config           = KunenaConfig::getInstance();
+		$config           = Config::getInstance();
 
 		$bbcodes = [
 			"spoiler",

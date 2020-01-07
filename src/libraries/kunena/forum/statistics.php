@@ -9,13 +9,20 @@
  * @license       https://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link          https://www.kunena.org
  **/
+
+namespace Kunena;
+
 defined('_JEXEC') or die();
 
+use Exception;
+use Joomla\CMS\Access\Access;
 use Joomla\CMS\Factory;
 use Joomla\CMS\HTML\HTMLHelper;
 use Joomla\CMS\Language\Text;
 use Joomla\Database\Exception\ExecutionFailureException;
 use Joomla\Database\DatabaseDriver;
+use RuntimeException;
+use function defined;
 
 /**
  * Class KunenaForumStatistics
@@ -163,14 +170,12 @@ class KunenaForumStatistics
 	protected $_db = null;
 
 	/**
-	 * @var     KunenaConfig|null
+	 * @var     Config|null
 	 * @since   Kunena 6.0
 	 */
 	protected $_config = null;
 
 	/**
-	 * @return  void
-	 *
 	 * @since   Kunena 6.0
 	 *
 	 * @throws  Exception
@@ -658,6 +663,7 @@ class KunenaForumStatistics
 	 * @since   Kunena 6.0
 	 *
 	 * @throws  Exception
+	 *
 	 */
 	public function loadTopThankyous($limit = 0)
 	{
@@ -675,7 +681,7 @@ class KunenaForumStatistics
 
 			if (KunenaFactory::getConfig()->superadmin_userlist)
 			{
-				$filter = Joomla\CMS\Access\Access::getUsersByGroup(8);
+				$filter = Access::getUsersByGroup(8);
 				$query->where($this->_db->quoteName('u.id') . ' NOT IN (' . implode(',', $filter) . ')');
 			}
 

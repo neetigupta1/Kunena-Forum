@@ -9,19 +9,24 @@
  * @license         https://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link            https://www.kunena.org
  **/
+
+namespace Kunena;
+
 defined('_JEXEC') or die;
 
 define('MIME_GIF', 'image/gif');
 define('MIME_PNG', 'image/png');
 
+use Exception;
 use Joomla\Image\Image;
+use RuntimeException;
 
 /**
  * Helper class for image manipulation.
  *
  * @since   Kunena 6.0
  */
-class KunenaImage extends Joomla\Image\Image
+class KunenaImage extends Image
 {
 	/**
 	 * Correct Image Orientation

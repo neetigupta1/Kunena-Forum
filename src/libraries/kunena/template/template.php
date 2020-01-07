@@ -9,17 +9,27 @@
  * @license         https://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link            https://www.kunena.org
  **/
+
+namespace Kunena;
+
 defined('_JEXEC') or die();
 
+use Exception;
+use Joomla\CMS\Document\Document;
 use Joomla\CMS\Factory;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\HTML\HTMLHelper;
 use Joomla\CMS\Uri\Uri;
 use Joomla\CMS\Plugin\PluginHelper;
+use Joomla\Registry\Registry;
 use Leafo\ScssPhp\Compiler;
 use Joomla\CMS\Object\CMSObject;
 use Joomla\CMS\Filesystem\File;
 use Joomla\CMS\Filesystem\Folder;
+use lessc;
+use SimpleXMLElement;
+use StdClass;
+use function defined;
 
 /**
  * Kunena Users Table Class
@@ -48,7 +58,7 @@ class KunenaTemplate extends CMSObject
 	public $params = null;
 
 	/**
-	 * @var bool|int
+	 * @var     boolean|integer
 	 * @since   Kunena 6.0
 	 */
 	public $paramstime = false;
@@ -268,7 +278,7 @@ class KunenaTemplate extends CMSObject
 
 		$this->name = $name;
 
-		$this->params = new Joomla\Registry\Registry;
+		$this->params = new Registry;
 		$this->params->loadString($content, $format);
 
 		// Load default values from configuration definition file.
@@ -302,9 +312,9 @@ class KunenaTemplate extends CMSObject
 		if ($view == 'com_kunena')
 		{
 			// Set active class on menu item alias.
-			if (KunenaConfig::getInstance()->activemenuitem)
+			if (KunenaFactory::getConfig()->activemenuitem)
 			{
-				$id = htmlspecialchars(KunenaConfig::getInstance()->activemenuitem, ENT_COMPAT, 'UTF-8');
+				$id = htmlspecialchars(KunenaFactory::getConfig()->activemenuitem, ENT_COMPAT, 'UTF-8');
 				$this->addScriptDeclaration("
 		jQuery(function($){ $(\"$id\").addClass('active')});");
 			}
@@ -355,7 +365,7 @@ class KunenaTemplate extends CMSObject
 	 * @param   string  $content  content
 	 * @param   string  $type     type
 	 *
-	 * @return  Joomla\CMS\Document\Document|void
+	 * @return  Document|void
 	 *
 	 * @since   Kunena 6.0
 	 *
@@ -1043,7 +1053,7 @@ HTML;
 	 * @param   array   $options   options
 	 * @param   array   $attribs   attribs
 	 *
-	 * @return  Joomla\CMS\Document\Document|void
+	 * @return  Document|void
 	 *
 	 * @since   Kunena 6.0
 	 *
@@ -1098,7 +1108,7 @@ HTML;
 	 * @param   mixed   $options  Scrip options as array or string
 	 * @param   bool    $merge    Whether merge with existing (true) or replace (false)
 	 *
-	 * @return  Joomla\CMS\Document\Document|void
+	 * @return  Document|void
 	 *
 	 * @since   Kunena 3.5
 	 *
@@ -1914,7 +1924,7 @@ HTML;
 
 		$outputFile = "{$outputDir}/{$outputFile}";
 
-		$scss  = new Compiler();
+		$scss  = new \Compiler();
 		$class = $this;
 		$scss->registerFunction('url', function ($arg) use ($class) {
 			list($type, $q, $values) = $arg;

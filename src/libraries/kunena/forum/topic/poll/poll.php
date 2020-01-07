@@ -9,13 +9,21 @@
  * @license       https://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link          https://www.kunena.org
  **/
+
+namespace Kunena;
+
 defined('_JEXEC') or die();
 
+use Exception;
 use Joomla\CMS\Factory;
+use Joomla\CMS\Filter\InputFilter;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\Object\CMSObject;
+use Joomla\CMS\Table\Table;
 use Joomla\Database\Exception\ExecutionFailureException;
 use Joomla\Database\DatabaseDriver;
+use StdClass;
+use function defined;
 
 /**
  * Class KunenaForumTopicPoll
@@ -128,7 +136,7 @@ class KunenaForumTopicPoll extends CMSObject
 	 * @param   string  $type    Polls table name to be used.
 	 * @param   string  $prefix  Polls table prefix to be used.
 	 *
-	 * @return  boolean|Joomla\CMS\Table\Table|KunenaTable|TableKunenaPolls
+	 * @return  boolean|Table|KunenaTable|TableKunenaPolls
 	 *
 	 * @since   Kunena 6.0
 	 */
@@ -144,7 +152,7 @@ class KunenaForumTopicPoll extends CMSObject
 		}
 
 		// Create the user table object
-		return Joomla\CMS\Table\Table::getInstance($tabletype ['name'], $tabletype ['prefix']);
+		return Table::getInstance($tabletype ['name'], $tabletype ['prefix']);
 	}
 
 	/**
@@ -234,7 +242,7 @@ class KunenaForumTopicPoll extends CMSObject
 			return;
 		}
 
-		$filter     = Joomla\CMS\Filter\InputFilter::getInstance();
+		$filter     = InputFilter::getInstance();
 		$newOptions = [];
 
 		foreach ($options as $key => &$value)

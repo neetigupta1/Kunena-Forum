@@ -9,15 +9,22 @@
  * @license       https://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link          https://www.kunena.org
  **/
+
+namespace Kunena;
+
 defined('_JEXEC') or die();
 
+use Exception;
 use Joomla\CMS\Factory;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\Object\CMSObject;
 use Joomla\CMS\Date\Date;
 use Joomla\CMS\Table\Table;
+use Joomla\CMS\User\User;
 use Joomla\Database\Exception\ExecutionFailureException;
 use Joomla\Database\DatabaseDriver;
+use stdClass;
+use function defined;
 
 /**
  * Class KunenaUserBan
@@ -85,7 +92,7 @@ class KunenaUserBan extends CMSObject
 	protected static $_now = null;
 
 	/**
-	 * @var     Joomla\CMS\User\User|null
+	 * @var     User|null
 	 * @since   Kunena 6.0
 	 */
 	protected static $_my = null;

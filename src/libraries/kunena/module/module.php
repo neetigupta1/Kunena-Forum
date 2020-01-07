@@ -9,10 +9,17 @@
  * @license       https://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link          https://www.kunena.org
  **/
+
+namespace Kunena;
+
 defined('_JEXEC') or die();
 
+use Exception;
 use Joomla\CMS\Factory;
 use Joomla\CMS\Uri\Uri;
+use Joomla\Registry\Registry;
+use stdClass;
+use function defined;
 
 /**
  * Class KunenaModule
@@ -36,14 +43,14 @@ abstract class KunenaModule
 	protected $module = null;
 
 	/**
-	 * @var     Joomla\Registry\Registry
+	 * @var     Registry
 	 * @since   Kunena 6.0
 	 */
 	protected $params = null;
 
 	/**
-	 * @param   stdClass                  $module  module
-	 * @param   Joomla\Registry\Registry  $params  params
+	 * @param   stdClass  $module  module
+	 * @param   Registry  $params  params
 	 *
 	 * @since   Kunena 6.0
 	 *

@@ -9,10 +9,19 @@
  * @license       https://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link          https://www.kunena.org
  **/
+
+namespace Kunena;
+
 defined('_JEXEC') or die();
 
+use Joomla\Database\DatabaseDriver;
+use Exception;
 use Joomla\CMS\Language\Text;
 use Joomla\Database\Exception\ExecutionFailureException;
+use Joomla\Registry\Registry;
+use RuntimeException;
+use UnexpectedValueException;
+use function defined;
 
 require_once __DIR__ . '/kunena.php';
 
@@ -235,7 +244,7 @@ class TableKunenaCategories extends KunenaTable
 	public $topictemplate = null;
 
 	/**
-	 * @param   JDatabaseDriver  $db  Database driver
+	 * @param   DatabaseDriver  $db  Database driver
 	 *
 	 * @since   Kunena 6.0
 	 */
@@ -329,18 +338,18 @@ class TableKunenaCategories extends KunenaTable
 
 		if (isset($array['params']) && !is_string($array['params']))
 		{
-			if ($array['params'] instanceof Joomla\Registry\Registry)
+			if ($array['params'] instanceof Registry)
 			{
 				$registry = $array['params'];
 			}
 			elseif (is_array($array['params']))
 			{
-				$registry = new Joomla\Registry\Registry;
+				$registry = new Registry;
 				$registry->loadArray($array['params']);
 			}
 			else
 			{
-				$registry = new Joomla\Registry\Registry;
+				$registry = new Registry;
 			}
 
 			$array['params'] = (string) $registry;
@@ -377,7 +386,7 @@ class TableKunenaCategories extends KunenaTable
 			throw new UnexpectedValueException(Text::_('COM_KUNENA_LIB_TABLE_CATEGORIES_ERROR_NO_NAME'));
 		}
 
-		if ($this->params instanceof Joomla\Registry\Registry)
+		if ($this->params instanceof Registry)
 		{
 			$this->params = $this->params->toString();
 		}

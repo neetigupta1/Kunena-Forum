@@ -9,11 +9,17 @@
  * @license       https://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link          https://www.kunena.org
  **/
+
+namespace Kunena;
+
 defined('_JEXEC') or die();
 
+use Exception;
 use Joomla\CMS\Factory;
 use Joomla\CMS\Object\CMSObject;
+use Joomla\CMS\Table\Table;
 use Joomla\Database\DatabaseDriver;
+use function defined;
 
 /**
  * Class KunenaForumCategoryUser
@@ -76,7 +82,7 @@ class KunenaForumCategoryUser extends CMSObject
 	 * @param   string  $type    The categories table name to be used
 	 * @param   string  $prefix  The categories table prefix to be used
 	 *
-	 * @return  Joomla\CMS\Table\Table|TableKunenaUserCategories  The categories table object
+	 * @return  Table|TableKunenaUserCategories  The categories table object
 	 *
 	 * @since   Kunena 6.0
 	 */
@@ -92,7 +98,7 @@ class KunenaForumCategoryUser extends CMSObject
 		}
 
 		// Create the user table object
-		return Joomla\CMS\Table\Table::getInstance($tabletype ['name'], $tabletype ['prefix']);
+		return Table::getInstance($tabletype ['name'], $tabletype ['prefix']);
 	}
 
 	/**

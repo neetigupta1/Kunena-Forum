@@ -9,9 +9,16 @@
  * @license         https://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link            https://www.kunena.org
  **/
+
+namespace Kunena;
+
 defined('_JEXEC') or die();
 
+use Exception;
+use Joomla\CMS\Access\Access;
 use Joomla\CMS\Factory;
+use RuntimeException;
+use function defined;
 
 /**
  * Class KunenaProfileKunena
@@ -81,7 +88,7 @@ class KunenaProfileKunena extends KunenaProfile
 
 		if (KunenaFactory::getConfig()->superadmin_userlist)
 		{
-			$filter = Joomla\CMS\Access\Access::getUsersByGroup(8);
+			$filter = Access::getUsersByGroup(8);
 			$query->andwhere('u.id NOT IN (' . implode(',', $filter) . ')');
 		}
 

@@ -9,14 +9,20 @@
  * @license        https://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link           https://www.kunena.org
  **/
+
+namespace Kunena;
+
 defined('_JEXEC') or die();
+
+use Joomla\CMS\Plugin\CMSPlugin;
+use function defined;
 
 /**
  * Class plgKunenaGravatar
  *
  * @since   Kunena 6.0
  */
-class plgKunenaGravatar extends Joomla\CMS\Plugin\CMSPlugin
+class plgKunenaGravatar extends CMSPlugin
 {
 	/**
 	 * plgKunenaGravatar constructor.

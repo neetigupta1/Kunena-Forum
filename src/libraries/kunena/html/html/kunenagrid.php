@@ -13,11 +13,16 @@
  *
  * Taken from Joomla Platform 11.1
  */
+
+namespace Kunena;
+
 defined('_JEXEC') or die();
 
+use Exception;
 use Joomla\CMS\Factory;
 use Joomla\CMS\HTML\HTMLHelper;
 use Joomla\CMS\Language\Text;
+use Joomla\CMS\Table\Table;
 
 /**
  * Utility class for creating HTML Grids
@@ -170,7 +175,7 @@ abstract class JHtmlKunenaGrid
 	{
 		$userid = Factory::getApplication()->getIdentity()->get('id');
 
-		if ($row instanceof Joomla\CMS\Table\Table)
+		if ($row instanceof Table)
 		{
 			$result = $row->isCheckedOut($userid);
 		}

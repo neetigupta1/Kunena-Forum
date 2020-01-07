@@ -9,12 +9,18 @@
  * @license       https://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link          https://www.kunena.org
  **/
+
+namespace Kunena;
+
 defined('_JEXEC') or die();
 
+use Exception;
 use Joomla\CMS\Factory;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\Uri\Uri;
 use Joomla\CMS\Log\Log;
+use Joomla\Registry\Registry;
+use function defined;
 
 require_once KPATH_SITE . '/router.php';
 
@@ -107,7 +113,7 @@ abstract class KunenaRouteLegacy
 		$uri  = Uri::getInstance($item->link);
 		$view = $uri->getVar('func', $uri->getVar('view'));
 
-		$params = new Joomla\Registry\Registry($item->params);
+		$params = new Registry($item->params);
 
 		if (self::convert($uri, 0))
 		{
@@ -158,7 +164,7 @@ abstract class KunenaRouteLegacy
 	public static function convert($uri, $showstart = 1)
 	{
 		// Make sure that input is Joomla\CMS\Uri\Uri to legacy Kunena func=xxx
-		if (!($uri instanceof Joomla\CMS\Uri\Uri))
+		if (!($uri instanceof Uri))
 		{
 			return false;
 		}

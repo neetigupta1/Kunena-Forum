@@ -9,11 +9,18 @@
  * @license       https://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link          https://www.kunena.org
  **/
+
+namespace Kunena;
+
 defined('_JEXEC') or die();
 
+use Exception;
 use Joomla\CMS\Factory;
 use Joomla\CMS\Language\Text;
+use Joomla\CMS\Plugin\PluginHelper;
 use Joomla\CMS\Uri\Uri;
+use StdClass;
+use function defined;
 
 /**
  * Class KunenaAvatar
@@ -59,7 +66,7 @@ class KunenaAvatar
 	{
 		if (self::$instance === false)
 		{
-			Joomla\CMS\Plugin\PluginHelper::importPlugin('kunena');
+			PluginHelper::importPlugin('kunena');
 
 			$classes = Factory::getApplication()->triggerEvent('onKunenaGetAvatar');
 

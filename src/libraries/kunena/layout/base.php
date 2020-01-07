@@ -9,13 +9,24 @@
  * @license         https://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link            https://www.kunena.org
  **/
+
+namespace Kunena;
+
 defined('_JEXEC') or die();
 
+use Exception;
+use InvalidArgumentException;
 use Joomla\CMS\Factory;
+use Joomla\CMS\Layout\BaseLayout;
 use Joomla\CMS\Log\Log;
+use Joomla\Input\Input;
+use KunenaCompatLayoutBase;
+use RuntimeException;
+use Throwable;
+use function defined;
 
 /**
- * Implements Kunena layouts for the views.
+ * implements \Kunena layouts for the views.
  *
  * This class is part of Kunena HMVC implementation, allowing calls to
  * any layout file.
@@ -95,7 +106,7 @@ class KunenaLayoutBase extends KunenaCompatLayoutBase
 		// Setup dependencies.
 		$this->_name        = $name;
 		$this->includePaths = isset($paths) ? $paths : $this->loadPaths();
-		$this->debug        = JDEBUG || KunenaConfig::getInstance()->get('debug');
+		$this->debug        = JDEBUG || Config::getInstance()->get('debug');
 	}
 
 	/**
@@ -390,7 +401,7 @@ class KunenaLayoutBase extends KunenaCompatLayoutBase
 	 *
 	 * @return  KunenaLayoutBase Instance of $this to allow chaining.
 	 *
-	 * @since   Kunena 6.0
+	 * @since    Kunena 6.0
 	 */
 	public function debug($data = [])
 	{
@@ -451,9 +462,9 @@ class KunenaLayoutBase extends KunenaCompatLayoutBase
 	/**
 	 * Add script options to the document.
 	 *
-	 * @param   string   $key     key
-	 * @param   boolean  $options options
-	 * @param   boolean  $merge   merge
+	 * @param   string   $key      key
+	 * @param   boolean  $options  options
+	 * @param   boolean  $merge    merge
 	 *
 	 * @return  mixed
 	 *
@@ -671,7 +682,7 @@ class KunenaLayoutBase extends KunenaCompatLayoutBase
 	 *
 	 * @param   string  $path  path
 	 *
-	 * @return  Joomla\CMS\Layout\BaseLayout|KunenaLayout
+	 * @return  BaseLayout|KunenaLayout
 	 *
 	 * @since   Kunena 6.0
 	 *
@@ -775,15 +786,15 @@ class KunenaLayoutBase extends KunenaCompatLayoutBase
 	 * By using $this->subRequest() instead of KunenaRequest::factory() you can make your template files both
 	 * easier to read and gain some context awareness.
 	 *
-	 * @param   string              $path     path
-	 * @param   Joomla\Input\Input  $input    input
-	 * @param   mixed               $options  options
+	 * @param   string  $path     path
+	 * @param   Input   $input    input
+	 * @param   mixed   $options  options
 	 *
 	 * @return  KunenaControllerDisplay|KunenaLayout
 	 *
 	 * @since   Kunena 6.0
 	 */
-	public function subRequest($path, Joomla\Input\Input $input = null, $options = null)
+	public function subRequest($path, Input $input = null, $options = null)
 	{
 		return KunenaRequest::factory($path . '/Display', $input, $options)
 			->setLayout($this->getLayout());

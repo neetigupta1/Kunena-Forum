@@ -9,14 +9,20 @@
  * @license         https://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link            https://www.kunena.org
  **/
+
+namespace Kunena;
+
 defined('_JEXEC') or die();
+
+use Joomla\CMS\Plugin\CMSPlugin;
+use function defined;
 
 /**
  * Class PlgKunenaKunena
  *
  * @since   Kunena 6.0
  */
-class PlgKunenaKunena extends Joomla\CMS\Plugin\CMSPlugin
+class PlgKunenaKunena extends CMSPlugin
 {
 	/**
 	 * @param   object $subject  subject

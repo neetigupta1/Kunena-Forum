@@ -9,9 +9,15 @@
  * @license       https://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link          https://www.kunena.org
  **/
+
+namespace Kunena;
+
 defined('_JEXEC') or die();
 
+use Exception;
 use Joomla\CMS\Factory;
+use Joomla\CMS\Plugin\PluginHelper;
+use function defined;
 
 /**
  * Class KunenaIntegrationActivity
@@ -33,15 +39,13 @@ class KunenaIntegrationActivity
 	protected $instances = [];
 
 	/**
-	 * @return  void
-	 *
 	 * @since   Kunena 6.0
 	 *
 	 * @throws  Exception
 	 */
 	public function __construct()
 	{
-		Joomla\CMS\Plugin\PluginHelper::importPlugin('kunena');
+		PluginHelper::importPlugin('kunena');
 
 		$classes = Factory::getApplication()->triggerEvent('onKunenaGetActivity');
 

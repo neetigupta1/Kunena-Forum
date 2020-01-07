@@ -9,13 +9,21 @@
  * @license       https://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link          https://www.kunena.org
  **/
+
+namespace Kunena;
+
 defined('_JEXEC') or die();
 
+use Exception;
+use Joomla\CMS\Application\ApplicationHelper;
+use Joomla\CMS\Cache\CacheController;
 use Joomla\CMS\Factory;
 use Joomla\CMS\Router\Route;
 use Joomla\CMS\Session\Session;
 use Joomla\CMS\Uri\Uri;
 use Joomla\CMS\Component\ComponentHelper;
+use Joomla\String\StringHelper;
+use function defined;
 
 KunenaRoute::initialize();
 
@@ -162,7 +170,7 @@ abstract class KunenaRoute
 	/**
 	 * @param   bool  $object  object
 	 *
-	 * @return  boolean|Joomla\CMS\Uri\Uri|null|string
+	 * @return  boolean|Uri|null|string
 	 *
 	 * @since   Kunena 6.0
 	 *
@@ -193,7 +201,7 @@ abstract class KunenaRoute
 	/**
 	 * @param   null  $uri  uri
 	 *
-	 * @return  boolean|Joomla\CMS\Uri\Uri|null
+	 * @return  boolean|Uri|null
 	 *
 	 * @since   Kunena 6.0
 	 *
@@ -318,7 +326,7 @@ abstract class KunenaRoute
 	}
 
 	/**
-	 * @param   Joomla\CMS\Uri\Uri  $uri  uri
+	 * @param   Uri  $uri  uri
 	 *
 	 * @return  integer
 	 *
@@ -431,7 +439,7 @@ abstract class KunenaRoute
 			$language     = strtolower(Factory::getApplication()->getDocument()->getLanguage());
 			self::$search = false;
 
-			if (KunenaConfig::getInstance()->get('cache_mid'))
+			if (Config::getInstance()->get('cache_mid'))
 			{
 				// FIXME: Experimental caching.
 				$cache        = self::getCache();
@@ -490,7 +498,7 @@ abstract class KunenaRoute
 	}
 
 	/**
-	 * @return  Joomla\CMS\Cache\CacheController
+	 * @return  CacheController
 	 *
 	 * @since   Kunena 6.0
 	 */
@@ -575,8 +583,8 @@ abstract class KunenaRoute
 	}
 
 	/**
-	 * @param   mixed               $item  item
-	 * @param   Joomla\CMS\Uri\Uri  $uri   uri
+	 * @param   mixed  $item  item
+	 * @param   Uri    $uri   uri
 	 *
 	 * @return  integer
 	 *
@@ -619,8 +627,8 @@ abstract class KunenaRoute
 	}
 
 	/**
-	 * @param   mixed               $item  item
-	 * @param   Joomla\CMS\Uri\Uri  $uri   url
+	 * @param   mixed  $item  item
+	 * @param   Uri    $uri   url
 	 *
 	 * @return  integer
 	 *
@@ -628,7 +636,7 @@ abstract class KunenaRoute
 	 *
 	 * @throws  null
 	 */
-	protected static function checkCategory($item, Joomla\CMS\Uri\Uri $uri)
+	protected static function checkCategory($item, Uri $uri)
 	{
 		static $cache = [];
 		$catid = (int) $uri->getVar('catid');
@@ -654,14 +662,14 @@ abstract class KunenaRoute
 	}
 
 	/**
-	 * @param   mixed               $item  item
-	 * @param   Joomla\CMS\Uri\Uri  $uri   uri
+	 * @param   mixed  $item  item
+	 * @param   Uri    $uri   uri
 	 *
 	 * @return  integer
 	 *
 	 * @since   Kunena 6.0
 	 */
-	protected static function check($item, Joomla\CMS\Uri\Uri $uri)
+	protected static function check($item, Uri $uri)
 	{
 		$hits = 0;
 
@@ -702,7 +710,7 @@ abstract class KunenaRoute
 
 		if ($referrer)
 		{
-			$uri = new Joomla\CMS\Uri\Uri($referrer);
+			$uri = new Uri($referrer);
 
 			// Make sure we do not return into a task -- or if task is SEF encoded, make sure it fails.
 			$uri->delVar('task');
@@ -727,7 +735,7 @@ abstract class KunenaRoute
 			}
 
 			$default = self::_($default);
-			$uri     = new Joomla\CMS\Uri\Uri($default);
+			$uri     = new Uri($default);
 		}
 
 		if ($anchor)
@@ -754,7 +762,7 @@ abstract class KunenaRoute
 	{
 		if (self::$adminApp)
 		{
-			if ($uri instanceof Joomla\CMS\Uri\Uri)
+			if ($uri instanceof Uri)
 			{
 				$uri = $uri->toString();
 			}
@@ -772,7 +780,7 @@ abstract class KunenaRoute
 
 		KUNENA_PROFILER ? KunenaProfiler::instance()->start('function ' . __CLASS__ . '::' . __FUNCTION__ . '()') : null;
 
-		$key = (self::$home ? self::$home->id : 0) . '-' . (int) $xhtml . (int) $ssl . ($uri instanceof Joomla\CMS\Uri\Uri ? $uri->toString() : (string) $uri);
+		$key = (self::$home ? self::$home->id : 0) . '-' . (int) $xhtml . (int) $ssl . ($uri instanceof Uri ? $uri->toString() : (string) $uri);
 
 		if (!$uri || (is_string($uri) && $uri[0] == '&'))
 		{
@@ -811,10 +819,10 @@ abstract class KunenaRoute
 	}
 
 	/**
-	 * @param   Joomla\CMS\Uri\Uri  $uri     uri
-	 * @param   bool                $object  object
+	 * @param   Uri   $uri     uri
+	 * @param   bool  $object  object
 	 *
-	 * @return  Joomla\CMS\Uri\Uri|string
+	 * @return  Uri|string
 	 *
 	 * @since   Kunena 6.0
 	 *
@@ -868,7 +876,7 @@ abstract class KunenaRoute
 	 */
 	public static function cacheLoad()
 	{
-		if (!KunenaConfig::getInstance()->get('cache_url'))
+		if (!Config::getInstance()->get('cache_url'))
 		{
 			return;
 		}
@@ -897,7 +905,7 @@ abstract class KunenaRoute
 	 */
 	public static function cacheStore()
 	{
-		if (!KunenaConfig::getInstance()->get('cache_url'))
+		if (!Config::getInstance()->get('cache_url'))
 		{
 			return;
 		}
@@ -931,7 +939,7 @@ abstract class KunenaRoute
 
 		if (!isset(self::$filtered[$string]))
 		{
-			self::$filtered[$string] = Joomla\CMS\Application\ApplicationHelper::stringURLSafe($string);
+			self::$filtered[$string] = ApplicationHelper::stringURLSafe($string);
 
 			// Remove beginning and trailing "whitespace", fixes #1130 where category alias creation fails on error: Duplicate entry '-'.
 			self::$filtered[$string] = trim(self::$filtered[$string], '-_ ');
@@ -966,7 +974,7 @@ abstract class KunenaRoute
 
 		foreach ($aliases as $object)
 		{
-			if (Joomla\String\StringHelper::strtolower($alias) == Joomla\String\StringHelper::strtolower($object->alias))
+			if (StringHelper::strtolower($alias) == StringHelper::strtolower($object->alias))
 			{
 				$var         = $object->type != 'legacy' ? $object->type : 'view';
 				$vars [$var] = $object->type != 'layout' ? $object->item : preg_replace('/.*\./', '', $object->item);
@@ -1014,7 +1022,7 @@ abstract class KunenaRoute
 		$uri = clone Uri::getInstance();
 
 		// Get current route.
-		self::$current = new Joomla\CMS\Uri\Uri('index.php');
+		self::$current = new Uri('index.php');
 
 		if ($active)
 		{
@@ -1252,7 +1260,7 @@ abstract class KunenaRoute
 	}
 
 	/**
-	 * This method implements unicode slugs instead of transliteration.
+	 * This method implements \unicode slugs instead of transliteration.
 	 * It has taken from Joomla 1.7.3 with the difference that urls are not lower case.
 	 *
 	 * @param   string  $string  String to process

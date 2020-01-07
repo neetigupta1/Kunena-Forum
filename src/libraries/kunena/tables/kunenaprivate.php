@@ -9,12 +9,20 @@
  * @license       http://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link          http://www.kunena.org
  **/
+
+namespace Kunena;
+
 defined('_JEXEC') or die();
 
+use Exception;
+use Joomla\CMS\Date\Date;
 use Joomla\CMS\Language\Text;
 use Joomla\Database\DatabaseDriver;
+use Joomla\Registry\Registry;
+use UnexpectedValueException;
+use function defined;
 
-require_once(__DIR__ . '/kunena.php');
+require_once __DIR__ . '/kunena.php';
 
 /**
  * Kunena Private Messages
@@ -93,7 +101,7 @@ class TableKunenaPrivate extends KunenaTable
 	{
 		if (!$this->created_at)
 		{
-			$this->created_at = Joomla\CMS\Date\Date::getInstance()->toSql();
+			$this->created_at = Date::getInstance()->toSql();
 		}
 
 		$this->subject = trim($this->subject);
@@ -108,7 +116,7 @@ class TableKunenaPrivate extends KunenaTable
 			throw new UnexpectedValueException(Text::sprintf('COM_KUNENA_LIB_TABLE_PRIVATE_ERROR_NO_BODY'));
 		}
 
-		if ($this->params instanceof Joomla\Registry\Registry)
+		if ($this->params instanceof Registry)
 		{
 			$this->params = $this->params->toString();
 		}

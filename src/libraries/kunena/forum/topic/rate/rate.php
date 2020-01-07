@@ -9,12 +9,20 @@
  * @license         https://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link            https://www.kunena.org
  **/
+
+namespace Kunena;
+
 defined('_JEXEC') or die();
 
+use Exception;
 use Joomla\CMS\Factory;
 use Joomla\CMS\Object\CMSObject;
+use Joomla\CMS\Response\JsonResponse;
+use Joomla\CMS\Table\Table;
 use Joomla\Database\Exception\ExecutionFailureException;
 use Joomla\Database\DatabaseDriver;
+use RuntimeException;
+use function defined;
 
 /**
  * Kunena Forum Topic Rate Class
@@ -116,7 +124,7 @@ class KunenaForumTopicRate extends CMSObject
 	 * @param   string  $type    Polls table name to be used.
 	 * @param   string  $prefix  Polls table prefix to be used.
 	 *
-	 * @return  boolean|Joomla\CMS\Table\Table|KunenaTable|TableKunenaRate
+	 * @return  boolean|Table|KunenaTable|TableKunenaRate
 	 *
 	 * @since   Kunena 6.0
 	 */
@@ -132,7 +140,7 @@ class KunenaForumTopicRate extends CMSObject
 		}
 
 		// Create the user table object
-		return Joomla\CMS\Table\Table::getInstance($tabletype ['name'], $tabletype ['prefix']);
+		return Table::getInstance($tabletype ['name'], $tabletype ['prefix']);
 	}
 
 	/**
@@ -161,7 +169,7 @@ class KunenaForumTopicRate extends CMSObject
 	 *
 	 * @param   string  $user  user
 	 *
-	 * @return  boolean|Joomla\CMS\Response\JsonResponse
+	 * @return  boolean|JsonResponse
 	 *
 	 * @since   Kunena 2.0
 	 *
@@ -178,28 +186,28 @@ class KunenaForumTopicRate extends CMSObject
 		{
 			$exception = new RuntimeException('COM_KUNENA_RATE_LOGIN', 500);
 
-			return new Joomla\CMS\Response\JsonResponse($exception);
+			return new JsonResponse($exception);
 		}
 
 		if ($user->isBanned())
 		{
 			$exception = new RuntimeException('COM_KUNENA_RATE_NOT_ALLOWED_WHEN_BANNED', 500);
 
-			return new Joomla\CMS\Response\JsonResponse($exception);
+			return new JsonResponse($exception);
 		}
 
 		if ($user->userid == $topic->first_post_userid)
 		{
 			$exception = new RuntimeException('COM_KUNENA_RATE_NOT_YOURSELF', 500);
 
-			return new Joomla\CMS\Response\JsonResponse($exception);
+			return new JsonResponse($exception);
 		}
 
 		if ($this->exists($user->userid))
 		{
 			$exception = new RuntimeException('COM_KUNENA_RATE_ALLREADY', 500);
 
-			return new Joomla\CMS\Response\JsonResponse($exception);
+			return new JsonResponse($exception);
 		}
 
 		$time  = Factory::getDate();
@@ -219,11 +227,11 @@ class KunenaForumTopicRate extends CMSObject
 			$topic = KunenaForumTopicHelper::get($this->topic_id);
 			$activityIntegration->onAfterRate($user->userid, $topic);
 
-			$response = new Joomla\CMS\Response\JsonResponse(null, 'COM_KUNENA_RATE_SUCCESSFULLY_SAVED');
+			$response = new JsonResponse(null, 'COM_KUNENA_RATE_SUCCESSFULLY_SAVED');
 		}
 		catch (Exception $e)
 		{
-			$response = new Joomla\CMS\Response\JsonResponse($e);
+			$response = new JsonResponse($e);
 		}
 
 		return $response;

@@ -8,6 +8,12 @@
  * @license        https://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link           https://www.kunena.org
  **/
+
+namespace Kunena;
+
+use Iterator;
+use function defined;
+
 defined('_JEXEC') or die();
 
 /**
