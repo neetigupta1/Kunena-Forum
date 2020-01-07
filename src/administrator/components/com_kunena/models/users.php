@@ -9,19 +9,27 @@
  * @license         https://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link            https://www.kunena.org
  **/
+
+namespace Kunena;
+
 defined('_JEXEC') or die();
 
+use Exception;
+use Joomla\CMS\Date\Date;
 use Joomla\CMS\HTML\HTMLHelper;
 use Joomla\CMS\Factory;
 use Joomla\CMS\Language\Text;
+use Joomla\CMS\MVC\Model\ListModel;
 use Joomla\Database\QueryInterface;
+use RuntimeException;
+use function defined;
 
 /**
  * Users Model for Kunena
  *
  * @since   Kunena 2.0
  */
-class KunenaAdminModelUsers extends Joomla\CMS\MVC\Model\ListModel
+class KunenaAdminModelUsers extends ListModel
 {
 	/**
 	 * Constructor.
@@ -323,7 +331,7 @@ class KunenaAdminModelUsers extends Joomla\CMS\MVC\Model\ListModel
 
 		if ($filter !== '')
 		{
-			$now      = new Joomla\CMS\Date\Date;
+			$now      = new Date;
 			$nullDate = $db->getNullDate() ? $db->quote($db->getNullDate()) : 'NULL';
 
 			if ($filter)

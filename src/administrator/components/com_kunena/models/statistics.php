@@ -9,16 +9,24 @@
  * @license       https://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link          https://www.kunena.org
  **/
+
+namespace Kunena;
+
 defined('_JEXEC') or die();
 
+use Exception;
+use Joomla\CMS\Date\Date;
 use Joomla\CMS\Factory;
+use Joomla\CMS\MVC\Model\ListModel;
+use stdClass;
+use function defined;
 
 /**
  * Statistics Model for Kunena
  *
  * @since 5.0
  */
-class KunenaAdminModelStatistics extends Joomla\CMS\MVC\Model\ListModel
+class KunenaAdminModelStatistics extends ListModel
 {
 	/**
 	 * Constructor.
@@ -143,8 +151,8 @@ class KunenaAdminModelStatistics extends Joomla\CMS\MVC\Model\ListModel
 
 		if ($start || $stop)
 		{
-			$start = $start ? new Joomla\CMS\Date\Date($start) : null;
-			$stop  = $stop ? new Joomla\CMS\Date\Date($stop . ' +1 day') : null;
+			$start = $start ? new Date($start) : null;
+			$stop  = $stop ? new Date($stop . ' +1 day') : null;
 			$finder->filterByTime($start, $stop);
 		}
 
@@ -309,8 +317,8 @@ class KunenaAdminModelStatistics extends Joomla\CMS\MVC\Model\ListModel
 			$this->context .= '.' . $layout;
 		}
 
-		$now   = new Joomla\CMS\Date\Date;
-		$month = new Joomla\CMS\Date\Date('-1 month');
+		$now   = new Date;
+		$month = new Date('-1 month');
 
 		$filter_active = '';
 

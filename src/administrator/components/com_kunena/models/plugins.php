@@ -6,20 +6,26 @@
  * @copyright   Copyright (C) 2005 - 2013 Open Source Matters, Inc. All rights reserved.
  * @license     GNU General Public License version 2 or later; see LICENSE.txt
  */
+namespace Kunena;
+
 defined('_JEXEC') or die;
 
+use DatabaseQuery;
+use Exception;
 use Joomla\CMS\Factory;
 use Joomla\CMS\Language\Text;
+use Joomla\CMS\MVC\Model\ListModel;
 use Joomla\Database\QueryInterface;
 use Joomla\Utilities\ArrayHelper;
 use Joomla\CMS\Component\ComponentHelper;
+use function defined;
 
 /**
  * Class KunenaAdminModelPlugins
  *
  * @since   Kunena 6.0
  */
-class KunenaAdminModelPlugins extends Joomla\CMS\MVC\Model\ListModel
+class KunenaAdminModelPlugins extends ListModel
 {
 	/**
 	 * Constructor.
@@ -97,7 +103,7 @@ class KunenaAdminModelPlugins extends Joomla\CMS\MVC\Model\ListModel
 	/**
 	 * Returns an object list
 	 *
-	 * @param   JDatabaseQuery  $query       The query
+	 * @param   DatabaseQuery  $query       The query
 	 * @param   int             $limitstart  Offset
 	 * @param   int             $limit       The number of records
 	 *

@@ -8,9 +8,14 @@
  * @license        https://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link           https://www.kunena.org
  **/
+
+namespace Kunena;
+
 defined('_JEXEC') or die();
 
+use Exception;
 use Joomla\CMS\Language\Text;
+use function defined;
 
 // Kunena 6.0.0: Set Aurelia as default template in config when update
 /**

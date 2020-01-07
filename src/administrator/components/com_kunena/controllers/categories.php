@@ -9,12 +9,19 @@
  * @license         https://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link            https://www.kunena.org
  **/
+
+namespace Kunena;
+
 defined('_JEXEC') or die();
 
+use Exception;
 use Joomla\CMS\Factory;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\Session\Session;
+use Joomla\String\StringHelper;
 use Joomla\Utilities\ArrayHelper;
+use RuntimeException;
+use function defined;
 
 /**
  * Kunena Categories Controller
@@ -640,8 +647,8 @@ class KunenaAdminControllerCategories extends KunenaController
 	{
 		while (KunenaForumCategoryHelper::getAlias($category_id, $alias))
 		{
-			$name  = Joomla\String\StringHelper::increment($name);
-			$alias = Joomla\String\StringHelper::increment($alias, 'dash');
+			$name  = StringHelper::increment($name);
+			$alias = StringHelper::increment($alias, 'dash');
 		}
 
 		return [$name, $alias];

@@ -8,10 +8,17 @@
  * @license        https://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link           https://www.kunena.org
  **/
+
+namespace Kunena;
+
 defined('_JEXEC') or die();
 
+use Exception;
 use Joomla\CMS\Factory;
+use Joomla\CMS\Filter\OutputFilter;
 use Joomla\CMS\Language\Text;
+use Joomla\String\StringHelper;
+use function defined;
 
 // Kunena 2.0.0: Create category aliases (all that K1.7 accepts)
 /**
@@ -56,7 +63,7 @@ function kunena_200_2011_12_14_aliases($parent)
 
 		// Create SEF names
 		$aliasUtf[$category->id] = kStringURLSafe($category->name);
-		$aliasLit[$category->id] = Joomla\CMS\Filter\OutputFilter::stringURLSafe($category->name);
+		$aliasLit[$category->id] = OutputFilter::stringURLSafe($category->name);
 	}
 
 	// Sort aliases by category id (oldest ID accepts also sefcat format..
@@ -179,5 +186,5 @@ function kCreateCategoryAlias($category, $alias, $state = 0)
  */
 function kStringURLSafe($str)
 {
-	return Joomla\String\StringHelper::trim(preg_replace(['/(\s|\xE3\x80\x80)+/u', '/[\$\&\+\,\/\:\;\=\?\@\'\"\<\>\#\%\{\}\|\\\^\~\[\]\`\.\(\)\*\!]/u'], ['-', ''], $str));
+	return StringHelper::trim(preg_replace(['/(\s|\xE3\x80\x80)+/u', '/[\$\&\+\,\/\:\;\=\?\@\'\"\<\>\#\%\{\}\|\\\^\~\[\]\`\.\(\)\*\!]/u'], ['-', ''], $str));
 }

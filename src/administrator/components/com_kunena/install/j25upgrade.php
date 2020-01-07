@@ -8,7 +8,16 @@
  * @license        https://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link           https://www.kunena.org
  **/
+
+namespace Kunena;
+
 defined('_JEXEC') or die();
+
+use Exception;
+use Joomla\CMS\Table\Table;
+use jUpgradeExtensions;
+use JVersion;
+use function defined;
 
 /**
  * Kunena 2.0 jUpgrade migration class from Joomla! 1.5 to Joomla! 2.5
@@ -223,7 +232,7 @@ class jUpgradeComponentKunena extends jUpgradeExtensions
 		require_once JPATH_ADMINISTRATOR . '/components/com_kunena/api.php';
 
 		// Get component object
-		$component = Joomla\CMS\Table\Table::getInstance('extension', 'Joomla\CMS\Table\Table', ['dbo' => $this->db_new]);
+		$component = Table::getInstance('extension', 'Joomla\CMS\Table\Table', ['dbo' => $this->db_new]);
 		$component->load(['type' => 'component', 'element' => $this->name]);
 
 		// First fix all broken menu items
@@ -298,7 +307,7 @@ class jUpgradeComponentKunena extends jUpgradeExtensions
 				$menuitem->link = 'index.php?' . implode('&', $query_string);
 
 				// Save menu object
-				$menu = Joomla\CMS\Table\Table::getInstance('menu', 'Joomla\CMS\Table\Table', ['dbo' => $this->db_new]);
+				$menu = Table::getInstance('menu', 'Joomla\CMS\Table\Table', ['dbo' => $this->db_new]);
 				$menu->bind(get_object_vars($menuitem), ['tree', 'query']);
 				$success = $menu->check();
 

@@ -9,17 +9,23 @@
  * @license         https://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link            https://www.kunena.org
  **/
+
+namespace Kunena;
+
 defined('_JEXEC') or die();
 
+use Exception;
 use Joomla\CMS\Factory;
+use Joomla\CMS\MVC\Model\ListModel;
 use Joomla\Database\QueryInterface;
+use function defined;
 
 /**
  * Attachments Model for Kunena
  *
  * @since   Kunena 2.0
  */
-class KunenaAdminModelAttachments extends Joomla\CMS\MVC\Model\ListModel
+class KunenaAdminModelAttachments extends ListModel
 {
 	/**
 	 * @param   array  $config  config

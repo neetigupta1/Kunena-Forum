@@ -8,12 +8,16 @@
  * @license        https://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link           https://www.kunena.org
  **/
+
+namespace Kunena;
+
 defined('_JEXEC') or die();
 
 use Joomla\CMS\Factory;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\Date\Date;
 use Joomla\Database\Exception\ExecutionFailureException;
+use function defined;
 
 // This file contains initial sample data for the forum
 

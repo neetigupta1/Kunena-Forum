@@ -8,21 +8,29 @@
  * @license        https://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link           https://www.kunena.org
  **/
+
+namespace Kunena;
+
 defined('_JEXEC') or die();
 
+use Exception;
 use Joomla\CMS\Factory;
+use Joomla\CMS\Installer\Installer;
 use Joomla\CMS\Language\Text;
+use Joomla\CMS\MVC\Controller\BaseController;
+use Joomla\CMS\MVC\Model\BaseDatabaseModel;
 use Joomla\CMS\Session\Session;
 use Joomla\CMS\Filesystem\File;
 use Joomla\CMS\Filesystem\Folder;
 use Joomla\CMS\Component\ComponentHelper;
+use function defined;
 
 /**
  * The Kunena Installer Controller
  *
  * @since  1.6
  */
-class KunenaControllerInstall extends Joomla\CMS\MVC\Controller\BaseController
+class KunenaControllerInstall extends BaseController
 {
 	/**
 	 * @var     null
@@ -37,7 +45,7 @@ class KunenaControllerInstall extends Joomla\CMS\MVC\Controller\BaseController
 	protected $steps = null;
 
 	/**
-	 * @var     boolean|Joomla\CMS\MVC\Model\BaseDatabaseModel|null
+	 * @var     boolean|BaseDatabaseModel|null
 	 * @since   Kunena 6.0
 	 */
 	protected $model = null;
@@ -81,7 +89,7 @@ class KunenaControllerInstall extends Joomla\CMS\MVC\Controller\BaseController
 	 */
 	public static function error($type, $errstr)
 	{
-		$model = Joomla\CMS\MVC\Model\BaseDatabaseModel::getInstance('Install', 'KunenaModel');
+		$model = BaseDatabaseModel::getInstance('Install', 'KunenaModel');
 		$model->addStatus($type, false, $errstr);
 
 		echo json_encode(['success' => false, 'html' => $errstr]);
@@ -116,7 +124,7 @@ class KunenaControllerInstall extends Joomla\CMS\MVC\Controller\BaseController
 	 * @param   bool  $cachable   cachable
 	 * @param   bool  $urlparams  urlparams
 	 *
-	 * @return  Joomla\CMS\MVC\Controller\BaseController|void
+	 * @return  BaseController|void
 	 *
 	 * @since   Kunena 6.0
 	 *
@@ -286,7 +294,7 @@ class KunenaControllerInstall extends Joomla\CMS\MVC\Controller\BaseController
 
 		if (class_exists('KunenaForum') && !KunenaForum::isDev())
 		{
-			$installer = new Joomla\CMS\Installer\Installer;
+			$installer = new Installer;
 			$component = ComponentHelper::getComponent('com_kunena');
 			$installer->uninstall('component', $component->id);
 

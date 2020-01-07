@@ -8,9 +8,14 @@
  * @license        https://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link           https://www.kunena.org
  **/
+
+namespace Kunena;
+
 defined('_JEXEC') or die();
 
+use Exception;
 use Joomla\CMS\Language\Text;
+use function defined;
 
 // Kunena 2.0.0: Convert deprecated configuration options
 /**
@@ -106,7 +111,7 @@ function kunena_200_2012_05_30_configuration($parent)
 
 			if ($plugin)
 			{
-				$params            = new Joomla\Registry\Registry($plugin->params);
+				$params            = new \Joomla\Registry\Registry($plugin->params);
 				$plugin->params    = $params;
 				$plugins[$cfgname] = $plugin;
 			}

@@ -8,10 +8,14 @@
  * @license        https://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link           https://www.kunena.org
  **/
+
+namespace Kunena;
+
 defined('_JEXEC') or die();
 
 use Joomla\CMS\Factory;
 use Joomla\CMS\Uri\Uri;
+use function defined;
 
 if (defined('KUNENA_LOADED'))
 {
@@ -69,18 +73,6 @@ define('KURL_SITE', Uri::Root() . KPATH_COMPONENT_RELATIVE . '/');
  *
  */
 define('KURL_MEDIA', Uri::Root() . 'media/' . KUNENA_NAME . '/');
-
-$libraryFile = JPATH_PLATFORM . '/kunena/bootstrap.php';
-
-if (is_file($libraryFile))
-{
-	require_once $libraryFile;
-}
-
-if (Factory::getApplication()->isClient('site'))
-{
-	JLoader::registerPrefix('ComponentKunenaController', KPATH_SITE . '/controller');
-}
 
 // Kunena has been initialized
 /**

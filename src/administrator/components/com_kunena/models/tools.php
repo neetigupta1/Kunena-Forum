@@ -9,13 +9,24 @@
  * @license         https://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link            https://www.kunena.org
  **/
+
+namespace Kunena;
+
 defined('_JEXEC') or die();
 
+use Exception;
 use Joomla\CMS\HTML\HTMLHelper;
 use Joomla\CMS\Factory;
+use Joomla\CMS\Installer\Installer;
+use Joomla\CMS\Language\LanguageHelper;
 use Joomla\CMS\Language\Text;
+use Joomla\CMS\Plugin\PluginHelper;
 use Joomla\CMS\Uri\Uri;
 use Joomla\CMS\Filesystem\Folder;
+use Joomla\Registry\Registry;
+use RuntimeException;
+use stdClass;
+use function defined;
 
 require_once __DIR__ . '/cpanel.php';
 
@@ -765,7 +776,7 @@ class KunenaAdminModelTools extends KunenaAdminModelCpanel
 	 */
 	protected function _getJoomlaLanguagesInstalled()
 	{
-		$languages  = Joomla\CMS\Language\LanguageHelper::getKnownLanguages();
+		$languages  = LanguageHelper::getKnownLanguages();
 		$table_lang = '[table]';
 		$table_lang .= '[tr][th]Joomla! languages installed:[/th][/tr]';
 
@@ -836,7 +847,7 @@ class KunenaAdminModelTools extends KunenaAdminModelCpanel
 
 		if (!empty($xmlfiles))
 		{
-			$installer = Joomla\CMS\Installer\Installer::getInstance();
+			$installer = Installer::getInstance();
 
 			foreach ($xmlfiles as $file)
 			{
@@ -867,11 +878,11 @@ class KunenaAdminModelTools extends KunenaAdminModelCpanel
 
 		foreach ($plugins_list as $name => $desc)
 		{
-			$plugin = Joomla\CMS\Plugin\PluginHelper::getPlugin('kunena', $name);
+			$plugin = PluginHelper::getPlugin('kunena', $name);
 
 			if ($plugin)
 			{
-				$pluginParams = new Joomla\Registry\Registry($plugin->params);
+				$pluginParams = new Registry($plugin->params);
 				$params       = $pluginParams->toArray();
 
 				if (!empty($params))

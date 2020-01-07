@@ -6,12 +6,21 @@
  * @copyright   Copyright (C) 2005 - 2013 Open Source Matters, Inc. All rights reserved.
  * @license     GNU General Public License version 2 or later; see LICENSE.txt
  */
+namespace Kunena;
+
 defined('_JEXEC') or die;
 
+use Exception;
+use JForm;
 use Joomla\CMS\Factory;
 use Joomla\CMS\Language\Text;
+use Joomla\CMS\MVC\Model\AdminModel;
+use Joomla\CMS\Plugin\PluginHelper;
 use Joomla\CMS\Router\Route;
+use Joomla\CMS\Table\Table;
+use Joomla\Registry\Registry;
 use Joomla\Utilities\ArrayHelper;
+use function defined;
 
 /**
  * Plugin model.
@@ -20,7 +29,7 @@ use Joomla\Utilities\ArrayHelper;
  * @subpackage  com_plugins
  * @since       1.6
  */
-class KunenaAdminModelPlugin extends Joomla\CMS\MVC\Model\AdminModel
+class KunenaAdminModelPlugin extends AdminModel
 {
 	/**
 	 * @var     string    The help screen key for the module.
@@ -160,7 +169,7 @@ class KunenaAdminModelPlugin extends Joomla\CMS\MVC\Model\AdminModel
 			$this->_cache[$pk] = ArrayHelper::toObject($properties, 'JObject');
 
 			// Convert the params field to an array.
-			$registry = new Joomla\Registry\Registry;
+			$registry = new Registry;
 			$registry->loadString($table->params);
 			$this->_cache[$pk]->params = $registry->toArray();
 
@@ -187,13 +196,13 @@ class KunenaAdminModelPlugin extends Joomla\CMS\MVC\Model\AdminModel
 	 * @param   string  $prefix  A prefix for the table class name. Optional.
 	 * @param   array   $config  Configuration array for model. Optional.
 	 *
-	 * @return  Joomla\CMS\Table\Table    A database object
+	 * @return  Table    A database object
 	 *
 	 * @since   Kunena 6.0
 	 */
 	public function getTable($type = 'Extension', $prefix = 'JTable', $config = [])
 	{
-		return Joomla\CMS\Table\Table::getInstance($type, $prefix, $config);
+		return Table::getInstance($type, $prefix, $config);
 	}
 
 	/**
@@ -210,7 +219,7 @@ class KunenaAdminModelPlugin extends Joomla\CMS\MVC\Model\AdminModel
 	public function save($data)
 	{
 		// Load the extension plugin group.
-		Joomla\CMS\Plugin\PluginHelper::importPlugin('extension');
+		PluginHelper::importPlugin('extension');
 
 		// Setup type
 		$data['type'] = 'plugin';
@@ -273,7 +282,7 @@ class KunenaAdminModelPlugin extends Joomla\CMS\MVC\Model\AdminModel
 	protected function preprocessData($context, &$data, $group = 'kunena')
 	{
 		// Get the dispatcher and load the users plugins.
-		Joomla\CMS\Plugin\PluginHelper::importPlugin('content');
+		PluginHelper::importPlugin('content');
 
 		// Trigger the data preparation event.
 		$results = Factory::getApplication()->triggerEvent('onContentPrepareData', [$context, $data]);

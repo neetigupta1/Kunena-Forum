@@ -9,12 +9,20 @@
  * @license       https://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link          https://www.kunena.org
  **/
+
+namespace Kunena;
+
 defined('_JEXEC') or die();
 
+use Exception;
 use Joomla\CMS\HTML\HTMLHelper;
 use Joomla\CMS\Factory;
 use Joomla\CMS\Language\Text;
+use Joomla\CMS\Toolbar\Toolbar;
 use Joomla\CMS\Toolbar\ToolbarHelper;
+use ReflectionClass;
+use ReflectionException;
+use function defined;
 
 /**
  * Logs view for Kunena backend
@@ -173,7 +181,7 @@ class KunenaAdminViewLogs extends KunenaView
 	protected function setToolbar()
 	{
 		// Get the toolbar object instance
-		$bar = Joomla\CMS\Toolbar\Toolbar::getInstance('toolbar');
+		$bar = Toolbar::getInstance('toolbar');
 
 		// Set the titlebar text
 		ToolbarHelper::title(Text::_('COM_KUNENA') . ': ' . Text::_('COM_KUNENA_LOG_MANAGER'), 'users');

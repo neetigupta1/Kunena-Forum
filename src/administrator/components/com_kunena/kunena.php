@@ -8,10 +8,14 @@
  * @license        https://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link           https://www.kunena.org
  **/
+
+namespace Kunena;
+
 defined('_JEXEC') or die();
 
 use Joomla\CMS\Factory;
 use Joomla\CMS\Language\Text;
+use function defined;
 
 // Access check.
 if (!Factory::getApplication()->getIdentity()->authorise('core.manage', 'com_kunena'))

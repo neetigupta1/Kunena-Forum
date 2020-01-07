@@ -9,12 +9,18 @@
  * @license         https://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link            https://www.kunena.org
  **/
+
+namespace Kunena;
+
 defined('_JEXEC') or die();
 
+use Exception;
+use Joomla\CMS\Date\Date;
 use Joomla\CMS\Factory;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\Session\Session;
 use Joomla\CMS\Router\Route;
+use function defined;
 
 /**
  * Kunena Backend Logs Controller
@@ -77,7 +83,7 @@ class KunenaAdminControllerLogs extends KunenaController
 		}
 
 		$days      = $this->app->input->getInt('clean_days', 0);
-		$timestamp = new Joomla\CMS\Date\Date('now -' . $days . ' days');
+		$timestamp = new Date('now -' . $days . ' days');
 
 		$db    = Factory::getDbo();
 		$query = $db->getQuery(true)

@@ -8,17 +8,31 @@
  * @license        https://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link           https://www.kunena.org
  **/
+
+namespace Kunena;
+
 defined('_JEXEC') or die();
 
+use Exception;
+use Joomla\CMS\Cache\Cache;
+use Joomla\CMS\Cache\CacheController;
 use Joomla\CMS\Factory;
 use Joomla\Archive\Archive;
+use Joomla\CMS\Installer\Installer;
 use Joomla\CMS\Language\Text;
+use Joomla\CMS\Menu\AbstractMenu;
+use Joomla\CMS\MVC\Model\BaseDatabaseModel;
 use Joomla\CMS\Session\Session;
+use Joomla\CMS\Table\Table;
 use Joomla\CMS\Uri\Uri;
 use Joomla\CMS\Filesystem\File;
 use Joomla\CMS\Filesystem\Folder;
 use Joomla\CMS\Filesystem\Path;
 use Joomla\CMS\Component\ComponentHelper;
+use Joomla\Registry\Registry;
+use Joomla\String\StringHelper;
+use stdClass;
+use function defined;
 
 /**
  *
@@ -42,7 +56,7 @@ define('KUNENA_INSTALLER_MEDIAPATH', JPATH_SITE . '/media/kunena');
  *
  * @since   Kunena 6.0
  */
-class KunenaModelInstall extends Joomla\CMS\MVC\Model\BaseDatabaseModel
+class KunenaModelInstall extends BaseDatabaseModel
 {
 	/**
 	 * Flag to indicate model state initialization.
@@ -53,7 +67,7 @@ class KunenaModelInstall extends Joomla\CMS\MVC\Model\BaseDatabaseModel
 	protected $__state_set = false;
 
 	/**
-	 * @var     bool
+	 * @var     boolean
 	 * @since   Kunena 6.0
 	 */
 	protected $_versionprefix = false;
@@ -71,7 +85,7 @@ class KunenaModelInstall extends Joomla\CMS\MVC\Model\BaseDatabaseModel
 	protected $_versions = [];
 
 	/**
-	 * @var     bool
+	 * @var     boolean
 	 * @since   Kunena 6.0
 	 */
 	protected $_action = false;
@@ -614,7 +628,7 @@ class KunenaModelInstall extends Joomla\CMS\MVC\Model\BaseDatabaseModel
 	 */
 	public function loadPlugin($group, $element)
 	{
-		$plugin = Joomla\CMS\Table\Table::getInstance('extension');
+		$plugin = Table::getInstance('extension');
 		$plugin->load(['type' => 'plugin', 'folder' => $group, 'element' => $element]);
 
 		return $plugin;
@@ -670,7 +684,7 @@ class KunenaModelInstall extends Joomla\CMS\MVC\Model\BaseDatabaseModel
 		// Only install module if it can be used in current Joomla version (manifest exists)
 		if ($success && is_file("{$dest}/mod_{$name}.xml"))
 		{
-			$installer = new Joomla\CMS\Installer\Installer;
+			$installer = new Installer;
 			$success   = $installer->install($dest);
 			$this->addStatus(Text::sprintf('COM_KUNENA_INSTALL_MODULE_STATUS', ucfirst($name)), $success);
 		}
@@ -737,7 +751,7 @@ class KunenaModelInstall extends Joomla\CMS\MVC\Model\BaseDatabaseModel
 		// Only install plugin if it can be used in current Joomla version (manifest exists)
 		if ($success && is_file("{$dest}/{$name}.xml"))
 		{
-			$installer = new Joomla\CMS\Installer\Installer;
+			$installer = new Installer;
 			$success   = $installer->install($dest);
 
 			if ($success)
@@ -790,7 +804,7 @@ class KunenaModelInstall extends Joomla\CMS\MVC\Model\BaseDatabaseModel
 
 		if ($moduleid)
 		{
-			$installer = new Joomla\CMS\Installer\Installer;
+			$installer = new Installer;
 			$installer->uninstall('module', $moduleid);
 		}
 	}
@@ -816,7 +830,7 @@ class KunenaModelInstall extends Joomla\CMS\MVC\Model\BaseDatabaseModel
 
 		if ($pluginid)
 		{
-			$installer = new Joomla\CMS\Installer\Installer;
+			$installer = new Installer;
 			$installer->uninstall('plugin', $pluginid);
 		}
 	}
@@ -834,7 +848,7 @@ class KunenaModelInstall extends Joomla\CMS\MVC\Model\BaseDatabaseModel
 
 		if ($libraryid)
 		{
-			$installer = new Joomla\CMS\Installer\Installer;
+			$installer = new Installer;
 			$installer->uninstall('library', $libraryid);
 		}
 	}
@@ -852,7 +866,7 @@ class KunenaModelInstall extends Joomla\CMS\MVC\Model\BaseDatabaseModel
 
 		if ($mediaid)
 		{
-			$installer = new Joomla\CMS\Installer\Installer;
+			$installer = new Installer;
 			$installer->uninstall('file', $mediaid);
 		}
 	}
@@ -960,7 +974,7 @@ class KunenaModelInstall extends Joomla\CMS\MVC\Model\BaseDatabaseModel
 		$this->setAttachmentStatus();
 		$this->addStatus(Text::_('COM_KUNENA_INSTALL_STEP_PREPARE'), true);
 
-		$cache = Joomla\CMS\Cache\Cache::getInstance();
+		$cache = Cache::getInstance();
 		$cache->clean('kunena');
 		$action = $this->getAction();
 
@@ -1113,7 +1127,7 @@ class KunenaModelInstall extends Joomla\CMS\MVC\Model\BaseDatabaseModel
 	 */
 	public function enablePlugin($group, $element)
 	{
-		$plugin = Joomla\CMS\Table\Table::getInstance('extension');
+		$plugin = Table::getInstance('extension');
 
 		if (!$plugin->load(['type' => 'plugin', 'folder' => $group, 'element' => $element]))
 		{
@@ -1384,7 +1398,7 @@ class KunenaModelInstall extends Joomla\CMS\MVC\Model\BaseDatabaseModel
 		{
 			// Run only once: get table creation SQL and existing tables
 			require_once KUNENA_INSTALLER_PATH . '/schema.php';
-			$schema = new KunenaModelSchema();
+			$schema = new KunenaModelSchema;
 			$create = $schema->getCreateSQL();
 			$tables = $this->listTables('kunena_', true);
 		}
@@ -1524,7 +1538,7 @@ class KunenaModelInstall extends Joomla\CMS\MVC\Model\BaseDatabaseModel
 		}
 
 		// Allow queries to fail
-		//$this->db->setDebug(false);
+		// $this->db->setDebug(false);
 
 		foreach ($xml->upgrade[0] as $version)
 		{
@@ -1566,6 +1580,7 @@ class KunenaModelInstall extends Joomla\CMS\MVC\Model\BaseDatabaseModel
 				return false;
 			}
 		}
+
 		// Reset user state
 		$this->updateVersionState('InstallSampleData');
 		$app->setUserState('com_kunena.install.dbstate', null);
@@ -1594,6 +1609,7 @@ class KunenaModelInstall extends Joomla\CMS\MVC\Model\BaseDatabaseModel
 				$filename = $action['name'];
 				$include  = KUNENA_INSTALLER_PATH . "/sql/updates/php/{$filename}.php";
 				$function = 'kunena_' . strtr($filename, ['.' => '', '-' => '_']);
+
 				if (is_file($include))
 				{
 					require $include;
@@ -1786,12 +1802,14 @@ class KunenaModelInstall extends Joomla\CMS\MVC\Model\BaseDatabaseModel
 			if ($file)
 			{
 				$file = Path::clean($file, '/');
+
 				// Make sure to copy only supported fileformats
 				$match = preg_match('/\.(gif|jpg|jpeg|png)$/ui', $file, $matches);
 
 				if ($match)
 				{
-					$ext = Joomla\String\StringHelper::strtolower($matches[1]);
+					$ext = StringHelper::strtolower($matches[1]);
+
 					// Use new format: users/avatar62.jpg
 					$newfile  = "users/avatar{$userid}.{$ext}";
 					$destpath = (KUNENA_INSTALLER_MEDIAPATH . "/avatars/{$newfile}");
@@ -2149,7 +2167,8 @@ class KunenaModelInstall extends Joomla\CMS\MVC\Model\BaseDatabaseModel
 				$query = $this->db->getQuery(true);
 				$query->update($this->db->quoteName('#__kunena_attachments'))
 					->set('folder=\'media/kunena/attachments/legacy/' . $lastpath . '\', size=' .
-						$this->db->quote($size) . ', hash=' . $this->db->quote($hash) . ', filetype=' . $this->db->quote($attachment->filetype))
+						$this->db->quote($size) . ', hash=' . $this->db->quote($hash) . ', filetype=' . $this->db->quote($attachment->filetype)
+					)
 					->where('id=' . $this->db->quote($attachment->id));
 				$this->db->setQuery($query);
 
@@ -2596,7 +2615,8 @@ class KunenaModelInstall extends Joomla\CMS\MVC\Model\BaseDatabaseModel
 	 */
 	public function getActionText($version, $type = '', $action = null)
 	{
-		/* Translations generated:
+		/*
+		 Translations generated:
 
 		Installation types: COM_KUNENA_INSTALL_UPGRADE, COM_KUNENA_INSTALL_DOWNGRADE, COM_KUNENA_INSTALL_REINSTALL,
 		COM_KUNENA_INSTALL_MIGRATE, COM_KUNENA_INSTALL_INSTALL, COM_KUNENA_INSTALL_UNINSTALL, COM_KUNENA_INSTALL_RESTORE
@@ -2950,7 +2970,7 @@ class KunenaModelInstall extends Joomla\CMS\MVC\Model\BaseDatabaseModel
 		return ['action' => Text::_('COM_KUNENA_INSTALL_CREATE'), 'name' => 'kunena_version', 'sql' => $query];
 	}
 
-	// also insert old version if not in the table
+	// Also insert old version if not in the table
 
 	/**
 	 * @param   integer  $version      version
@@ -3076,35 +3096,37 @@ class KunenaModelInstall extends Joomla\CMS\MVC\Model\BaseDatabaseModel
 	public function createMenu()
 	{
 		$menu    = ['name' => Text::_('COM_KUNENA_MENU_ITEM_FORUM'), 'alias' => KunenaRoute::stringURLSafe(Text::_('COM_KUNENA_MENU_FORUM_ALIAS'), 'forum'),
-		            'link' => 'index.php?option=com_kunena&view=home', 'access' => 1, 'params' => ['catids' => 0]];
+					'link' => 'index.php?option=com_kunena&view=home', 'access' => 1, 'params' => ['catids' => 0]];
 		$submenu = [
 			'index'     => ['name' => Text::_('COM_KUNENA_MENU_ITEM_INDEX'), 'alias' => KunenaRoute::stringURLSafe(Text::_('COM_KUNENA_MENU_INDEX_ALIAS'), 'index'),
-			                'link' => 'index.php?option=com_kunena&view=category&layout=list', 'access' => 1, 'default' => 'categories', 'params' => [],],
+							'link' => 'index.php?option=com_kunena&view=category&layout=list', 'access' => 1, 'default' => 'categories', 'params' => [],],
 			'recent'    => ['name' => Text::_('COM_KUNENA_MENU_ITEM_RECENT'), 'alias' => KunenaRoute::stringURLSafe(Text::_('COM_KUNENA_MENU_RECENT_ALIAS'), 'recent'),
-			                'link' => 'index.php?option=com_kunena&view=topics&mode=replies', 'access' => 1, 'default' => 'recent', 'params' => ['topics_catselection' => '', 'topics_categories' => '', 'topics_time' => ''],],
+							'link' => 'index.php?option=com_kunena&view=topics&mode=replies', 'access' => 1, 'default' => 'recent', 'params' => ['topics_catselection' => '', 'topics_categories' => '', 'topics_time' => ''],],
 			'unread'    => ['name' => Text::_('COM_KUNENA_MENU_ITEM_UNREAD'), 'alias' => KunenaRoute::stringURLSafe(Text::_('COM_KUNENA_MENU_UNREAD_ALIAS'), 'unread'),
-			                'link' => 'index.php?option=com_kunena&view=topics&layout=unread', 'access' => 2, 'params' => [],],
+							'link' => 'index.php?option=com_kunena&view=topics&layout=unread', 'access' => 2, 'params' => [],],
 			'newtopic'  => ['name' => Text::_('COM_KUNENA_MENU_ITEM_NEWTOPIC'), 'alias' => KunenaRoute::stringURLSafe(Text::_('COM_KUNENA_MENU_NEWTOPIC_ALIAS'), 'newtopic'),
-			                'link' => 'index.php?option=com_kunena&view=topic&layout=create', 'access' => 2, 'params' => [],],
+							'link' => 'index.php?option=com_kunena&view=topic&layout=create', 'access' => 2, 'params' => [],],
 			'noreplies' => ['name' => Text::_('COM_KUNENA_MENU_ITEM_NOREPLIES'), 'alias' => KunenaRoute::stringURLSafe(Text::_('COM_KUNENA_MENU_NOREPLIES_ALIAS'), 'noreplies'),
-			                'link' => 'index.php?option=com_kunena&view=topics&mode=noreplies', 'access' => 2, 'params' => ['topics_catselection' => '', 'topics_categories' => '', 'topics_time' => ''],],
+							'link' => 'index.php?option=com_kunena&view=topics&mode=noreplies', 'access' => 2, 'params' => ['topics_catselection' => '', 'topics_categories' => '', 'topics_time' => ''],],
 			'mylatest'  => ['name' => Text::_('COM_KUNENA_MENU_ITEM_MYLATEST'), 'alias' => KunenaRoute::stringURLSafe(Text::_('COM_KUNENA_MENU_MYLATEST_ALIAS'), 'mylatest'),
-			                'link' => 'index.php?option=com_kunena&view=topics&layout=user&mode=default', 'access' => 2, 'default' => 'my', 'params' => ['topics_catselection' => '2', 'topics_categories' => '0', 'topics_time' => ''],],
+							'link' => 'index.php?option=com_kunena&view=topics&layout=user&mode=default', 'access' => 2, 'default' => 'my', 'params' => ['topics_catselection' => '2', 'topics_categories' => '0', 'topics_time' => ''],],
 			'profile'   => ['name' => Text::_('COM_KUNENA_MENU_ITEM_PROFILE'), 'alias' => KunenaRoute::stringURLSafe(Text::_('COM_KUNENA_MENU_PROFILE_ALIAS'), 'profile'),
-			                'link' => 'index.php?option=com_kunena&view=user', 'access' => 2, 'params' => ['integration' => 1],],
+							'link' => 'index.php?option=com_kunena&view=user', 'access' => 2, 'params' => ['integration' => 1],],
 			'help'      => ['name' => Text::_('COM_KUNENA_MENU_ITEM_HELP'), 'alias' => KunenaRoute::stringURLSafe(Text::_('COM_KUNENA_MENU_HELP_ALIAS'), 'help'),
-			                'link' => 'index.php?option=com_kunena&view=misc', 'access' => 3, 'params' => ['body' => Text::_('COM_KUNENA_MENU_HELP_BODY'), 'body_format' => 'bbcode'],],
+							'link' => 'index.php?option=com_kunena&view=misc', 'access' => 3, 'params' => ['body' => Text::_('COM_KUNENA_MENU_HELP_BODY'), 'body_format' => 'bbcode'],],
 			'search'    => ['name' => Text::_('COM_KUNENA_MENU_ITEM_SEARCH'), 'alias' => KunenaRoute::stringURLSafe(Text::_('COM_KUNENA_MENU_SEARCH_ALIAS'), 'search'),
-			                'link' => 'index.php?option=com_kunena&view=search', 'access' => 1, 'params' => [],],
+							'link' => 'index.php?option=com_kunena&view=search', 'access' => 1, 'params' => [],],
 		];
 
 		// Disable language debugging while creating menu items.
 		$lang = Factory::getLanguage();
-		//$debug = $lang->setDebug(false);
+
+		// $debug = $lang->setDebug(false);
 
 		$this->createMenuJ25($menu, $submenu);
 		KunenaMenuHelper::cleanCache();
-		//$lang->setDebug($debug);
+
+		// $lang->setDebug($debug);
 	}
 
 	/**
@@ -3137,7 +3159,7 @@ class KunenaModelInstall extends Joomla\CMS\MVC\Model\BaseDatabaseModel
 			throw new KunenaInstallerException($e->getMessage(), $e->getCode());
 		}
 
-		$table = Joomla\CMS\Table\Table::getInstance('MenuType');
+		$table = Table::getInstance('MenuType');
 		$data  = [
 			'menutype'    => 'kunenamenu',
 			'title'       => Text::_('COM_KUNENA_MENU_TITLE'),
@@ -3155,22 +3177,22 @@ class KunenaModelInstall extends Joomla\CMS\MVC\Model\BaseDatabaseModel
 			throw new KunenaInstallerException($table->getError());
 		}
 
-		$table = Joomla\CMS\Table\Table::getInstance('menu');
+		$table = Table::getInstance('menu');
 		$table->load(['menutype' => 'kunenamenu', 'link' => $menu ['link']]);
 		$paramdata = ['menu-anchor_title'     => '',
-		              'menu-anchor_css'       => '',
-		              'menu_image'            => '',
-		              'menu_text'             => 1,
-		              'page_title'            => '',
-		              'show_page_heading'     => 0,
-		              'page_heading'          => '',
-		              'pageclass_sfx'         => '',
-		              'menu-meta_description' => '',
-		              'menu-meta_keywords'    => '',
-		              'robots'                => '',
-		              'secure'                => 0];
+					  'menu-anchor_css'       => '',
+					  'menu_image'            => '',
+					  'menu_text'             => 1,
+					  'page_title'            => '',
+					  'show_page_heading'     => 0,
+					  'page_heading'          => '',
+					  'pageclass_sfx'         => '',
+					  'menu-meta_description' => '',
+					  'menu-meta_keywords'    => '',
+					  'robots'                => '',
+					  'secure'                => 0];
 
-		$gparams = new Joomla\Registry\Registry($paramdata);
+		$gparams = new Registry($paramdata);
 
 		$params = clone $gparams;
 		$params->loadArray($menu['params']);
@@ -3208,7 +3230,7 @@ class KunenaModelInstall extends Joomla\CMS\MVC\Model\BaseDatabaseModel
 		{
 			$params = clone $gparams;
 			$params->loadArray($menuitem['params']);
-			$table = Joomla\CMS\Table\Table::getInstance('menu');
+			$table = Table::getInstance('menu');
 			$table->load(['menutype' => 'kunenamenu', 'link' => $menuitem ['link']]);
 			$data = [
 				'menutype'     => 'kunenamenu',
@@ -3247,14 +3269,14 @@ class KunenaModelInstall extends Joomla\CMS\MVC\Model\BaseDatabaseModel
 		}
 
 		// Finally create alias
-		$defaultmenu = Joomla\CMS\Menu\AbstractMenu::getInstance('site')->getDefault();
+		$defaultmenu = AbstractMenu::getInstance('site')->getDefault();
 
 		if (!$defaultmenu)
 		{
 			return true;
 		}
 
-		$table = Joomla\CMS\Table\Table::getInstance('menu');
+		$table = Table::getInstance('menu');
 		$table->load(['menutype' => $defaultmenu->menutype, 'type' => 'alias', 'title' => Text::_('COM_KUNENA_MENU_ITEM_FORUM')]);
 
 		if (!$table->id)
@@ -3302,7 +3324,7 @@ class KunenaModelInstall extends Joomla\CMS\MVC\Model\BaseDatabaseModel
 	 */
 	public function deleteMenu()
 	{
-		$table = Joomla\CMS\Table\Table::getInstance('MenuType');
+		$table = Table::getInstance('MenuType');
 		$table->load(['menutype' => 'kunenamenu']);
 
 		if ($table->id)
@@ -3315,7 +3337,7 @@ class KunenaModelInstall extends Joomla\CMS\MVC\Model\BaseDatabaseModel
 			}
 		}
 
-		/** @var Joomla\CMS\Cache\Cache|Joomla\CMS\Cache\CacheController $cache */
+		/** @var Cache|CacheController $cache */
 		$cache = Factory::getCache();
 		$cache->clean('mod_menu');
 	}

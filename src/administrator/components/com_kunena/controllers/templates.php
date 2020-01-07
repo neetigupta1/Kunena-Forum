@@ -9,14 +9,21 @@
  * @license         https://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link            https://www.kunena.org
  **/
+
+namespace Kunena;
+
 defined('_JEXEC') or die();
 
+use Exception;
 use Joomla\Archive\Archive;
+use Joomla\CMS\Client\ClientHelper;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\Session\Session;
+use Joomla\Registry\Registry;
 use Joomla\Utilities\ArrayHelper;
 use Joomla\CMS\Filesystem\File;
 use Joomla\CMS\Filesystem\Folder;
+use function defined;
 
 /**
  * Kunena Backend Templates Controller
@@ -828,13 +835,13 @@ class KunenaAdminControllerTemplates extends KunenaController
 		}
 
 		// Set FTP credentials, if given
-		Joomla\CMS\Client\ClientHelper::setCredentialsFromRequest('ftp');
-		$ftp  = Joomla\CMS\Client\ClientHelper::getCredentials('ftp');
+		ClientHelper::setCredentialsFromRequest('ftp');
+		$ftp  = ClientHelper::getCredentials('ftp');
 		$file = KPATH_SITE . '/template/' . $template . '/config/params.ini';
 
 		if (count($params))
 		{
-			$registry = new Joomla\Registry\Registry;
+			$registry = new Registry;
 			$registry->loadArray($params);
 			$txt    = $registry->toString('INI');
 			$return = File::write($file, $txt);

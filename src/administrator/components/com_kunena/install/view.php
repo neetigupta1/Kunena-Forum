@@ -8,17 +8,24 @@
  * @license        https://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link           https://www.kunena.org
  **/
+
+namespace Kunena;
+
 defined('_JEXEC') or die();
 
+use Exception;
 use Joomla\CMS\Factory;
 use Joomla\CMS\Language\Text;
+use Joomla\CMS\MVC\View\HtmlView;
+use JToolbarHelper;
+use function defined;
 
 /**
  * The HTML Kunena configuration view.
  *
  * @since   Kunena 6.0
  */
-class KunenaViewInstall extends Joomla\CMS\MVC\View\HtmlView
+class KunenaViewInstall extends HtmlView
 {
 	/**
 	 * @var     null

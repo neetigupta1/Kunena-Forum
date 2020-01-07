@@ -9,10 +9,16 @@
  * @license         https://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link            https://www.kunena.org
  **/
+
+namespace Kunena;
+
 defined('_JEXEC') or die();
 
+use Exception;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\Session\Session;
+use Joomla\String\StringHelper;
+use function defined;
 
 /**
  * Kunena Backend Config Controller
@@ -91,7 +97,7 @@ class KunenaAdminControllerConfig extends KunenaController
 
 		foreach ($post_config as $postsetting => $postvalue)
 		{
-			if (Joomla\String\StringHelper::strpos($postsetting, 'cfg_') === 0)
+			if (StringHelper::strpos($postsetting, 'cfg_') === 0)
 			{
 				// Remove cfg_ and force lower case
 
@@ -100,7 +106,7 @@ class KunenaAdminControllerConfig extends KunenaController
 					$postvalue = implode(',', $postvalue);
 				}
 
-				$postname = Joomla\String\StringHelper::strtolower(Joomla\String\StringHelper::substr($postsetting, 4));
+				$postname = StringHelper::strtolower(StringHelper::substr($postsetting, 4));
 
 				if ($postname == 'imagewidth' || $postname == 'imageheight')
 				{

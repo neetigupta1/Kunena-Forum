@@ -9,7 +9,12 @@
  * @license         https://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link            https://www.kunena.org
  **/
+
+namespace Kunena;
+
 defined('_JEXEC') or die();
+
+use function defined;
 
 $success = [-1 => 'FAILED', 0 => 'FAILED', 1 => 'OK'];
 $colors  = [-1 => '#cf7f00', 0 => 'red', 1 => 'green'];

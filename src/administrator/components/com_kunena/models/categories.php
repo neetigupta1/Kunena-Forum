@@ -9,13 +9,21 @@
  * @license         https://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link            https://www.kunena.org
  **/
+
+namespace Kunena;
+
 defined('_JEXEC') or die();
 
+use Exception;
 use Joomla\CMS\HTML\HTMLHelper;
 use Joomla\CMS\Factory;
 use Joomla\CMS\Language\Text;
+use Joomla\CMS\Pagination\Pagination;
+use Joomla\CMS\Table\Table;
 use Joomla\Registry\Registry;
 use Joomla\CMS\Filesystem\Folder;
+use RuntimeException;
+use function defined;
 
 /**
  * Categories Model for Kunena
@@ -43,12 +51,12 @@ class KunenaAdminModelCategories extends KunenaModel
 	protected $_admincategory = false;
 
 	/**
-	 * @return  Joomla\CMS\Pagination\Pagination
+	 * @return  Pagination
 	 * @since   Kunena 6.0
 	 */
 	public function getAdminNavigation()
 	{
-		$navigation = new Joomla\CMS\Pagination\Pagination($this->getState('list.total'), $this->getState('list.start'), $this->getState('list.limit'));
+		$navigation = new Pagination($this->getState('list.total'), $this->getState('list.start'), $this->getState('list.limit'));
 
 		return $navigation;
 	}
@@ -266,7 +274,7 @@ class KunenaAdminModelCategories extends KunenaModel
 	 */
 	public function saveorder($pks = null, $order = null)
 	{
-		$table      = Joomla\CMS\Table\Table::getInstance('KunenaCategories', 'Table');
+		$table      = Table::getInstance('KunenaCategories', 'Table');
 		$conditions = [];
 
 		if (empty($pks))

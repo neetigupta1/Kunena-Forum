@@ -9,11 +9,17 @@
  * @license         https://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link            https://www.kunena.org
  **/
+
+namespace Kunena;
+
 defined('_JEXEC') or die();
 
+use Exception;
 use Joomla\CMS\HTML\HTMLHelper;
 use Joomla\CMS\Language\Text;
+use Joomla\CMS\Toolbar\Toolbar;
 use Joomla\CMS\Toolbar\ToolbarHelper;
+use function defined;
 
 /**
  * About view for Kunena config backend
@@ -49,7 +55,7 @@ class KunenaAdminViewConfig extends KunenaView
 	 */
 	protected function setToolBarDefault()
 	{
-		$bar = Joomla\CMS\Toolbar\Toolbar::getInstance('toolbar');
+		$bar = Toolbar::getInstance('toolbar');
 
 		ToolbarHelper::spacer();
 		ToolbarHelper::apply();

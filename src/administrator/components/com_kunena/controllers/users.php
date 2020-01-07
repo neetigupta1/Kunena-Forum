@@ -9,13 +9,20 @@
  * @license         https://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link            https://www.kunena.org
  **/
+
+namespace Kunena;
+
 defined('_JEXEC') or die();
 
+use Exception;
+use Joomla\CMS\Date\Date;
 use Joomla\CMS\Factory;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\Router\Route;
 use Joomla\CMS\Session\Session;
+use Joomla\CMS\User\User;
 use Joomla\Utilities\ArrayHelper;
+use function defined;
 
 /**
  * Kunena Users Controller
@@ -557,7 +564,7 @@ class KunenaAdminControllerUsers extends KunenaController
 				continue;
 			}
 
-			$instance = Joomla\CMS\User\User::getInstance($user->userid);
+			$instance = User::getInstance($user->userid);
 
 			if ($instance->authorise('core.admin'))
 			{
@@ -634,7 +641,7 @@ class KunenaAdminControllerUsers extends KunenaController
 		}
 		else
 		{
-			$now = new Joomla\CMS\Date\Date;
+			$now = new Date;
 			$ban->setExpiration($now);
 			$success = $ban->save();
 		}
@@ -694,7 +701,7 @@ class KunenaAdminControllerUsers extends KunenaController
 		}
 		else
 		{
-			$now = new Joomla\CMS\Date\Date;
+			$now = new Date;
 			$ban->setExpiration($now);
 			$success = $ban->save();
 		}
@@ -887,7 +894,7 @@ class KunenaAdminControllerUsers extends KunenaController
 		}
 		else
 		{
-			$now = new Joomla\CMS\Date\Date;
+			$now = new Date;
 			$ban->setExpiration($now);
 			$success = $ban->save();
 		}
@@ -947,7 +954,7 @@ class KunenaAdminControllerUsers extends KunenaController
 		}
 		else
 		{
-			$now = new Joomla\CMS\Date\Date;
+			$now = new Date;
 			$ban->setExpiration($now);
 			$success = $ban->save();
 		}

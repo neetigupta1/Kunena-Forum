@@ -9,14 +9,21 @@
  * @license       https://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link          https://www.kunena.org
  **/
+
+namespace Kunena;
+
 defined('_JEXEC') or die();
+
+use Exception;
+use Joomla\CMS\MVC\Model\ListModel;
+use function defined;
 
 /**
  * Icons Model for Kunena
  *
  * @since 5.1
  */
-class KunenaAdminModelIcons extends Joomla\CMS\MVC\Model\ListModel
+class KunenaAdminModelIcons extends ListModel
 {
 	/**
 	 * Constructor.

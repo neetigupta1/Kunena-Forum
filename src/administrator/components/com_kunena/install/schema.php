@@ -8,10 +8,20 @@
  * @license        https://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link           https://www.kunena.org
  **/
+
+namespace Kunena;
+
 defined('_JEXEC') or die();
 
+use DOMAttr;
+use DOMDocument;
+use DOMElement;
+use DOMNode;
+use Exception;
 use Joomla\CMS\Factory;
+use Joomla\CMS\MVC\Model\BaseDatabaseModel;
 use Joomla\Database\DatabaseDriver;
+use function defined;
 
 /**
  *
@@ -35,7 +45,7 @@ DEFINE('KUNENA_INPUT_DATABASE', '_DB_');
  *
  * @since  K1.6
  */
-class KunenaModelSchema extends Joomla\CMS\MVC\Model\BaseDatabaseModel
+class KunenaModelSchema extends BaseDatabaseModel
 {
 	/**
 	 * Flag to indicate model state initialization.

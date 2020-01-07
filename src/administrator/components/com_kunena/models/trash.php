@@ -9,12 +9,18 @@
  * @license         https://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link            https://www.kunena.org
  **/
+
+namespace Kunena;
+
 defined('_JEXEC') or die();
 
+use Exception;
 use Joomla\CMS\HTML\HTMLHelper;
 use Joomla\CMS\Factory;
 use Joomla\CMS\Language\Text;
+use Joomla\CMS\Pagination\Pagination;
 use Joomla\Database\Exception\ExecutionFailureException;
+use function defined;
 
 /**
  * Trash Model for Kunena
@@ -381,13 +387,13 @@ class KunenaAdminModelTrash extends KunenaModel
 	}
 
 	/**
-	 * @return  Joomla\CMS\Pagination\Pagination
+	 * @return  Pagination
 	 *
 	 * @since   Kunena 6.0
 	 */
 	public function getNavigation()
 	{
-		$navigation = new Joomla\CMS\Pagination\Pagination($this->getState('list.total'),
+		$navigation = new Pagination($this->getState('list.total'),
 			$this->getState('list.start'), $this->getState('list.limit')
 		);
 
