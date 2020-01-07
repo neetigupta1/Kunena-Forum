@@ -8,11 +8,15 @@
  * @copyright       Copyright (C) 2008 - 2020 Kunena Team. All rights reserved.
  * @license         https://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link            https://www.kunena.org
- **/
-defined('_JEXEC') or die;
+**/
+
+namespace Kunena;
+
+defined('_JEXEC') or die();
 
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\Router\Route;
+use function defined;
 
 if ($this->config->enableforumjump)
 {
@@ -153,7 +157,7 @@ foreach ($this->sections as $section) :
 												<li>
 													<?php $totaltopics = KunenaForumCategory::getInstance()->totalCount($subcategory->getTopics()); ?>
 
-													<?php if (KunenaConfig::getInstance()->showchildcaticon) : ?>
+													<?php if (Config::getInstance()->showchildcaticon) : ?>
 														<?php echo $this->getCategoryLink($subcategory, $this->getSmallCategoryIcon($subcategory), '', null, true, false) . $this->getCategoryLink($subcategory, '', null, KunenaTemplate::getInstance()->tooltips(), true, false) . '<small class="hidden-xs-down muted"> ('
 															. $totaltopics . ')</small>';
 													else : ?>
@@ -183,7 +187,7 @@ foreach ($this->sections as $section) :
 									</div>
 								<?php endif; ?>
 
-								<?php if ($category->getmoderators() && KunenaConfig::getInstance()->listcat_show_moderators) : ?>
+								<?php if ($category->getmoderators() && Config::getInstance()->listcat_show_moderators) : ?>
 									<br/>
 									<div class="moderators">
 										<?php
@@ -222,7 +226,7 @@ foreach ($this->sections as $section) :
 									<div class="row">
 										<?php if ($avatar) : ?>
 										<div class="col-xs-6 col-md-3" id="kcat-avatar">
-											<?php echo $author->getLink($avatar, null, '', '', KunenaTemplate::getInstance()->tooltips(), $category->id, KunenaConfig::getInstance()->avataredit); ?>
+											<?php echo $author->getLink($avatar, null, '', '', KunenaTemplate::getInstance()->tooltips(), $category->id, Config::getInstance()->avataredit); ?>
 										</div>
 										<div class="col-xs-6 col-md-9" id="kcat-last">
 											<?php else : ?>

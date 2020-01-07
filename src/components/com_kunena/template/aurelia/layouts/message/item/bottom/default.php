@@ -8,10 +8,14 @@
  * @copyright       Copyright (C) 2008 - 2020 Kunena Team. All rights reserved.
  * @license         https://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link            https://www.kunena.org
- **/
-defined('_JEXEC') or die;
+**/
+
+namespace Kunena;
+
+defined('_JEXEC') or die();
 
 use Joomla\CMS\Language\Text;
+use function defined;
 
 $message              = $this->message;
 $topic                = $message->getTopic();
@@ -22,7 +26,7 @@ $attachments          = $message->getAttachments();
 $attachs              = $message->getNbAttachments();
 $avatarname           = $this->profile->getname();
 $topicStarter         = $this->topic->first_post_userid == $this->message->userid;
-$config               = KunenaConfig::getInstance();
+$config               = Config::getInstance();
 $subjectlengthmessage = $this->ktemplate->params->get('SubjectLengthMessage', 20);
 
 if ($config->ordering_system == 'mesid')

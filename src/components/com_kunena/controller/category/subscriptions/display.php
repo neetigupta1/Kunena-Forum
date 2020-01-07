@@ -9,11 +9,17 @@
  * @license         https://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link            https://www.kunena.org
  **/
-defined('_JEXEC') or die;
 
+namespace Kunena;
+
+defined('_JEXEC') or die();
+
+use Exception;
 use Joomla\CMS\Factory;
 use Joomla\CMS\HTML\HTMLHelper;
 use Joomla\CMS\Language\Text;
+use Joomla\CMS\Pagination\Pagination;
+use function defined;
 
 /**
  * Class ComponentKunenaControllerCategorySubscriptionsDisplay
@@ -125,7 +131,7 @@ class ComponentKunenaControllerCategorySubscriptionsDisplay extends KunenaContro
 
 		$this->actions = $this->getActions();
 
-		$this->pagination = new Joomla\CMS\Pagination\Pagination($total, $limitstart, $limit);
+		$this->pagination = new Pagination($total, $limitstart, $limit);
 
 		$this->headerText = Text::_('COM_KUNENA_CATEGORY_SUBSCRIPTIONS');
 	}

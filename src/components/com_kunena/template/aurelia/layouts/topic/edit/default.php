@@ -9,13 +9,19 @@
  * @license         https://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link            https://www.kunena.org
  **/
+
+namespace Kunena;
+
 defined('_JEXEC') or die();
 
+use Joomla\CMS\Application\CMSApplication;
 use Joomla\CMS\HTML\HTMLHelper;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\Router\Route;
 use Joomla\CMS\Session\Session;
 use Joomla\CMS\Uri\Uri;
+use Joomla\Input\Input;
+use function defined;
 
 HTMLHelper::_('behavior.formvalidator');
 HTMLHelper::_('behavior.keepalive');
@@ -107,7 +113,7 @@ $this->addScriptOptions('com_kunena.icons.trash', KunenaIcons::delete());
 $this->addScriptOptions('com_kunena.icons.attach', KunenaIcons::attach());
 $this->addScriptOptions('com_kunena.icons.secure', KunenaIcons::secure());
 
-$suffix = Joomla\CMS\Application\CMSApplication::getInstance('site')->get('sef_suffix');
+$suffix = CMSApplication::getInstance('site')->get('sef_suffix');
 $this->addScriptOptions('com_kunena.suffixpreview', $suffix ? true : false);
 
 $this->ktemplate = KunenaFactory::getTemplate();
@@ -518,5 +524,5 @@ if (KunenaFactory::getTemplate()->params->get('formRecover'))
 <?php
 if ($this->config->showhistory && $this->topic->exists())
 {
-	echo $this->subRequest('Topic/Form/History', new Joomla\Input\Input(['id' => $this->topic->id]));
+	echo $this->subRequest('Topic/Form/History', new Input(['id' => $this->topic->id]));
 }

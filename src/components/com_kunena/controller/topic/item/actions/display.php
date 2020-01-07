@@ -9,11 +9,17 @@
  * @license         https://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link            https://www.kunena.org
  **/
-defined('_JEXEC') or die;
 
+namespace Kunena;
+
+defined('_JEXEC') or die();
+
+use Exception;
 use Joomla\CMS\Language\Text;
+use Joomla\CMS\Plugin\PluginHelper;
 use Joomla\CMS\Session\Session;
 use Joomla\CMS\Object\CMSObject;
+use function defined;
 
 /**
  * Class ComponentKunenaControllerTopicItemActionsDisplay
@@ -301,7 +307,7 @@ class ComponentKunenaControllerTopicItemActionsDisplay extends KunenaControllerD
 		}
 
 		// Add buttons for changing between different layout modes.
-		if (KunenaFactory::getConfig()->enable_threaded_layouts)
+		if ($this->config->enable_threaded_layouts)
 		{
 			$url = "index.php?option=com_kunena&view=user&task=change&topic_layout=%s&{$token}=1";
 
@@ -327,7 +333,7 @@ class ComponentKunenaControllerTopicItemActionsDisplay extends KunenaControllerD
 			}
 		}
 
-		Joomla\CMS\Plugin\PluginHelper::importPlugin('kunena');
+		PluginHelper::importPlugin('kunena');
 
 		$this->app->triggerEvent('onKunenaGetButtons', ['topic.action', $this->topicButtons, $this]);
 	}
@@ -354,7 +360,7 @@ class ComponentKunenaControllerTopicItemActionsDisplay extends KunenaControllerD
 	{
 		return KunenaLayout::factory('Widget/Button')
 			->setProperties(['url'   => KunenaRoute::_($url), 'name' => $name,
-			                 'scope' => $scope, 'type' => $type, 'primary' => $primary, 'normal' => $normal, 'icon' => $icon,]
+							 'scope' => $scope, 'type' => $type, 'primary' => $primary, 'normal' => $normal, 'icon' => $icon,]
 			);
 	}
 }

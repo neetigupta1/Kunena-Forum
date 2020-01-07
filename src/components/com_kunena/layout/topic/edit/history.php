@@ -9,7 +9,12 @@
  * @license         https://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link            https://www.kunena.org
  **/
+
+namespace Kunena;
+
 defined('_JEXEC') or die;
+
+use function defined;
 
 /**
  * KunenaLayoutTopicEditHistory
@@ -19,7 +24,7 @@ defined('_JEXEC') or die;
 class KunenaLayoutTopicEditHistory extends KunenaLayout
 {
 	/**
-	 * @var     KunenaConfig
+	 * @var     Config
 	 * @since   Kunena 6.0
 	 */
 	public $config;

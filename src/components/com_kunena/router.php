@@ -8,11 +8,16 @@
  * @license        https://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link           https://www.kunena.org
  **/
+
+namespace Kunena;
+
 defined('_JEXEC') or die();
 
+use Exception;
 use Joomla\CMS\Component\Router\RouterBase;
 use Joomla\CMS\Factory;
 use Joomla\CMS\Profiler\Profiler;
+use function defined;
 
 /**
  * Routing class from com_kunena
@@ -48,7 +53,7 @@ class KunenaRouter extends RouterBase
 		$segments = [];
 
 		// If Kunena Forum isn't installed or SEF is not enabled, do nothing
-		if (!class_exists('KunenaForum') || !KunenaForum::isCompatible('4.0') || !KunenaForum::installed() || !KunenaConfig::getInstance()->sef)
+		if (!class_exists('KunenaForum') || !KunenaForum::isCompatible('4.0') || !KunenaForum::installed() || !Config::getInstance()->sef)
 		{
 			return $segments;
 		}

@@ -9,10 +9,16 @@
  * @license         https://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link            https://www.kunena.org
  **/
-defined('_JEXEC') or die;
 
+namespace Kunena;
+
+defined('_JEXEC') or die();
+
+use Exception;
 use Joomla\CMS\Factory;
 use Joomla\CMS\Language\Text;
+use Joomla\CMS\User\User;
+use function defined;
 
 /**
  * Class ComponentKunenaControllerUserEditDisplay
@@ -28,7 +34,7 @@ class ComponentKunenaControllerUserEditDisplay extends KunenaControllerDisplay
 	protected $name = 'User/Edit';
 
 	/**
-	 * @var     Joomla\CMS\User\User
+	 * @var     User
 	 * @since   Kunena 6.0
 	 */
 	public $user;

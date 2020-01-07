@@ -9,19 +9,25 @@
  * @license         https://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link            https://www.kunena.org
  **/
+
+namespace Kunena;
+
 defined('_JEXEC') or die();
+
+use Joomla\CMS\Application\CMSApplication;
+use function defined;
 
 $attachment = $this->attachment;
 
 echo $this->subLayout('Widget/Lightbox');
 
-$config = KunenaConfig::getInstance();
+$config = Config::getInstance();
 
 $attributesLink = $attachment->isImage() && $config->lightbox ? ' data-fancybox="gallery"' : '';
 $attributesImg  = ' style="max-height: ' . (int) $config->thumbheight . 'px;"';
 $name           = preg_replace('/.html/', '', $attachment->getUrl(false, false, true));
 
-if (Joomla\CMS\Application\CMSApplication::getInstance('site')->get('sef_suffix') && $config->attachment_protection)
+if (CMSApplication::getInstance('site')->get('sef_suffix') && $config->attachment_protection)
 {
 	$name = preg_replace('/.html/', '', $attachment->getUrl(false, false, true));
 }

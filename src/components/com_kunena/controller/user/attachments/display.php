@@ -9,9 +9,15 @@
  * @license         https://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link            https://www.kunena.org
  **/
-defined('_JEXEC') or die;
 
+namespace Kunena;
+
+defined('_JEXEC') or die();
+
+use Exception;
 use Joomla\CMS\Language\Text;
+use Joomla\CMS\Uri\Uri;
+use function defined;
 
 /**
  * Class ComponentKunenaControllerUserAttachmentsDisplay
@@ -76,7 +82,7 @@ class ComponentKunenaControllerUserAttachmentsDisplay extends KunenaControllerDi
 
 		if ($this->embedded)
 		{
-			$this->moreUri = new Joomla\CMS\Uri\Uri('index.php?option=com_kunena&view=user&layout=attachments&userid=' . $userid . '&limit=' . $limit);
+			$this->moreUri = new Uri('index.php?option=com_kunena&view=user&layout=attachments&userid=' . $userid . '&limit=' . $limit);
 			$this->moreUri->setVar('Itemid', KunenaRoute::getItemID($this->moreUri));
 		}
 
@@ -86,7 +92,7 @@ class ComponentKunenaControllerUserAttachmentsDisplay extends KunenaControllerDi
 		$this->total      = $finder->count();
 		$this->pagination = new KunenaPagination($this->total, $start, $limit);
 
-		if (!KunenaConfig::getInstance()->show_imgfiles_manage_profile || !$this->me->exists() && !KunenaConfig::getInstance()->pubprofile)
+		if (!$this->config->show_imgfiles_manage_profile || !$this->me->exists() && !$this->config->pubprofile)
 		{
 			return new KunenaExceptionAuthorise(Text::_('COM_KUNENA_ATTACHMENT_NO_ACCESS'), 403);
 		}

@@ -19,7 +19,7 @@ use Joomla\CMS\Component\ComponentHelper;
 use Joomla\CMS\Factory;
 use Joomla\CMS\Log\Log;
 use Joomla\Registry\Registry;
-use KunenaViewCommon;
+Config::getInstance()enaViewCommon;
 use stdClass;
 use function defined;
 

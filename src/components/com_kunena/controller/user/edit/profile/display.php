@@ -9,11 +9,16 @@
  * @license         https://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link            https://www.kunena.org
  **/
-defined('_JEXEC') or die;
 
+namespace Kunena;
+
+defined('_JEXEC') or die();
+
+use Exception;
 use Joomla\CMS\HTML\HTMLHelper;
 use Joomla\CMS\Language\Text;
 use Joomla\Utilities\ArrayHelper;
+use function defined;
 
 /**
  * Class ComponentKunenaControllerUserEditProfileDisplay
@@ -55,7 +60,7 @@ class ComponentKunenaControllerUserEditProfileDisplay extends ComponentKunenaCon
 		$this->genders[] = HTMLHelper::_('select.option', '1', Text::_('COM_KUNENA_MYPROFILE_GENDER_MALE'));
 		$this->genders[] = HTMLHelper::_('select.option', '2', Text::_('COM_KUNENA_MYPROFILE_GENDER_FEMALE'));
 
-		$config = KunenaConfig::getInstance();
+		$config = Config::getInstance();
 
 		if ($config->social)
 		{

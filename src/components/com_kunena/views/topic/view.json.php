@@ -8,9 +8,16 @@
  * @license       http://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link          https://www.kunena.org
  **/
+
+namespace Kunena;
+
 defined('_JEXEC') or die;
 
+use Exception;
 use Joomla\CMS\Factory;
+
+use stdClass;
+use function defined;
 
 /**
  *

@@ -9,10 +9,16 @@
  * @license         https://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link            https://www.kunena.org
  **/
-defined('_JEXEC') or die;
 
+namespace Kunena;
+
+defined('_JEXEC') or die();
+
+use Exception;
 use Joomla\CMS\Factory;
 use Joomla\CMS\Language\Text;
+use RuntimeException;
+use function defined;
 
 /**
  * Class ComponentKunenaControllerApplicationAttachmentDefaultDisplay
@@ -214,7 +220,7 @@ class ComponentKunenaControllerApplicationAttachmentDefaultDisplay extends Kunen
 		KunenaFactory::loadLanguage('com_kunena.sys', 'admin');
 
 		$this->me       = KunenaUserHelper::getMyself();
-		$this->config   = KunenaConfig::getInstance();
+		$this->config   = Config::getInstance();
 		$this->document = Factory::getApplication()->getDocument();
 	}
 }

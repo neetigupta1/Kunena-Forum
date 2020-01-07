@@ -15,7 +15,7 @@ defined('_JEXEC') or die();
 
 use Exception;
 use Joomla\CMS\Factory;
-use KunenaAdminTemplate;
+Config::getInstance()enaAdminTemplate;
 use function defined;
 
 /**

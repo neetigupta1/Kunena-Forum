@@ -9,11 +9,17 @@
  * @license         https://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link            https://www.kunena.org
  **/
-defined('_JEXEC') or die;
 
+namespace Kunena;
+
+defined('_JEXEC') or die();
+
+use Exception;
 use Joomla\CMS\Factory;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\MVC\Controller\BaseController;
+use Joomla\CMS\Plugin\PluginHelper;
+use function defined;
 
 /**
  * Class ComponentKunenaControllerApplicationMiscDisplay
@@ -66,7 +72,7 @@ class ComponentKunenaControllerCreditsDisplay extends KunenaControllerDisplay
 	{
 		parent::before();
 
-		if (Joomla\CMS\Plugin\PluginHelper::isEnabled('kunena', 'powered'))
+		if (PluginHelper::isEnabled('kunena', 'powered'))
 		{
 			$this->baseurl = 'index.php?option=com_kunena';
 			$this->app->redirect(KunenaRoute::_($this->baseurl, false));
@@ -74,7 +80,7 @@ class ComponentKunenaControllerCreditsDisplay extends KunenaControllerDisplay
 
 		$Itemid = Factory::getApplication()->input->getCmd('Itemid');
 
-		if (!$Itemid && KunenaConfig::getInstance()->sef_redirect)
+		if (!$Itemid && $this->config->sef_redirect)
 		{
 			$itemid     = KunenaRoute::fixMissingItemID();
 			$controller = BaseController::getInstance("kunena");

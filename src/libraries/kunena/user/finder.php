@@ -16,7 +16,7 @@ defined('_JEXEC') or die();
 
 use Exception;
 use Joomla\CMS\Date\Date;
-use KunenaDatabaseObjectFinder;
+Config::getInstance()enaDatabaseObjectFinder;
 use function defined;
 
 /**

@@ -9,13 +9,19 @@
  * @license         https://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link            https://www.kunena.org
  **/
-defined('_JEXEC') or die;
 
+namespace Kunena;
+
+defined('_JEXEC') or die();
+
+use Exception;
+use Joomla\CMS\Date\Date;
 use Joomla\CMS\Factory;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\Uri\Uri;
 use Joomla\CMS\MVC\Controller\BaseController;
 use Joomla\CMS\Filesystem\File;
+use function defined;
 
 /**
  * Class ComponentKunenaControllerTopicListRecentDisplay
@@ -53,11 +59,11 @@ class ComponentKunenaControllerTopicListRecentDisplay extends ComponentKunenaCon
 		$Itemid = $this->input->getInt('Itemid');
 		$format = $this->input->getCmd('format');
 
-		if (!$Itemid && $format != 'feed' && KunenaConfig::getInstance()->sef_redirect)
+		if (!$Itemid && $format != 'feed' && $this->config->sef_redirect)
 		{
-			if (KunenaConfig::getInstance()->topiclist_id)
+			if ($this->config->topiclist_id)
 			{
-				$itemidfix = KunenaConfig::getInstance()->topiclist_id;
+				$itemidfix = $this->config->topiclist_id;
 			}
 			else
 			{
@@ -85,11 +91,11 @@ class ComponentKunenaControllerTopicListRecentDisplay extends ComponentKunenaCon
 		}
 		elseif ($time == 0)
 		{
-			$time = new Joomla\CMS\Date\Date(KunenaFactory::getSession()->lasttime);
+			$time = new Date(KunenaFactory::getSession()->lasttime);
 		}
 		else
 		{
-			$time = new Joomla\CMS\Date\Date(Factory::getDate()->toUnix() - ($time * 3600));
+			$time = new Date(Factory::getDate()->toUnix() - ($time * 3600));
 		}
 
 		if ($holding)
@@ -351,9 +357,9 @@ class ComponentKunenaControllerTopicListRecentDisplay extends ComponentKunenaCon
 
 		$this->setMetaData('og:url', Uri::current(), 'property');
 
-		if (File::exists(JPATH_SITE . '/' . KunenaConfig::getInstance()->emailheader))
+		if (File::exists(JPATH_SITE . '/' . $this->config->emailheader))
 		{
-			$image = Uri::base() . KunenaConfig::getInstance()->emailheader;
+			$image = Uri::base() . $this->config->emailheader;
 			$this->setMetaData('og:image', $image, 'property');
 		}
 

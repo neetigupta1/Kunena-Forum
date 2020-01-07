@@ -9,11 +9,16 @@
  * @license         https://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link            https://www.kunena.org
  **/
-defined('_JEXEC') or die;
 
+namespace Kunena;
+
+defined('_JEXEC') or die();
+
+use Exception;
 use Joomla\CMS\HTML\HTMLHelper;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\Session\Session;
+use function defined;
 
 /**
  * Class ComponentKunenaControllerTopicItemMessageDisplay
@@ -104,7 +109,7 @@ class ComponentKunenaControllerTopicItemMessageDisplay extends KunenaControllerD
 
 		$this->captchaEnabled = false;
 
-		if ($this->message->isAuthorised('reply') && $this->me->canDoCaptcha() && KunenaConfig::getInstance()->quickreply)
+		if ($this->message->isAuthorised('reply') && $this->me->canDoCaptcha() && $this->config->quickreply)
 		{
 			$this->captchaDisplay = KunenaTemplate::getInstance()->recaptcha();
 			$this->captchaEnabled = true;

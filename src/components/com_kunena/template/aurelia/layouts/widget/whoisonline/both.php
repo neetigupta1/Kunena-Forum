@@ -8,10 +8,14 @@
  * @copyright       Copyright (C) 2008 - 2020 Kunena Team. All rights reserved.
  * @license         https://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link            https://www.kunena.org
- **/
-defined('_JEXEC') or die;
+**/
+
+namespace Kunena;
+
+defined('_JEXEC') or die();
 
 use Joomla\CMS\Language\Text;
+use function defined;
 
 ?>
 
@@ -21,7 +25,7 @@ use Joomla\CMS\Language\Text;
 		foreach ($this->onlineList as $user)
 		{
 			$avatar       = $user->getAvatarImage(KunenaFactory::getTemplate()->params->get('avatarType') . ' ', 20, 20);
-			$onlinelist[] = $user->getLink($avatar, null, '', '', null, 0, KunenaConfig::getInstance()->avataredit) . $user->getLink();
+			$onlinelist[] = $user->getLink($avatar, null, '', '', null, 0, Config::getInstance()->avataredit) . $user->getLink();
 		}
 		?>
 		<?php echo implode(', ', $onlinelist); ?>
@@ -36,7 +40,7 @@ use Joomla\CMS\Language\Text;
 		foreach ($this->hiddenList as $user)
 		{
 			$avatar       = $user->getAvatarImage(KunenaFactory::getTemplate()->params->get('avatarType') . ' ', 20, 20);
-			$hiddenlist[] = $user->getLink($avatar, null, '', '', null, 0, KunenaConfig::getInstance()->avataredit) . $user->getLink();
+			$hiddenlist[] = $user->getLink($avatar, null, '', '', null, 0, Config::getInstance()->avataredit) . $user->getLink();
 		}
 		?>
 		<?php echo implode(', ', $hiddenlist); ?>

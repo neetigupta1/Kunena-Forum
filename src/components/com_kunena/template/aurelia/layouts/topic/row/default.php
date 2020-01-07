@@ -8,20 +8,24 @@
  * @copyright       Copyright (C) 2008 - 2020 Kunena Team. All rights reserved.
  * @license         https://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link            https://www.kunena.org
- **/
-defined('_JEXEC') or die;
+**/
+
+namespace Kunena;
+
+defined('_JEXEC') or die();
 
 use Joomla\CMS\Language\Text;
+use function defined;
 
 $topic           = $this->topic;
 $userTopic       = $topic->getUserTopic();
-$topicPages      = $topic->getPagination(null, KunenaConfig::getInstance()->messages_per_page, 3);
+$topicPages      = $topic->getPagination(null, Config::getInstance()->messages_per_page, 3);
 $author          = $topic->getLastPostAuthor();
 $this->ktemplate = KunenaFactory::getTemplate();
 $avatar          = $author->getAvatarImage($this->ktemplate->params->get('avatarType'), 'thumb');
 $category        = $this->topic->getCategory();
 $category        = $this->topic->getCategory();
-$config          = KunenaConfig::getInstance();
+$config          = Config::getInstance();
 $txt             = '';
 
 if ($this->topic->ordering)

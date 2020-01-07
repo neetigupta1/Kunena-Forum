@@ -8,10 +8,14 @@
  * @copyright       Copyright (C) 2008 - 2020 Kunena Team. All rights reserved.
  * @license         https://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link            https://www.kunena.org
- **/
-defined('_JEXEC') or die;
+**/
+
+namespace Kunena;
+
+defined('_JEXEC') or die();
 
 use Joomla\CMS\Language\Text;
+use function defined;
 
 $topic = $this->topic;
 
@@ -128,7 +132,7 @@ if ($topic->locked)
 
 	echo '</div>';
 
-	if ($quick == 2 && KunenaConfig::getInstance()->quickreply)
+	if ($quick == 2 && Config::getInstance()->quickreply)
 	{
 		echo $this->subLayout('Message/Edit')
 			->set('message', $this->message)

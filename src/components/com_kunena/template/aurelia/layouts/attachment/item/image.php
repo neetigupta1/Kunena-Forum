@@ -9,7 +9,12 @@
  * @license         https://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link            https://www.kunena.org
  **/
+
+namespace Kunena;
+
 defined('_JEXEC') or die();
+
+use function defined;
 
 $attachment = $this->attachment;
 
@@ -27,7 +32,7 @@ if ($config->lightbox == 1)
 {
 	echo $this->subLayout('Widget/Lightbox');
 
-	$config = KunenaConfig::getInstance();
+	$config = Config::getInstance();
 
 	$attributesLink = $config->lightbox ? ' data-fancybox="gallery"' : '';
 	$attributesImg  = ' style="max-height:' . (int) $config->imageheight . 'px;"';
@@ -46,8 +51,8 @@ else
 {
 	?>
 	<a href="<?php echo $name; ?>"
-	   title="<?php echo $attachment->getShortName($config->attach_start, $config->attach_end); ?>"<?php echo $attributesLink; ?>>
-		<img class="kmsimage" src="<?php echo $name; ?>"<?php echo $attributesImg; ?>
+	   title="<?php echo $attachment->getShortName($config->attach_start, $config->attach_end); ?>">
+		<img class="kmsimage" src="<?php echo $name; ?>"
 			 width="<?php echo $config->thumbwidth; ?>"
 			 height="<?php echo $config->thumbheight; ?>" alt="<?php echo $attachment->getFilename(); ?>"/>
 	</a>

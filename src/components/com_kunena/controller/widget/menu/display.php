@@ -9,7 +9,14 @@
  * @license         https://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link            https://www.kunena.org
  **/
-defined('_JEXEC') or die;
+
+namespace Kunena;
+
+defined('_JEXEC') or die();
+
+use Exception;
+use Joomla\Registry\Registry;
+use function defined;
 
 /**
  * Class ComponentKunenaControllerWidgetMenuDisplay
@@ -92,7 +99,7 @@ class ComponentKunenaControllerWidgetMenuDisplay extends KunenaControllerDisplay
 			return false;
 		}
 
-		$parameters = new Joomla\Registry\Registry;
+		$parameters = new Registry;
 		$template   = KunenaFactory::getTemplate();
 		$parameters->set('showAllChildren', $template->params->get('menu_showall', 0));
 		$parameters->set('menutype', $basemenu->menutype);

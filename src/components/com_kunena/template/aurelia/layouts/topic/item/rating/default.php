@@ -10,9 +10,12 @@
  * @link            https://www.kunena.org
  **/
 
+namespace Kunena;
+
 defined('_JEXEC') or die();
 
 use Joomla\CMS\Language\Text;
+use function defined;
 
 if ($this->category->allow_ratings && $this->config->ratingenabled)
 :

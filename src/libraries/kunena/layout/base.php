@@ -20,7 +20,7 @@ use Joomla\CMS\Factory;
 use Joomla\CMS\Layout\BaseLayout;
 use Joomla\CMS\Log\Log;
 use Joomla\Input\Input;
-use KunenaCompatLayoutBase;
+Config::getInstance()enaCompatLayoutBase;
 use RuntimeException;
 use Throwable;
 use function defined;

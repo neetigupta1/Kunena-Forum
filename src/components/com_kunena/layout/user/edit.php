@@ -9,10 +9,17 @@
  * @license         https://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link            https://www.kunena.org
  **/
+
+namespace Kunena;
+
 defined('_JEXEC') or die;
 
+use Exception;
 use Joomla\CMS\Factory;
 use Joomla\CMS\Language\Text;
+use Joomla\CMS\Plugin\PluginHelper;
+use stdClass;
+use function defined;
 
 /**
  * KunenaLayoutUserItem
@@ -63,7 +70,7 @@ class KunenaLayoutUserEdit extends KunenaLayout
 
 		if ($myProfile)
 		{
-			if (KunenaConfig::getInstance()->allowavatarupload || KunenaConfig::getInstance()->allowavatargallery)
+			if (config::getInstance()->allowavatarupload || Config::getInstance()->allowavatargallery)
 			{
 				$tab            = new stdClass;
 				$tab->title     = Text::_('COM_KUNENA_PROFILE_EDIT_AVATAR');
@@ -82,7 +89,7 @@ class KunenaLayoutUserEdit extends KunenaLayout
 			$tabs['settings'] = $tab;
 		}
 
-		Joomla\CMS\Plugin\PluginHelper::importPlugin('kunena');
+		PluginHelper::importPlugin('kunena');
 
 		$plugins = Factory::getApplication()->triggerEvent('onKunenaUserTabsEdit', [$tabs]);
 

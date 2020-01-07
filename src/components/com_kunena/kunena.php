@@ -8,13 +8,20 @@
  * @license        https://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link           https://www.kunena.org
  **/
+
+namespace Kunena;
+
 defined('_JEXEC') or die();
 
+use Exception;
 use Joomla\CMS\Factory;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\Uri\Uri;
 use Joomla\CMS\Log\Log;
 use Joomla\CMS\Plugin\PluginHelper;
+use stdClass;
+use function defined;
+
 
 // Display offline message if Kunena hasn't been fully installed.
 if (!class_exists('KunenaForum') || !KunenaForum::isCompatible('4.0') || !KunenaForum::installed())
@@ -37,7 +44,7 @@ $kunena_profiler->start('Total Time');
 KUNENA_PROFILER ? $kunena_profiler->mark('afterLoad') : null;
 
 // Prevent direct access to the component if the option has been disabled.
-if (!KunenaConfig::getInstance()->get('access_component', 1))
+if (!Config::getInstance()->access_component)
 {
 	$active = Factory::getApplication()->getMenu()->getActive();
 
@@ -93,7 +100,7 @@ $subview = $input->getWord('layout', 'default');
 $task    = $input->getCmd('task', 'display');
 
 // Import plugins and event listeners.
-Joomla\CMS\Plugin\PluginHelper::importPlugin('kunena');
+PluginHelper::importPlugin('kunena');
 
 // Get HMVC controller and if exists, execute it.
 $controller = KunenaControllerApplication::getInstance($view, $subview, $task, $input, $app);

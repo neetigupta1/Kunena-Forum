@@ -9,14 +9,29 @@
  * @license         https://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link            https://www.kunena.org
  **/
+
+namespace Kunena;
+
 defined('_JEXEC') or die();
 
+use Exception;
+use Joomla\CMS\Date\Date;
 use Joomla\CMS\Factory;
+use Joomla\CMS\Filter\OutputFilter;
+use Joomla\CMS\Http\Http;
+use Joomla\CMS\Http\Transport\StreamTransport;
 use Joomla\CMS\Language\Text;
+use Joomla\CMS\Mail\Mail;
+use Joomla\CMS\Mail\MailHelper;
+use Joomla\CMS\Plugin\PluginHelper;
 use Joomla\CMS\Uri\Uri;
 use Joomla\CMS\Session\Session;
+use Joomla\Registry\Registry;
 use Joomla\Utilities\ArrayHelper;
 use Joomla\Database\Exception\ExecutionFailureException;
+use RuntimeException;
+use stdClass;
+use function defined;
 
 /**
  * Kunena Topic Controller
@@ -359,7 +374,7 @@ class KunenaControllerTopic extends KunenaController
 				if ($attachment->isImage())
 				{
 					$imageInfo = KunenaImage::getImageFileProperties($uploadFile);
-					$config    = KunenaConfig::getInstance();
+					$config    = Config::getInstance();
 
 					if ($imageInfo->width > $config->imagewidth || $imageInfo->height > $config->imageheight)
 					{
@@ -505,17 +520,17 @@ class KunenaControllerTopic extends KunenaController
 
 		if ($this->me->canDoCaptcha())
 		{
-			if (Joomla\CMS\Plugin\PluginHelper::isEnabled('captcha'))
+			if (PluginHelper::isEnabled('captcha'))
 			{
-				$plugin = Joomla\CMS\Plugin\PluginHelper::getPlugin('captcha');
-				$params = new Joomla\Registry\Registry($plugin[0]->params);
+				$plugin = PluginHelper::getPlugin('captcha');
+				$params = new Registry($plugin[0]->params);
 
 				$captcha_pubkey  = $params->get('public_key');
 				$captcha_privkey = $params->get('private_key');
 
 				if (!empty($captcha_pubkey) && !empty($captcha_privkey))
 				{
-					Joomla\CMS\Plugin\PluginHelper::importPlugin('captcha');
+					PluginHelper::importPlugin('captcha');
 
 					$captcha_response = $this->app->input->getString('g-recaptcha-response');
 
@@ -674,7 +689,7 @@ class KunenaControllerTopic extends KunenaController
 
 		if (!preg_match('!(<img |<object |<iframe )!', $text))
 		{
-			$text = trim(Joomla\CMS\Filter\OutputFilter::cleanText($text));
+			$text = trim(OutputFilter::cleanText($text));
 		}
 
 		if (!$text)
@@ -781,7 +796,7 @@ class KunenaControllerTopic extends KunenaController
 
 				if (!empty($fields['poll_time_to_live']))
 				{
-					$polltimetolive       = new Joomla\CMS\Date\Date($fields['poll_time_to_live']);
+					$polltimetolive       = new Date($fields['poll_time_to_live']);
 					$poll->polltimetolive = $polltimetolive->toSql();
 				}
 
@@ -1074,7 +1089,7 @@ class KunenaControllerTopic extends KunenaController
 		}
 
 		// Check if we are editing first post and update topic if we are!
-		if ($topic->first_post_id == $message->id || KunenaConfig::getInstance()->allow_change_subject && $topic->first_post_userid == $message->userid || KunenaUserHelper::getMyself()->isModerator())
+		if ($topic->first_post_id == $message->id || Config::getInstance()->allow_change_subject && $topic->first_post_userid == $message->userid || KunenaUserHelper::getMyself()->isModerator())
 		{
 			$topic->subject = $fields['subject'];
 		}
@@ -1084,7 +1099,7 @@ class KunenaControllerTopic extends KunenaController
 
 		if (!preg_match('!(<img |<object |<iframe )!', $text))
 		{
-			$text = trim(Joomla\CMS\Filter\OutputFilter::cleanText($text));
+			$text = trim(OutputFilter::cleanText($text));
 		}
 
 		if (!$text && $this->config->userdeletetmessage == 1)
@@ -1204,7 +1219,7 @@ class KunenaControllerTopic extends KunenaController
 
 				if (!empty($fields['poll_time_to_live']))
 				{
-					$polltimetolive       = new Joomla\CMS\Date\Date($fields['poll_time_to_live']);
+					$polltimetolive       = new Date($fields['poll_time_to_live']);
 					$poll->polltimetolive = $polltimetolive->toSql();
 				}
 
@@ -2127,7 +2142,7 @@ class KunenaControllerTopic extends KunenaController
 				switch ($mode)
 				{
 					case 'newer':
-						$ids = new Joomla\CMS\Date\Date($object->time);
+						$ids = new Date($object->time);
 						break;
 					case 'selected':
 					default:
@@ -2219,7 +2234,7 @@ class KunenaControllerTopic extends KunenaController
 			return;
 		}
 
-		if (!$this->config->getEmail() || !Joomla\CMS\Mail\MailHelper::isEmailAddress($this->config->getEmail()))
+		if (!$this->config->getEmail() || !MailHelper::isEmailAddress($this->config->getEmail()))
 		{
 			// Error: email address is invalid
 			$this->app->enqueueMessage(Text::_('COM_KUNENA_EMAIL_INVALID'), 'error');
@@ -2295,7 +2310,7 @@ class KunenaControllerTopic extends KunenaController
 
 			if (!empty($emailToList))
 			{
-				$mailsender  = Joomla\CMS\Mail\MailHelper::cleanAddress($this->config->board_title . ': ' . $this->me->getName());
+				$mailsender  = MailHelper::cleanAddress($this->config->board_title . ': ' . $this->me->getName());
 				$mailsubject = "[" . $this->config->board_title . " " . Text::_('COM_KUNENA_FORUM') . "] " . Text::_('COM_KUNENA_REPORT_MSG') . ": ";
 
 				if ($reason)
@@ -2309,7 +2324,7 @@ class KunenaControllerTopic extends KunenaController
 
 				$msglink = Uri::getInstance()->toString(['scheme', 'host', 'port']) . $target->getPermaUrl(null, false);
 
-				$mail = Joomla\CMS\Mail\Mail::getInstance();
+				$mail = Mail::getInstance();
 				$mail->setSender([$this->config->getEmail(), $mailsender]);
 				$mail->setSubject($mailsubject);
 				$mail->addReplyTo($this->me->email, $this->me->username);
@@ -2336,7 +2351,7 @@ class KunenaControllerTopic extends KunenaController
 
 				foreach ($emailToList as $emailTo)
 				{
-					if (!Joomla\CMS\Mail\MailHelper::isEmailAddress($emailTo->email))
+					if (!MailHelper::isEmailAddress($emailTo->email))
 					{
 						continue;
 					}
@@ -2490,12 +2505,12 @@ class KunenaControllerTopic extends KunenaController
 			$data .= '&email=' . $email;
 		}
 
-		$options = new Joomla\Registry\Registry;
+		$options = new Registry;
 
-		$transport = new Joomla\CMS\Http\Transport\StreamTransport($options);
+		$transport = new StreamTransport($options);
 
 		// Create a 'stream' transport.
-		$http = new Joomla\CMS\Http\Http($options, $transport);
+		$http = new Http($options, $transport);
 
 		$response = $http->post('https://api.stopforumspam.org/api', $data . '&json');
 

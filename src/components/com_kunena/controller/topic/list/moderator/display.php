@@ -9,11 +9,16 @@
  * @license         https://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link            https://www.kunena.org
  **/
-defined('_JEXEC') or die;
 
+namespace Kunena;
+
+defined('_JEXEC') or die();
+
+use Exception;
 use Joomla\CMS\Component\ComponentHelper;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\MVC\Controller\BaseController;
+use function defined;
 
 /**
  * Class ComponentKunenaControllerTopicListDisplay
@@ -46,11 +51,11 @@ class ComponentKunenaControllerTopicListModeratorDisplay extends ComponentKunena
 		$limit  = $this->input->getInt('limit', 0);
 		$Itemid = $this->input->getInt('Itemid');
 
-		if (!$Itemid && KunenaConfig::getInstance()->sef_redirect)
+		if (!$Itemid && $this->config->sef_redirect)
 		{
-			if (KunenaConfig::getInstance()->moderator_id)
+			if ($this->config->moderators_id)
 			{
-				$itemidfix = KunenaConfig::getInstance()->moderator_id;
+				$itemidfix = $this->config->moderators_id;
 			}
 			else
 			{

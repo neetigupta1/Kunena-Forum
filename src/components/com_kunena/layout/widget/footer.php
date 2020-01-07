@@ -9,9 +9,15 @@
  * @license         https://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link            https://www.kunena.org
  **/
+
+namespace Kunena;
+
 defined('_JEXEC') or die;
 
+use Exception;
+use Joomla\CMS\Application\CMSApplication;
 use Joomla\CMS\Factory;
+use function defined;
 
 /**
  * KunenaLayoutWidgetFooter
@@ -77,7 +83,7 @@ class KunenaLayoutWidgetFooter extends KunenaLayout
 
 			$itemid = KunenaRoute::fixMissingItemID();
 
-			if (Joomla\CMS\Application\CMSApplication::getInstance('site')->get('sef_suffix'))
+			if (CMSApplication::getInstance('site')->get('sef_suffix'))
 			{
 				$url = KunenaRoute::_("index.php?option=com_kunena&view=topics&layout=default&{$rss_type}") . '?format=feed&type=rss';
 			}

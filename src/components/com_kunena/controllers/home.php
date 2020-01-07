@@ -9,10 +9,16 @@
  * @license         https://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link            https://www.kunena.org
  **/
+
+namespace Kunena;
+
 defined('_JEXEC') or die();
 
+use Exception;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\Menu\AbstractMenu;
+use Joomla\CMS\MVC\Controller\BaseController;
+use function defined;
 
 /**
  * Kunena Home Controller
@@ -31,7 +37,7 @@ class KunenaControllerHome extends KunenaController
 	 * @param   bool  $cachable   cachable
 	 * @param   bool  $urlparams  urlparams
 	 *
-	 * @return  Joomla\CMS\MVC\Controller\BaseController|void
+	 * @return  BaseController|void
 	 *
 	 * @since   Kunena 1.0
 	 *

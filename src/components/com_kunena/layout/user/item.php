@@ -9,10 +9,18 @@
  * @license         https://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link            https://www.kunena.org
  **/
+
+namespace Kunena;
+
 defined('_JEXEC') or die;
 
+use Exception;
 use Joomla\CMS\Factory;
 use Joomla\CMS\Language\Text;
+use Joomla\CMS\Plugin\PluginHelper;
+use Joomla\Input\Input;
+use stdClass;
+use function defined;
 
 /**
  * KunenaLayoutUserItem
@@ -34,7 +42,7 @@ class KunenaLayoutUserItem extends KunenaLayout
 	public $me;
 
 	/**
-	 * @var     KunenaConfig
+	 * @var     Config
 	 * @since   Kunena 6.0
 	 */
 	public $config;
@@ -100,7 +108,7 @@ class KunenaLayoutUserItem extends KunenaLayout
 
 			$tab           = new stdClass;
 			$tab->title    = Text::_('COM_KUNENA_USERPOSTS');
-			$tab->content  = $this->subRequest('Message/List/Recent', new Joomla\Input\Input($params), $params);
+			$tab->content  = $this->subRequest('Message/List/Recent', new Input($params), $params);
 			$tab->active   = true;
 			$tabs['posts'] = $tab;
 		}
@@ -122,7 +130,7 @@ class KunenaLayoutUserItem extends KunenaLayout
 					'limitstart'       => 0,
 					'filter_order_Dir' => 'desc',
 				];
-				$tab->content .= $this->subRequest('Category/Subscriptions', new Joomla\Input\Input($params), $params);
+				$tab->content .= $this->subRequest('Category/Subscriptions', new Input($params), $params);
 			}
 
 			if ($this->config->topic_subscriptions != 'disabled')
@@ -140,7 +148,7 @@ class KunenaLayoutUserItem extends KunenaLayout
 					'limitstart'       => 0,
 					'filter_order_Dir' => 'desc',
 				];
-				$tab->content .= $this->subRequest('Topic/List/User', new Joomla\Input\Input($params), $params);
+				$tab->content .= $this->subRequest('Topic/List/User', new Input($params), $params);
 			}
 
 			$tab->active = false;
@@ -169,7 +177,7 @@ class KunenaLayoutUserItem extends KunenaLayout
 
 			$tab               = new stdClass;
 			$tab->title        = Text::_('COM_KUNENA_FAVORITES');
-			$tab->content      = $this->subRequest('Topic/List/User', new Joomla\Input\Input($params), $params);
+			$tab->content      = $this->subRequest('Topic/List/User', new Input($params), $params);
 			$tab->active       = false;
 			$tabs['favorites'] = $tab;
 		}
@@ -193,7 +201,7 @@ class KunenaLayoutUserItem extends KunenaLayout
 				'limitstart'       => 0,
 				'filter_order_Dir' => 'desc',
 			];
-			$tab->content .= $this->subRequest('Message/List/Recent', new Joomla\Input\Input($params), $params);
+			$tab->content .= $this->subRequest('Message/List/Recent', new Input($params), $params);
 
 			$params       = [
 				'embedded'            => 1,
@@ -208,7 +216,7 @@ class KunenaLayoutUserItem extends KunenaLayout
 				'limitstart'       => 0,
 				'filter_order_Dir' => 'desc',
 			];
-			$tab->content .= $this->subRequest('Message/List/Recent', new Joomla\Input\Input($params), $params);
+			$tab->content .= $this->subRequest('Message/List/Recent', new Input($params), $params);
 
 			$tab->active      = false;
 			$tabs['thankyou'] = $tab;
@@ -231,7 +239,7 @@ class KunenaLayoutUserItem extends KunenaLayout
 			];
 			$tab                = new stdClass;
 			$tab->title         = Text::_('COM_KUNENA_MESSAGE_ADMINISTRATION');
-			$tab->content       = $this->subRequest('Message/List/Recent', new Joomla\Input\Input($params), $params);
+			$tab->content       = $this->subRequest('Message/List/Recent', new Input($params), $params);
 			$tab->active        = false;
 			$tabs['unapproved'] = $tab;
 		}
@@ -244,7 +252,7 @@ class KunenaLayoutUserItem extends KunenaLayout
 			];
 			$tab                 = new stdClass;
 			$tab->title          = Text::_('COM_KUNENA_MANAGE_ATTACHMENTS');
-			$tab->content        = $this->subRequest('User/Attachments', new Joomla\Input\Input($params), $params);
+			$tab->content        = $this->subRequest('User/Attachments', new Input($params), $params);
 			$tab->active         = false;
 			$tabs['attachments'] = $tab;
 		}
@@ -276,7 +284,7 @@ class KunenaLayoutUserItem extends KunenaLayout
 			$tabs['banuser'] = $tab;
 		}
 
-		Joomla\CMS\Plugin\PluginHelper::importPlugin('kunena');
+		PluginHelper::importPlugin('kunena');
 
 		$plugins = Factory::getApplication()->triggerEvent('onKunenaUserTabs', [$tabs]);
 

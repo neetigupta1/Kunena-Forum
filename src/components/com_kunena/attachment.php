@@ -9,6 +9,8 @@
  * @link           https://www.kunena.org
  **/
 
+namespace Kunena;
+
 /*
  * A light application to serve attachments to the users. Will only partially initialize Joomla to gain some speed.
  */
@@ -26,11 +28,15 @@ if (version_compare(PHP_VERSION, '7.2', '<'))
  */
 define('_JEXEC', 1);
 
+use ComponentKunenaControllerApplicationAttachmentDefaultDisplay;
+use Exception;
 use Joomla\Application\Web\WebClient;
+use Joomla\CMS\Application\WebApplication;
 use Joomla\CMS\Factory;
 use Joomla\CMS\Session\Session;
 use Joomla\Input\Input;
 use Joomla\Registry\Registry;
+use function defined;
 
 // Set base directory. This should usually work even with symbolic linked Kunena.
 /**
@@ -74,7 +80,7 @@ require_once JPATH_BASE . '/includes/framework.php';
  *
  * @since    K2.0
  */
-class KunenaApplication extends Joomla\CMS\Application\WebApplication
+class KunenaApplication extends WebApplication
 {
 	/**
 	 * @var     string
@@ -101,7 +107,7 @@ class KunenaApplication extends Joomla\CMS\Application\WebApplication
 	 *
 	 * @since   Kunena 6.0
 	 */
-	public function __construct(Joomla\Input\Input $input = null, Joomla\Registry\Registry $config = null, Joomla\Application\Web\WebClient $client = null)
+	public function __construct(Input $input = null, Registry $config = null, WebClient $client = null)
 	{
 		parent::__construct($input, $config, $client);
 
@@ -134,13 +140,13 @@ class KunenaApplication extends Joomla\CMS\Application\WebApplication
 	}
 
 	/**
-	 * @param   Joomla\CMS\Session\Session  $session  session
+	 * @param   Session  $session  session
 	 *
 	 * @return  $this
 	 *
 	 * @since   Kunena 6.0
 	 */
-	public function loadSession(Joomla\CMS\Session\Session $session = null)
+	public function loadSession(Session $session = null)
 	{
 		if ($session !== null)
 		{

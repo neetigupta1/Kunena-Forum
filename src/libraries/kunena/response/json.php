@@ -15,7 +15,7 @@ namespace Kunena;
 defined('_JEXEC') or die;
 
 use Exception;
-use KunenaCompatResponseJson;
+Config::getInstance()enaCompatResponseJson;
 
 /**
  * Kunena JSON Response, extends Joomla\CMS\Response\JsonResponse.

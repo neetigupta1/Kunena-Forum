@@ -8,11 +8,15 @@
  * @copyright       Copyright (C) 2008 - 2020 Kunena Team. All rights reserved.
  * @license         https://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link            https://www.kunena.org
- **/
-defined('_JEXEC') or die;
+**/
+
+namespace Kunena;
+
+defined('_JEXEC') or die();
 
 use Joomla\CMS\HTML\HTMLHelper;
 use Joomla\CMS\Language\Text;
+use function defined;
 
 ?>
 <h3>
@@ -99,7 +103,7 @@ use Joomla\CMS\Language\Text;
 				<small><?php echo Text::_('COM_KUNENA_BAN_ADDCOMMENT_DESC'); ?></small>
 			</td>
 			<td>
-				<textarea id="ban-comment" class="required" name="comment" id="comment"></textarea>
+				<textarea id="ban-comment comment" class="required" name="comment"></textarea>
 			</td>
 		</tr>
 
@@ -111,7 +115,7 @@ use Joomla\CMS\Language\Text;
 					<label for="ban-remove"><?php echo Text::_('COM_KUNENA_MODERATE_REMOVE_BAN'); ?></label>
 				</td>
 				<td>
-					<input id="ban-remove" type="checkbox" id="ban-delban" name="delban" value="delban" class=""/>
+					<input id="ban-remove ban-delban" type="checkbox" name="delban" value="delban" class=""/>
 				</td>
 			</tr>
 		<?php endif; ?>

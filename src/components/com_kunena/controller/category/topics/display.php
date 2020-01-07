@@ -9,13 +9,18 @@
  * @license         https://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link            https://www.kunena.org
  **/
-defined('_JEXEC') or die;
 
+namespace Kunena;
+
+defined('_JEXEC') or die();
+
+use Exception;
 use Joomla\CMS\Factory;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\Uri\Uri;
 use Joomla\CMS\MVC\Controller\BaseController;
 use Joomla\CMS\Filesystem\File;
+use function defined;
 
 /**
  * Class ComponentKunenaControllerApplicationMiscDisplay
@@ -90,7 +95,7 @@ class ComponentKunenaControllerCategoryTopicsDisplay extends KunenaControllerDis
 		$Itemid     = $this->input->getInt('Itemid');
 		$format     = $this->input->getCmd('format');
 
-		if (!$Itemid && $format != 'feed' && KunenaConfig::getInstance()->sef_redirect)
+		if (!$Itemid && $format != 'feed' && $this->config->sef_redirect)
 		{
 			$itemid     = KunenaRoute::fixMissingItemID();
 			$controller = BaseController::getInstance("kunena");
@@ -178,9 +183,7 @@ class ComponentKunenaControllerCategoryTopicsDisplay extends KunenaControllerDis
 			}
 		}
 
-		$config = KunenaConfig::getInstance();
-
-		if (!$config->read_only)
+		if (!$this->config->read_only)
 		{
 			$this->topicActions = $this->model->getTopicActions();
 		}
@@ -238,9 +241,9 @@ class ComponentKunenaControllerCategoryTopicsDisplay extends KunenaControllerDis
 		$config    = Factory::getConfig();
 		$robots    = $config->get('robots');
 
-		if (File::exists(JPATH_SITE . '/' . KunenaConfig::getInstance()->emailheader))
+		if (File::exists(JPATH_SITE . '/' . $this->config->emailheader))
 		{
-			$image = Uri::base() . KunenaConfig::getInstance()->emailheader;
+			$image = Uri::base() . $this->config->emailheader;
 			$this->setMetaData('og:image', $image, 'property');
 		}
 

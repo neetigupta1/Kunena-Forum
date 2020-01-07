@@ -9,9 +9,14 @@
  * @license         https://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link            https://www.kunena.org
  **/
+
+namespace Kunena;
+
 defined('_JEXEC') or die();
 
 use Joomla\CMS\Language\Text;
+use Joomla\String\StringHelper;
+use function defined;
 
 $this->getBBcodesEnabled();
 
@@ -123,7 +128,7 @@ if (!empty($codeTypes)) : ?>
 						foreach ($vid_provider as $vid_type)
 						{
 							$vid_type = explode(',', $vid_type);
-							echo '<option value = "' . (!empty ($vid_type [1]) ? $this->escape($vid_type [1]) : Joomla\String\StringHelper::strtolower($this->escape($vid_type [0])) . '') . '">' . $this->escape($vid_type [0]) . '</option>';
+							echo '<option value = "' . (!empty ($vid_type [1]) ? $this->escape($vid_type [1]) : StringHelper::strtolower($this->escape($vid_type [0])) . '') . '">' . $this->escape($vid_type [0]) . '</option>';
 						}
 						?>
 					</select>
@@ -198,7 +203,7 @@ if (!empty($codeTypes)) : ?>
 						foreach ($vid_provider as $vid_type)
 						{
 							$vid_type = explode(',', $vid_type);
-							echo '<option value = "' . (!empty($vid_type [1]) ? $this->escape($vid_type [1]) : Joomla\String\StringHelper::strtolower($this->escape($vid_type [0])) . '') . '">' . $this->escape($vid_type [0]) . '</option>';
+							echo '<option value = "' . (!empty($vid_type [1]) ? $this->escape($vid_type [1]) : StringHelper::strtolower($this->escape($vid_type [0])) . '') . '">' . $this->escape($vid_type [0]) . '</option>';
 						}
 						?>
 					</select>

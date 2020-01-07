@@ -8,15 +8,19 @@
  * @copyright       Copyright (C) 2008 - 2020 Kunena Team. All rights reserved.
  * @license         https://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link            https://www.kunena.org
- **/
-defined('_JEXEC') or die;
+**/
+
+namespace Kunena;
+
+defined('_JEXEC') or die();
 
 use Joomla\CMS\Language\Text;
+use function defined;
 
 $user            = $this->user;
 $this->ktemplate = KunenaFactory::getTemplate();
 $avatar          = $user->getAvatarImage($this->ktemplate->params->get('avatarType'), 'post');
-$config          = KunenaConfig::getInstance();
+$config          = Config::getInstance();
 $show            = $config->showuserstats;
 
 $activityIntegration = KunenaFactory::getActivityIntegration();
@@ -52,7 +56,7 @@ if ($show)
 		:
 			?>
 			<li>
-				<?php echo $user->getLink($avatar, null, '', '', null, 0, KunenaConfig::getInstance()->avataredit); ?>
+				<?php echo $user->getLink($avatar, null, '', '', null, 0, $config->avataredit); ?>
 				<?php
 				if (isset($this->topic_starter) && $this->topic_starter)
 				:

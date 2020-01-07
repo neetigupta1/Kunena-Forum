@@ -9,8 +9,12 @@
  * @license         https://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link            https://www.kunena.org
  **/
-defined('_JEXEC') or die;
 
+namespace Kunena;
+
+defined('_JEXEC') or die();
+
+use Exception;
 use Joomla\CMS\Factory;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\Router\Route;
@@ -18,6 +22,7 @@ use Joomla\CMS\Session\Session;
 use Joomla\CMS\Uri\Uri;
 use Joomla\CMS\Object\CMSObject;
 use Joomla\CMS\Plugin\PluginHelper;
+use function defined;
 
 /**
  * Class ComponentKunenaControllerMessageItemActionsDisplay
@@ -684,7 +689,7 @@ class ComponentKunenaControllerMessageItemActionsDisplay extends KunenaControlle
 	{
 		return KunenaLayout::factory('Widget/Button')
 			->setProperties(['url'  => KunenaRoute::_($url), 'name' => $name, 'scope' => $scope,
-			                 'type' => $type, 'id' => 'btn_' . $id, 'normal' => $normal, 'icon' => $icon]
+							 'type' => $type, 'id' => 'btn_' . $id, 'normal' => $normal, 'icon' => $icon]
 			);
 	}
 }

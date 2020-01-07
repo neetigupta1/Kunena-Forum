@@ -9,7 +9,13 @@
  * @license         https://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link            https://www.kunena.org
  **/
+
+namespace Kunena;
+
 defined('_JEXEC') or die();
+
+use Exception;
+use function defined;
 
 /**
  * Kunena Credits Controller

@@ -9,10 +9,17 @@
  * @license         https://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link            https://www.kunena.org
  **/
+
+namespace Kunena;
+
 defined('_JEXEC') or die();
 
+use Exception;
+use Joomla\CMS\Date\Date;
+use Joomla\CMS\Document\Feed\FeedItem;
 use Joomla\CMS\Factory;
 use Joomla\CMS\Language\Text;
+use function defined;
 
 /**
  * Topics View
@@ -38,19 +45,18 @@ class KunenaViewTopics extends KunenaView
 		}
 
 		KunenaHtmlParser::$relative = false;
-		$config                     = KunenaFactory::getConfig();
 		$cache                      = Factory::getCache('com_kunena_rss', 'output');
 
-		if (!$config->get('cache'))
+		if (!$this->config->cache)
 		{
 			$cache->setCaching(0);
 		}
 		else
 		{
-			if ($config->rss_cache >= 1)
+			if ($this->config->rss_cache >= 1)
 			{
 				$cache->setCaching(1);
-				$cache->setLifeTime($config->rss_cache);
+				$cache->setLifeTime($this->config->rss_cache);
 			}
 			else
 			{
@@ -64,7 +70,7 @@ class KunenaViewTopics extends KunenaView
 		$this->total  = $this->get('Total');
 
 		// TODO: if start != 0, add information from it into description
-		$this->document->setGenerator($config->board_title);
+		$this->document->setGenerator($this->config->board_title);
 
 		switch ($this->state->get('list.mode'))
 		{
@@ -118,7 +124,7 @@ class KunenaViewTopics extends KunenaView
 
 		// TODO: if start != 0, add information from it into description
 		$title = Text::_('COM_KUNENA_ALL_DISCUSSIONS');
-		$this->document->setGenerator($config->board_title);
+		$this->document->setGenerator($this->config->board_title);
 
 		switch ($this->state->get('list.mode'))
 		{
@@ -166,7 +172,7 @@ class KunenaViewTopics extends KunenaView
 
 		// TODO: if start != 0, add information from it into description
 		$title = Text::_('COM_KUNENA_ALL_DISCUSSIONS');
-		$this->document->setGenerator($config->board_title);
+		$this->document->setGenerator($this->config->board_title);
 
 		switch ($this->state->get('list.mode'))
 		{
@@ -210,7 +216,7 @@ class KunenaViewTopics extends KunenaView
 				$id          = $topic->first_post_id;
 				$page        = 'first';
 				$description = $topic->first_post_message;
-				$date        = new Joomla\CMS\Date\Date($topic->first_post_time);
+				$date        = new Date($topic->first_post_time);
 				$userid      = $topic->first_post_userid;
 				$username    = KunenaFactory::getUser($userid)->getName($topic->first_post_guest_name);
 			}
@@ -228,7 +234,7 @@ class KunenaViewTopics extends KunenaView
 					$description = $topic->last_post_message;
 				}
 
-				$date     = new Joomla\CMS\Date\Date($topic->last_post_time);
+				$date     = new Date($topic->last_post_time);
 				$userid   = $topic->last_post_userid;
 				$username = KunenaFactory::getUser($userid)->getName($topic->last_post_guest_name);
 			}
@@ -241,7 +247,7 @@ class KunenaViewTopics extends KunenaView
 		}
 	}
 
-	/**
+	/**ss
 	 * @return  void
 	 *
 	 * @since   Kunena 6.0
@@ -272,7 +278,7 @@ class KunenaViewTopics extends KunenaView
 				$description = $message->message;
 			}
 
-			$date     = new Joomla\CMS\Date\Date($message->time);
+			$date     = new Date($message->time);
 			$userid   = $message->userid;
 			$username = KunenaFactory::getUser($userid)->getName($message->name);
 
@@ -325,7 +331,7 @@ class KunenaViewTopics extends KunenaView
 		}
 
 		// Assign values to feed item
-		$item              = new Joomla\CMS\Document\Feed\FeedItem;
+		$item              = new FeedItem;
 		$item->title       = $title;
 		$item->link        = $url;
 		$item->description = $description;

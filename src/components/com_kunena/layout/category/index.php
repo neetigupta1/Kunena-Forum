@@ -9,9 +9,15 @@
  * @license         https://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link            https://www.kunena.org
  **/
+
+namespace Kunena;
+
 defined('_JEXEC') or die;
 
+use Exception;
+use Joomla\CMS\Application\CMSApplication;
 use Joomla\CMS\Session\Session;
+use function defined;
 
 /**
  * KunenaLayoutCategoryIndex
@@ -176,11 +182,11 @@ class KunenaLayoutCategoryIndex extends KunenaLayout
 	 */
 	public function getCategoryRSSURL($catid, $xhtml = true)
 	{
-		if (KunenaConfig::getInstance()->enablerss)
+		if (Config::getInstance()->enablerss)
 		{
 			$params = '&catid=' . (int) $catid;
 
-			if (Joomla\CMS\Application\CMSApplication::getInstance('site')->get('sef_suffix'))
+			if (CMSApplication::getInstance('site')->get('sef_suffix'))
 			{
 				return KunenaRoute::_("index.php?option=com_kunena&view=category&format=feed&layout=default{$params}") . '?format=feed&type=rss';
 			}

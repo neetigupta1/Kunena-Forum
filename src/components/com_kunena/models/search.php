@@ -9,11 +9,20 @@
  * @license         https://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link            https://www.kunena.org
  **/
+
+namespace Kunena;
+
 defined('_JEXEC') or die();
 
+use DateInterval;
+use DateTime;
+use Exception;
 use Joomla\CMS\Factory;
 use Joomla\CMS\Language\Text;
+use Joomla\String\StringHelper;
 use Joomla\Utilities\ArrayHelper;
+
+use function defined;
 
 /**
  * Search Model for Kunena
@@ -50,7 +59,7 @@ class KunenaModelSearch extends KunenaModel
 	protected function populateState()
 	{
 		// Get search word list
-		$value = Joomla\String\StringHelper::trim($this->app->input->get('query', '', 'string'));
+		$value = StringHelper::trim($this->app->input->get('query', '', 'string'));
 
 		if ($value == Text::_('COM_KUNENA_GEN_SEARCH_BOX'))
 		{
@@ -173,7 +182,7 @@ class KunenaModelSearch extends KunenaModel
 
 		foreach ($this->getSearchWords() as $searchword)
 		{
-			$searchword = $db->escape(Joomla\String\StringHelper::trim($searchword));
+			$searchword = $db->escape(StringHelper::trim($searchword));
 
 			if (empty($searchword))
 			{
@@ -187,7 +196,7 @@ class KunenaModelSearch extends KunenaModel
 			{
 				$not        = 'NOT';
 				$operator   = 'AND';
-				$searchword = Joomla\String\StringHelper::substr($searchword, 1);
+				$searchword = StringHelper::substr($searchword, 1);
 			}
 
 			if (!$this->getState('query.titleonly'))
@@ -359,7 +368,7 @@ class KunenaModelSearch extends KunenaModel
 		foreach ($searchwords as $word)
 		{
 			// Do not accept one letter strings
-			if (Joomla\String\StringHelper::strlen($word) > 1)
+			if (StringHelper::strlen($word) > 1)
 			{
 				$result [] = $word;
 			}
@@ -466,8 +475,8 @@ class KunenaModelSearch extends KunenaModel
 	{
 		// Turn internal state into URL, but ignore default values
 		$defaults = ['titleonly' => 0, 'searchuser' => '', 'exactname' => 0, 'childforums' => 0, 'starteronly' => 0,
-		             'replyless' => 0, 'replylimit' => 0, 'searchdate' => '365', 'beforeafter' => 'after', 'sortby' => 'lastpost',
-		             'order'     => 'dec', 'catids' => '0', 'show' => '0', 'topic_id' => 0, 'ids' => 0, 'searchatdate' => ''];
+					 'replyless' => 0, 'replylimit' => 0, 'searchdate' => '365', 'beforeafter' => 'after', 'sortby' => 'lastpost',
+					 'order'     => 'dec', 'catids' => '0', 'show' => '0', 'topic_id' => 0, 'ids' => 0, 'searchatdate' => ''];
 
 		$url_params = '';
 		$state      = $this->getState();

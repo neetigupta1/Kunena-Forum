@@ -9,8 +9,12 @@
  * @license         https://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link            https://www.kunena.org
  **/
-defined('_JEXEC') or die;
 
+namespace Kunena;
+
+defined('_JEXEC') or die();
+
+use Exception;
 use Joomla\CMS\Factory;
 use Joomla\CMS\HTML\HTMLHelper;
 use Joomla\CMS\Language\Text;
@@ -19,6 +23,7 @@ use Joomla\CMS\MVC\Controller\BaseController;
 use Joomla\Registry\Registry;
 use Joomla\CMS\Filesystem\File;
 use Joomla\Database\Exception\ExecutionFailureException;
+use function defined;
 
 /**
  * Class ComponentKunenaControllerApplicationMiscDisplay
@@ -87,13 +92,13 @@ class ComponentKunenaControllerCategoryIndexDisplay extends KunenaControllerDisp
 		$defaultmenu = $this->input->getInt('defaultmenu');
 		$layout      = $this->input->getInt('layout');
 
-		if (!$Itemid && KunenaConfig::getInstance()->sef_redirect)
+		if (!$Itemid && $this->config->sef_redirect)
 		{
 			$controller = BaseController::getInstance("kunena");
 
-			if (KunenaConfig::getInstance()->index_id)
+			if ($this->config->index_id)
 			{
-				$itemidfix = KunenaConfig::getInstance()->index_id;
+				$itemidfix = $this->config->index_id;
 			}
 			else
 			{
@@ -375,7 +380,7 @@ class ComponentKunenaControllerCategoryIndexDisplay extends KunenaControllerDisp
 				}
 				else
 				{
-					$topic_ordering = KunenaConfig::getInstance()->default_sort == 'asc' ? false : true;
+					$topic_ordering = $this->config->default_sort == 'asc' ? false : true;
 				}
 
 				// Fix last post position when user can see unapproved or deleted posts.
@@ -406,7 +411,7 @@ class ComponentKunenaControllerCategoryIndexDisplay extends KunenaControllerDisp
 			}
 		}
 
-		Kunena\KunenaHtmlParser::prepareContent($content, 'index_top');
+		\Kunena\KunenaHtmlParser::prepareContent($content, 'index_top');
 	}
 
 	/**
@@ -425,9 +430,9 @@ class ComponentKunenaControllerCategoryIndexDisplay extends KunenaControllerDisp
 		$config = Factory::getConfig();
 		$robots = $config->get('robots');
 
-		if (File::exists(JPATH_SITE . '/' . KunenaConfig::getInstance()->emailheader))
+		if (File::exists(JPATH_SITE . '/' . $this->config->emailheader))
 		{
-			$image = Uri::base() . KunenaConfig::getInstance()->emailheader;
+			$image = Uri::base() . $this->config->emailheader;
 			$this->setMetaData('og:image', $image, 'property');
 		}
 
@@ -496,7 +501,7 @@ class ComponentKunenaControllerCategoryIndexDisplay extends KunenaControllerDisp
 			}
 			else
 			{
-				$description = Text::_('COM_KUNENA_VIEW_CATEGORIES_DEFAULT') . ' - ' . KunenaConfig::getInstance()->board_title;
+				$description = Text::_('COM_KUNENA_VIEW_CATEGORIES_DEFAULT') . ' - ' . $this->config->board_title;
 				$this->setDescription($description);
 			}
 

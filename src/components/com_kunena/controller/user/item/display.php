@@ -9,14 +9,20 @@
  * @license         https://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link            https://www.kunena.org
  **/
-defined('_JEXEC') or die;
 
+namespace Kunena;
+
+defined('_JEXEC') or die();
+
+use Exception;
 use Joomla\CMS\Factory;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\Uri\Uri;
 use Joomla\CMS\MVC\Controller\BaseController;
 use Joomla\CMS\Filesystem\File;
+use Joomla\CMS\User\User;
 use Joomla\Utilities\ArrayHelper;
+use function defined;
 
 /**
  * Class ComponentKunenaControllerUserItemDisplay
@@ -32,7 +38,7 @@ class ComponentKunenaControllerUserItemDisplay extends KunenaControllerDisplay
 	public $me;
 
 	/**
-	 * @var     Joomla\CMS\User\User
+	 * @var     User
 	 * @since   Kunena 6.0
 	 */
 	public $user;
@@ -117,13 +123,13 @@ class ComponentKunenaControllerUserItemDisplay extends KunenaControllerDisplay
 		$Itemid = $this->input->getInt('Itemid');
 		$format = $this->input->getCmd('format');
 
-		if (!$Itemid && $format != 'feed' && KunenaConfig::getInstance()->sef_redirect)
+		if (!$Itemid && $format != 'feed' && $this->config->sef_redirect)
 		{
 			$controller = BaseController::getInstance("kunena");
 
-			if (KunenaConfig::getInstance()->profile_id)
+			if ($this->config->profile_id)
 			{
-				$itemidfix = KunenaConfig::getInstance()->profile_id;
+				$itemidfix = $this->config->profile_id;
 			}
 			else
 			{
@@ -179,8 +185,7 @@ class ComponentKunenaControllerUserItemDisplay extends KunenaControllerDisplay
 		}
 
 		$menu_item = $this->app->getMenu()->getActive();
-		$config    = Factory::getConfig();
-		$robots    = $config->get('robots');
+		$robots    = $this->config->get('robots');
 		$image     = '';
 
 		$this->setMetaData('og:url', Uri::current(), 'property');
@@ -190,11 +195,11 @@ class ComponentKunenaControllerUserItemDisplay extends KunenaControllerDisplay
 		{
 			$image = Uri::root() . 'media/kunena/avatars/' . KunenaFactory::getUser($this->profile->id)->avatar;
 		}
-		elseif ($this->profile->avatar == null || KunenaConfig::getInstance()->avatar_type && KunenaFactory::getUser($this->profile->id)->avatar == null)
+		elseif ($this->profile->avatar == null || $this->config->avatar_type && KunenaFactory::getUser($this->profile->id)->avatar == null)
 		{
-			if (File::exists(JPATH_SITE . '/' . KunenaConfig::getInstance()->emailheader))
+			if (File::exists(JPATH_SITE . '/' . $this->config->emailheader))
 			{
-				$image = Uri::base() . KunenaConfig::getInstance()->emailheader;
+				$image = Uri::base() . $this->config->emailheader;
 			}
 		}
 		else

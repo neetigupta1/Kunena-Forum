@@ -9,11 +9,18 @@
  * @license         https://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link            https://www.kunena.org
  **/
-defined('_JEXEC') or die;
 
+namespace Kunena;
+
+defined('_JEXEC') or die();
+
+use Exception;
+use Joomla\CMS\Access\Access;
 use Joomla\CMS\Factory;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\MVC\Controller\BaseController;
+use phpDocumentor\Reflection\Types\This;
+use function defined;
 
 /**
  * Class ComponentKunenaControllerUserListDisplay
@@ -72,9 +79,7 @@ class ComponentKunenaControllerUserListDisplay extends KunenaControllerDisplay
 	{
 		parent::before();
 
-		$config = KunenaConfig::getInstance();
-
-		if (!$config->userlist_allowed && Factory::getApplication()->getIdentity()->guest)
+		if (!$this->config->userlist_allowed && Factory::getApplication()->getIdentity()->guest)
 		{
 			throw new KunenaExceptionAuthorise(Text::_('COM_KUNENA_NO_ACCESS'), '401');
 		}
@@ -85,7 +90,6 @@ class ComponentKunenaControllerUserListDisplay extends KunenaControllerDisplay
 		$this->state = $this->model->getState();
 
 		$this->me     = KunenaUserHelper::getMyself();
-		$this->config = KunenaConfig::getInstance();
 
 		$start = $this->state->get('list.start');
 		$limit = $this->state->get('list.limit');
@@ -93,7 +97,7 @@ class ComponentKunenaControllerUserListDisplay extends KunenaControllerDisplay
 		$Itemid = $this->input->getInt('Itemid');
 		$format = $this->input->getCmd('format');
 
-		if (!$Itemid && $format != 'feed' && KunenaConfig::getInstance()->sef_redirect)
+		if (!$Itemid && $format != 'feed' && $this->config->sef_redirect)
 		{
 			$itemid     = KunenaRoute::fixMissingItemID();
 			$controller = BaseController::getInstance("kunena");
@@ -104,7 +108,7 @@ class ComponentKunenaControllerUserListDisplay extends KunenaControllerDisplay
 		// Exclude super admins.
 		if ($this->config->superadmin_userlist)
 		{
-			$filter = Joomla\CMS\Access\Access::getUsersByGroup(8);
+			$filter = Access::getUsersByGroup(8);
 		}
 		else
 		{

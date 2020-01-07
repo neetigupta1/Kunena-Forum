@@ -8,13 +8,18 @@
  * @copyright       Copyright (C) 2008 - 2020 Kunena Team. All rights reserved.
  * @license         https://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link            https://www.kunena.org
- **/
-defined('_JEXEC') or die;
+**/
 
+namespace Kunena;
+
+defined('_JEXEC') or die();
+
+use Exception;
 use Joomla\CMS\Factory;
 use Joomla\CMS\HTML\HTMLHelper;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\MVC\Controller\BaseController;
+use function defined;
 
 /**
  * Class ComponentKunenaControllerTopicFormCreateDisplay
@@ -55,11 +60,11 @@ class ComponentKunenaControllerTopicFormCreateDisplay extends KunenaControllerDi
 		$Itemid = Factory::getApplication()->input->getCmd('Itemid');
 		$format = Factory::getApplication()->input->getCmd('format');
 
-		if (!$Itemid && $format != 'feed' && KunenaConfig::getInstance()->sef_redirect)
+		if (!$Itemid && $format != 'feed' && $this->config->sef_redirect)
 		{
-			if (KunenaConfig::getInstance()->search_id)
+			if ($this->config->search_id)
 			{
-				$itemidfix = KunenaConfig::getInstance()->search_id;
+				$itemidfix = $this->config->search_id;
 			}
 			else
 			{

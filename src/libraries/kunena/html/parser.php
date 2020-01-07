@@ -19,7 +19,7 @@ use Joomla\CMS\Plugin\PluginHelper;
 use Joomla\Database\Exception\ExecutionFailureException;
 use Joomla\Registry\Registry;
 use Joomla\String\StringHelper;
-use Kunena\KunenaBbcode;
+Config::getInstance()ena\KunenaBbcode;
 use stdClass;
 
 /**

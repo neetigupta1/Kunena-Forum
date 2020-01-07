@@ -8,12 +8,16 @@
  * @copyright   Copyright (C) 2008 - 2020 Kunena Team. All rights reserved.
  * @license     https://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link        https://www.kunena.org
- **/
-defined('_JEXEC') or die;
+**/
+
+namespace Kunena;
+
+defined('_JEXEC') or die();
 
 use Joomla\CMS\HTML\HTMLHelper;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\Router\Route;
+use function defined;
 
 $message  = $this->message;
 $template = KunenaTemplate::getInstance();
@@ -47,7 +51,7 @@ $template = KunenaTemplate::getInstance();
 $quick    = $template->params->get('quick');
 $editor   = $template->params->get('editor');
 
-if ($me->canDoCaptcha() && KunenaConfig::getInstance()->quickreply)
+if ($me->canDoCaptcha() && Config::getInstance()->quickreply)
 {
 	$this->captchaDisplay = $template->recaptcha($message->id);
 	$this->captchaEnabled = true;

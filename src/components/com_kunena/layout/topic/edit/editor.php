@@ -9,11 +9,16 @@
  * @license         https://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link            https://www.kunena.org
  **/
+
+namespace Kunena;
+
 defined('_JEXEC') or die;
 
+use Exception;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\HTML\HTMLHelper;
 use Joomla\CMS\Filesystem\Folder;
+use function defined;
 
 /**
  * KunenaLayoutTopicEditEditor
@@ -23,7 +28,7 @@ use Joomla\CMS\Filesystem\Folder;
 class KunenaLayoutTopicEditEditor extends KunenaLayout
 {
 	/**
-	 * @var     KunenaConfig
+	 * @var     Config
 	 * @since   Kunena 6.0
 	 */
 	public $config;
@@ -88,7 +93,6 @@ class KunenaLayoutTopicEditEditor extends KunenaLayout
 	{
 		$this->ktemplate  = KunenaFactory::getTemplate();
 		$templatesettings = $this->ktemplate->params;
-		$config           = KunenaConfig::getInstance();
 
 		$bbcodes = [
 			"spoiler",
@@ -132,14 +136,14 @@ class KunenaLayoutTopicEditEditor extends KunenaLayout
 			{
 				$tag = "show" . $item . "tag";
 
-				if ($config->$tag && $templatesettings->get($item))
+				if ($this->config->$tag && $templatesettings->get($item))
 				{
 					$option = 1;
 				}
 			}
 			elseif ($item == 'emoticons')
 			{
-				if (!$config->disemoticons && $templatesettings->get($item))
+				if (!$this->config->disemoticons && $templatesettings->get($item))
 				{
 					$option = 1;
 				}

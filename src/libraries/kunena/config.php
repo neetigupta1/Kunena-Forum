@@ -241,6 +241,7 @@ use function defined;
  * @property integer $misc_id
  * @property integer $profile_id
  * @property integer $search_id
+ * @property integer $custom_id
  * @property integer $avatar_type
  * @property boolean $sef_redirect
  * @property boolean $allow_edit_poll
@@ -1523,6 +1524,12 @@ class Config extends CMSObject
 	 * @since  Kunena 5.1.0
 	 */
 	public $search_id = '';
+
+	/**
+	 * @var    integer
+	 * @since  Kunena 5.1.0
+	 */
+	public $custom_id = '';
 
 	/**
 	 * @var   integer

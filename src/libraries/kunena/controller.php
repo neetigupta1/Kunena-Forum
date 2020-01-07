@@ -22,7 +22,6 @@ use Joomla\CMS\Uri\Uri;
 use Joomla\CMS\Log\Log;
 use Joomla\CMS\Router\Route;
 use Joomla\CMS\Application\CMSApplicationInterface;
-use KunenaVersion;
 use function defined;
 
 /**

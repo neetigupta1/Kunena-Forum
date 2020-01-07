@@ -9,11 +9,16 @@
  * @license         https://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link            https://www.kunena.org
  **/
-defined('_JEXEC') or die;
 
+namespace Kunena;
+
+defined('_JEXEC') or die();
+
+use Exception;
 use Joomla\CMS\Factory;
 use Joomla\CMS\MVC\Controller\BaseController;
 use Joomla\CMS\Component\ComponentHelper;
+use function defined;
 
 /**
  * Class ComponentKunenaControllerApplicationMiscDisplay
@@ -133,9 +138,9 @@ class ComponentKunenaControllerApplicationMiscDefaultDisplay extends KunenaContr
 
 		if (!$Itemid)
 		{
-			if (KunenaConfig::getInstance()->custom_id)
+			if ($this->config->custom_id)
 			{
-				$itemidfix = KunenaConfig::getInstance()->custom_id;
+				$itemidfix = $this->config->custom_id;
 			}
 			else
 			{

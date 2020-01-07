@@ -9,16 +9,23 @@
  * @license         https://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link            https://www.kunena.org
  **/
-defined('_JEXEC') or die;
 
+namespace Kunena;
+
+defined('_JEXEC') or die();
+
+use Exception;
 use Joomla\CMS\Factory;
 use Joomla\CMS\HTML\HTMLHelper;
 use Joomla\CMS\Language\Text;
+use Joomla\CMS\Plugin\PluginHelper;
 use Joomla\CMS\Uri\Uri;
 use Joomla\CMS\MVC\Controller\BaseController;
 use Joomla\CMS\Object\CMSObject;
 use Joomla\CMS\Filesystem\File;
 use Joomla\Registry\Registry;
+use stdClass;
+use function defined;
 
 /**
  * Class ComponentKunenaControllerTopicItemDisplay
@@ -85,7 +92,7 @@ class ComponentKunenaControllerTopicItemDisplay extends KunenaControllerDisplay
 		$Itemid = $this->input->getInt('Itemid');
 		$format = $this->input->getInt('format');
 
-		if (!$Itemid && $format != 'feed' && KunenaConfig::getInstance()->sef_redirect)
+		if (!$Itemid && $format != 'feed' && $this->config->sef_redirect)
 		{
 			$itemid     = KunenaRoute::fixMissingItemID();
 			$controller = BaseController::getInstance("kunena");
@@ -229,26 +236,26 @@ class ComponentKunenaControllerTopicItemDisplay extends KunenaControllerDisplay
 		}
 
 		// Run events.
-		$params = new Joomla\Registry\Registry;
+		$params = new Registry;
 		$params->set('ksource', 'kunena');
 		$params->set('kunena_view', 'topic');
 		$params->set('kunena_layout', 'default');
 
-		Joomla\CMS\Plugin\PluginHelper::importPlugin('kunena');
+		PluginHelper::importPlugin('kunena');
 		KunenaHtmlParser::prepareContent($content, 'topic_top');
 		Factory::getApplication()->triggerEvent('onKunenaPrepare', ['kunena.topic', &$this->topic, &$params, 0]);
 		Factory::getApplication()->triggerEvent('onKunenaPrepare', ['kunena.messages', &$this->messages, &$params, 0]);
 
 		// Get user data, captcha & quick reply.
 		$this->userTopic  = $this->topic->getUserTopic();
-		$this->quickReply = $this->topic->isAuthorised('reply') && $this->me->exists() && KunenaConfig::getInstance()->quickreply;
+		$this->quickReply = $this->topic->isAuthorised('reply') && $this->me->exists() && $this->config->quickreply;
 
 		$this->headerText = KunenaHtmlParser::parseBBCode($this->topic->displayField('subject'));
 
 		$data                           = new CMSObject;
 		$data->{'@context'}             = "http://schema.org";
 		$data->{'@type'}                = "DiscussionForumPosting";
-		$data->{'id'}                   = Joomla\CMS\Uri\Uri::getInstance()->toString(['scheme', 'host', 'port']) . $this->topic->getPermaUrl();
+		$data->{'id'}                   = Uri::getInstance()->toString(['scheme', 'host', 'port']) . $this->topic->getPermaUrl();
 		$data->{'discussionUrl'}        = $this->topic->getPermaUrl();
 		$data->{'headline'}             = $this->headerText;
 		$data->{'image'}                = $this->docImage();
@@ -277,7 +284,7 @@ class ComponentKunenaControllerTopicItemDisplay extends KunenaControllerDisplay
 		$data->mainEntityOfPage         = [];
 		$tmp5                           = new CMSObject;
 		$tmp5->{'@type'}                = "WebPage";
-		$tmp5->{'name'}                 = Joomla\CMS\Uri\Uri::getInstance()->toString(['scheme', 'host', 'port']) . $this->topic->getPermaUrl();
+		$tmp5->{'name'}                 = Uri::getInstance()->toString(['scheme', 'host', 'port']) . $this->topic->getPermaUrl();
 		$data->mainEntityOfPage         = $tmp5;
 
 		if ($this->category->allow_ratings && $this->config->ratingenabled && KunenaForumTopicRateHelper::getCount($this->topic->id) > 0)
@@ -544,7 +551,7 @@ class ComponentKunenaControllerTopicItemDisplay extends KunenaControllerDisplay
 				{
 					if ($attach->image)
 					{
-						if (KunenaConfig::getInstance()->attachment_protection)
+						if ($this->config->attachment_protection)
 						{
 							$url      = $attach->path;
 							$protocol = empty($_SERVER['HTTPS']) ? 'http://' : 'https://';
@@ -695,9 +702,9 @@ class ComponentKunenaControllerTopicItemDisplay extends KunenaControllerDisplay
 		}
 		elseif ($this->topic->getAuthor()->avatar == null)
 		{
-			if (File::exists(JPATH_SITE . '/' . KunenaConfig::getInstance()->emailheader))
+			if (File::exists(JPATH_SITE . '/' . $this->config->emailheader))
 			{
-				$image = Uri::base() . KunenaConfig::getInstance()->emailheader;
+				$image = Uri::base() . $this->config->emailheader;
 			}
 			else
 			{

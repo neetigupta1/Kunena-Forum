@@ -9,9 +9,14 @@
  * @license         https://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link            https://www.kunena.org
  **/
-defined('_JEXEC') or die;
 
+namespace Kunena;
+
+defined('_JEXEC') or die();
+
+use Exception;
 use Joomla\CMS\Language\Text;
+use function defined;
 
 /**
  * Class ComponentKunenaControllerStatisticsWhoisonlineDisplay
@@ -45,7 +50,7 @@ class ComponentKunenaControllerWidgetWhoisonlineDisplay extends KunenaController
 	{
 		parent::before();
 
-		$this->config = KunenaConfig::getInstance();
+		$this->config = Config::getInstance();
 
 		if (!$this->config->get('showwhoisonline'))
 		{

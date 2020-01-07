@@ -9,12 +9,19 @@
  * @license         https://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link            https://www.kunena.org
  **/
+
+namespace Kunena;
+
 defined('_JEXEC') or die();
 
+use Exception;
 use Joomla\CMS\Factory;
 use Joomla\CMS\HTML\HTMLHelper;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\Uri\Uri;
+use Joomla\Registry\Registry;
+use StdClass;
+use function defined;
 
 /**
  * Common view
@@ -517,7 +524,7 @@ class KunenaViewCommon extends KunenaView
 			return ' ';
 		}
 
-		$this->parameters = new Joomla\Registry\Registry;
+		$this->parameters = new Registry;
 		$this->parameters->set('showAllChildren', $this->ktemplate->params->get('menu_showall', 0));
 		$this->parameters->set('menutype', $basemenu->menutype);
 		$this->parameters->set('startLevel', $basemenu->level + 1);
