@@ -17,6 +17,11 @@ use Exception;
 use Joomla\CMS\Component\Router\RouterBase;
 use Joomla\CMS\Factory;
 use Joomla\CMS\Profiler\Profiler;
+use Joomla\Component\Kunena\Libraries\Forum\Forum;
+use Joomla\Component\Kunena\Libraries\KunenaProfiler;
+use Joomla\Component\Kunena\Libraries\Route\KunenaRoute;
+use Joomla\Component\Kunena\Libraries\User\Helper;
+use Joomla\Component\Kunena\Libraries\Config;
 use function defined;
 
 /**
@@ -53,7 +58,7 @@ class KunenaRouter extends RouterBase
 		$segments = [];
 
 		// If Kunena Forum isn't installed or SEF is not enabled, do nothing
-		if (!class_exists('KunenaForum') || !KunenaForum::isCompatible('4.0') || !KunenaForum::installed() || !Config::getInstance()->sef)
+		if (!class_exists('KunenaForum') || !Forum::isCompatible('4.0') || !Forum::installed() || !Config::getInstance()->sef)
 		{
 			return $segments;
 		}
@@ -128,7 +133,7 @@ class KunenaRouter extends RouterBase
 			{
 				$numeric = true;
 
-				$alias = KunenaForumCategoryHelper::get($catid)->alias;
+				$alias = Helper::get($catid)->alias;
 
 				// If category alias is empty, use category id; otherwise use alias
 				$segments[] = empty($alias) ? $catid : $alias;
@@ -160,7 +165,7 @@ class KunenaRouter extends RouterBase
 
 			if ($id)
 			{
-				$subject = KunenaRoute::stringURLSafe(KunenaForumTopicHelper::get($id)->subject);
+				$subject = KunenaRoute::stringURLSafe(Helper::get($id)->subject);
 
 				if (empty($subject))
 				{
@@ -260,7 +265,7 @@ class KunenaRouter extends RouterBase
 			}
 			else
 			{
-				$segments[] = (int) $query['userid'] . '-' . KunenaRoute::stringURLSafe(KunenaUserHelper::get((int) $query['userid'])->getName());
+				$segments[] = (int) $query['userid'] . '-' . KunenaRoute::stringURLSafe(Helper::get((int) $query['userid'])->getName());
 			}
 
 			unset($query['userid']);
@@ -300,7 +305,7 @@ class KunenaRouter extends RouterBase
 	public function parse(&$segments)
 	{
 		// If Kunena Forum isn't installed do nothing
-		if (!class_exists('KunenaForum') || !KunenaForum::isCompatible('4.0') || !KunenaForum::installed())
+		if (!class_exists('KunenaForum') || !Forum::isCompatible('4.0') || !Forum::installed())
 		{
 			return [];
 		}

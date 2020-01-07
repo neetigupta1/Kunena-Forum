@@ -59,14 +59,14 @@ class pkg_kunena_languagesInstallerScript
 		$app = Factory::getApplication();
 
 		// Do not install if Kunena doesn't exist.
-		if (!class_exists('KunenaForum') || !KunenaForum::isCompatible('4.0'))
+		if (!class_exists('KunenaForum') || !\Joomla\Component\Kunena\Libraries\Forum\Forum::isCompatible('4.0'))
 		{
 			$app->enqueueMessage(sprintf('Kunena %s has not been installed, aborting!', '4.0'), 'notice');
 
 			return false;
 		}
 
-		if (KunenaForum::isDev())
+		if (\Joomla\Component\Kunena\Libraries\Forum\Forum::isDev())
 		{
 			$app->enqueueMessage(sprintf('You have installed Kunena from GitHub, aborting!'), 'notice');
 

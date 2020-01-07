@@ -58,7 +58,7 @@ class KunenaMigratorJoomlaboard
 	{
 		foreach ($this->versions as $version)
 		{
-			if (KunenaInstaller::getTableColumn($version['table'], $version['column']))
+			if (\Joomla\Component\Kunena\Libraries\Installer::getTableColumn($version['table'], $version['column']))
 			{
 				return $version->version;
 			}

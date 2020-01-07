@@ -10,13 +10,15 @@
  * @link            https://www.kunena.org
  **/
 
-namespace Joomla\Component\Kunena;
+namespace Joomla\Component\Kunena\Plugin\Kunena\Altauserpoints;
 
 defined('_JEXEC') or die();
 
 use Joomla\CMS\Factory;
 use Joomla\CMS\Plugin\CMSPlugin;
 use Joomla\CMS\Plugin\PluginHelper;
+use Joomla\Component\Kunena\Libraries\Forum\Forum;
+use Joomla\Component\Kunena\Libraries\Integration\Avatar;
 use function defined;
 
 /**
@@ -29,7 +31,7 @@ class plgKunenaAltaUserPoints extends CMSPlugin
 	/**
 	 * Constructor of plgKunenaAltaUserPoints class
 	 *
-	 * @param   object &$subject  The object to observe
+	 * @param   object  $subject  The object to observe
 	 * @param   array   $config   An optional associative array of configuration settings.
 	 *
 	 * @since   Kunena 6.0
@@ -37,7 +39,7 @@ class plgKunenaAltaUserPoints extends CMSPlugin
 	public function __construct(&$subject, $config)
 	{
 		// Do not load if Kunena version is not supported or Kunena is offline
-		if (!(class_exists('KunenaForum') && KunenaForum::isCompatible('4.0') && KunenaForum::installed()))
+		if (!(class_exists('KunenaForum') && Forum::isCompatible('4.0') && Forum::installed()))
 		{
 			return;
 		}
@@ -72,7 +74,7 @@ class plgKunenaAltaUserPoints extends CMSPlugin
 	/**
 	 * Get Kunena avatar integration object.
 	 *
-	 * @return  KunenaAvatar|void
+	 * @return  Avatar|void
 	 * @since   Kunena 6.0
 	 */
 	public function onKunenaGetAvatar()
@@ -84,13 +86,13 @@ class plgKunenaAltaUserPoints extends CMSPlugin
 
 		require_once __DIR__ . "/avatar.php";
 
-		return new KunenaAvatarAltaUserPoints($this->params);
+		return new Avatar($this->params);
 	}
 
 	/**
 	 * Get Kunena profile integration object.
 	 *
-	 * @return  KunenaProfile|void
+	 * @return  KunenaProfileAltaUserPoints|void
 	 * @since   Kunena 6.0
 	 */
 	public function onKunenaGetProfile()
@@ -108,7 +110,7 @@ class plgKunenaAltaUserPoints extends CMSPlugin
 	/**
 	 * Get Kunena activity stream integration object.
 	 *
-	 * @return  KunenaActivity|void
+	 * @return  KunenaActivityAltaUserPoints|void
 	 * @since   Kunena 6.0
 	 */
 	public function onKunenaGetActivity()

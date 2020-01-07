@@ -311,7 +311,7 @@ abstract class Grid
 		}
 
 		$active        = $task == 'publish' ? 'active' : '';
-		$ktemplate     = KunenaFactory::getTemplate();
+		$ktemplate     = \Joomla\Component\Kunena\Libraries\KunenaFactory::getTemplate();
 		$topicicontype = $ktemplate->params->get('topicicontype');
 
 		if ($bootstrap && $topicicontype == 'B2')
@@ -424,7 +424,7 @@ abstract class Grid
 	 */
 	public static function task($i, $img, $alt, $task, $prefix = '', $bootstrap = false)
 	{
-		return self::action($i, $task, $prefix, $alt, '', $task, $bootstrap, '<img src="' . KunenaFactory::getTemplate()->getImagePath($img) . '" alt="' . $alt . '" title="' . $alt . '" />');
+		return self::action($i, $task, $prefix, $alt, '', $task, $bootstrap, '<img src="' . \Joomla\Component\Kunena\Libraries\KunenaFactory::getTemplate()->getImagePath($img) . '" alt="' . $alt . '" title="' . $alt . '" />');
 	}
 
 	/**

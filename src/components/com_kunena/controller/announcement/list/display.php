@@ -64,9 +64,9 @@ class ComponentKunenaControllerAnnouncementListDisplay extends KunenaControllerD
 
 		if (!$Itemid && $this->config->sef_redirect)
 		{
-			$itemid     = KunenaRoute::fixMissingItemID();
+			$itemid     = \Joomla\Component\Kunena\Libraries\Route\KunenaRoute::fixMissingItemID();
 			$controller = BaseController::getInstance("kunena");
-			$controller->setRedirect(KunenaRoute::_("index.php?option=com_kunena&view=announcement&layout=list&Itemid={$itemid}", false));
+			$controller->setRedirect(\Joomla\Component\Kunena\Libraries\Route\KunenaRoute::_("index.php?option=com_kunena&view=announcement&layout=list&Itemid={$itemid}", false));
 			$controller->redirect();
 		}
 
@@ -82,7 +82,7 @@ class ComponentKunenaControllerAnnouncementListDisplay extends KunenaControllerD
 			$limitstart = 0;
 		}
 
-		$moderator           = KunenaUserHelper::getMyself()->isModerator();
+		$moderator           = \Joomla\Component\Kunena\Libraries\User\Helper::getMyself()->isModerator();
 		$this->pagination    = new KunenaPagination(KunenaForumAnnouncementHelper::getCount(!$moderator), $limitstart, $limit);
 		$this->announcements = KunenaForumAnnouncementHelper::getAnnouncements(
 			$this->pagination->limitstart,

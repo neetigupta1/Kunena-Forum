@@ -51,7 +51,7 @@ class Plugins
 		}
 		catch (ExecutionFailureException $e)
 		{
-			KunenaError::displayDatabaseError($e);
+			\Joomla\Component\Kunena\Libraries\Error::displayDatabaseError($e);
 		}
 
 		return (int) $total;

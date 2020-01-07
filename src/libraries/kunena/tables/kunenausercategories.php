@@ -85,14 +85,14 @@ class TableKunenaUserCategories extends KunenaTable
 	 */
 	public function check()
 	{
-		$user = KunenaUserHelper::get($this->user_id);
+		$user = \Joomla\Component\Kunena\Libraries\User\Helper::get($this->user_id);
 
 		if (!$user->exists())
 		{
 			throw new RuntimeException(Text::sprintf('COM_KUNENA_LIB_TABLE_USERCATEGORIES_ERROR_USER_INVALID', (int) $user->userid));
 		}
 
-		$category = KunenaForumCategoryHelper::get($this->category_id);
+		$category = \Joomla\Component\Kunena\Libraries\Forum\Category\Helper::get($this->category_id);
 
 		if ($this->category_id && !$category->exists())
 		{

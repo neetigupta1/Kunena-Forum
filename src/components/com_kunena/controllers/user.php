@@ -67,10 +67,10 @@ class KunenaControllerUser extends KunenaController
 
 		if ($redirect && $this->app->input->getCmd('format', 'html') == 'html')
 		{
-			$profileIntegration = KunenaFactory::getProfile();
+			$profileIntegration = \Joomla\Component\Kunena\Libraries\KunenaFactory::getProfile();
 			$layout             = $this->app->input->getCmd('layout', 'default');
 
-			if ($profileIntegration instanceof KunenaProfileKunena)
+			if ($profileIntegration instanceof \Joomla\Component\Kunena\Libraries\Integration\Profile)
 			{
 				// Continue
 			}
@@ -95,7 +95,7 @@ class KunenaControllerUser extends KunenaController
 
 		if ($layout == 'list')
 		{
-			if (!KunenaFactory::getConfig()->userlist_allowed && $this->app->getIdentity()->guest)
+			if (!\Joomla\Component\Kunena\Libraries\KunenaFactory::getConfig()->userlist_allowed && $this->app->getIdentity()->guest)
 			{
 				throw new KunenaExceptionAuthorise(Text::_('COM_KUNENA_NO_ACCESS'), '401');
 			}
@@ -138,7 +138,7 @@ class KunenaControllerUser extends KunenaController
 			$uri->setVar('limitstart', $search);
 		}
 
-		$this->setRedirect(KunenaRoute::_($uri, false));
+		$this->setRedirect(\Joomla\Component\Kunena\Libraries\Route\KunenaRoute::_($uri, false));
 	}
 
 	/**
@@ -202,7 +202,7 @@ class KunenaControllerUser extends KunenaController
 
 		$userid = $this->app->input->getInt('userid', 0);
 
-		$target = KunenaFactory::getUser($userid);
+		$target = \Joomla\Component\Kunena\Libraries\KunenaFactory::getUser($userid);
 
 		if (!$this->config->showkarma || !$this->me->exists() || !$target->exists() || $karmaDelta == 0)
 		{
@@ -275,7 +275,7 @@ class KunenaControllerUser extends KunenaController
 		}
 
 		// Activity integration
-		$activity = KunenaFactory::getActivityIntegration();
+		$activity = \Joomla\Component\Kunena\Libraries\KunenaFactory::getActivityIntegration();
 		$activity->onAfterKarma($target->userid, $this->me->userid, $karmaDelta);
 		$this->setRedirectBack();
 	}
@@ -312,7 +312,7 @@ class KunenaControllerUser extends KunenaController
 		}
 
 		// Check permission
-		$moderator = KunenaUserHelper::getMyself()->isModerator();
+		$moderator = \Joomla\Component\Kunena\Libraries\User\Helper::getMyself()->isModerator();
 		$my        = $this->app->getIdentity();
 
 		if (!$moderator)
@@ -585,7 +585,7 @@ class KunenaControllerUser extends KunenaController
 		}
 
 		// Reload the user.
-		if (KunenaUserHelper::getMyself()->userid == $this->user->id)
+		if (\Joomla\Component\Kunena\Libraries\User\Helper::getMyself()->userid == $this->user->id)
 		{
 			$this->user->load($this->user->id);
 			$session = Factory::getSession();
@@ -616,7 +616,7 @@ class KunenaControllerUser extends KunenaController
 	{
 		$input  = $this->app->input;
 		$method = $input->getMethod();
-		$user   = KunenaFactory::getUser($input->$method->get('userid', 0, 'int'));
+		$user   = \Joomla\Component\Kunena\Libraries\KunenaFactory::getUser($input->$method->get('userid', 0, 'int'));
 
 		if ($this->app->input->get('signature', null) === null)
 		{
@@ -675,7 +675,7 @@ class KunenaControllerUser extends KunenaController
 	 */
 	protected function saveSettings()
 	{
-		$this->user = KunenaFactory::getUser($this->app->input->getInt('userid', 0));
+		$this->user = \Joomla\Component\Kunena\Libraries\KunenaFactory::getUser($this->app->input->getInt('userid', 0));
 
 		if ($this->app->input->get('hidemail', null) === null)
 		{
@@ -700,7 +700,7 @@ class KunenaControllerUser extends KunenaController
 	 */
 	public function ban()
 	{
-		$user = KunenaFactory::getUser($this->app->input->getInt('userid', 0));
+		$user = \Joomla\Component\Kunena\Libraries\KunenaFactory::getUser($this->app->input->getInt('userid', 0));
 
 		if (!$user->exists() || !Session::checkToken('post'))
 		{
@@ -822,7 +822,7 @@ class KunenaControllerUser extends KunenaController
 					$user
 				);
 
-				KunenaUserHelper::recountBanned();
+				\Joomla\Component\Kunena\Libraries\User\Helper::recountBanned();
 			}
 
 			$this->app->enqueueMessage($message);
@@ -886,7 +886,7 @@ class KunenaControllerUser extends KunenaController
 
 			foreach ($messages as $mes)
 			{
-				$mes->publish(KunenaForum::DELETED);
+				$mes->publish(\Joomla\Component\Kunena\Libraries\Forum\Forum::DELETED);
 			}
 
 			$this->app->enqueueMessage(Text::_('COM_KUNENA_MODERATE_DELETED_BAD_MESSAGES'));
@@ -926,7 +926,7 @@ class KunenaControllerUser extends KunenaController
 	 */
 	public function cancel()
 	{
-		$user = KunenaFactory::getUser();
+		$user = \Joomla\Component\Kunena\Libraries\KunenaFactory::getUser();
 		$this->setRedirect($user->getUrl(false));
 	}
 
@@ -1033,7 +1033,7 @@ class KunenaControllerUser extends KunenaController
 		}
 
 		$status     = $this->app->input->getInt('status', 0);
-		$me         = KunenaUserHelper::getMyself();
+		$me         = \Joomla\Component\Kunena\Libraries\User\Helper::getMyself();
 		$me->status = $status;
 
 		try
@@ -1074,7 +1074,7 @@ class KunenaControllerUser extends KunenaController
 		}
 
 		$status_text     = $this->app->input->post->getString('status_text', '');
-		$me              = KunenaUserHelper::getMyself();
+		$me              = \Joomla\Component\Kunena\Libraries\User\Helper::getMyself();
 		$me->status_text = $status_text;
 
 		try
@@ -1112,7 +1112,7 @@ class KunenaControllerUser extends KunenaController
 		}
 
 		$upload = KunenaUpload::getInstance();
-		$user   = KunenaFactory::getUser($this->app->input->getInt('userid', 0));
+		$user   = \Joomla\Component\Kunena\Libraries\KunenaFactory::getUser($this->app->input->getInt('userid', 0));
 
 		// We are converting all exceptions into JSON.
 		try
@@ -1186,7 +1186,7 @@ class KunenaControllerUser extends KunenaController
 	 */
 	protected function deleteOldAvatars()
 	{
-		$user = KunenaFactory::getUser($this->app->input->getInt('userid', 0));
+		$user = \Joomla\Component\Kunena\Libraries\KunenaFactory::getUser($this->app->input->getInt('userid', 0));
 
 		if (preg_match('|^users/|', $user->avatar))
 		{
@@ -1234,9 +1234,9 @@ class KunenaControllerUser extends KunenaController
 		}
 
 		$success = [];
-		$kuser   = KunenaFactory::getUser($this->app->input->getInt('userid', 0));
+		$kuser   = \Joomla\Component\Kunena\Libraries\KunenaFactory::getUser($this->app->input->getInt('userid', 0));
 
-		if (KunenaUserHelper::getMyself()->userid == $kuser->userid || KunenaUserHelper::getMyself()->isAdmin() || KunenaUserHelper::getMyself()->isModerator())
+		if (\Joomla\Component\Kunena\Libraries\User\Helper::getMyself()->userid == $kuser->userid || \Joomla\Component\Kunena\Libraries\User\Helper::getMyself()->isAdmin() || \Joomla\Component\Kunena\Libraries\User\Helper::getMyself()->isModerator())
 		{
 			$this->deleteOldAvatars();
 
@@ -1289,7 +1289,7 @@ class KunenaControllerUser extends KunenaController
 		}
 
 		$userid = $this->input->getInt('userid');
-		$kuser  = KunenaFactory::getUser($userid);
+		$kuser  = \Joomla\Component\Kunena\Libraries\KunenaFactory::getUser($userid);
 
 		$avatar       = new stdClass;
 		$avatar->name = $kuser->avatar;
@@ -1428,7 +1428,7 @@ class KunenaControllerUser extends KunenaController
 			$data['stopforumspam_key'] = $this->config->stopforumspam_key;
 			$data['evidence']          = $evidence;
 
-			$result = KunenaUserHelper::storeCheckStopforumspam($data, 'add');
+			$result = \Joomla\Component\Kunena\Libraries\User\Helper::storeCheckStopforumspam($data, 'add');
 
 			if ($result != false)
 			{

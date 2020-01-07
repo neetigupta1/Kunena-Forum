@@ -415,7 +415,7 @@ class Ban extends CMSObject
 		}
 		catch (ExecutionFailureException $e)
 		{
-			KunenaError::displayDatabaseError($e);
+			\Joomla\Component\Kunena\Libraries\Error::displayDatabaseError($e);
 		}
 
 		$list = [];
@@ -464,7 +464,7 @@ class Ban extends CMSObject
 		}
 		catch (ExecutionFailureException $e)
 		{
-			KunenaError::displayDatabaseError($e);
+			\Joomla\Component\Kunena\Libraries\Error::displayDatabaseError($e);
 		}
 
 		$list = [];
@@ -490,7 +490,7 @@ class Ban extends CMSObject
 	 */
 	public function getUser()
 	{
-		return KunenaUserHelper::get((int) $this->userid);
+		return \Joomla\Component\Kunena\Libraries\User\Helper::get((int) $this->userid);
 	}
 
 	/**
@@ -502,7 +502,7 @@ class Ban extends CMSObject
 	 */
 	public function getCreator()
 	{
-		return KunenaUserHelper::get((int) $this->created_by);
+		return \Joomla\Component\Kunena\Libraries\User\Helper::get((int) $this->created_by);
 	}
 
 	/**
@@ -514,7 +514,7 @@ class Ban extends CMSObject
 	 */
 	public function getModifier()
 	{
-		return KunenaUserHelper::get((int) $this->modified_by);
+		return \Joomla\Component\Kunena\Libraries\User\Helper::get((int) $this->modified_by);
 	}
 
 	/**
@@ -832,7 +832,7 @@ class Ban extends CMSObject
 			}
 
 			// Change user state also in #__kunena_users
-			$profile         = KunenaFactory::getUser($this->userid);
+			$profile         = \Joomla\Component\Kunena\Libraries\KunenaFactory::getUser($this->userid);
 			$profile->banned = $this->expiration;
 			$profile->save(true);
 		}
@@ -865,8 +865,8 @@ class Ban extends CMSObject
 	public function canBan()
 	{
 		$userid = $this->userid;
-		$me     = KunenaUserHelper::getMyself();
-		$user   = KunenaUserHelper::get($userid);
+		$me     = \Joomla\Component\Kunena\Libraries\User\Helper::getMyself();
+		$user   = \Joomla\Component\Kunena\Libraries\User\Helper::get($userid);
 
 		if (!$me->isModerator())
 		{

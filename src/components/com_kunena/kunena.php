@@ -24,7 +24,7 @@ use function defined;
 
 
 // Display offline message if Kunena hasn't been fully installed.
-if (!class_exists('KunenaForum') || !KunenaForum::isCompatible('4.0') || !KunenaForum::installed())
+if (!class_exists('KunenaForum') || !\Joomla\Component\Kunena\Libraries\Forum\Forum::isCompatible('4.0') || !\Joomla\Component\Kunena\Libraries\Forum\Forum::installed())
 {
 	$lang = Factory::getLanguage();
 	$lang->load('com_kunena.install', JPATH_ADMINISTRATOR . '/components/com_kunena', 'en-GB');
@@ -39,7 +39,7 @@ if (!class_exists('KunenaForum') || !KunenaForum::isCompatible('4.0') || !Kunena
 }
 
 // Display time it took to create the entire page in the footer.
-$kunena_profiler = KunenaProfiler::instance('Kunena');
+$kunena_profiler = \Joomla\Component\Kunena\Libraries\KunenaProfiler::instance('Kunena');
 $kunena_profiler->start('Total Time');
 KUNENA_PROFILER ? $kunena_profiler->mark('afterLoad') : null;
 
@@ -66,18 +66,18 @@ if (!Config::getInstance()->access_component)
 require_once KPATH_SITE . '/router.php';
 
 // Initialize Kunena Framework.
-KunenaForum::setup();
+\Joomla\Component\Kunena\Libraries\Forum\Forum::setup();
 
 // Initialize custom error handlers.
-KunenaError::initialize();
+\Joomla\Component\Kunena\Libraries\Error::initialize();
 
 // Initialize session.
-$ksession = KunenaFactory::getSession(true);
+$ksession = \Joomla\Component\Kunena\Libraries\KunenaFactory::getSession(true);
 
 if ($ksession->userid > 0)
 {
 	// Create user if it does not exist
-	$kuser = KunenaUserHelper::getMyself();
+	$kuser = \Joomla\Component\Kunena\Libraries\User\Helper::getMyself();
 
 	if (!$kuser->exists())
 	{
@@ -107,31 +107,31 @@ $controller = KunenaControllerApplication::getInstance($view, $subview, $task, $
 
 if ($controller)
 {
-	KunenaRoute::cacheLoad();
+	\Joomla\Component\Kunena\Libraries\Route\KunenaRoute::cacheLoad();
 	$contents = $controller->execute();
-	KunenaRoute::cacheStore();
+	\Joomla\Component\Kunena\Libraries\Route\KunenaRoute::cacheStore();
 }
 elseif (is_file(KPATH_SITE . "/controllers/{$view}.php"))
 {
 	// Execute old MVC.
 	// Legacy support: If the content layout doesn't exist on HMVC, load and execute the old controller.
 	$controller = KunenaController::getInstance();
-	KunenaRoute::cacheLoad();
+	\Joomla\Component\Kunena\Libraries\Route\KunenaRoute::cacheLoad();
 	ob_start();
 	$controller->execute($task);
 	$contents = ob_get_clean();
-	KunenaRoute::cacheStore();
+	\Joomla\Component\Kunena\Libraries\Route\KunenaRoute::cacheStore();
 	$controller->redirect();
 }
 else
 {
 	// Legacy URL support.
-	$uri = KunenaRoute::current(true);
+	$uri = \Joomla\Component\Kunena\Libraries\Route\KunenaRoute::current(true);
 
 	if ($uri)
 	{
 		// FIXME: using wrong Itemid
-		Factory::getApplication()->redirect(KunenaRoute::_($uri, false));
+		Factory::getApplication()->redirect(\Joomla\Component\Kunena\Libraries\Route\KunenaRoute::_($uri, false));
 	}
 	else
 	{
@@ -152,7 +152,7 @@ Factory::getApplication()->triggerEvent('onKunenaAfterRender', ["com_kunena.{$vi
 echo $contents;
 
 // Remove custom error handlers.
-KunenaError::cleanup();
+\Joomla\Component\Kunena\Libraries\Error::cleanup();
 
 // Kunena conflicts with jot_cache, due to huge object message in app-inputs.
 //  this huje object causes crash. so, need to cleanup app-inputs before exit here.

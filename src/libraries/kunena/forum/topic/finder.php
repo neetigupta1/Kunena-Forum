@@ -57,7 +57,7 @@ class Finder extends KunenaDatabaseObjectFinder
 	{
 		parent::__construct();
 
-		$this->limit = KunenaFactory::getConfig()->threads_per_page;
+		$this->limit = \Joomla\Component\Kunena\Libraries\KunenaFactory::getConfig()->threads_per_page;
 	}
 
 	/**
@@ -250,7 +250,7 @@ class Finder extends KunenaDatabaseObjectFinder
 
 		foreach ($users as $user)
 		{
-			if ($user instanceof KunenaUser)
+			if ($user instanceof \Joomla\Component\Kunena\Libraries\User\KunenaUser)
 			{
 				$list[] = (int) $user->userid;
 			}
@@ -347,7 +347,7 @@ class Finder extends KunenaDatabaseObjectFinder
 	{
 		$results = parent::find();
 
-		return KunenaForumTopicHelper::getTopics($results, $access);
+		return \Joomla\Component\Kunena\Libraries\Forum\Topic\Helper::getTopics($results, $access);
 	}
 
 	/**

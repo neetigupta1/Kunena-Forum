@@ -22,7 +22,7 @@ use Joomla\CMS\Language\Text;
 <div id="kunena" class="container-fluid">
 	<div class="row">
 		<div id="j-main-container" class="col-md-12" role="main">
-			<form action="<?php echo KunenaRoute::_('administrator/index.php?option=com_kunena') ?>" method="post"
+			<form action="<?php echo \Joomla\Component\Kunena\Libraries\Route\KunenaRoute::_('administrator/index.php?option=com_kunena') ?>" method="post"
 			      id="adminForm" name="adminForm">
 				<input type="hidden" name="view" value="users"/>
 				<input type="hidden" name="task" value=""/>

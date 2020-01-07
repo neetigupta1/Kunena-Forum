@@ -71,11 +71,11 @@ abstract class Parser
 		}
 		catch (ExecutionFailureException $e)
 		{
-			KunenaError::displayDatabaseError($e);
+			\Joomla\Component\Kunena\Libraries\Error::displayDatabaseError($e);
 		}
 
 		$smileyArray = [];
-		$template    = KunenaFactory::getTemplate();
+		$template    = \Joomla\Component\Kunena\Libraries\KunenaFactory::getTemplate();
 
 		foreach ($smilies as $smiley)
 		{
@@ -91,7 +91,7 @@ abstract class Parser
 			}
 			else
 			{
-				$smileyProperties = KunenaImage::getImageFileProperties($template->getSmileyPath($smiley->file));
+				$smileyProperties = \Joomla\Component\Kunena\Libraries\Image\KunenaImage::getImageFileProperties($template->getSmileyPath($smiley->file));
 				$emoticon         = new stdClass;
 				$emoticon->path   = $template->getSmileyPath($smiley->file);
 				$emoticon->width  = $smileyProperties->width;
@@ -167,7 +167,7 @@ abstract class Parser
 	 */
 	public static function &prepareContent(&$content, $target = 'body')
 	{
-		$config       = KunenaFactory::getConfig()->getPlugin('plg_system_kunena');
+		$config       = \Joomla\Component\Kunena\Libraries\KunenaFactory::getConfig()->getPlugin('plg_system_kunena');
 		$events       = (int) $config->get('jcontentevents', false);
 		$event_target = (array) $config->get('jcontentevent_target', []);
 
@@ -216,7 +216,7 @@ abstract class Parser
 			return false;
 		}
 
-		KUNENA_PROFILER ? KunenaProfiler::instance()->start('function ' . __CLASS__ . '::' . __FUNCTION__ . '()') : null;
+		KUNENA_PROFILER ? \Joomla\Component\Kunena\Libraries\KunenaProfiler::instance()->start('function ' . __CLASS__ . '::' . __FUNCTION__ . '()') : null;
 
 		$bbcode         = KunenaBbcode::getInstance(self::$relative);
 		$bbcode->parent = $parent;
@@ -226,7 +226,7 @@ abstract class Parser
 		$txt = $bbcode->Parse($txt);
 		$txt = self::prepareContent($txt, $target);
 
-		KUNENA_PROFILER ? KunenaProfiler::instance()->stop('function ' . __CLASS__ . '::' . __FUNCTION__ . '()') : null;
+		KUNENA_PROFILER ? \Joomla\Component\Kunena\Libraries\KunenaProfiler::instance()->stop('function ' . __CLASS__ . '::' . __FUNCTION__ . '()') : null;
 
 		return $txt;
 	}

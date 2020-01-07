@@ -93,7 +93,7 @@ class Access
 	 */
 	public function __construct()
 	{
-		KUNENA_PROFILER ? KunenaProfiler::instance()->start('function ' . __CLASS__ . '::' . __FUNCTION__ . '()') : null;
+		KUNENA_PROFILER ? \Joomla\Component\Kunena\Libraries\KunenaProfiler::instance()->start('function ' . __CLASS__ . '::' . __FUNCTION__ . '()') : null;
 		PluginHelper::importPlugin('kunena');
 
 		$classes = Factory::getApplication()->triggerEvent('onKunenaGetAccessControl');
@@ -137,7 +137,7 @@ class Access
 			$this->clearCache();
 		}
 
-		KUNENA_PROFILER ? KunenaProfiler::instance()->stop('function ' . __CLASS__ . '::' . __FUNCTION__ . '()') : null;
+		KUNENA_PROFILER ? \Joomla\Component\Kunena\Libraries\KunenaProfiler::instance()->stop('function ' . __CLASS__ . '::' . __FUNCTION__ . '()') : null;
 	}
 
 	/**
@@ -155,7 +155,7 @@ class Access
 		$this->moderatorsByUserid = [];
 
 		// Reset read access for the current session
-		$me = KunenaUserHelper::getMyself();
+		$me = \Joomla\Component\Kunena\Libraries\User\Helper::getMyself();
 		Factory::getApplication()->setUserState("com_kunena.user{$me->userid}_read", null);
 
 		// @var KunenaAccess $access
@@ -182,7 +182,7 @@ class Access
 		}
 		catch (ExecutionFailureException $e)
 		{
-			KunenaError::displayDatabaseError($e);
+			\Joomla\Component\Kunena\Libraries\Error::displayDatabaseError($e);
 		}
 
 		// FIXME: enable caching after fixing the issues
@@ -227,12 +227,12 @@ class Access
 				continue;
 			}
 
-			if ($item->role == KunenaForum::ADMINISTRATOR)
+			if ($item->role == \Joomla\Component\Kunena\Libraries\Forum\Forum::ADMINISTRATOR)
 			{
 				$this->adminsByUserid [$userid] [$catid] = 1;
 				$this->adminsByCatid [$catid] [$userid]  = 1;
 			}
-			elseif ($item->role == KunenaForum::MODERATOR)
+			elseif ($item->role == \Joomla\Component\Kunena\Libraries\Forum\Forum::MODERATOR)
 			{
 				$this->moderatorsByUserid [$userid] [$catid] = 1;
 				$this->moderatorsByCatid [$catid] [$userid]  = 1;
@@ -249,20 +249,20 @@ class Access
 	 */
 	public static function getInstance()
 	{
-		KUNENA_PROFILER ? KunenaProfiler::instance()->start('function ' . __CLASS__ . '::' . __FUNCTION__ . '()') : null;
+		KUNENA_PROFILER ? \Joomla\Component\Kunena\Libraries\KunenaProfiler::instance()->start('function ' . __CLASS__ . '::' . __FUNCTION__ . '()') : null;
 
 		if (!self::$instance)
 		{
 			self::$instance = new KunenaAccess;
 		}
 
-		KUNENA_PROFILER ? KunenaProfiler::instance()->stop('function ' . __CLASS__ . '::' . __FUNCTION__ . '()') : null;
+		KUNENA_PROFILER ? \Joomla\Component\Kunena\Libraries\KunenaProfiler::instance()->stop('function ' . __CLASS__ . '::' . __FUNCTION__ . '()') : null;
 
 		return self::$instance;
 	}
 
 	/**
-	 * @param   KunenaForumCategory  $category  category
+	 * @param  \Joomla\Component\Kunena\Libraries\Forum\Category\Category  $category  category
 	 *
 	 * @return  array
 	 *
@@ -298,7 +298,7 @@ class Access
 	}
 
 	/**
-	 * @param   KunenaForumCategory  $category  category
+	 * @param  \Joomla\Component\Kunena\Libraries\Forum\Category\Category  $category  category
 	 *
 	 * @return  string
 	 *
@@ -375,7 +375,7 @@ jQuery(document).ready(function ($) {
 	/**
 	 * Get access groups for the selected category.
 	 *
-	 * @param   KunenaForumCategory  $category  Category
+	 * @param  \Joomla\Component\Kunena\Libraries\Forum\Category\Category  $category  Category
 	 *
 	 * @return  array|null
 	 *
@@ -458,9 +458,9 @@ jQuery(document).ready(function ($) {
 	 */
 	public function getAdminStatus($user = null)
 	{
-		if (!($user instanceof KunenaUser))
+		if (!($user instanceof \Joomla\Component\Kunena\Libraries\User\KunenaUser))
 		{
-			$user = KunenaFactory::getUser($user);
+			$user = \Joomla\Component\Kunena\Libraries\KunenaFactory::getUser($user);
 		}
 
 		return !empty($this->adminsByUserid[$user->userid]) ? $this->adminsByUserid[$user->userid] : [];
@@ -492,9 +492,9 @@ jQuery(document).ready(function ($) {
 		$status      = intval($status);
 
 		// Check if user exists
-		if (!($user instanceof KunenaUser))
+		if (!($user instanceof \Joomla\Component\Kunena\Libraries\User\KunenaUser))
 		{
-			$user = KunenaUserHelper::get($user);
+			$user = \Joomla\Component\Kunena\Libraries\User\Helper::get($user);
 		}
 
 		if (!$user->exists())
@@ -543,9 +543,9 @@ jQuery(document).ready(function ($) {
 	 */
 	public function getModeratorStatus($user = null)
 	{
-		if (!($user instanceof KunenaUser))
+		if (!($user instanceof \Joomla\Component\Kunena\Libraries\User\KunenaUser))
 		{
-			$user = KunenaFactory::getUser($user);
+			$user = \Joomla\Component\Kunena\Libraries\KunenaFactory::getUser($user);
 		}
 
 		return !empty($this->moderatorsByUserid[$user->userid]) ? $this->moderatorsByUserid[$user->userid] : [];
@@ -564,11 +564,11 @@ jQuery(document).ready(function ($) {
 	{
 		static $read = [];
 
-		KUNENA_PROFILER ? KunenaProfiler::instance()->start('function ' . __CLASS__ . '::' . __FUNCTION__ . '()') : null;
+		KUNENA_PROFILER ? \Joomla\Component\Kunena\Libraries\KunenaProfiler::instance()->start('function ' . __CLASS__ . '::' . __FUNCTION__ . '()') : null;
 
-		if (!($user instanceof KunenaUser))
+		if (!($user instanceof \Joomla\Component\Kunena\Libraries\User\KunenaUser))
 		{
-			$user = KunenaFactory::getUser($user);
+			$user = \Joomla\Component\Kunena\Libraries\KunenaFactory::getUser($user);
 		}
 
 		if (!isset($read[$user->userid]))
@@ -582,7 +582,7 @@ jQuery(document).ready(function ($) {
 			if ($read[$id] === null)
 			{
 				$list       = [];
-				$categories = KunenaForumCategoryHelper::getCategories(false, false, 'none');
+				$categories = \Joomla\Component\Kunena\Libraries\Forum\Category\Helper::getCategories(false, false, 'none');
 
 				foreach ($categories as $category)
 				{
@@ -623,7 +623,7 @@ jQuery(document).ready(function ($) {
 			}
 		}
 
-		KUNENA_PROFILER ? KunenaProfiler::instance()->stop('function ' . __CLASS__ . '::' . __FUNCTION__ . '()') : null;
+		KUNENA_PROFILER ? \Joomla\Component\Kunena\Libraries\KunenaProfiler::instance()->stop('function ' . __CLASS__ . '::' . __FUNCTION__ . '()') : null;
 
 		return $read[$user->userid];
 	}
@@ -640,9 +640,9 @@ jQuery(document).ready(function ($) {
 	 */
 	public function isModerator($user = null, $catid = 0)
 	{
-		if (!($user instanceof KunenaUser))
+		if (!($user instanceof \Joomla\Component\Kunena\Libraries\User\KunenaUser))
 		{
-			$user = KunenaUserHelper::get($user);
+			$user = \Joomla\Component\Kunena\Libraries\User\Helper::get($user);
 		}
 
 		// Guests and banned users cannot be moderators
@@ -687,9 +687,9 @@ jQuery(document).ready(function ($) {
 	 */
 	public function isAdmin($user = null, $catid = 0)
 	{
-		if (!($user instanceof KunenaUser))
+		if (!($user instanceof \Joomla\Component\Kunena\Libraries\User\KunenaUser))
 		{
-			$user = KunenaFactory::getUser($user);
+			$user = \Joomla\Component\Kunena\Libraries\KunenaFactory::getUser($user);
 		}
 
 		// Guests and banned users cannot be administrators
@@ -699,7 +699,7 @@ jQuery(document).ready(function ($) {
 		}
 
 		// In backend every logged in user has global admin rights (for now)
-		if (Factory::getApplication()->isClient('administrator') && $user->userid == KunenaUserHelper::getMyself()->userid)
+		if (Factory::getApplication()->isClient('administrator') && $user->userid == \Joomla\Component\Kunena\Libraries\User\Helper::getMyself()->userid)
 		{
 			return true;
 		}
@@ -724,7 +724,7 @@ jQuery(document).ready(function ($) {
 	 *
 	 * Function returns a list of authorised actions. Missing actions are threaded as inherit.
 	 *
-	 * @param   KunenaForumCategory  $category  category
+	 * @param  \Joomla\Component\Kunena\Libraries\Forum\Category\Category  $category  category
 	 * @param   int                  $userid    user id
 	 *
 	 * @return  array
@@ -777,12 +777,12 @@ jQuery(document).ready(function ($) {
 		 * Hold = 2: deleted
 		 */
 
-		if (!($user instanceof KunenaUser))
+		if (!($user instanceof \Joomla\Component\Kunena\Libraries\User\KunenaUser))
 		{
-			$user = KunenaFactory::getUser($user);
+			$user = \Joomla\Component\Kunena\Libraries\KunenaFactory::getUser($user);
 		}
 
-		$config = KunenaFactory::getConfig();
+		$config = \Joomla\Component\Kunena\Libraries\KunenaFactory::getConfig();
 
 		$hold [0] = 0;
 
@@ -823,7 +823,7 @@ jQuery(document).ready(function ($) {
 	 */
 	public function getSubscribers($catid, $topic, $type = false, $moderators = false, $admins = false, $excludeList = null)
 	{
-		$topic    = KunenaForumTopicHelper::get($topic);
+		$topic    = \Joomla\Component\Kunena\Libraries\Forum\Topic\Helper::get($topic);
 		$category = $topic->getCategory();
 
 		if (!$topic->exists())
@@ -987,7 +987,7 @@ jQuery(document).ready(function ($) {
 			}
 			catch (ExecutionFailureException $e)
 			{
-				KunenaError::displayDatabaseError($e);
+				\Joomla\Component\Kunena\Libraries\Error::displayDatabaseError($e);
 			}
 		}
 
@@ -1054,7 +1054,7 @@ jQuery(document).ready(function ($) {
 		}
 		catch (ExecutionFailureException $e)
 		{
-			KunenaError::displayDatabaseError($e);
+			\Joomla\Component\Kunena\Libraries\Error::displayDatabaseError($e);
 		}
 
 		return $userids;

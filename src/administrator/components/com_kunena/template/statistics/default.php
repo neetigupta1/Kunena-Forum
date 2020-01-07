@@ -49,7 +49,7 @@ $filterItem = $this->escape($this->state->get('item.id'));
 					<?php echo Text::_('COM_KUNENA_MENU_STATISTICS') ?>
 				</div>
 				<hr class="hr-condensed">
-				<form action="<?php echo KunenaRoute::_('administrator/index.php?option=com_kunena&view=statistics'); ?>"
+				<form action="<?php echo \Joomla\Component\Kunena\Libraries\Route\KunenaRoute::_('administrator/index.php?option=com_kunena&view=statistics'); ?>"
 				      method="post" name="adminForm"
 				      id="adminForm">
 					<input type="hidden" name="task" value=""/>
@@ -141,7 +141,7 @@ $filterItem = $this->escape($this->state->get('item.id'));
 							:
 							foreach ($this->items as $item)
 								:
-								$user = KunenaUserHelper::get($item->user_id);
+								$user = \Joomla\Component\Kunena\Libraries\User\Helper::get($item->user_id);
 								?>
 								<tr>
 									<td>

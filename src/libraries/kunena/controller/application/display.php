@@ -85,14 +85,14 @@ class Display extends KunenaControllerDisplay
 	 */
 	public function execute()
 	{
-		KUNENA_PROFILER ? KunenaProfiler::instance()->start('function ' . get_class($this) . '::' . __FUNCTION__ . '()') : null;
+		KUNENA_PROFILER ? \Joomla\Component\Kunena\Libraries\KunenaProfiler::instance()->start('function ' . get_class($this) . '::' . __FUNCTION__ . '()') : null;
 
 		// Run before executing action.
 		$result = $this->before();
 
 		if ($result === false)
 		{
-			KUNENA_PROFILER ? KunenaProfiler::instance()->stop('function ' . get_class($this) . '::' . __FUNCTION__ . '()') : null;
+			KUNENA_PROFILER ? \Joomla\Component\Kunena\Libraries\KunenaProfiler::instance()->stop('function ' . get_class($this) . '::' . __FUNCTION__ . '()') : null;
 			throw new KunenaExceptionAuthorise(Text::_('COM_KUNENA_NO_ACCESS'), 404);
 		}
 
@@ -132,10 +132,10 @@ class Display extends KunenaControllerDisplay
 			}
 			catch (KunenaExceptionAuthorise $e)
 			{
-				$banned = KunenaUserHelper::getMyself()->isBanned();
+				$banned = \Joomla\Component\Kunena\Libraries\User\Helper::getMyself()->isBanned();
 				$userid = $this->input->getInt('userid');
 
-				if (Factory::getApplication()->getIdentity()->guest && KunenaUserHelper::get($userid)->exists())
+				if (Factory::getApplication()->getIdentity()->guest && \Joomla\Component\Kunena\Libraries\User\Helper::get($userid)->exists())
 				{
 					$this->setResponseStatus($e->getResponseCode());
 					$this->output->setLayout('login');
@@ -149,7 +149,7 @@ class Display extends KunenaControllerDisplay
 					$this->output->setLayout('unauthorized');
 					$this->document->setTitle($e->getResponseStatus());
 
-					$bannedtime = KunenaUserBan::getInstanceByUserid(KunenaUserHelper::getMyself()->userid, true);
+					$bannedtime = KunenaUserBan::getInstanceByUserid(\Joomla\Component\Kunena\Libraries\User\Helper::getMyself()->userid, true);
 
 					$this->content = KunenaLayout::factory('Widget/Custom')
 						->set('header', Text::_('COM_KUNENA_POST_ERROR_USER_BANNED_NOACCESS'))
@@ -159,7 +159,7 @@ class Display extends KunenaControllerDisplay
 						);
 					$this->document->setMetaData('robots', 'noindex, follow');
 				}
-				elseif (!KunenaUserHelper::get($userid)->exists())
+				elseif (!\Joomla\Component\Kunena\Libraries\User\Helper::get($userid)->exists())
 				{
 					$layout = $this->input->getCmd('layout');
 
@@ -222,7 +222,7 @@ class Display extends KunenaControllerDisplay
 		// Run after executing action.
 		$this->after();
 
-		KUNENA_PROFILER ? KunenaProfiler::instance()->stop('function ' . get_class($this) . '::' . __FUNCTION__ . '()') : null;
+		KUNENA_PROFILER ? \Joomla\Component\Kunena\Libraries\KunenaProfiler::instance()->stop('function ' . get_class($this) . '::' . __FUNCTION__ . '()') : null;
 
 		return $this->output;
 	}
@@ -237,24 +237,24 @@ class Display extends KunenaControllerDisplay
 	 */
 	protected function before()
 	{
-		KUNENA_PROFILER ? KunenaProfiler::instance()->start('function ' . get_class($this) . '::' . __FUNCTION__ . '()') : null;
+		KUNENA_PROFILER ? \Joomla\Component\Kunena\Libraries\KunenaProfiler::instance()->start('function ' . get_class($this) . '::' . __FUNCTION__ . '()') : null;
 
 		if (!$this->exists())
 		{
-			KUNENA_PROFILER ? KunenaProfiler::instance()->stop('function ' . get_class($this) . '::' . __FUNCTION__ . '()') : null;
+			KUNENA_PROFILER ? \Joomla\Component\Kunena\Libraries\KunenaProfiler::instance()->stop('function ' . get_class($this) . '::' . __FUNCTION__ . '()') : null;
 			throw new RuntimeException("Layout '{$this->input->getWord('view')}/{$this->input->getWord('layout', 'default')}' does not exist!", 404);
 		}
 
 		// Load language files.
-		KunenaFactory::loadLanguage('com_kunena.sys', 'admin');
-		KunenaFactory::loadLanguage('com_kunena.templates');
-		KunenaFactory::loadLanguage('com_kunena.models');
-		KunenaFactory::loadLanguage('com_kunena.views');
+		\Joomla\Component\Kunena\Libraries\KunenaFactory::loadLanguage('com_kunena.sys', 'admin');
+		\Joomla\Component\Kunena\Libraries\KunenaFactory::loadLanguage('com_kunena.templates');
+		\Joomla\Component\Kunena\Libraries\KunenaFactory::loadLanguage('com_kunena.models');
+		\Joomla\Component\Kunena\Libraries\KunenaFactory::loadLanguage('com_kunena.views');
 
-		$this->me       = KunenaUserHelper::getMyself();
+		$this->me       = \Joomla\Component\Kunena\Libraries\User\Helper::getMyself();
 		$this->config   = Config::getInstance();
 		$this->document = Factory::getApplication()->getDocument();
-		$this->template = KunenaFactory::getTemplate();
+		$this->template = \Joomla\Component\Kunena\Libraries\KunenaFactory::getTemplate();
 		$this->template->initialize();
 
 		if ($this->me->isAdmin())
@@ -303,14 +303,14 @@ class Display extends KunenaControllerDisplay
 
 		if (!$limitstart)
 		{
-			$uri = trim(strtok(KunenaRoute::_(), '?'));
+			$uri = trim(strtok(\Joomla\Component\Kunena\Libraries\Route\KunenaRoute::_(), '?'));
 			$this->document->addHeadLink($uri, 'canonical', 'rel');
 		}
 
 		// Initialize breadcrumb.
 		$this->breadcrumb = $this->app->getPathway();
 
-		KUNENA_PROFILER ? KunenaProfiler::instance()->stop('function ' . get_class($this) . '::' . __FUNCTION__ . '()') : null;
+		KUNENA_PROFILER ? \Joomla\Component\Kunena\Libraries\KunenaProfiler::instance()->stop('function ' . get_class($this) . '::' . __FUNCTION__ . '()') : null;
 	}
 
 	/**
@@ -397,7 +397,7 @@ class Display extends KunenaControllerDisplay
 	 */
 	protected function after()
 	{
-		KUNENA_PROFILER ? KunenaProfiler::instance()->start('function ' . get_class($this) . '::' . __FUNCTION__ . '()') : null;
+		KUNENA_PROFILER ? \Joomla\Component\Kunena\Libraries\KunenaProfiler::instance()->start('function ' . get_class($this) . '::' . __FUNCTION__ . '()') : null;
 
 		// Use our own browser side cache settings.
 		Factory::getApplication()->allowCache(false);
@@ -411,7 +411,7 @@ class Display extends KunenaControllerDisplay
 			$this->output->appendAfter($this->poweredBy());
 		}
 
-		KUNENA_PROFILER ? KunenaProfiler::instance()->stop('function ' . get_class($this) . '::' . __FUNCTION__ . '()') : null;
+		KUNENA_PROFILER ? \Joomla\Component\Kunena\Libraries\KunenaProfiler::instance()->stop('function ' . get_class($this) . '::' . __FUNCTION__ . '()') : null;
 	}
 
 	/**
@@ -455,7 +455,7 @@ class Display extends KunenaControllerDisplay
 		#kunena + div { display: block !important;}
 EOF;
 
-			KunenaTemplate::getInstance()->addStyleDeclaration($styles);
+			\Joomla\Component\Kunena\Libraries\Template\Template::getInstance()->addStyleDeclaration($styles);
 		}
 
 		return $credits;

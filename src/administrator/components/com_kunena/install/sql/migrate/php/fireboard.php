@@ -62,7 +62,7 @@ class KunenaMigratorFireboard
 	public function detect()
 	{
 		// Check if FireBoard can be found from the Joomla installation.
-		if (KunenaInstaller::detectTable('fb_version'))
+		if (\Joomla\Component\Kunena\Libraries\Installer::detectTable('fb_version'))
 		{
 			// Get installed version.
 			$db = Factory::getDBO();
@@ -84,7 +84,7 @@ class KunenaMigratorFireboard
 
 		foreach ($this->versions as $version)
 		{
-			if (KunenaInstaller::getTableColumn($version['table'], $version['column']))
+			if (\Joomla\Component\Kunena\Libraries\Installer::getTableColumn($version['table'], $version['column']))
 			{
 				return $version->version;
 			}

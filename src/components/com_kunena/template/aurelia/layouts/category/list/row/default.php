@@ -21,7 +21,7 @@ use function defined;
  * @var KunenaForumTopic $topic
  */
 $topic  = $this->category->getLastTopic();
-$avatar = $this->config->avataroncat ? $topic->getAuthor()->getAvatarImage(KunenaFactory::getTemplate()->params->get('avatarType'), 'thumb') : null;
+$avatar = $this->config->avataroncat ? $topic->getAuthor()->getAvatarImage(\Joomla\Component\Kunena\Libraries\KunenaFactory::getTemplate()->params->get('avatarType'), 'thumb') : null;
 ?>
 
 <tr>

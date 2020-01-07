@@ -18,7 +18,7 @@ use Joomla\CMS\Language\Text;
 use function defined;
 
 $config          = Config::getInstance();
-$this->ktemplate = KunenaFactory::getTemplate();
+$this->ktemplate = \Joomla\Component\Kunena\Libraries\KunenaFactory::getTemplate();
 $fullactions     = $this->ktemplate->params->get('fullactions');
 $quick           = $this->ktemplate->params->get('quick');
 ?>

@@ -89,7 +89,7 @@ abstract class Helper
 	{
 		$uri = self::getUri($layout);
 
-		return KunenaRoute::_($uri, $xhtml);
+		return \Joomla\Component\Kunena\Libraries\Route\KunenaRoute::_($uri, $xhtml);
 	}
 
 	/**
@@ -158,7 +158,7 @@ abstract class Helper
 		}
 		catch (ExecutionFailureException $e)
 		{
-			KunenaError::displayDatabaseError($e);
+			\Joomla\Component\Kunena\Libraries\Error::displayDatabaseError($e);
 		}
 
 		self::$_instances = [];
@@ -225,7 +225,7 @@ abstract class Helper
 		}
 		catch (ExecutionFailureException $e)
 		{
-			KunenaError::displayDatabaseError($e);
+			\Joomla\Component\Kunena\Libraries\Error::displayDatabaseError($e);
 		}
 
 		return $total;

@@ -10,19 +10,22 @@
  * See COPYRIGHT.php for copyright notices and details.
  */
 
-namespace Joomla\Component\Kunena;
+namespace Joomla\Component\Kunena\Plugin\Kunena\Easysocial;
 
 defined('_JEXEC') or die('Unauthorized Access');
 
 use Exception;
+use Joomla\Component\Kunena\Libraries\Integration\Avatar;
+use Joomla\Component\Kunena\Libraries\KunenaFactory;
+use Joomla\Component\Kunena\Libraries\KunenaProfiler;
 use function defined;
 
 /**
- * Class KunenaAvatarEasySocial
+ * Class \Joomla\Component\Kunena\Libraries\Integration\AvatarEasySocial
  *
  * @since   Kunena 6.0
  */
-class KunenaAvatarEasySocial extends KunenaAvatar
+class AvatarEasySocial extends Avatar
 {
 	/**
 	 * @var     null
@@ -31,7 +34,7 @@ class KunenaAvatarEasySocial extends KunenaAvatar
 	protected $params = null;
 
 	/**
-	 * KunenaAvatarEasySocial constructor.
+	 * \Joomla\Component\Kunena\Libraries\Integration\AvatarEasySocial constructor.
 	 *
 	 * @param   object  $params params
 	 *

@@ -98,7 +98,7 @@ class Thankyou extends CMSObject
 	 */
 	public function save($user)
 	{
-		$user    = KunenaFactory::getUser($user);
+		$user    = \Joomla\Component\Kunena\Libraries\KunenaFactory::getUser($user);
 		$message = KunenaForumMessageHelper::get($this->id);
 
 		if (!$user->exists())
@@ -134,7 +134,7 @@ class Thankyou extends CMSObject
 		}
 		catch (ExecutionFailureException $e)
 		{
-			KunenaError::displayDatabaseError($e);
+			\Joomla\Component\Kunena\Libraries\Error::displayDatabaseError($e);
 
 			return false;
 		}
@@ -182,7 +182,7 @@ class Thankyou extends CMSObject
 		}
 		catch (ExecutionFailureException $e)
 		{
-			KunenaError::displayDatabaseError($e);
+			\Joomla\Component\Kunena\Libraries\Error::displayDatabaseError($e);
 
 			return false;
 		}
@@ -215,7 +215,7 @@ class Thankyou extends CMSObject
 	 */
 	public function delete($user)
 	{
-		$user    = KunenaFactory::getUser($user);
+		$user    = \Joomla\Component\Kunena\Libraries\KunenaFactory::getUser($user);
 		$message = KunenaForumMessageHelper::get($this->id);
 
 		if (!$user->exists())
@@ -248,7 +248,7 @@ class Thankyou extends CMSObject
 		}
 		catch (ExecutionFailureException $e)
 		{
-			KunenaError::displayDatabaseError($e);
+			\Joomla\Component\Kunena\Libraries\Error::displayDatabaseError($e);
 
 			return false;
 		}

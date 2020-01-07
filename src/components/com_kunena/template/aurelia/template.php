@@ -88,7 +88,7 @@ class KunenaTemplateAurelia extends KunenaTemplate
 	public function loadLanguage()
 	{
 		$lang = Factory::getLanguage();
-		KunenaFactory::loadLanguage('kunena_tmpl_aurelia');
+		\Joomla\Component\Kunena\Libraries\KunenaFactory::loadLanguage('kunena_tmpl_aurelia');
 
 		foreach (array_reverse($this->default) as $template)
 		{
@@ -118,7 +118,7 @@ class KunenaTemplateAurelia extends KunenaTemplate
 		$this->compileLess('assets/less/aurelia.less', 'kunena.css');
 		$this->addStyleSheet('kunena.css');
 
-		$this->ktemplate = KunenaFactory::getTemplate();
+		$this->ktemplate = \Joomla\Component\Kunena\Libraries\KunenaFactory::getTemplate();
 		$storage         = $this->ktemplate->params->get('storage');
 
 		if ($storage)

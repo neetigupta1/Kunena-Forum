@@ -59,7 +59,7 @@ abstract class Helper
 		}
 
 		$topic = intval($topic);
-		$user  = KunenaUserHelper::get($user);
+		$user  = \Joomla\Component\Kunena\Libraries\User\Helper::get($user);
 
 		if ($topic < 1)
 		{
@@ -87,7 +87,7 @@ abstract class Helper
 	 */
 	public static function getTopics($ids = false, $user = null)
 	{
-		$user = KunenaUserHelper::get($user);
+		$user = \Joomla\Component\Kunena\Libraries\User\Helper::get($user);
 
 		if ($ids === false)
 		{
@@ -165,7 +165,7 @@ abstract class Helper
 		}
 		catch (ExecutionFailureException $e)
 		{
-			KunenaError::displayDatabaseError($e);
+			\Joomla\Component\Kunena\Libraries\Error::displayDatabaseError($e);
 		}
 
 		foreach ($ids as $id)
@@ -239,7 +239,7 @@ abstract class Helper
 		}
 		catch (ExecutionFailureException $e)
 		{
-			KunenaError::displayDatabaseError($e);
+			\Joomla\Component\Kunena\Libraries\Error::displayDatabaseError($e);
 		}
 
 		$list = [];
@@ -282,7 +282,7 @@ abstract class Helper
 		}
 		catch (ExecutionFailureException $e)
 		{
-			KunenaError::displayDatabaseError($e);
+			\Joomla\Component\Kunena\Libraries\Error::displayDatabaseError($e);
 
 			return false;
 		}
@@ -350,7 +350,7 @@ abstract class Helper
 			}
 			catch (ExecutionFailureException $e)
 			{
-				KunenaError::displayDatabaseError($e);
+				\Joomla\Component\Kunena\Libraries\Error::displayDatabaseError($e);
 
 				return false;
 			}
@@ -394,7 +394,7 @@ abstract class Helper
 		}
 		catch (ExecutionFailureException $e)
 		{
-			KunenaError::displayDatabaseError($e);
+			\Joomla\Component\Kunena\Libraries\Error::displayDatabaseError($e);
 		}
 
 		// TODO: Is there a bug?
@@ -490,7 +490,7 @@ abstract class Helper
 		}
 		catch (ExecutionFailureException $e)
 		{
-			KunenaError::displayDatabaseError($e);
+			\Joomla\Component\Kunena\Libraries\Error::displayDatabaseError($e);
 
 			return false;
 		}
@@ -512,7 +512,7 @@ abstract class Helper
 		}
 		catch (ExecutionFailureException $e)
 		{
-			KunenaError::displayDatabaseError($e);
+			\Joomla\Component\Kunena\Libraries\Error::displayDatabaseError($e);
 
 			return false;
 		}
@@ -538,7 +538,7 @@ abstract class Helper
 		}
 		catch (ExecutionFailureException $e)
 		{
-			KunenaError::displayDatabaseError($e);
+			\Joomla\Component\Kunena\Libraries\Error::displayDatabaseError($e);
 
 			return false;
 		}

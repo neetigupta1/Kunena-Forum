@@ -45,7 +45,7 @@ HTMLHelper::_('dropdown.init');
 					<?php echo Text::_('COM_KUNENA_CPANEL_LABEL_TRASH') ?>
 				</div>
 				<hr class="hr-condensed">
-				<form action="<?php echo KunenaRoute::_('administrator/index.php?option=com_kunena&view=trash') ?>"
+				<form action="<?php echo \Joomla\Component\Kunena\Libraries\Route\KunenaRoute::_('administrator/index.php?option=com_kunena&view=trash') ?>"
 				      method="post" id="adminForm"
 				      name="adminForm">
 					<input type="hidden" name="type" value="<?php echo $this->escape($this->state->get('layout')) ?>"/>
@@ -189,7 +189,7 @@ HTMLHelper::_('dropdown.init');
 							</tfoot>
 							<?php
 							$i      = 0;
-							$itemid = KunenaRoute::fixMissingItemID();
+							$itemid = \Joomla\Component\Kunena\Libraries\Route\KunenaRoute::fixMissingItemID();
 
 							if ($this->pagination->total > 0)
 								:
@@ -200,7 +200,7 @@ HTMLHelper::_('dropdown.init');
 										<td><?php echo HTMLHelper::_('grid.id', $i++, intval($row->id)) ?></td>
 										<td><?php echo intval($row->id); ?></td>
 										<td>
-											<a href="<?php echo KunenaRoute::_('index.php?option=com_kunena&view=topic&catid=' . $row->getTopic()->category_id . '&id=' . $row->getTopic()->id . '&Itemid=' . $itemid); ?>"
+											<a href="<?php echo \Joomla\Component\Kunena\Libraries\Route\KunenaRoute::_('index.php?option=com_kunena&view=topic&catid=' . $row->getTopic()->category_id . '&id=' . $row->getTopic()->id . '&Itemid=' . $itemid); ?>"
 											   target="_blank"><?php echo $this->escape($row->subject); ?></a></td>
 										<td><?php echo $this->escape($row->getCategory()->name); ?></td>
 										<td><?php echo $this->escape($row->getAuthor()->getName()); ?></td>

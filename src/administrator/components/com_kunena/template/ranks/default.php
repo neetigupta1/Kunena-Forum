@@ -58,7 +58,7 @@ HTMLHelper::_('dropdown.init');
 
 						<div class="tab-content">
 							<div class="tab-pane active" id="tab1">
-								<form action="<?php echo KunenaRoute::_('administrator/index.php?option=com_kunena&view=ranks') ?>"
+								<form action="<?php echo \Joomla\Component\Kunena\Libraries\Route\KunenaRoute::_('administrator/index.php?option=com_kunena&view=ranks') ?>"
 								      method="post"
 								      id="adminForm" name="adminForm">
 									<input type="hidden" name="task" value=""/>
@@ -255,7 +255,7 @@ HTMLHelper::_('dropdown.init');
 							</div>
 
 							<div class="tab-pane" id="tab2">
-								<form action="<?php echo KunenaRoute::_('administrator/index.php?option=com_kunena') ?>"
+								<form action="<?php echo \Joomla\Component\Kunena\Libraries\Route\KunenaRoute::_('administrator/index.php?option=com_kunena') ?>"
 								      id="uploadForm" method="post"
 								      enctype="multipart/form-data">
 									<input type="hidden" name="view" value="ranks"/>

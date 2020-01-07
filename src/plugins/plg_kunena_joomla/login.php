@@ -10,7 +10,7 @@
  * @link            https://www.kunena.org
  **/
 
-namespace Joomla\Component\Kunena;
+namespace Joomla\Component\Kunena\Plugin\Kunena\Joomla;
 
 defined('_JEXEC') or die();
 
@@ -25,7 +25,7 @@ use Joomla\CMS\Plugin\PluginHelper;
  *
  * @since   Kunena 6.0
  */
-class KunenaLoginJoomla
+class Login
 {
 	/**
 	 * @var     null

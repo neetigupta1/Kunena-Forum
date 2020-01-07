@@ -10,12 +10,15 @@
  * @link            https://www.kunena.org
  **/
 
-namespace Joomla\Component\Kunena;
+namespace Joomla\Component\Kunena\Plugin\Kunena\Comprofiler;
 
 defined('_JEXEC') or die();
 
 use Exception;
 use Joomla\CMS\Factory;
+use Joomla\Component\Kunena\Libraries\Error;
+use Joomla\Component\Kunena\Libraries\Integration\Profile;
+use Joomla\Component\Kunena\Libraries\KunenaFactory;
 use RuntimeException;
 use function defined;
 
@@ -26,7 +29,7 @@ require_once dirname(__FILE__) . '/integration.php';
  *
  * @since   Kunena 6.0
  */
-class KunenaProfileComprofiler extends KunenaProfile
+class KunenaProfileComprofiler extends Profile
 {
 	/**
 	 * @var     null
@@ -192,7 +195,7 @@ class KunenaProfileComprofiler extends KunenaProfile
 		}
 		catch (RuntimeException $e)
 		{
-			KunenaError::displayDatabaseError($e);
+			Error::displayDatabaseError($e);
 		}
 
 		return $top;

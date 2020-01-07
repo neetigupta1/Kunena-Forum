@@ -20,7 +20,7 @@ use function defined;
 $content = $this->execute('Category/Manage');
 
 // Display breadcrumb path to the current category.
-$parents   = KunenaForumCategoryHelper::getParents($content->category->id);
+$parents   = \Joomla\Component\Kunena\Libraries\Forum\Category\Helper::getParents($content->category->id);
 $parents[] = $content->category;
 
 foreach ($parents as $parent)

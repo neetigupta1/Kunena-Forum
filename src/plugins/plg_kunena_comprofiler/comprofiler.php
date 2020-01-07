@@ -10,7 +10,7 @@
  * @link            https://www.kunena.org
  **/
 
-namespace Joomla\Component\Kunena;
+namespace Joomla\Component\Kunena\Plugin\Kunena\Comprofiler;
 
 defined('_JEXEC') or die();
 
@@ -19,6 +19,9 @@ use Joomla\CMS\Factory;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\Plugin\CMSPlugin;
 use Joomla\CMS\Plugin\PluginHelper;
+use Joomla\Component\Kunena\Libraries\Forum\Forum;
+use Joomla\Component\Kunena\Libraries\Integration\Avatar;
+use Joomla\Component\Kunena\Libraries\KunenaFactory;
 use function defined;
 
 /**
@@ -49,7 +52,7 @@ class plgKunenaComprofiler extends CMSPlugin
 		global $ueConfig;
 
 		// Do not load if Kunena version is not supported or Kunena is offline
-		if (!(class_exists('KunenaForum') && KunenaForum::isCompatible('4.0') && KunenaForum::installed()))
+		if (!(class_exists('KunenaForum') && Forum::isCompatible('4.0') && Forum::installed()))
 		{
 			return;
 		}
@@ -189,7 +192,7 @@ class plgKunenaComprofiler extends CMSPlugin
 	/**
 	 * Get Kunena avatar integration object.
 	 *
-	 * @return  KunenaAvatar|void
+	 * @return  Avatar|void
 	 *
 	 * @since   Kunena 6.0
 	 */
@@ -202,7 +205,7 @@ class plgKunenaComprofiler extends CMSPlugin
 
 		require_once __DIR__ . "/avatar.php";
 
-		return new KunenaAvatarComprofiler($this->params);
+		return new AvatarComprofiler($this->params);
 	}
 
 	/**

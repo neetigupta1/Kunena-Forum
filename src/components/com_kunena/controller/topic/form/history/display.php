@@ -50,9 +50,9 @@ class ComponentKunenaControllerTopicFormHistoryDisplay extends KunenaControllerD
 		parent::before();
 
 		$id       = $this->input->getInt('id');
-		$this->me = KunenaUserHelper::getMyself();
+		$this->me = \Joomla\Component\Kunena\Libraries\User\Helper::getMyself();
 
-		$this->topic    = KunenaForumTopicHelper::get($id);
+		$this->topic    = \Joomla\Component\Kunena\Libraries\Forum\Topic\Helper::get($id);
 		$this->category = $this->topic->getCategory();
 		$this->history  = KunenaForumMessageHelper::getMessagesByTopic(
 			$this->topic, 0, (int) $this->config->historylimit, 'DESC'
@@ -100,7 +100,7 @@ class ComponentKunenaControllerTopicFormHistoryDisplay extends KunenaControllerD
 
 		$this->history = $messages;
 
-		KunenaUserHelper::loadUsers($userlist);
+		\Joomla\Component\Kunena\Libraries\User\Helper::loadUsers($userlist);
 
 		// Run events
 		$params = new Registry;

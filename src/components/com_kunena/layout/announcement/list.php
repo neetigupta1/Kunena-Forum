@@ -41,7 +41,7 @@ class KunenaLayoutAnnouncementList extends KunenaLayout
 	{
 		$options = [];
 
-		if (KunenaUserHelper::getMyself()->isModerator())
+		if (\Joomla\Component\Kunena\Libraries\User\Helper::getMyself()->isModerator())
 		{
 			$options[] = HTMLHelper::_('select.option', 'none', Text::_('COM_KUNENA_BULK_CHOOSE_ACTION'));
 			$options[] = HTMLHelper::_('select.option', 'unpublish', Text::_('COM_KUNENA_UNPUBLISH'));

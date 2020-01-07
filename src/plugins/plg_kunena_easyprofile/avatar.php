@@ -10,7 +10,7 @@
  * @link            https://www.kunena.org
  **/
 
-namespace Joomla\Component\Kunena;
+namespace Joomla\Component\Kunena\Plugin\Kunena\Easyprofile;
 
 defined('_JEXEC') or die();
 
@@ -18,15 +18,17 @@ use Exception;
 use Joomla\CMS\Factory;
 use Joomla\CMS\Uri\Uri;
 use Joomla\CMS\Router\Route;
+use Joomla\Component\Kunena\Libraries\Integration\Avatar;
+use Joomla\Component\Kunena\Libraries\KunenaFactory;
 use Joomla\Registry\Registry;
 use function defined;
 
 /**
- * Class KunenaAvatarEasyprofile
+ * Class \Joomla\Component\Kunena\Libraries\Integration\AvatarEasyprofile
  *
  * @since   Kunena 6.0
  */
-class KunenaAvatarEasyprofile extends KunenaAvatar
+class AvatarEasyprofile extends Avatar
 {
 	/**
 	 * @var     null
@@ -35,7 +37,7 @@ class KunenaAvatarEasyprofile extends KunenaAvatar
 	protected $params = null;
 
 	/**
-	 * KunenaAvatarEasyprofile constructor.
+	 * \Joomla\Component\Kunena\Libraries\Integration\AvatarEasyprofile constructor.
 	 *
 	 * @param   object  $params params
 	 *

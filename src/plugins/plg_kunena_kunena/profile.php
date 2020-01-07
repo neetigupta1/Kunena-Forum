@@ -10,22 +10,28 @@
  * @link            https://www.kunena.org
  **/
 
-namespace Joomla\Component\Kunena;
+namespace Joomla\Component\Kunena\Plugin\Kunena\Kunena;
 
 defined('_JEXEC') or die();
 
 use Exception;
 use Joomla\CMS\Access\Access;
 use Joomla\CMS\Factory;
+use Joomla\Component\Kunena\Libraries\Error;
+use Joomla\Component\Kunena\Libraries\Integration\Profile;
+use Joomla\Component\Kunena\Libraries\KunenaFactory;
+use Joomla\Component\Kunena\Libraries\Route\KunenaRoute;
+use Joomla\Component\Kunena\Libraries\User\Helper;
+use Joomla\Component\Kunena\Libraries\User\KunenaUser;
 use RuntimeException;
 use function defined;
 
 /**
- * Class KunenaProfileKunena
+ * Class \Joomla\Component\Kunena\Libraries\Integration\Profile
  *
  * @since   Kunena 6.0
  */
-class KunenaProfileKunena extends KunenaProfile
+class KunenaProfile extends Profile
 {
 	/**
 	 * @var     null
@@ -101,7 +107,7 @@ class KunenaProfileKunena extends KunenaProfile
 		}
 		catch (RuntimeException $e)
 		{
-			KunenaError::displayDatabaseError($e);
+			Error::displayDatabaseError($e);
 		}
 
 		return $top;
@@ -159,7 +165,7 @@ class KunenaProfileKunena extends KunenaProfile
 
 		if (!($user instanceof KunenaUser))
 		{
-			$user = KunenaUserHelper::get($user);
+			$user = Helper::get($user);
 		}
 
 		if ($user === false)

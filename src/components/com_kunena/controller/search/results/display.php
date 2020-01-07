@@ -69,11 +69,11 @@ class ComponentKunenaControllerSearchResultsDisplay extends KunenaControllerDisp
 		$this->model->initialize($this->getOptions(), $this->getOptions()->get('embedded', false));
 		$this->state = $this->model->getState();
 
-		$this->me               = KunenaUserHelper::getMyself();
+		$this->me               = \Joomla\Component\Kunena\Libraries\User\Helper::getMyself();
 		$this->message_ordering = $this->me->getMessageOrdering();
 
 		$this->searchwords = $this->model->getSearchWords();
-		$this->isModerator = ($this->me->isAdmin() || KunenaAccess::getInstance()->getModeratorStatus());
+		$this->isModerator = ($this->me->isAdmin() || \Joomla\Component\Kunena\Libraries\Access::getInstance()->getModeratorStatus());
 
 		$this->results = [];
 		$this->total   = $this->model->getTotal();
@@ -90,7 +90,7 @@ class ComponentKunenaControllerSearchResultsDisplay extends KunenaControllerDisp
 				{
 					if ($value['relation'] == 'canonical')
 					{
-						$canonicalUrl               = KunenaRoute::_('index.php?option=com_kunena&view=search');
+						$canonicalUrl               = \Joomla\Component\Kunena\Libraries\Route\KunenaRoute::_('index.php?option=com_kunena&view=search');
 						$doc->_links[$canonicalUrl] = $value;
 						unset($doc->_links[$key]);
 						break;

@@ -57,7 +57,7 @@ class Read extends CMSObject
 	 */
 	public function __construct($topic = null, $user = null)
 	{
-		$topic = KunenaForumTopicHelper::get($topic);
+		$topic = \Joomla\Component\Kunena\Libraries\Forum\Topic\Helper::get($topic);
 
 		// Always fill empty data
 		$this->_db = Factory::getDBO();
@@ -70,7 +70,7 @@ class Read extends CMSObject
 		$this->_exists     = false;
 		$this->topic_id    = $topic->exists() ? $topic->id : null;
 		$this->category_id = $topic->exists() ? $topic->category_id : null;
-		$this->user_id     = KunenaUserHelper::get($user)->userid;
+		$this->user_id     = \Joomla\Component\Kunena\Libraries\User\Helper::get($user)->userid;
 	}
 
 	/**
@@ -177,7 +177,7 @@ class Read extends CMSObject
 			$user = $this->user_id;
 		}
 
-		$user = KunenaUserHelper::get($user);
+		$user = \Joomla\Component\Kunena\Libraries\User\Helper::get($user);
 
 		// Create the table object
 		$table = $this->getTable();

@@ -1046,7 +1046,7 @@ class KunenaModelInstall extends BaseDatabaseModel
 	{
 		$path = JPATH_ADMINISTRATOR . '/components/com_kunena/archive';
 
-		if (KunenaForum::isDev() || !is_file("{$path}/fileformat"))
+		if (\Joomla\Component\Kunena\Libraries\Forum\Forum::isDev() || !is_file("{$path}/fileformat"))
 		{
 			// Git install
 			$dir = JPATH_ADMINISTRATOR . '/components/com_kunena/media/kunena';
@@ -1095,7 +1095,7 @@ class KunenaModelInstall extends BaseDatabaseModel
 				}
 
 				// Copy new files into folder
-				$this->extract($path, $file['name'] . $ext, $dest, KunenaForum::isDev());
+				$this->extract($path, $file['name'] . $ext, $dest, \Joomla\Component\Kunena\Libraries\Forum\Forum::isDev());
 			}
 
 			$this->setTask($task + 1);
@@ -1248,7 +1248,7 @@ class KunenaModelInstall extends BaseDatabaseModel
 	 */
 	public function stepFinish()
 	{
-		KunenaForum::setup();
+		\Joomla\Component\Kunena\Libraries\Forum\Forum::setup();
 
 		$lang = Factory::getLanguage();
 		$lang->load('com_kunena', JPATH_SITE) || $lang->load('com_kunena', KUNENA_INSTALLER_SITEPATH);
@@ -1256,7 +1256,7 @@ class KunenaModelInstall extends BaseDatabaseModel
 		$this->createMenu();
 
 		// Fix broken category aliases (workaround for < 2.0-DEV12 bug)
-		KunenaForumCategoryHelper::fixAliases();
+		\Joomla\Component\Kunena\Libraries\Forum\Category\Helper::fixAliases();
 
 		// Clean cache, just in case
 		KunenaMenuHelper::cleanCache();
@@ -1265,7 +1265,7 @@ class KunenaModelInstall extends BaseDatabaseModel
 		$cache->clean('com_kunena');
 
 		// Delete installer file (only if not using GIT build).
-		if (!KunenaForum::isDev())
+		if (!\Joomla\Component\Kunena\Libraries\Forum\Forum::isDev())
 		{
 			File::delete(KPATH_ADMIN . '/install.php');
 		}
@@ -1456,7 +1456,7 @@ class KunenaModelInstall extends BaseDatabaseModel
 	 */
 	public function migrateConfig()
 	{
-		$config  = KunenaFactory::getConfig();
+		$config  = \Joomla\Component\Kunena\Libraries\KunenaFactory::getConfig();
 		$version = $this->getVersion();
 
 		// Migrate configuration from FB < 1.0.5
@@ -1556,7 +1556,7 @@ class KunenaModelInstall extends BaseDatabaseModel
 			if ($version['version'] == '@' . 'kunenaversion' . '@')
 			{
 				$git    = 1;
-				$vernum = KunenaForum::version();
+				$vernum = \Joomla\Component\Kunena\Libraries\Forum\Forum::version();
 			}
 
 			if (isset($git) || version_compare(strtolower($version['version']), strtolower($curversion->version), '>'))
@@ -2257,7 +2257,7 @@ class KunenaModelInstall extends BaseDatabaseModel
 			{
 				case 0:
 					// Update topic statistics
-					KunenaForumTopicHelper::recount(false, $state->start, $state->start + $count);
+					\Joomla\Component\Kunena\Libraries\Forum\Topic\Helper::recount(false, $state->start, $state->start + $count);
 					$state->start += $count;
 					$this->addStatus(Text::sprintf('COM_KUNENA_MIGRATE_RECOUNT_TOPICS', min($state->start, $state->maxId), $state->maxId), true, '', 'recount');
 					break;
@@ -2269,12 +2269,12 @@ class KunenaModelInstall extends BaseDatabaseModel
 					break;
 				case 2:
 					// Update user statistics
-					KunenaUserHelper::recount();
+					\Joomla\Component\Kunena\Libraries\User\Helper::recount();
 					$this->addStatus(Text::sprintf('COM_KUNENA_MIGRATE_RECOUNT_USER'), true, '', 'recount');
 					break;
 				case 3:
 					// Update category statistics
-					KunenaForumCategoryHelper::recount();
+					\Joomla\Component\Kunena\Libraries\Forum\Category\Helper::recount();
 					$this->addStatus(Text::sprintf('COM_KUNENA_MIGRATE_RECOUNT_CATEGORY'), true, '', 'recount');
 					break;
 				default:
@@ -2577,7 +2577,7 @@ class KunenaModelInstall extends BaseDatabaseModel
 	protected function insertVersion($state = 'beginInstall')
 	{
 		// Insert data from the new version
-		$this->insertVersionData(KunenaForum::version(), KunenaForum::versionDate(), KunenaForum::versionName(), $state);
+		$this->insertVersionData(\Joomla\Component\Kunena\Libraries\Forum\Forum::version(), \Joomla\Component\Kunena\Libraries\Forum\Forum::versionDate(), \Joomla\Component\Kunena\Libraries\Forum\Forum::versionName(), $state);
 	}
 
 	/**
@@ -2633,7 +2633,7 @@ class KunenaModelInstall extends BaseDatabaseModel
 		 */
 
 		static $search = ['#COMPONENT_OLD#', '#VERSION_OLD#', '#VERSION#'];
-		$replace = [$version->component, $version->version, KunenaForum::version()];
+		$replace = [$version->component, $version->version, \Joomla\Component\Kunena\Libraries\Forum\Forum::version()];
 
 		if (!$action)
 		{
@@ -2685,13 +2685,13 @@ class KunenaModelInstall extends BaseDatabaseModel
 			}
 			else
 			{
-				if (version_compare(strtolower(KunenaForum::version()), strtolower($version->version), '>'))
+				if (version_compare(strtolower(\Joomla\Component\Kunena\Libraries\Forum\Forum::version()), strtolower($version->version), '>'))
 				{
 					$this->_action = 'UPGRADE';
 				}
 				else
 				{
-					if (version_compare(strtolower(KunenaForum::version()), strtolower($version->version), '<'))
+					if (version_compare(strtolower(\Joomla\Component\Kunena\Libraries\Forum\Forum::version()), strtolower($version->version), '<'))
 					{
 						$this->_action = 'DOWNGRADE';
 					}
@@ -3095,26 +3095,26 @@ class KunenaModelInstall extends BaseDatabaseModel
 	 */
 	public function createMenu()
 	{
-		$menu    = ['name' => Text::_('COM_KUNENA_MENU_ITEM_FORUM'), 'alias' => KunenaRoute::stringURLSafe(Text::_('COM_KUNENA_MENU_FORUM_ALIAS'), 'forum'),
+		$menu    = ['name' => Text::_('COM_KUNENA_MENU_ITEM_FORUM'), 'alias' => \Joomla\Component\Kunena\Libraries\Route\KunenaRoute::stringURLSafe(Text::_('COM_KUNENA_MENU_FORUM_ALIAS'), 'forum'),
 					'link' => 'index.php?option=com_kunena&view=home', 'access' => 1, 'params' => ['catids' => 0]];
 		$submenu = [
-			'index'     => ['name' => Text::_('COM_KUNENA_MENU_ITEM_INDEX'), 'alias' => KunenaRoute::stringURLSafe(Text::_('COM_KUNENA_MENU_INDEX_ALIAS'), 'index'),
+			'index'     => ['name' => Text::_('COM_KUNENA_MENU_ITEM_INDEX'), 'alias' => \Joomla\Component\Kunena\Libraries\Route\KunenaRoute::stringURLSafe(Text::_('COM_KUNENA_MENU_INDEX_ALIAS'), 'index'),
 							'link' => 'index.php?option=com_kunena&view=category&layout=list', 'access' => 1, 'default' => 'categories', 'params' => [],],
-			'recent'    => ['name' => Text::_('COM_KUNENA_MENU_ITEM_RECENT'), 'alias' => KunenaRoute::stringURLSafe(Text::_('COM_KUNENA_MENU_RECENT_ALIAS'), 'recent'),
+			'recent'    => ['name' => Text::_('COM_KUNENA_MENU_ITEM_RECENT'), 'alias' => \Joomla\Component\Kunena\Libraries\Route\KunenaRoute::stringURLSafe(Text::_('COM_KUNENA_MENU_RECENT_ALIAS'), 'recent'),
 							'link' => 'index.php?option=com_kunena&view=topics&mode=replies', 'access' => 1, 'default' => 'recent', 'params' => ['topics_catselection' => '', 'topics_categories' => '', 'topics_time' => ''],],
-			'unread'    => ['name' => Text::_('COM_KUNENA_MENU_ITEM_UNREAD'), 'alias' => KunenaRoute::stringURLSafe(Text::_('COM_KUNENA_MENU_UNREAD_ALIAS'), 'unread'),
+			'unread'    => ['name' => Text::_('COM_KUNENA_MENU_ITEM_UNREAD'), 'alias' => \Joomla\Component\Kunena\Libraries\Route\KunenaRoute::stringURLSafe(Text::_('COM_KUNENA_MENU_UNREAD_ALIAS'), 'unread'),
 							'link' => 'index.php?option=com_kunena&view=topics&layout=unread', 'access' => 2, 'params' => [],],
-			'newtopic'  => ['name' => Text::_('COM_KUNENA_MENU_ITEM_NEWTOPIC'), 'alias' => KunenaRoute::stringURLSafe(Text::_('COM_KUNENA_MENU_NEWTOPIC_ALIAS'), 'newtopic'),
+			'newtopic'  => ['name' => Text::_('COM_KUNENA_MENU_ITEM_NEWTOPIC'), 'alias' => \Joomla\Component\Kunena\Libraries\Route\KunenaRoute::stringURLSafe(Text::_('COM_KUNENA_MENU_NEWTOPIC_ALIAS'), 'newtopic'),
 							'link' => 'index.php?option=com_kunena&view=topic&layout=create', 'access' => 2, 'params' => [],],
-			'noreplies' => ['name' => Text::_('COM_KUNENA_MENU_ITEM_NOREPLIES'), 'alias' => KunenaRoute::stringURLSafe(Text::_('COM_KUNENA_MENU_NOREPLIES_ALIAS'), 'noreplies'),
+			'noreplies' => ['name' => Text::_('COM_KUNENA_MENU_ITEM_NOREPLIES'), 'alias' => \Joomla\Component\Kunena\Libraries\Route\KunenaRoute::stringURLSafe(Text::_('COM_KUNENA_MENU_NOREPLIES_ALIAS'), 'noreplies'),
 							'link' => 'index.php?option=com_kunena&view=topics&mode=noreplies', 'access' => 2, 'params' => ['topics_catselection' => '', 'topics_categories' => '', 'topics_time' => ''],],
-			'mylatest'  => ['name' => Text::_('COM_KUNENA_MENU_ITEM_MYLATEST'), 'alias' => KunenaRoute::stringURLSafe(Text::_('COM_KUNENA_MENU_MYLATEST_ALIAS'), 'mylatest'),
+			'mylatest'  => ['name' => Text::_('COM_KUNENA_MENU_ITEM_MYLATEST'), 'alias' => \Joomla\Component\Kunena\Libraries\Route\KunenaRoute::stringURLSafe(Text::_('COM_KUNENA_MENU_MYLATEST_ALIAS'), 'mylatest'),
 							'link' => 'index.php?option=com_kunena&view=topics&layout=user&mode=default', 'access' => 2, 'default' => 'my', 'params' => ['topics_catselection' => '2', 'topics_categories' => '0', 'topics_time' => ''],],
-			'profile'   => ['name' => Text::_('COM_KUNENA_MENU_ITEM_PROFILE'), 'alias' => KunenaRoute::stringURLSafe(Text::_('COM_KUNENA_MENU_PROFILE_ALIAS'), 'profile'),
+			'profile'   => ['name' => Text::_('COM_KUNENA_MENU_ITEM_PROFILE'), 'alias' => \Joomla\Component\Kunena\Libraries\Route\KunenaRoute::stringURLSafe(Text::_('COM_KUNENA_MENU_PROFILE_ALIAS'), 'profile'),
 							'link' => 'index.php?option=com_kunena&view=user', 'access' => 2, 'params' => ['integration' => 1],],
-			'help'      => ['name' => Text::_('COM_KUNENA_MENU_ITEM_HELP'), 'alias' => KunenaRoute::stringURLSafe(Text::_('COM_KUNENA_MENU_HELP_ALIAS'), 'help'),
+			'help'      => ['name' => Text::_('COM_KUNENA_MENU_ITEM_HELP'), 'alias' => \Joomla\Component\Kunena\Libraries\Route\KunenaRoute::stringURLSafe(Text::_('COM_KUNENA_MENU_HELP_ALIAS'), 'help'),
 							'link' => 'index.php?option=com_kunena&view=misc', 'access' => 3, 'params' => ['body' => Text::_('COM_KUNENA_MENU_HELP_BODY'), 'body_format' => 'bbcode'],],
-			'search'    => ['name' => Text::_('COM_KUNENA_MENU_ITEM_SEARCH'), 'alias' => KunenaRoute::stringURLSafe(Text::_('COM_KUNENA_MENU_SEARCH_ALIAS'), 'search'),
+			'search'    => ['name' => Text::_('COM_KUNENA_MENU_ITEM_SEARCH'), 'alias' => \Joomla\Component\Kunena\Libraries\Route\KunenaRoute::stringURLSafe(Text::_('COM_KUNENA_MENU_SEARCH_ALIAS'), 'search'),
 							'link' => 'index.php?option=com_kunena&view=search', 'access' => 1, 'params' => [],],
 		];
 
@@ -3142,7 +3142,7 @@ class KunenaModelInstall extends BaseDatabaseModel
 	 */
 	public function createMenuJ25($menu, $submenu)
 	{
-		$config = KunenaFactory::getConfig();
+		$config = \Joomla\Component\Kunena\Libraries\KunenaFactory::getConfig();
 
 		$component_id = ComponentHelper::getComponent('com_kunena')->id;
 

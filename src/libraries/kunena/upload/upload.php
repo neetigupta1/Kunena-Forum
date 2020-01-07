@@ -261,7 +261,7 @@ class Upload
 				// Get filename from stream
 				$meta_data = stream_get_meta_data($out);
 				$filename  = $meta_data['uri'];
-				KunenaImage::correctImageOrientation($filename);
+				\Joomla\Component\Kunena\Libraries\Image\KunenaImage::correctImageOrientation($filename);
 			}
 		}
 		catch (Exception $exception)
@@ -647,7 +647,7 @@ class Upload
 		$file->ext  = File::getExt($fileInput['name']);
 		$file->ext  = strtolower($file->ext);
 		$file->size = $fileInput['size'];
-		$config     = KunenaFactory::getConfig();
+		$config     = \Joomla\Component\Kunena\Libraries\KunenaFactory::getConfig();
 
 		if ($type != 'attachment' && $config->attachment_utf8)
 		{
@@ -747,7 +747,7 @@ class Upload
 			}
 		}
 
-		KunenaImage::correctImageOrientation($file->tmp_name);
+		\Joomla\Component\Kunena\Libraries\Image\KunenaImage::correctImageOrientation($file->tmp_name);
 
 		if (!File::copy($file->tmp_name, $file->destination))
 		{

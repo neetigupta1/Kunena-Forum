@@ -44,7 +44,7 @@ class KunenaLayoutWidgetEditor extends KunenaLayout
 	 */
 	public function getCodeTypes()
 	{
-		$templatesettings = KunenaFactory::getTemplate()->params;
+		$templatesettings = \Joomla\Component\Kunena\Libraries\KunenaFactory::getTemplate()->params;
 
 		if (!$templatesettings->get('highlightcode'))
 		{
@@ -89,7 +89,7 @@ class KunenaLayoutWidgetEditor extends KunenaLayout
 	 */
 	public function getBBcodesEnabled()
 	{
-		$this->ktemplate  = KunenaFactory::getTemplate();
+		$this->ktemplate  = \Joomla\Component\Kunena\Libraries\KunenaFactory::getTemplate();
 		$templatesettings = $this->ktemplate->params;
 		$config           = Config::getInstance();
 

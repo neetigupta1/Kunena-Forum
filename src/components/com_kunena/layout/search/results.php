@@ -125,10 +125,10 @@ class KunenaLayoutSearchResults extends KunenaLayout
 			$this->topic        = $this->message->getTopic();
 			$this->category     = $this->message->getCategory();
 			$this->categoryLink = $this->getCategoryLink($this->category->getParent()) . ' / ' . $this->getCategoryLink($this->category);
-			$ressubject         = KunenaHtmlParser::parseText($this->message->subject);
-			$resmessage         = KunenaHtmlParser::parseBBCode($this->message->message, 500);
+			$ressubject         = \Joomla\Component\Kunena\Libraries\Html\Parser::parseText($this->message->subject);
+			$resmessage         = \Joomla\Component\Kunena\Libraries\Html\Parser::parseBBCode($this->message->message, 500);
 
-			$profile          = KunenaFactory::getUser((int) $this->message->userid);
+			$profile          = \Joomla\Component\Kunena\Libraries\KunenaFactory::getUser((int) $this->message->userid);
 			$this->useravatar = $profile->getAvatarImage('kavatar', 'post');
 
 			foreach ($this->searchwords as $searchword)

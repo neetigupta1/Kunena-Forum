@@ -10,11 +10,14 @@
  * See COPYRIGHT.php for copyright notices and details.
  */
 
-namespace Joomla\Component\Kunena;
+namespace Joomla\Component\Kunena\Plugin\Kunena\Easysocial;
 
 defined('_JEXEC') or die('Unauthorized Access');
 
+use EasySocialPlugins;
 use Joomla\CMS\Filesystem\File;
+use Joomla\Component\Kunena\Libraries\Forum\Forum;
+use Joomla\Component\Kunena\Libraries\Integration\Avatar;
 use function defined;
 
 $file = JPATH_ADMINISTRATOR . '/components/com_easysocial/includes/plugins.php';
@@ -47,7 +50,7 @@ class plgKunenaEasySocial extends EasySocialPlugins
 	public function __construct(&$subject, $config)
 	{
 		// Do not load if Kunena version is not supported or Kunena is offline
-		if (!(class_exists('KunenaForum') && KunenaForum::isCompatible('3.0') && KunenaForum::installed()))
+		if (!(class_exists('KunenaForum') && Forum::isCompatible('3.0') && Forum::installed()))
 		{
 			return true;
 		}
@@ -79,7 +82,7 @@ class plgKunenaEasySocial extends EasySocialPlugins
 	/**
 	 * Get Kunena avatar integration object.
 	 *
-	 * @return  KunenaAvatar
+	 * @return  AvatarEasySocial
 	 * @since   Kunena 6.0
 	 */
 	public function onKunenaGetAvatar()
@@ -91,13 +94,13 @@ class plgKunenaEasySocial extends EasySocialPlugins
 
 		require_once __DIR__ . "/avatar.php";
 
-		return new KunenaAvatarEasySocial($this->params);
+		return new AvatarEasySocial($this->params);
 	}
 
 	/**
 	 * Get Kunena profile integration object.
 	 *
-	 * @return  KunenaProfile
+	 * @return  KunenaProfileEasySocial
 	 *
 	 * @since   Kunena 6.0
 	 */
@@ -116,7 +119,7 @@ class plgKunenaEasySocial extends EasySocialPlugins
 	/**
 	 * Get Kunena private message integration object.
 	 *
-	 * @return  KunenaPrivate
+	 * @return  KunenaPrivateEasySocial
 	 *
 	 * @since   Kunena 6.0
 	 */
@@ -135,7 +138,7 @@ class plgKunenaEasySocial extends EasySocialPlugins
 	/**
 	 * Get Kunena activity stream integration object.
 	 *
-	 * @return  KunenaActivity
+	 * @return  KunenaActivityEasySocial
 	 *
 	 * @since   Kunena 6.0
 	 */

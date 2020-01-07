@@ -10,19 +10,25 @@
  * @link            https://www.kunena.org
  **/
 
-namespace Joomla\Component\Kunena;
+namespace Joomla\Component\Kunena\Plugin\Kunena\Kunena;
 
 defined('_JEXEC') or die();
 
 use Exception;
+use Joomla\Component\Kunena\Libraries\Config;
+use Joomla\Component\Kunena\Libraries\Image\Helper;
+use Joomla\Component\Kunena\Libraries\Image\KunenaImage;
+use Joomla\Component\Kunena\Libraries\KunenaFactory;
+use Joomla\Component\Kunena\Libraries\Route\KunenaRoute;
+use Joomla\Component\Kunena\Libraries\Integration\Avatar;
 use function defined;
 
 /**
- * Class KunenaAvatarKunena
+ * Class \Joomla\Component\Kunena\Libraries\Integration\Avatar
  *
  * @since   Kunena 6.0
  */
-class KunenaAvatarKunena extends KunenaAvatar
+class KunenaAvatar extends Avatar
 {
 	/**
 	 * @var     null
@@ -89,11 +95,11 @@ class KunenaAvatarKunena extends KunenaAvatar
 			// If avatar does not exist use default image.
 			if ($sizex <= 90)
 			{
-				$avatar = KunenaConfig::getInstance()->defaultavatarsmall;
+				$avatar = Config::getInstance()->defaultavatarsmall;
 			}
 			else
 			{
-				$avatar = KunenaConfig::getInstance()->defaultavatar;
+				$avatar = Config::getInstance()->defaultavatar;
 			}
 
 			// Search from the template.
@@ -125,7 +131,7 @@ class KunenaAvatarKunena extends KunenaAvatar
 
 		if (!is_file("{$path}/{$resized}/{$file}"))
 		{
-			KunenaImageHelper::version($origPath, "{$path}/{$resized}", $file, $sizex,
+			Helper::version($origPath, "{$path}/{$resized}", $file, $sizex,
 				$sizey, intval($config->avatarquality), KunenaImage::SCALE_INSIDE, intval($config->avatarcrop)
 			);
 

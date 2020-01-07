@@ -127,8 +127,8 @@ class KunenaAdminModelCategories extends KunenaModel
 		$aliases = array_keys($category->getAliases());
 
 		$lists                     = [];
-		$lists ['accesstypes']     = KunenaAccess::getInstance()->getAccessTypesList($category);
-		$lists ['accesslists']     = KunenaAccess::getInstance()->getAccessOptions($category);
+		$lists ['accesstypes']     = \Joomla\Component\Kunena\Libraries\Access::getInstance()->getAccessTypesList($category);
+		$lists ['accesslists']     = \Joomla\Component\Kunena\Libraries\Access::getInstance()->getAccessOptions($category);
 		$lists ['categories']      = HTMLHelper::_('kunenaforum.categorylist', 'parent_id', 0, null, $cat_params, 'class="inputbox form-control"', 'value', 'text', $category->parent_id);
 		$lists ['channels']        = HTMLHelper::_('kunenaforum.categorylist', 'channels[]', 0, $channels_options, $channels_params, 'class="inputbox form-control" multiple="multiple"', 'value', 'text', explode(',', $category->channels));
 		$lists ['aliases']         = $aliases ? HTMLHelper::_('kunenaforum.checklist', 'aliases', $aliases, true, 'category_aliases') : null;
@@ -162,7 +162,7 @@ class KunenaAdminModelCategories extends KunenaModel
 
 		if (empty($category->iconset))
 		{
-			$value = KunenaTemplate::getInstance()->params->get('DefaultIconset');
+			$value = \Joomla\Component\Kunena\Libraries\Template\Template::getInstance()->params->get('DefaultIconset');
 		}
 		else
 		{
@@ -183,7 +183,7 @@ class KunenaAdminModelCategories extends KunenaModel
 	 */
 	public function getAdminCategory()
 	{
-		$category = KunenaForumCategoryHelper::get($this->getState('item.id'));
+		$category = \Joomla\Component\Kunena\Libraries\Forum\Category\Helper::get($this->getState('item.id'));
 
 		if (!$this->me->isAdmin($category))
 		{
@@ -406,18 +406,18 @@ class KunenaAdminModelCategories extends KunenaModel
 
 			if ($catid)
 			{
-				$categories   = KunenaForumCategoryHelper::getParents($catid, $this->getState('filter.levels') - 1, ['unpublished' => 1, 'action' => 'none']);
-				$categories[] = KunenaForumCategoryHelper::get($catid);
+				$categories   = \Joomla\Component\Kunena\Libraries\Forum\Category\Helper::getParents($catid, $this->getState('filter.levels') - 1, ['unpublished' => 1, 'action' => 'none']);
+				$categories[] = \Joomla\Component\Kunena\Libraries\Forum\Category\Helper::get($catid);
 			}
 			else
 			{
-				$orphans = KunenaForumCategoryHelper::getOrphaned($this->getState('filter.levels') - 1, $params);
+				$orphans = \Joomla\Component\Kunena\Libraries\Forum\Category\Helper::getOrphaned($this->getState('filter.levels') - 1, $params);
 			}
 
-			$categories = array_merge($categories, KunenaForumCategoryHelper::getChildren($catid, $this->getState('filter.levels') - 1, $params));
+			$categories = array_merge($categories, \Joomla\Component\Kunena\Libraries\Forum\Category\Helper::getChildren($catid, $this->getState('filter.levels') - 1, $params));
 			$categories = array_merge($orphans, $categories);
 
-			$categories = KunenaForumCategoryHelper::getIndentation($categories);
+			$categories = \Joomla\Component\Kunena\Libraries\Forum\Category\Helper::getIndentation($categories);
 			$this->setState('list.total', count($categories));
 
 			if ($this->getState('list.limit'))
@@ -430,13 +430,13 @@ class KunenaAdminModelCategories extends KunenaModel
 			}
 
 			$admin = 0;
-			$acl   = KunenaAccess::getInstance();
+			$acl   = \Joomla\Component\Kunena\Libraries\Access::getInstance();
 
 			foreach ($this->_admincategories as $category)
 			{
 				// TODO: Following is needed for J!2.5 only:
 				$parent   = $category->getParent();
-				$siblings = array_keys(KunenaForumCategoryHelper::getCategoryTree($category->parent_id));
+				$siblings = array_keys(\Joomla\Component\Kunena\Libraries\Forum\Category\Helper::getCategoryTree($category->parent_id));
 
 				if ($parent)
 				{
@@ -472,7 +472,7 @@ class KunenaAdminModelCategories extends KunenaModel
 				// Checkout?
 				if ($this->me->isAdmin($category) && $category->isCheckedOut(0))
 				{
-					$category->editor = KunenaFactory::getUser($category->checked_out)->getName();
+					$category->editor = \Joomla\Component\Kunena\Libraries\KunenaFactory::getUser($category->checked_out)->getName();
 				}
 				else
 				{

@@ -87,7 +87,7 @@ class KunenaAdminControllerConfig extends KunenaController
 		if (!Session::checkToken('post'))
 		{
 			$this->app->enqueueMessage(Text::_('COM_KUNENA_ERROR_TOKEN'), 'error');
-			$this->setRedirect(KunenaRoute::_($this->baseurl, false));
+			$this->setRedirect(\Joomla\Component\Kunena\Libraries\Route\KunenaRoute::_($this->baseurl, false));
 
 			return;
 		}
@@ -113,7 +113,7 @@ class KunenaAdminControllerConfig extends KunenaController
 					if (empty($postvalue))
 					{
 						$this->app->enqueueMessage(Text::_('COM_KUNENA_IMAGEWIDTH_IMAGEHEIGHT_EMPTY_CONFIG_NOT_SAVED'));
-						$this->setRedirect(KunenaRoute::_($url, false));
+						$this->setRedirect(\Joomla\Component\Kunena\Libraries\Route\KunenaRoute::_($url, false));
 
 						return;
 					}
@@ -134,12 +134,12 @@ class KunenaAdminControllerConfig extends KunenaController
 
 		if (empty($url))
 		{
-			$this->setRedirect(KunenaRoute::_($this->kunenabaseurl, false));
+			$this->setRedirect(\Joomla\Component\Kunena\Libraries\Route\KunenaRoute::_($this->kunenabaseurl, false));
 
 			return;
 		}
 
-		$this->setRedirect(KunenaRoute::_($url, false));
+		$this->setRedirect(\Joomla\Component\Kunena\Libraries\Route\KunenaRoute::_($url, false));
 	}
 
 	/**
@@ -157,7 +157,7 @@ class KunenaAdminControllerConfig extends KunenaController
 		if (!Session::checkToken('post'))
 		{
 			$this->app->enqueueMessage(Text::_('COM_KUNENA_ERROR_TOKEN'), 'error');
-			$this->setRedirect(KunenaRoute::_($this->baseurl, false));
+			$this->setRedirect(\Joomla\Component\Kunena\Libraries\Route\KunenaRoute::_($this->baseurl, false));
 
 			return;
 		}

@@ -65,7 +65,7 @@ class ComponentKunenaControllerTopicReportDisplay extends KunenaControllerDispla
 		$id    = $this->input->getInt('id');
 		$mesid = $this->input->getInt('mesid');
 
-		$me = KunenaUserHelper::getMyself();
+		$me = \Joomla\Component\Kunena\Libraries\User\Helper::getMyself();
 
 		if (!$this->config->reportmsg)
 		{
@@ -81,7 +81,7 @@ class ComponentKunenaControllerTopicReportDisplay extends KunenaControllerDispla
 
 		if (!$mesid)
 		{
-			$this->topic = KunenaForumTopicHelper::get($id);
+			$this->topic = \Joomla\Component\Kunena\Libraries\Forum\Topic\Helper::get($id);
 			$this->topic->tryAuthorise();
 		}
 		else

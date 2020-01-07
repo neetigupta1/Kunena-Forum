@@ -63,7 +63,7 @@ class KunenaAdminControllerCpanel extends KunenaController
 	{
 		$updateInfo = null;
 
-		if (KunenaForum::installed() && Factory::getApplication()->getIdentity()->authorise('core.manage', 'com_installer'))
+		if (\Joomla\Component\Kunena\Libraries\Forum\Forum::installed() && Factory::getApplication()->getIdentity()->authorise('core.manage', 'com_installer'))
 		{
 			$updateSite = 'https://update.kunena.org/%';
 			$db         = Factory::getDbo();
@@ -106,7 +106,7 @@ class KunenaAdminControllerCpanel extends KunenaController
 			}
 		}
 
-		if (!empty($updateInfo->version) && version_compare(KunenaForum::version(), $updateInfo->version, '<'))
+		if (!empty($updateInfo->version) && version_compare(\Joomla\Component\Kunena\Libraries\Forum\Forum::version(), $updateInfo->version, '<'))
 		{
 			// Has updates
 			Factory::getApplication()->enqueueMessage(Text::_('Kunena Update Found.  <a class="btn btn-small btn-outline-danger" href="index.php?option=com_installer&view=update&filter_search=kunena"> Update Now</a><br/> Please backup before updating.'), 'Notice');

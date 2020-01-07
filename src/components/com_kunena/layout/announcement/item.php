@@ -88,6 +88,6 @@ class KunenaLayoutAnnouncementItem extends KunenaLayout
 	public function getButton($url, $name, $scope, $type, $id = null, $normal = true)
 	{
 		return KunenaLayout::factory('Widget/Announcement/Button')
-			->setProperties(['url' => KunenaRoute::_($url), 'name' => $name, 'scope' => $scope, 'type' => $type, 'id' => $id, 'normal' => $normal]);
+			->setProperties(['url' => \Joomla\Component\Kunena\Libraries\Route\KunenaRoute::_($url), 'name' => $name, 'scope' => $scope, 'type' => $type, 'id' => $id, 'normal' => $normal]);
 	}
 }

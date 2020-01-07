@@ -47,7 +47,7 @@ class KunenaBbcodeEditor
 	public function __construct($config = [])
 	{
 		$this->config   = $config;
-		$this->template = KunenaFactory::getTemplate();
+		$this->template = \Joomla\Component\Kunena\Libraries\KunenaFactory::getTemplate();
 	}
 
 	/**
@@ -163,7 +163,7 @@ class KunenaBbcodeEditor
 	 */
 	public function initialize()
 	{
-		$template     = KunenaFactory::getTemplate();
+		$template     = \Joomla\Component\Kunena\Libraries\KunenaFactory::getTemplate();
 		$this->isHMVC = $template->isHmvc();
 	}
 
@@ -236,7 +236,7 @@ class KunenaBbcodeEditor
 					$cfgVariable = substr($cfgVariable, 1);
 				}
 
-				if (KunenaFactory::getConfig()->$cfgVariable != $cfgValue)
+				if (\Joomla\Component\Kunena\Libraries\KunenaFactory::getConfig()->$cfgVariable != $cfgValue)
 				{
 					continue;
 				}
@@ -394,7 +394,7 @@ class KunenaBbcodeEditorButton extends KunenaBbcodeEditorElement
 					$cfgVariable = substr($cfgVariable, 1);
 				}
 
-				if (KunenaFactory::getConfig()->$cfgVariable != $cfgValue)
+				if (\Joomla\Component\Kunena\Libraries\KunenaFactory::getConfig()->$cfgVariable != $cfgValue)
 				{
 					continue;
 				}

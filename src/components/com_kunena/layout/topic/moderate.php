@@ -76,7 +76,7 @@ class KunenaLayoutTopicModerate extends KunenaLayout
 		$params = [
 			'orderby' => 'tt.last_post_time DESC',
 			'where'   => " AND tt.id != {$db->quote($this->topic->id)} "];
-		list($total, $topics) = KunenaForumTopicHelper::getLatestTopics($this->category->id, 0, 30, $params);
+		list($total, $topics) = \Joomla\Component\Kunena\Libraries\Forum\Topic\Helper::getLatestTopics($this->category->id, 0, 30, $params);
 
 		foreach ($topics as $topic)
 		{

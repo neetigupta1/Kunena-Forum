@@ -113,7 +113,7 @@ class TableKunenaSessions extends KunenaTable
 	 */
 	public function check()
 	{
-		$user = KunenaUserHelper::get($this->userid);
+		$user = \Joomla\Component\Kunena\Libraries\User\Helper::get($this->userid);
 
 		if (!$user->exists())
 		{

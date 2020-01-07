@@ -19,7 +19,7 @@ use function defined;
 
 $this->addBreadcrumb(
 	Text::_('COM_KUNENA_ANN_ANNOUNCEMENTS'),
-	KunenaRoute::normalize("index.php?option=com_kunena&view=announcement&layout=list")
+	\Joomla\Component\Kunena\Libraries\Route\KunenaRoute::normalize("index.php?option=com_kunena&view=announcement&layout=list")
 );
 
 echo $this->subRequest('Announcement/List');

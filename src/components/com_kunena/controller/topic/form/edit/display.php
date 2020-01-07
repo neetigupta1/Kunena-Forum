@@ -52,8 +52,8 @@ class ComponentKunenaControllerTopicFormEditDisplay extends KunenaControllerDisp
 		$mesid       = $this->input->getInt('mesid');
 		$saved       = $this->app->getUserState('com_kunena.postfields');
 
-		$this->me       = KunenaUserHelper::getMyself();
-		$this->template = KunenaFactory::getTemplate();
+		$this->me       = \Joomla\Component\Kunena\Libraries\User\Helper::getMyself();
+		$this->template = \Joomla\Component\Kunena\Libraries\KunenaFactory::getTemplate();
 		$this->message  = KunenaForumMessageHelper::get($mesid);
 		$this->message->tryAuthorise('edit');
 
@@ -72,7 +72,7 @@ class ComponentKunenaControllerTopicFormEditDisplay extends KunenaControllerDisp
 			throw new KunenaExceptionAuthorise(Text::_('COM_KUNENA_NO_ACCESS'), '401');
 		}
 
-		$categories        = KunenaForumCategoryHelper::getCategories();
+		$categories        = \Joomla\Component\Kunena\Libraries\Forum\Category\Helper::getCategories();
 		$arrayanynomousbox = [];
 		$arraypollcatid    = [];
 
@@ -92,8 +92,8 @@ class ComponentKunenaControllerTopicFormEditDisplay extends KunenaControllerDisp
 			}
 		}
 
-		KunenaTemplate::getInstance()->addScriptOptions('com_kunena.arrayanynomousbox', json_encode($arrayanynomousbox));
-		KunenaTemplate::getInstance()->addScriptOptions('com_kunena.pollcategoriesid', json_encode($arraypollcatid));
+		\Joomla\Component\Kunena\Libraries\Template\Template::getInstance()->addScriptOptions('com_kunena.arrayanynomousbox', json_encode($arrayanynomousbox));
+		\Joomla\Component\Kunena\Libraries\Template\Template::getInstance()->addScriptOptions('com_kunena.pollcategoriesid', json_encode($arraypollcatid));
 
 		$doc = Factory::getApplication()->getDocument();
 		$doc->setMetaData('robots', 'nofollow, noindex');

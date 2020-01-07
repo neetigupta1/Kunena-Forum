@@ -75,7 +75,7 @@ use Joomla\CMS\Language\Text;
 						<span><?php echo Text::_('COM_KUNENA_TOOLS_LABEL_UNINSTALL_PROCESS'); ?></span>
 					</a>
 
-					<?php if (KunenaForum::isDev())
+					<?php if (\Joomla\Component\Kunena\Libraries\Forum\Forum::isDev())
 						:
 						?>
 						<a class="btn btn-outline-primary"

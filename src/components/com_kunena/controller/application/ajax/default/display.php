@@ -39,7 +39,7 @@ class ComponentKunenaControllerApplicationAjaxDefaultDisplay extends KunenaContr
 	 */
 	public function exists()
 	{
-		return KunenaFactory::getTemplate()->isHmvc();
+		return \Joomla\Component\Kunena\Libraries\KunenaFactory::getTemplate()->isHmvc();
 	}
 
 	/**
@@ -114,15 +114,15 @@ class ComponentKunenaControllerApplicationAjaxDefaultDisplay extends KunenaContr
 	protected function before()
 	{
 		// Load language files.
-		KunenaFactory::loadLanguage('com_kunena.sys', 'admin');
-		KunenaFactory::loadLanguage('com_kunena.templates');
-		KunenaFactory::loadLanguage('com_kunena.models');
-		KunenaFactory::loadLanguage('com_kunena.views');
+		\Joomla\Component\Kunena\Libraries\KunenaFactory::loadLanguage('com_kunena.sys', 'admin');
+		\Joomla\Component\Kunena\Libraries\KunenaFactory::loadLanguage('com_kunena.templates');
+		\Joomla\Component\Kunena\Libraries\KunenaFactory::loadLanguage('com_kunena.models');
+		\Joomla\Component\Kunena\Libraries\KunenaFactory::loadLanguage('com_kunena.views');
 
-		$this->me       = KunenaUserHelper::getMyself();
+		$this->me       = \Joomla\Component\Kunena\Libraries\User\Helper::getMyself();
 		$this->config   = Config::getInstance();
 		$this->document = Factory::getApplication()->getDocument();
-		$this->template = KunenaFactory::getTemplate();
+		$this->template = \Joomla\Component\Kunena\Libraries\KunenaFactory::getTemplate();
 		$this->template->initialize();
 	}
 

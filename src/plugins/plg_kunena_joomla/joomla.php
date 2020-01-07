@@ -10,11 +10,12 @@
  * @link            https://www.kunena.org
  **/
 
-namespace Joomla\Component\Kunena;
+namespace Joomla\Component\Kunena\Plugin\Kunena\Joomla;
 
 defined('_JEXEC') or die();
 
 use Joomla\CMS\Plugin\CMSPlugin;
+use Joomla\Component\Kunena\Libraries\Forum\Forum;
 use function defined;
 
 /**
@@ -22,7 +23,7 @@ use function defined;
  *
  * @since   Kunena 6.0
  */
-class plgKunenaJoomla extends CMSPlugin
+class Joomla extends CMSPlugin
 {
 	/**
 	 * @param   object  $subject  subject
@@ -33,7 +34,7 @@ class plgKunenaJoomla extends CMSPlugin
 	public function __construct(&$subject, $config)
 	{
 		// Do not load if Kunena version is not supported or Kunena is offline
-		if (!(class_exists('KunenaForum') && KunenaForum::isCompatible('4.0')))
+		if (!(class_exists('KunenaForum') && Forum::isCompatible('4.0')))
 		{
 			return;
 		}
@@ -44,7 +45,7 @@ class plgKunenaJoomla extends CMSPlugin
 	}
 
 	/**
-	 * @return  KunenaAccessJoomla|void
+	 * @return  AccessJoomla|void
 	 *
 	 * @since   Kunena 6.0
 	 */
@@ -57,11 +58,11 @@ class plgKunenaJoomla extends CMSPlugin
 
 		require_once __DIR__ . "/access.php";
 
-		return new KunenaAccessJoomla($this->params);
+		return new AccessJoomla($this->params);
 	}
 
 	/**
-	 * @return  KunenaLoginJoomla|null
+	 * @return  Login|null
 	 *
 	 * @since   Kunena 6.0
 	 */
@@ -69,6 +70,6 @@ class plgKunenaJoomla extends CMSPlugin
 	{
 		require_once __DIR__ . "/login.php";
 
-		return new KunenaLoginJoomla($this->params);
+		return new Login($this->params);
 	}
 }

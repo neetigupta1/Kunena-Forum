@@ -123,7 +123,7 @@ class KunenaLayoutCategoryItem extends KunenaLayout
 
 		// Is user allowed to post new topic?
 		$url             = $category->getNewTopicUrl();
-		$this->ktemplate = KunenaFactory::getTemplate();
+		$this->ktemplate = \Joomla\Component\Kunena\Libraries\KunenaFactory::getTemplate();
 		$topicicontype   = $this->ktemplate->params->get('topicicontype');
 		$config          = Config::getInstance();
 
@@ -287,7 +287,7 @@ class KunenaLayoutCategoryItem extends KunenaLayout
 	 *
 	 * @see     KunenaLayout::getLastPostLink()
 	 *
-	 * @param   KunenaForumCategory  $category   The KunenaCategory object
+	 * @param  \Joomla\Component\Kunena\Libraries\Forum\Category\Category  $category   The KunenaCategory object
 	 * @param   string               $content    The content of last topic subject
 	 * @param   string               $title      The title of the link
 	 * @param   string               $class      The class attribute of the link
@@ -318,12 +318,12 @@ class KunenaLayoutCategoryItem extends KunenaLayout
 		{
 			if (Config::getInstance()->disable_re)
 			{
-				$content = KunenaHtmlParser::parseText($category->getLastTopic()->subject, $length);
+				$content = \Joomla\Component\Kunena\Libraries\Html\Parser::parseText($category->getLastTopic()->subject, $length);
 			}
 			else
 			{
 				$content = $lastTopic->first_post_id != $lastTopic->last_post_id ? Text::_('COM_KUNENA_RE') . ' ' : '';
-				$content .= KunenaHtmlParser::parseText($category->getLastTopic()->subject, $length);
+				$content .= \Joomla\Component\Kunena\Libraries\Html\Parser::parseText($category->getLastTopic()->subject, $length);
 			}
 		}
 

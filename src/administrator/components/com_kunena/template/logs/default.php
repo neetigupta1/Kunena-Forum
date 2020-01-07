@@ -49,7 +49,7 @@ $filterItem = $this->escape($this->state->get('item.id'));
 							class="icon-search"></i> <?php echo Text::_('COM_KUNENA_LOG_MANAGER') ?>
 				</div>
 				<hr class="hr-condensed">
-				<form action="<?php echo KunenaRoute::_('administrator/index.php?option=com_kunena&view=logs'); ?>"
+				<form action="<?php echo \Joomla\Component\Kunena\Libraries\Route\KunenaRoute::_('administrator/index.php?option=com_kunena&view=logs'); ?>"
 				      method="post" name="adminForm"
 				      id="adminForm">
 					<input type="hidden" name="task" value=""/>
@@ -247,10 +247,10 @@ $filterItem = $this->escape($this->state->get('item.id'));
 							foreach ($this->items as $item)
 								:
 								$date = new KunenaDate($item->time);
-								$user     = KunenaUserHelper::get($item->user_id);
-								$category = KunenaForumCategoryHelper::get($item->category_id);
-								$topic    = KunenaForumTopicHelper::get($item->topic_id);
-								$target   = KunenaUserHelper::get($item->target_user);
+								$user     = \Joomla\Component\Kunena\Libraries\User\Helper::get($item->user_id);
+								$category = \Joomla\Component\Kunena\Libraries\Forum\Category\Helper::get($item->category_id);
+								$topic    = \Joomla\Component\Kunena\Libraries\Forum\Topic\Helper::get($item->topic_id);
+								$target   = \Joomla\Component\Kunena\Libraries\User\Helper::get($item->target_user);
 
 								$document = Factory::getApplication()->getDocument();
 								// TODO : move this part of javascript outside of foreach
@@ -337,7 +337,7 @@ $filterItem = $this->escape($this->state->get('item.id'));
 												<div>
 													<textarea style="margin-top: -3000px"
 													          id="report_final<?php echo $item->id; ?>"
-													          for="report_final<?php echo $item->id; ?>"><?php echo KunenaHtmlParser::plainBBCode($item->data); ?></textarea>
+													          for="report_final<?php echo $item->id; ?>"><?php echo \Joomla\Component\Kunena\Libraries\Html\Parser::plainBBCode($item->data); ?></textarea>
 													<pre><?php echo json_encode(json_decode($item->data), JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) ?></pre>
 												</div>
 											</div>

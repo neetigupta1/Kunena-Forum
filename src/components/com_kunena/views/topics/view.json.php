@@ -35,24 +35,24 @@ class KunenaViewTopics extends KunenaView
 	 */
 	public function display($tpl = null)
 	{
-		list($count, $topics) = KunenaForumTopicHelper::getLatestTopics(false, 0, 55);
+		list($count, $topics) = \Joomla\Component\Kunena\Libraries\Forum\Topic\Helper::getLatestTopics(false, 0, 55);
 
-		$template = KunenaFactory::getTemplate();
+		$template = \Joomla\Component\Kunena\Libraries\KunenaFactory::getTemplate();
 		$list     = [];
 
 		foreach ($topics as $topic)
 		{
 			$lastuser = $topic->getLastPostAuthor()->userid;
-			$users    = KunenaUserHelper::get($lastuser);
+			$users    = \Joomla\Component\Kunena\Libraries\User\Helper::get($lastuser);
 
 			$response           = new stdClass;
 			$response->id       = $topic->id;
-			$response->subject  = KunenaHtmlParser::parseText($topic->subject);
+			$response->subject  = \Joomla\Component\Kunena\Libraries\Html\Parser::parseText($topic->subject);
 			$response->category = $topic->getCategory()->name;
 			$response->icon     = $topic->getIcon($topic->getCategory()->iconset);
-			$response->message  = KunenaHtmlParser::stripBBCode($topic->last_post_message);
+			$response->message  = \Joomla\Component\Kunena\Libraries\Html\Parser::stripBBCode($topic->last_post_message);
 			$response->started  = $topic->getFirstPostTime()->toKunena('config_post_dateformat');
-			$response->tooltip  = KunenaHtmlParser::stripBBCode($topic->last_post_message, 200, false);
+			$response->tooltip  = \Joomla\Component\Kunena\Libraries\Html\Parser::stripBBCode($topic->last_post_message, 200, false);
 			$response->author   = $topic->getLastPostAuthor()->username;
 			$response->avatar   = $topic->getLastPostAuthor()->getAvatarImage($template->params->get('avatarType'), 'thumb');
 			$response->rank     = $users->getRank($topic->getCategory()->id, 'title');

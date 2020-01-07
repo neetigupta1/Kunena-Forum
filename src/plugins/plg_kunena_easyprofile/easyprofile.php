@@ -10,13 +10,14 @@
  * @link            https://www.kunena.org
  **/
 
-namespace Joomla\Component\Kunena;
+namespace Joomla\Component\Kunena\Plugin\Kunena\Easyprofile;
 
 defined('_JEXEC') or die();
 
 use Joomla\CMS\Factory;
 use Joomla\CMS\Plugin\CMSPlugin;
 use Joomla\CMS\Plugin\PluginHelper;
+use Joomla\Component\Kunena\Libraries\Forum\Forum;
 use function defined;
 
 /**
@@ -37,7 +38,7 @@ class plgKunenaEasyprofile extends CMSPlugin
 	public function __construct(&$subject, $config)
 	{
 		// Do not load if Kunena version is not supported or Kunena is offline
-		if (!(class_exists('KunenaForum') && KunenaForum::isCompatible('3.0') && KunenaForum::installed()))
+		if (!(class_exists('KunenaForum') && Forum::isCompatible('3.0') && Forum::installed()))
 		{
 			return;
 		}
@@ -73,7 +74,7 @@ class plgKunenaEasyprofile extends CMSPlugin
 	/**
 	 * Get Kunena avatar integration object.
 	 *
-	 * @return  KunenaAvatarEasyprofile|void
+	 * @return  AvatarEasyprofile|void
 	 *
 	 * @since   Kunena 6.0
 	 */
@@ -86,7 +87,7 @@ class plgKunenaEasyprofile extends CMSPlugin
 
 		require_once __DIR__ . "/avatar.php";
 
-		return new KunenaAvatarEasyprofile($this->params);
+		return new AvatarEasyprofile($this->params);
 	}
 
 	/**

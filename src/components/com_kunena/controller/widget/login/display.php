@@ -135,7 +135,7 @@ class ComponentKunenaControllerWidgetLoginDisplay extends KunenaControllerDispla
 			return false;
 		}
 
-		$this->me   = KunenaUserHelper::getMyself();
+		$this->me   = \Joomla\Component\Kunena\Libraries\User\Helper::getMyself();
 		$this->name = ($this->me->exists() ? 'Widget/Login/Logout' : 'Widget/Login/Login');
 
 		$this->my = Factory::getApplication()->getIdentity();
@@ -151,7 +151,7 @@ class ComponentKunenaControllerWidgetLoginDisplay extends KunenaControllerDispla
 		{
 			$this->lastvisitDate = KunenaDate::getInstance($this->my->lastvisitDate);
 
-			$private = KunenaFactory::getPrivateMessaging();
+			$private = \Joomla\Component\Kunena\Libraries\KunenaFactory::getPrivateMessaging();
 
 			if ($private)
 			{
@@ -160,7 +160,7 @@ class ComponentKunenaControllerWidgetLoginDisplay extends KunenaControllerDispla
 				$this->pm_link         = $private->getInboxURL();
 			}
 
-			$profile = KunenaFactory::getProfile();
+			$profile = \Joomla\Component\Kunena\Libraries\KunenaFactory::getProfile();
 
 			$this->profile_edit_url = $profile->getEditProfileURL($this->me->userid);
 

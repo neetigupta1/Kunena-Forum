@@ -66,7 +66,7 @@ class KunenaAdminControllerTools extends KunenaController
 		if (!Session::checkToken('get'))
 		{
 			$this->app->enqueueMessage(Text::_('COM_KUNENA_ERROR_TOKEN'), 'error');
-			$this->setRedirect(KunenaRoute::_($this->baseurl, false));
+			$this->setRedirect(\Joomla\Component\Kunena\Libraries\Route\KunenaRoute::_($this->baseurl, false));
 
 			return;
 		}
@@ -93,7 +93,7 @@ class KunenaAdminControllerTools extends KunenaController
 			}
 		}
 
-		$this->setRedirect(KunenaRoute::_($this->baseurl . '&layout=diagnostics', false));
+		$this->setRedirect(\Joomla\Component\Kunena\Libraries\Route\KunenaRoute::_($this->baseurl . '&layout=diagnostics', false));
 	}
 
 	/**
@@ -111,7 +111,7 @@ class KunenaAdminControllerTools extends KunenaController
 		if (!Session::checkToken('post'))
 		{
 			$this->app->enqueueMessage(Text::_('COM_KUNENA_ERROR_TOKEN'), 'error');
-			$this->setRedirect(KunenaRoute::_($this->baseurl, false));
+			$this->setRedirect(\Joomla\Component\Kunena\Libraries\Route\KunenaRoute::_($this->baseurl, false));
 
 			return;
 		}
@@ -119,12 +119,12 @@ class KunenaAdminControllerTools extends KunenaController
 		$ids = $this->app->input->get('prune_forum', [], 'array');
 		$ids = ArrayHelper::toInteger($ids);
 
-		$categories = KunenaForumCategoryHelper::getCategories($ids, false, 'admin');
+		$categories = \Joomla\Component\Kunena\Libraries\Forum\Category\Helper::getCategories($ids, false, 'admin');
 
 		if (!$categories)
 		{
 			$this->app->enqueueMessage(Text::_('COM_KUNENA_CHOOSEFORUMTOPRUNE'), 'error');
-			$this->setRedirect(KunenaRoute::_($this->baseurl, false));
+			$this->setRedirect(\Joomla\Component\Kunena\Libraries\Route\KunenaRoute::_($this->baseurl, false));
 
 			return;
 		}
@@ -216,7 +216,7 @@ class KunenaAdminControllerTools extends KunenaController
 			);
 		}
 
-		$this->setRedirect(KunenaRoute::_($this->baseurl, false));
+		$this->setRedirect(\Joomla\Component\Kunena\Libraries\Route\KunenaRoute::_($this->baseurl, false));
 	}
 
 	/**
@@ -241,7 +241,7 @@ class KunenaAdminControllerTools extends KunenaController
 		if (!Session::checkToken('post'))
 		{
 			$this->app->enqueueMessage(Text::_('COM_KUNENA_ERROR_TOKEN'), 'error');
-			$this->setRedirect(KunenaRoute::_($this->baseurl, false));
+			$this->setRedirect(\Joomla\Component\Kunena\Libraries\Route\KunenaRoute::_($this->baseurl, false));
 
 			return;
 		}
@@ -363,7 +363,7 @@ class KunenaAdminControllerTools extends KunenaController
 			$this->app->enqueueMessage(Text::sprintf('COM_KUNENA_SYNC_USERS_RENAME_DONE', $db->getAffectedRows()));
 		}
 
-		$this->setRedirect(KunenaRoute::_($this->baseurl, false));
+		$this->setRedirect(\Joomla\Component\Kunena\Libraries\Route\KunenaRoute::_($this->baseurl, false));
 	}
 
 	/**
@@ -391,7 +391,7 @@ class KunenaAdminControllerTools extends KunenaController
 				],
 				$ajax
 			);
-			$this->setRedirect(KunenaRoute::_($this->baseurl, false));
+			$this->setRedirect(\Joomla\Component\Kunena\Libraries\Route\KunenaRoute::_($this->baseurl, false));
 
 			return;
 		}
@@ -432,7 +432,7 @@ class KunenaAdminControllerTools extends KunenaController
 		}
 
 		$token    = Session::getFormToken() . '=1';
-		$redirect = KunenaRoute::_("{$this->baseurl}&task=dorecount&i={$state->reload}&{$token}", false);
+		$redirect = \Joomla\Component\Kunena\Libraries\Route\KunenaRoute::_("{$this->baseurl}&task=dorecount&i={$state->reload}&{$token}", false);
 		$this->setResponse(
 			[
 				'success' => true,
@@ -507,7 +507,7 @@ class KunenaAdminControllerTools extends KunenaController
 				],
 				$ajax
 			);
-			$this->setRedirect(KunenaRoute::_($this->baseurl, false));
+			$this->setRedirect(\Joomla\Component\Kunena\Libraries\Route\KunenaRoute::_($this->baseurl, false));
 
 			return;
 		}
@@ -531,7 +531,7 @@ class KunenaAdminControllerTools extends KunenaController
 						{
 							// Update topic statistics
 							KunenaAttachmentHelper::cleanup();
-							KunenaForumTopicHelper::recount(false, $state->start, $state->start + $count);
+							\Joomla\Component\Kunena\Libraries\Forum\Topic\Helper::recount(false, $state->start, $state->start + $count);
 							$state->start += $count;
 							$msg          = Text::sprintf(
 								'COM_KUNENA_ADMIN_RECOUNT_TOPICS_X',
@@ -555,8 +555,8 @@ class KunenaAdminControllerTools extends KunenaController
 						if ($state->categories)
 						{
 							// Update category statistics
-							KunenaForumCategoryHelper::recount();
-							KunenaForumCategoryHelper::fixAliases();
+							\Joomla\Component\Kunena\Libraries\Forum\Category\Helper::recount();
+							\Joomla\Component\Kunena\Libraries\Forum\Category\Helper::fixAliases();
 							$msg = Text::sprintf('COM_KUNENA_ADMIN_RECOUNT_CATEGORIES_X', '100%');
 						}
 						break;
@@ -565,8 +565,8 @@ class KunenaAdminControllerTools extends KunenaController
 						{
 							// Update user statistics
 							KunenaForumMessageThankyouHelper::recountThankyou();
-							KunenaUserHelper::recount();
-							KunenaUserHelper::recountPostsNull();
+							\Joomla\Component\Kunena\Libraries\User\Helper::recount();
+							\Joomla\Component\Kunena\Libraries\User\Helper::recountPostsNull();
 							$msg = Text::sprintf('COM_KUNENA_ADMIN_RECOUNT_USERS_X', '100%');
 						}
 						break;
@@ -591,7 +591,7 @@ class KunenaAdminControllerTools extends KunenaController
 							],
 							$ajax
 						);
-						$this->setRedirect(KunenaRoute::_($this->baseurl, false), $header);
+						$this->setRedirect(\Joomla\Component\Kunena\Libraries\Route\KunenaRoute::_($this->baseurl, false), $header);
 
 						return;
 				}
@@ -633,7 +633,7 @@ class KunenaAdminControllerTools extends KunenaController
 		}
 
 		$token    = Session::getFormToken() . '=1';
-		$redirect = KunenaRoute::_("{$this->baseurl}&task=dorecount&i={$state->reload}&{$token}", false);
+		$redirect = \Joomla\Component\Kunena\Libraries\Route\KunenaRoute::_("{$this->baseurl}&task=dorecount&i={$state->reload}&{$token}", false);
 		$this->setResponse(
 			[
 				'success' => true,
@@ -699,7 +699,7 @@ class KunenaAdminControllerTools extends KunenaController
 		$installer->createMenu();
 
 		$this->app->enqueueMessage(Text::_('COM_KUNENA_MENU_CREATED'));
-		$this->setRedirect(KunenaRoute::_($this->baseurl, false));
+		$this->setRedirect(\Joomla\Component\Kunena\Libraries\Route\KunenaRoute::_($this->baseurl, false));
 	}
 
 	/**
@@ -717,7 +717,7 @@ class KunenaAdminControllerTools extends KunenaController
 		if (!Session::checkToken('post'))
 		{
 			$this->app->enqueueMessage(Text::_('COM_KUNENA_ERROR_TOKEN'), 'error');
-			$this->setRedirect(KunenaRoute::_($this->baseurl, false));
+			$this->setRedirect(\Joomla\Component\Kunena\Libraries\Route\KunenaRoute::_($this->baseurl, false));
 
 			return;
 		}
@@ -734,7 +734,7 @@ class KunenaAdminControllerTools extends KunenaController
 			$this->app->enqueueMessage(Text::sprintf('COM_KUNENA_MENU_FIXED_LEGACY', count($legacy)));
 		}
 
-		$this->setRedirect(KunenaRoute::_($this->baseurl, false));
+		$this->setRedirect(\Joomla\Component\Kunena\Libraries\Route\KunenaRoute::_($this->baseurl, false));
 	}
 
 	/**
@@ -752,7 +752,7 @@ class KunenaAdminControllerTools extends KunenaController
 		if (!Session::checkToken('post'))
 		{
 			$this->app->enqueueMessage(Text::_('COM_KUNENA_ERROR_TOKEN'), 'error');
-			$this->setRedirect(KunenaRoute::_($this->baseurl, false));
+			$this->setRedirect(\Joomla\Component\Kunena\Libraries\Route\KunenaRoute::_($this->baseurl, false));
 
 			return;
 		}
@@ -786,18 +786,18 @@ class KunenaAdminControllerTools extends KunenaController
 			if ($count > 0)
 			{
 				$this->app->enqueueMessage(Text::sprintf('COM_KUNENA_MENU_RE_PURGED', $count, $re_string));
-				$this->setRedirect(KunenaRoute::_($this->baseurl, false));
+				$this->setRedirect(\Joomla\Component\Kunena\Libraries\Route\KunenaRoute::_($this->baseurl, false));
 			}
 			else
 			{
 				$this->app->enqueueMessage(Text::sprintf('COM_KUNENA_MENU_RE_PURGE_FAILED', $re_string));
-				$this->setRedirect(KunenaRoute::_($this->baseurl, false));
+				$this->setRedirect(\Joomla\Component\Kunena\Libraries\Route\KunenaRoute::_($this->baseurl, false));
 			}
 		}
 		else
 		{
 			$this->app->enqueueMessage(Text::_('COM_KUNENA_MENU_RE_PURGE_FORGOT_STATEMENT'));
-			$this->setRedirect(KunenaRoute::_($this->baseurl, false));
+			$this->setRedirect(\Joomla\Component\Kunena\Libraries\Route\KunenaRoute::_($this->baseurl, false));
 		}
 	}
 
@@ -816,7 +816,7 @@ class KunenaAdminControllerTools extends KunenaController
 		if (!Session::checkToken('post'))
 		{
 			$this->app->enqueueMessage(Text::_('COM_KUNENA_ERROR_TOKEN'), 'error');
-			$this->setRedirect(KunenaRoute::_($this->baseurl, false));
+			$this->setRedirect(\Joomla\Component\Kunena\Libraries\Route\KunenaRoute::_($this->baseurl, false));
 
 			return;
 		}
@@ -885,12 +885,12 @@ class KunenaAdminControllerTools extends KunenaController
 		if ($count > 0)
 		{
 			$this->app->enqueueMessage(Text::sprintf('COM_KUNENA_TOOLS_CLEANUP_IP_DONE', $count));
-			$this->setRedirect(KunenaRoute::_($this->baseurl, false));
+			$this->setRedirect(\Joomla\Component\Kunena\Libraries\Route\KunenaRoute::_($this->baseurl, false));
 		}
 		else
 		{
 			$this->app->enqueueMessage(Text::_('COM_KUNENA_TOOLS_CLEANUP_IP_FAILED'));
-			$this->setRedirect(KunenaRoute::_($this->baseurl, false));
+			$this->setRedirect(\Joomla\Component\Kunena\Libraries\Route\KunenaRoute::_($this->baseurl, false));
 		}
 	}
 
@@ -906,7 +906,7 @@ class KunenaAdminControllerTools extends KunenaController
 	 */
 	public function cancel()
 	{
-		$this->app->redirect(KunenaRoute::_($this->baseurl, false));
+		$this->app->redirect(\Joomla\Component\Kunena\Libraries\Route\KunenaRoute::_($this->baseurl, false));
 	}
 
 	/**
@@ -924,7 +924,7 @@ class KunenaAdminControllerTools extends KunenaController
 		if (!Session::checkToken('post'))
 		{
 			$this->app->enqueueMessage(Text::_('COM_KUNENA_ERROR_TOKEN'), 'error');
-			$this->setRedirect(KunenaRoute::_($this->baseurl, false));
+			$this->setRedirect(\Joomla\Component\Kunena\Libraries\Route\KunenaRoute::_($this->baseurl, false));
 
 			return;
 		}
@@ -941,7 +941,7 @@ class KunenaAdminControllerTools extends KunenaController
 			if (empty($code) || $code == 0)
 			{
 				$this->app->enqueueMessage(Text::_('COM_KUNENA_TOOLS_UNINSTALL_LOGIN_SECRETKEY_INVALID'));
-				$this->setRedirect(KunenaRoute::_($this->baseurl, false));
+				$this->setRedirect(\Joomla\Component\Kunena\Libraries\Route\KunenaRoute::_($this->baseurl, false));
 			}
 		}
 
@@ -955,13 +955,13 @@ class KunenaAdminControllerTools extends KunenaController
 		{
 			$this->app->setUserState('com_kunena.uninstall.allowed', true);
 
-			$this->setRedirect(KunenaRoute::_('administrator/index.php?option=com_kunena&view=uninstall&' . Session::getFormToken() . '=1', false));
+			$this->setRedirect(\Joomla\Component\Kunena\Libraries\Route\KunenaRoute::_('administrator/index.php?option=com_kunena&view=uninstall&' . Session::getFormToken() . '=1', false));
 
 			return;
 		}
 
 		$this->app->enqueueMessage(Text::_('COM_KUNENA_TOOLS_UNINSTALL_LOGIN_FAILED'));
-		$this->setRedirect(KunenaRoute::_($this->baseurl, false));
+		$this->setRedirect(\Joomla\Component\Kunena\Libraries\Route\KunenaRoute::_($this->baseurl, false));
 	}
 
 	/**
@@ -976,6 +976,6 @@ class KunenaAdminControllerTools extends KunenaController
 	 */
 	public function systemreport()
 	{
-		$this->setRedirect(KunenaRoute::_($this->baseurl, false));
+		$this->setRedirect(\Joomla\Component\Kunena\Libraries\Route\KunenaRoute::_($this->baseurl, false));
 	}
 }

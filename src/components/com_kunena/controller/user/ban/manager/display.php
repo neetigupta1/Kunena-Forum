@@ -68,7 +68,7 @@ class ComponentKunenaControllerUserBanManagerDisplay extends KunenaControllerDis
 	{
 		parent::before();
 
-		$this->me = KunenaUserHelper::getMyself();
+		$this->me = \Joomla\Component\Kunena\Libraries\User\Helper::getMyself();
 
 		// TODO: add authorisation
 		// TODO: add pagination
@@ -76,7 +76,7 @@ class ComponentKunenaControllerUserBanManagerDisplay extends KunenaControllerDis
 
 		if (!empty($this->userBans))
 		{
-			KunenaUserHelper::loadUsers(array_keys($this->userBans));
+			\Joomla\Component\Kunena\Libraries\User\Helper::loadUsers(array_keys($this->userBans));
 		}
 
 		$this->headerText = Text::_('COM_KUNENA_BAN_BANMANAGER');

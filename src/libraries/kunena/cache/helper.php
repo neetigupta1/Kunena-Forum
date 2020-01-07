@@ -97,7 +97,7 @@ abstract class Helper
 	 */
 	public static function clearAccess()
 	{
-		KunenaAccess::getInstance()->clearCache();
+		\Joomla\Component\Kunena\Libraries\Access::getInstance()->clearCache();
 	}
 
 	/**

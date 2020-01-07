@@ -79,8 +79,8 @@ class TableKunenaUserRead extends KunenaTable
 	 */
 	public function check()
 	{
-		$user  = KunenaUserHelper::get($this->user_id);
-		$topic = KunenaForumTopicHelper::get($this->topic_id);
+		$user  = \Joomla\Component\Kunena\Libraries\User\Helper::get($this->user_id);
+		$topic = \Joomla\Component\Kunena\Libraries\Forum\Topic\Helper::get($this->topic_id);
 
 		if (!$user->exists())
 		{

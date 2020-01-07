@@ -562,7 +562,7 @@ class Attachment extends KunenaDatabaseObject
 		$thumb    = $thumb ? '&thumb=1' : '';
 		$download = $inline ? '' : '&download=1';
 
-		$url = KunenaRoute::_("index.php?option=com_kunena&view=attachment&id={$this->id}{$thumb}{$download}&format=raw", $escape);
+		$url = \Joomla\Component\Kunena\Libraries\Route\KunenaRoute::_("index.php?option=com_kunena&view=attachment&id={$this->id}{$thumb}{$download}&format=raw", $escape);
 
 		if (CMSApplication::getInstance('site')->get('sef_suffix'))
 		{
@@ -639,7 +639,7 @@ class Attachment extends KunenaDatabaseObject
 	 */
 	public function getAuthor()
 	{
-		return KunenaUserHelper::get($this->userid);
+		return \Joomla\Component\Kunena\Libraries\User\Helper::get($this->userid);
 	}
 
 	/**
@@ -683,7 +683,7 @@ class Attachment extends KunenaDatabaseObject
 		// Load user if not given.
 		if ($user === null)
 		{
-			$user = KunenaUserHelper::getMyself();
+			$user = \Joomla\Component\Kunena\Libraries\User\Helper::getMyself();
 		}
 
 		// Unknown action - throw invalid argument exception.
@@ -777,7 +777,7 @@ class Attachment extends KunenaDatabaseObject
 	 */
 	public function upload($key = 'kattachment', $catid = null)
 	{
-		$config    = KunenaFactory::getConfig();
+		$config    = \Joomla\Component\Kunena\Libraries\KunenaFactory::getConfig();
 		$input     = Factory::getApplication()->input;
 		$fileInput = $input->files->get($key, null, 'raw');
 
@@ -831,7 +831,7 @@ class Attachment extends KunenaDatabaseObject
 
 			if (stripos($type, 'image/') !== false)
 			{
-				$imageInfo = KunenaImage::getImageFileProperties($uploadBasePath . $fileNameWithExt);
+				$imageInfo = \Joomla\Component\Kunena\Libraries\Image\KunenaImage::getImageFileProperties($uploadBasePath . $fileNameWithExt);
 
 				if (number_format($file->size / 1024, 2) > $config->imagesize || $imageInfo->width > $config->imagewidth || $imageInfo->height > $config->imageheight)
 				{
@@ -906,7 +906,7 @@ class Attachment extends KunenaDatabaseObject
 		}
 
 		// Hash, size and MIME are set during saving, so let's deal with all other variables.
-		$this->userid = is_null($this->userid) ? KunenaUserHelper::getMyself() : $this->userid;
+		$this->userid = is_null($this->userid) ? \Joomla\Component\Kunena\Libraries\User\Helper::getMyself() : $this->userid;
 		$this->folder = is_null($this->folder) ? "media/kunena/attachments/{$this->userid}" : $this->folder;
 
 		if (!$this->filename_real)

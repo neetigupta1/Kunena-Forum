@@ -99,7 +99,7 @@ abstract class Module
 		}
 
 		// Initialize Kunena.
-		KunenaForum::setup();
+		\Joomla\Component\Kunena\Libraries\Forum\Forum::setup();
 
 		// Display module.
 		$this->_display();

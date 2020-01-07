@@ -45,7 +45,7 @@ class KunenaModelUser extends KunenaModel
 		$display = $this->getUserStateFromRequest('com_kunena.users_display', 'display', 'topics');
 		$this->setState('display', $display);
 
-		$config = KunenaFactory::getConfig();
+		$config = \Joomla\Component\Kunena\Libraries\KunenaFactory::getConfig();
 
 		// List state information
 		$limit = $this->getUserStateFromRequest("com_kunena.users_{$active}_list_limit", 'limit', $config->get('userlist_rows'), 'int');
@@ -98,7 +98,7 @@ class KunenaModelUser extends KunenaModel
 		$where = '';
 
 		// Hide super admins from the list
-		if (KunenaFactory::getConfig()->superadmin_userlist)
+		if (\Joomla\Component\Kunena\Libraries\KunenaFactory::getConfig()->superadmin_userlist)
 		{
 			$db    = Factory::getDBO();
 			$query = $db->getQuery(true);
@@ -194,7 +194,7 @@ class KunenaModelUser extends KunenaModel
 			}
 			catch (ExecutionFailureException $e)
 			{
-				KunenaError::displayDatabaseError($e);
+				\Joomla\Component\Kunena\Libraries\Error::displayDatabaseError($e);
 			}
 		}
 
@@ -231,7 +231,7 @@ class KunenaModelUser extends KunenaModel
 			}
 			catch (ExecutionFailureException $e)
 			{
-				KunenaError::displayDatabaseError($e);
+				\Joomla\Component\Kunena\Libraries\Error::displayDatabaseError($e);
 			}
 		}
 
@@ -306,11 +306,11 @@ class KunenaModelUser extends KunenaModel
 			}
 			catch (ExecutionFailureException $e)
 			{
-				KunenaError::displayDatabaseError($e);
+				\Joomla\Component\Kunena\Libraries\Error::displayDatabaseError($e);
 			}
 
 			// Prefetch all users/avatars to avoid user by user queries during template iterations
-			$items = KunenaUserHelper::loadUsers($items);
+			$items = \Joomla\Component\Kunena\Libraries\User\Helper::loadUsers($items);
 		}
 
 		return $items;

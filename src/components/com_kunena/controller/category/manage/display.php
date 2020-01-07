@@ -88,7 +88,7 @@ class ComponentKunenaControllerCategoryManageDisplay extends KunenaControllerDis
 	 */
 	protected function before()
 	{
-		$this->me = KunenaUserHelper::getMyself();
+		$this->me = \Joomla\Component\Kunena\Libraries\User\Helper::getMyself();
 
 		if (!$this->me->isAdmin())
 		{
@@ -101,11 +101,11 @@ class ComponentKunenaControllerCategoryManageDisplay extends KunenaControllerDis
 
 		$catid = $this->input->getInt('catid');
 
-		KunenaFactory::loadLanguage('com_kunena.models', 'admin');
-		KunenaFactory::loadLanguage('com_kunena.views', 'admin');
-		KunenaFactory::loadLanguage('com_kunena', 'admin');
+		\Joomla\Component\Kunena\Libraries\KunenaFactory::loadLanguage('com_kunena.models', 'admin');
+		\Joomla\Component\Kunena\Libraries\KunenaFactory::loadLanguage('com_kunena.views', 'admin');
+		\Joomla\Component\Kunena\Libraries\KunenaFactory::loadLanguage('com_kunena', 'admin');
 
-		$this->category = KunenaForumCategoryHelper::get($catid);
+		$this->category = \Joomla\Component\Kunena\Libraries\Forum\Category\Helper::get($catid);
 		$this->category->tryAuthorise();
 
 		$category = $this->category;
@@ -173,8 +173,8 @@ class ComponentKunenaControllerCategoryManageDisplay extends KunenaControllerDis
 		$cat_params = ['sections' => 1, 'catid' => 0];
 
 		$lists                     = [];
-		$lists ['accesstypes']     = KunenaAccess::getInstance()->getAccessTypesList($category);
-		$lists ['accesslists']     = KunenaAccess::getInstance()->getAccessOptions($category);
+		$lists ['accesstypes']     = \Joomla\Component\Kunena\Libraries\Access::getInstance()->getAccessTypesList($category);
+		$lists ['accesslists']     = \Joomla\Component\Kunena\Libraries\Access::getInstance()->getAccessOptions($category);
 		$lists ['categories']      = HTMLHelper::_('kunenaforum.categorylist', 'parent_id', 0, null, $cat_params, 'class="inputbox form-control"', 'value', 'text', $category->parent_id);
 		$lists ['channels']        = HTMLHelper::_('kunenaforum.categorylist', 'channels[]', 0, $channels_options, $channels_params, 'class="inputbox form-control" multiple="multiple"', 'value', 'text', explode(',', $category->channels));
 		$lists ['aliases']         = $aliases ? HTMLHelper::_('kunenaforum.checklist', 'aliases', $aliases, true, 'category_aliases') : null;
@@ -208,7 +208,7 @@ class ComponentKunenaControllerCategoryManageDisplay extends KunenaControllerDis
 
 		if (empty($category->iconset))
 		{
-			$value = KunenaTemplate::getInstance()->params->get('DefaultIconset');
+			$value = \Joomla\Component\Kunena\Libraries\Template\Template::getInstance()->params->get('DefaultIconset');
 		}
 		else
 		{

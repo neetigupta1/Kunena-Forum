@@ -65,10 +65,10 @@ abstract class Error
 	 */
 	public static function initialize()
 	{
-		if (!self::$enabled && !KunenaForum::isDev())
+		if (!self::$enabled && !\Joomla\Component\Kunena\Libraries\Forum\Forum::isDev())
 		{
 			self::$format = Factory::getApplication()->input->getWord('format', 'html');
-			self::$debug  = JDEBUG || KunenaFactory::getConfig()->debug;
+			self::$debug  = JDEBUG || \Joomla\Component\Kunena\Libraries\KunenaFactory::getConfig()->debug;
 			self::$admin  = Factory::getApplication()->isClient('administrator');
 
 			// Make sure we are able to log fatal errors.
@@ -162,12 +162,12 @@ abstract class Error
 		{
 			$app->enqueueMessage('Exception throw at line ' . $exception->getLine() . ' in file ' . $exception->getFile() . ' with message ' . $exception->getMessage(), 'error');
 		}
-		elseif (!JDEBUG && !KunenaFactory::getConfig()->debug && !self::$admin)
+		elseif (!JDEBUG && !\Joomla\Component\Kunena\Libraries\KunenaFactory::getConfig()->debug && !self::$admin)
 		{
 			$app->enqueueMessage('Kunena ' . Text::sprintf('COM_KUNENA_INTERNAL_ERROR_ADMIN',
 					'<a href="https://www.kunena.org/">www.kunena.org</a>'), 'error');
 		}
-		elseif (KunenaFactory::getUser()->isAdmin() && Factory::getApplication()->isClient('site'))
+		elseif (\Joomla\Component\Kunena\Libraries\KunenaFactory::getUser()->isAdmin() && Factory::getApplication()->isClient('site'))
 		{
 			$app->enqueueMessage('Exception throw at line ' . $exception->getLine() . ' in file ' . $exception->getFile() . ' with message ' . $exception->getMessage(), 'error');
 		}

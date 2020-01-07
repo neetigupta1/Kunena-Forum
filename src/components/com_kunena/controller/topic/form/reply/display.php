@@ -60,12 +60,12 @@ class ComponentKunenaControllerTopicFormReplyDisplay extends KunenaControllerDis
 
 		$saved = $this->app->getUserState('com_kunena.postfields');
 
-		$this->me       = KunenaUserHelper::getMyself();
-		$this->template = KunenaFactory::getTemplate();
+		$this->me       = \Joomla\Component\Kunena\Libraries\User\Helper::getMyself();
+		$this->template = \Joomla\Component\Kunena\Libraries\KunenaFactory::getTemplate();
 
 		if (!$mesid)
 		{
-			$this->topic = KunenaForumTopicHelper::get($id);
+			$this->topic = \Joomla\Component\Kunena\Libraries\Forum\Topic\Helper::get($id);
 			$parent      = KunenaForumMessageHelper::get($this->topic->first_post_id);
 		}
 		else
@@ -105,7 +105,7 @@ class ComponentKunenaControllerTopicFormReplyDisplay extends KunenaControllerDis
 
 		if ($parent->isAuthorised('reply') && $this->me->canDoCaptcha())
 		{
-			$this->captchaDisplay = KunenaTemplate::getInstance()->recaptcha();
+			$this->captchaDisplay = \Joomla\Component\Kunena\Libraries\Template\Template::getInstance()->recaptcha();
 			$this->captchaEnabled = true;
 		}
 		else
@@ -116,7 +116,7 @@ class ComponentKunenaControllerTopicFormReplyDisplay extends KunenaControllerDis
 		$parent->tryAuthorise('reply');
 
 		$arraypollcatid = [];
-		KunenaTemplate::getInstance()->addScriptOptions('com_kunena.pollcategoriesid', json_encode($arraypollcatid));
+		\Joomla\Component\Kunena\Libraries\Template\Template::getInstance()->addScriptOptions('com_kunena.pollcategoriesid', json_encode($arraypollcatid));
 
 		// Run event.
 		$params = new Registry;

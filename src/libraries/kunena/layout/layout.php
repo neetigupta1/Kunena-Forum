@@ -83,7 +83,7 @@ class Layout extends Base
 	 */
 	public function render($layout = null)
 	{
-		KUNENA_PROFILER ? KunenaProfiler::instance()->start("render layout '{$this->_name}'") : null;
+		KUNENA_PROFILER ? \Joomla\Component\Kunena\Libraries\KunenaProfiler::instance()->start("render layout '{$this->_name}'") : null;
 
 		try
 		{
@@ -96,11 +96,11 @@ class Layout extends Base
 		}
 		catch (Exception $e)
 		{
-			KUNENA_PROFILER ? KunenaProfiler::instance()->stop("render layout '{$this->_name}'") : null;
+			KUNENA_PROFILER ? \Joomla\Component\Kunena\Libraries\KunenaProfiler::instance()->stop("render layout '{$this->_name}'") : null;
 			throw $e;
 		}
 
-		KUNENA_PROFILER ? KunenaProfiler::instance()->stop("render layout '{$this->_name}'") : null;
+		KUNENA_PROFILER ? \Joomla\Component\Kunena\Libraries\KunenaProfiler::instance()->stop("render layout '{$this->_name}'") : null;
 
 		return $output;
 	}
@@ -121,7 +121,7 @@ class Layout extends Base
 	 */
 	public function getButton($link, $name, $scope, $type, $id = null)
 	{
-		return KunenaFactory::getTemplate()->getButton(KunenaRoute::_($link), $name, $scope, $type, $id);
+		return \Joomla\Component\Kunena\Libraries\KunenaFactory::getTemplate()->getButton(\Joomla\Component\Kunena\Libraries\Route\KunenaRoute::_($link), $name, $scope, $type, $id);
 	}
 
 	/**
@@ -136,7 +136,7 @@ class Layout extends Base
 	 */
 	public function getIcon($name, $title = '')
 	{
-		return KunenaFactory::getTemplate()->getIcon($name, $title);
+		return \Joomla\Component\Kunena\Libraries\KunenaFactory::getTemplate()->getIcon($name, $title);
 	}
 
 	/**
@@ -179,7 +179,7 @@ class Layout extends Base
 	}
 
 	/**
-	 * @param   KunenaForumCategory  $category   category
+	 * @param  \Joomla\Component\Kunena\Libraries\Forum\Category\Category  $category   category
 	 * @param   null                 $content    content
 	 * @param   null                 $title      title
 	 * @param   null                 $class      class
@@ -195,7 +195,7 @@ class Layout extends Base
 	 */
 	public function getCategoryLink(KunenaForumCategory $category, $content = null, $title = null, $class = null, $follow = true, $canonical = null)
 	{
-		KUNENA_PROFILER ? KunenaProfiler::instance()->start('function ' . __CLASS__ . '::' . __FUNCTION__ . '()') : null;
+		KUNENA_PROFILER ? \Joomla\Component\Kunena\Libraries\KunenaProfiler::instance()->start('function ' . __CLASS__ . '::' . __FUNCTION__ . '()') : null;
 
 		if (!$content)
 		{
@@ -238,7 +238,7 @@ class Layout extends Base
 
 		$link = HTMLHelper::_('kunenaforum.link', $category->getUrl(), $content, $title, $class, $con);
 
-		KUNENA_PROFILER ? KunenaProfiler::instance()->stop('function ' . __CLASS__ . '::' . __FUNCTION__ . '()') : null;
+		KUNENA_PROFILER ? \Joomla\Component\Kunena\Libraries\KunenaProfiler::instance()->stop('function ' . __CLASS__ . '::' . __FUNCTION__ . '()') : null;
 
 		return $link;
 	}
@@ -249,7 +249,7 @@ class Layout extends Base
 	 * @param   null                 $content    content
 	 * @param   null                 $title      title
 	 * @param   null                 $class      class
-	 * @param   KunenaForumCategory  $category   category
+	 * @param  \Joomla\Component\Kunena\Libraries\Forum\Category\Category  $category   category
 	 * @param   bool                 $follow     follow
 	 * @param   bool                 $canonical  canonical
 	 *
@@ -262,41 +262,41 @@ class Layout extends Base
 	 */
 	public function getTopicLink(KunenaForumTopic $topic, $action = null, $content = null, $title = null, $class = null, KunenaForumCategory $category = null, $follow = true, $canonical = false)
 	{
-		KUNENA_PROFILER ? KunenaProfiler::instance()->start('function ' . __CLASS__ . '::' . __FUNCTION__ . '()') : null;
+		KUNENA_PROFILER ? \Joomla\Component\Kunena\Libraries\KunenaProfiler::instance()->start('function ' . __CLASS__ . '::' . __FUNCTION__ . '()') : null;
 
 		$url = $topic->getUrl($category ? $category : (isset($this->category) ? $this->category : $topic->getCategory()), true, $action);
 
 		if (!$content)
 		{
-			$content = KunenaHtmlParser::parseText($topic->subject);
+			$content = \Joomla\Component\Kunena\Libraries\Html\Parser::parseText($topic->subject);
 		}
 
 		if ($title === null)
 		{
 			if ($action instanceof KunenaForumMessage)
 			{
-				$title = KunenaHtmlParser::stripBBCode($topic->first_post_message, 200, false);
+				$title = \Joomla\Component\Kunena\Libraries\Html\Parser::stripBBCode($topic->first_post_message, 200, false);
 			}
 			else
 			{
 				switch ($action)
 				{
 					case 'first':
-						$title = KunenaHtmlParser::stripBBCode($topic->first_post_message, 200, false);
+						$title = \Joomla\Component\Kunena\Libraries\Html\Parser::stripBBCode($topic->first_post_message, 200, false);
 						break;
 					case 'unread':
 					case 'last':
-						if (!KunenaUserHelper::getMyself()->userid && Config::getInstance()->teaser)
+						if (!\Joomla\Component\Kunena\Libraries\User\Helper::getMyself()->userid && Config::getInstance()->teaser)
 						{
-							$title = KunenaHtmlParser::stripBBCode($topic->first_post_message, 200, false);
+							$title = \Joomla\Component\Kunena\Libraries\Html\Parser::stripBBCode($topic->first_post_message, 200, false);
 						}
 						else
 						{
-							$title = KunenaHtmlParser::stripBBCode($topic->last_post_message, 200, false);
+							$title = \Joomla\Component\Kunena\Libraries\Html\Parser::stripBBCode($topic->last_post_message, 200, false);
 						}
 						break;
 					default:
-						$title = KunenaHtmlParser::stripBBCode($topic->first_post_message, 200, false);
+						$title = \Joomla\Component\Kunena\Libraries\Html\Parser::stripBBCode($topic->first_post_message, 200, false);
 				}
 			}
 
@@ -332,7 +332,7 @@ class Layout extends Base
 
 		$link = HTMLHelper::_('kunenaforum.link', $url, $content, $title, $class, $con);
 
-		KUNENA_PROFILER ? KunenaProfiler::instance()->stop('function ' . __CLASS__ . '::' . __FUNCTION__ . '()') : null;
+		KUNENA_PROFILER ? \Joomla\Component\Kunena\Libraries\KunenaProfiler::instance()->stop('function ' . __CLASS__ . '::' . __FUNCTION__ . '()') : null;
 
 		return $link;
 	}
@@ -368,18 +368,18 @@ class Layout extends Base
 		{
 			if (Config::getInstance()->disable_re)
 			{
-				$content = KunenaHtmlParser::parseText($lastTopic->subject, $length);
+				$content = \Joomla\Component\Kunena\Libraries\Html\Parser::parseText($lastTopic->subject, $length);
 			}
 			else
 			{
 				$content = $lastTopic->first_post_id != $lastTopic->last_post_id ? Text::_('COM_KUNENA_RE') . ' ' : '';
-				$content .= KunenaHtmlParser::parseText($lastTopic->subject, $length);
+				$content .= \Joomla\Component\Kunena\Libraries\Html\Parser::parseText($lastTopic->subject, $length);
 			}
 		}
 
 		if ($title === null)
 		{
-			$title = KunenaHtmlParser::stripBBCode($lastTopic->last_post_message, 200, false);
+			$title = \Joomla\Component\Kunena\Libraries\Html\Parser::stripBBCode($lastTopic->last_post_message, 200, false);
 
 			if (strpos($class, 'hasTooltip') !== false)
 			{

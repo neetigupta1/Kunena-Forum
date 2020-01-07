@@ -84,9 +84,9 @@ class ComponentKunenaControllerUserEditAvatarDisplay extends ComponentKunenaCont
 	{
 		parent::before();
 
-		$avatar = KunenaFactory::getAvatarIntegration();
+		$avatar = \Joomla\Component\Kunena\Libraries\KunenaFactory::getAvatarIntegration();
 
-		if (!($avatar instanceof KunenaAvatarKunena))
+		if (!($avatar instanceof \Joomla\Component\Kunena\Libraries\Integration\Avatar))
 		{
 			throw new KunenaExceptionAuthorise(Text::_('COM_KUNENA_AUTH_ERROR_USER_EDIT_AVATARS'), 404);
 		}

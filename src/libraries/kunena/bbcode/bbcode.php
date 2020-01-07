@@ -143,7 +143,7 @@ class KunenaBbcode extends BBCode
 		$url  = $params['url'];
 		$text = $params['text'];
 
-		$config = KunenaFactory::getConfig();
+		$config = \Joomla\Component\Kunena\Libraries\KunenaFactory::getConfig();
 
 		if ($config->autolink)
 		{
@@ -1093,7 +1093,7 @@ class KunenaBBCodeLibrary extends BBCodeLibrary
 	 */
 	public function __construct()
 	{
-		if (!KunenaFactory::getConfig()->disemoticons)
+		if (!\Joomla\Component\Kunena\Libraries\KunenaFactory::getConfig()->disemoticons)
 		{
 			$db    = Factory::getDBO();
 			$query = $db->getQuery(true);
@@ -1102,7 +1102,7 @@ class KunenaBBCodeLibrary extends BBCodeLibrary
 			$db->setQuery($query);
 			$smileys = $db->loadObjectList();
 
-			$template = KunenaFactory::getTemplate();
+			$template = \Joomla\Component\Kunena\Libraries\KunenaFactory::getTemplate();
 
 			foreach ($smileys as $smiley)
 			{
@@ -1127,7 +1127,7 @@ class KunenaBBCodeLibrary extends BBCodeLibrary
 	 */
 	public static function getEbayItem($ItemID)
 	{
-		$config = KunenaFactory::getConfig();
+		$config = \Joomla\Component\Kunena\Libraries\KunenaFactory::getConfig();
 
 		if (is_numeric($ItemID) && $config->ebay_api_key && ini_get('allow_url_fopen'))
 		{
@@ -1606,7 +1606,7 @@ class KunenaBBCodeLibrary extends BBCodeLibrary
 			return '';
 		}
 
-		$me = KunenaUserHelper::getMyself();
+		$me = \Joomla\Component\Kunena\Libraries\User\Helper::getMyself();
 
 		if (!Factory::getApplication()->getIdentity()->guest)
 		{
@@ -1664,7 +1664,7 @@ class KunenaBBCodeLibrary extends BBCodeLibrary
 			return '';
 		}
 
-		$me        = KunenaUserHelper::getMyself();
+		$me        = \Joomla\Component\Kunena\Libraries\User\Helper::getMyself();
 		$message   = $this->getMessage();
 		$moderator = $me->userid && $me->isModerator($message ? $message->getCategory() : null);
 
@@ -1749,12 +1749,12 @@ class KunenaBBCodeLibrary extends BBCodeLibrary
 			return false;
 		}
 
-		$config = KunenaFactory::getTemplate()->params;
+		$config = \Joomla\Component\Kunena\Libraries\KunenaFactory::getTemplate()->params;
 
 		$document = Factory::getApplication()->getDocument();
 
 		// Display only link in activity streams etc..
-		if (!empty($bbcode->parent->forceMinimal) || !($document instanceof HtmlDocument) || KunenaFactory::getTemplate()->isHmvc() && !$config->get('maps'))
+		if (!empty($bbcode->parent->forceMinimal) || !($document instanceof HtmlDocument) || \Joomla\Component\Kunena\Libraries\KunenaFactory::getTemplate()->isHmvc() && !$config->get('maps'))
 		{
 			$url = 'https://maps.google.com/?q=' . urlencode($bbcode->UnHTMLEncode($content));
 
@@ -1765,7 +1765,7 @@ class KunenaBBCodeLibrary extends BBCodeLibrary
 
 		$layout = KunenaLayout::factory('BBCode/Map');
 
-		$kunena_config = KunenaFactory::getConfig();
+		$kunena_config = \Joomla\Component\Kunena\Libraries\KunenaFactory::getConfig();
 
 		if ($layout->getPath())
 		{
@@ -1798,14 +1798,14 @@ class KunenaBBCodeLibrary extends BBCodeLibrary
 			return true;
 		}
 
-		$config = KunenaFactory::getTemplate()->params;
+		$config = \Joomla\Component\Kunena\Libraries\KunenaFactory::getTemplate()->params;
 
-		if (KunenaFactory::getTemplate()->isHmvc() && !$config->get('ebay'))
+		if (\Joomla\Component\Kunena\Libraries\KunenaFactory::getTemplate()->isHmvc() && !$config->get('ebay'))
 		{
 			return false;
 		}
 
-		$config = KunenaFactory::getConfig();
+		$config = \Joomla\Component\Kunena\Libraries\KunenaFactory::getConfig();
 
 		// Display tag in activity streams etc..
 		if (!empty($bbcode->parent->forceMinimal))
@@ -1829,7 +1829,7 @@ class KunenaBBCodeLibrary extends BBCodeLibrary
 	 */
 	public static function renderEbayLayout($ItemID)
 	{
-		$config = KunenaFactory::getConfig();
+		$config = \Joomla\Component\Kunena\Libraries\KunenaFactory::getConfig();
 
 		if (empty($config->ebay_api_key))
 		{
@@ -1880,7 +1880,7 @@ class KunenaBBCodeLibrary extends BBCodeLibrary
 	{
 		$cache = Factory::getCache('Kunena_ebay_request');
 		$cache->setCaching(true);
-		$cache->setLifeTime(KunenaFactory::getConfig()->get('cache_time', 60));
+		$cache->setLifeTime(\Joomla\Component\Kunena\Libraries\KunenaFactory::getConfig()->get('cache_time', 60));
 		$ebay_item = $cache->call(['KunenaBbcodeLibrary', 'getEbayItem'], $ItemID);
 
 		return $ebay_item;
@@ -1912,7 +1912,7 @@ class KunenaBBCodeLibrary extends BBCodeLibrary
 
 		$articleid = intval($content);
 
-		$config = KunenaFactory::getConfig();
+		$config = \Joomla\Component\Kunena\Libraries\KunenaFactory::getConfig();
 		$user   = Factory::getApplication()->getIdentity();
 		$site   = Factory::getApplication('site');
 
@@ -2102,7 +2102,7 @@ class KunenaBBCodeLibrary extends BBCodeLibrary
 			$type = 'css';
 		}
 
-		$highlight = KunenaFactory::getConfig()->highlightcode && empty($bbcode->parent->forceMinimal);
+		$highlight = \Joomla\Component\Kunena\Libraries\KunenaFactory::getConfig()->highlightcode && empty($bbcode->parent->forceMinimal);
 
 		if ($highlight && !class_exists('GeSHi'))
 		{
@@ -2171,7 +2171,7 @@ class KunenaBBCodeLibrary extends BBCodeLibrary
 			return '[tableau]';
 		}
 
-		$config = KunenaFactory::getConfig();
+		$config = \Joomla\Component\Kunena\Libraries\KunenaFactory::getConfig();
 
 		$maxwidth  = (int) $config->rtewidth;
 		$maxheight = (int) (isset($params["height"]) && is_numeric($params["height"])) ? $params["height"] : $config->rteheight;
@@ -2222,9 +2222,9 @@ class KunenaBBCodeLibrary extends BBCodeLibrary
 			return true;
 		}
 
-		$config = KunenaFactory::getTemplate()->params;
+		$config = \Joomla\Component\Kunena\Libraries\KunenaFactory::getTemplate()->params;
 
-		if (!$content || KunenaFactory::getTemplate()->isHmvc() && !$config->get('video'))
+		if (!$content || \Joomla\Component\Kunena\Libraries\KunenaFactory::getTemplate()->isHmvc() && !$config->get('video'))
 		{
 			return '';
 		}
@@ -2243,7 +2243,7 @@ class KunenaBBCodeLibrary extends BBCodeLibrary
 
 		$vid_minwidth  = 200;
 		$vid_minheight = 44; // Min. display size
-		$vid_maxwidth  = (int) ((KunenaFactory::getConfig()->rtewidth * 9) / 10); // Max 90% of text width
+		$vid_maxwidth  = (int) ((\Joomla\Component\Kunena\Libraries\KunenaFactory::getConfig()->rtewidth * 9) / 10); // Max 90% of text width
 		$vid_maxheight = 720; // max. display size
 		$vid_sizemax   = 100; // max. display zoom in percent
 
@@ -2551,7 +2551,7 @@ class KunenaBBCodeLibrary extends BBCodeLibrary
 		{
 			if ($attachment->isImage())
 			{
-				$hide = KunenaFactory::getConfig()->showimgforguest == 0 && Factory::getApplication()->getIdentity()->id == 0;
+				$hide = \Joomla\Component\Kunena\Libraries\KunenaFactory::getConfig()->showimgforguest == 0 && Factory::getApplication()->getIdentity()->id == 0;
 
 				if (!$hide)
 				{
@@ -2560,7 +2560,7 @@ class KunenaBBCodeLibrary extends BBCodeLibrary
 			}
 			elseif ($attachment->isVideo())
 			{
-				$hide = KunenaFactory::getConfig()->showfileforguest == 0 && Factory::getApplication()->getIdentity()->id == 0;
+				$hide = \Joomla\Component\Kunena\Libraries\KunenaFactory::getConfig()->showfileforguest == 0 && Factory::getApplication()->getIdentity()->id == 0;
 
 				if (!$hide)
 				{
@@ -2569,7 +2569,7 @@ class KunenaBBCodeLibrary extends BBCodeLibrary
 			}
 			else
 			{
-				$hide = KunenaFactory::getConfig()->showfileforguest == 0 && Factory::getApplication()->getIdentity()->id == 0;
+				$hide = \Joomla\Component\Kunena\Libraries\KunenaFactory::getConfig()->showfileforguest == 0 && Factory::getApplication()->getIdentity()->id == 0;
 
 				if (!$hide)
 				{
@@ -2709,7 +2709,7 @@ class KunenaBBCodeLibrary extends BBCodeLibrary
 			->set('size', 0)
 			->set('canLink', $bbcode->autolink_disable == 0);
 
-		if (Factory::getApplication()->getIdentity()->id == 0 && KunenaFactory::getConfig()->showfileforguest == 0)
+		if (Factory::getApplication()->getIdentity()->id == 0 && \Joomla\Component\Kunena\Libraries\KunenaFactory::getConfig()->showfileforguest == 0)
 		{
 			// Hide between content from non registered users
 			return (string) $layout
@@ -2792,7 +2792,7 @@ class KunenaBBCodeLibrary extends BBCodeLibrary
 			}
 		}
 
-		$config = KunenaFactory::getConfig();
+		$config = \Joomla\Component\Kunena\Libraries\KunenaFactory::getConfig();
 		$layout = KunenaLayout::factory('BBCode/Image')
 			->set('title', Text::_('COM_KUNENA_FILEATTACH'))
 			->set('url', null)
@@ -2885,9 +2885,9 @@ class KunenaBBCodeLibrary extends BBCodeLibrary
 			return true;
 		}
 
-		$config = KunenaFactory::getTemplate()->params;
+		$config = \Joomla\Component\Kunena\Libraries\KunenaFactory::getTemplate()->params;
 
-		if (KunenaFactory::getTemplate()->isHmvc() && !$config->get('twitter'))
+		if (\Joomla\Component\Kunena\Libraries\KunenaFactory::getTemplate()->isHmvc() && !$config->get('twitter'))
 		{
 			return false;
 		}
@@ -2963,7 +2963,7 @@ class KunenaBBCodeLibrary extends BBCodeLibrary
 	protected function getTweet($tweetid)
 	{
 		// FIXME: use AJAX instead...
-		$config          = KunenaFactory::getConfig();
+		$config          = \Joomla\Component\Kunena\Libraries\KunenaFactory::getConfig();
 		$uri             = Uri::getInstance();
 		$consumer_key    = trim($config->twitter_consumer_key);
 		$consumer_secret = trim($config->twitter_consumer_secret);
@@ -3241,7 +3241,7 @@ class KunenaBBCodeLibrary extends BBCodeLibrary
 			return '';
 		}
 
-		$me        = KunenaUserHelper::getMyself();
+		$me        = \Joomla\Component\Kunena\Libraries\User\Helper::getMyself();
 		$message   = $this->getMessage();
 		$moderator = $me->userid && $me->isModerator($message ? $message->getCategory() : null);
 

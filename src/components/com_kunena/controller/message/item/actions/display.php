@@ -70,7 +70,7 @@ class ComponentKunenaControllerMessageItemActionsDisplay extends KunenaControlle
 		parent::before();
 
 		$mesid = $this->input->getInt('mesid');
-		$me    = KunenaUserHelper::getMyself();
+		$me    = \Joomla\Component\Kunena\Libraries\User\Helper::getMyself();
 
 		$this->message = KunenaForumMessage::getInstance($mesid);
 		$this->topic   = $this->message->getTopic();
@@ -85,7 +85,7 @@ class ComponentKunenaControllerMessageItemActionsDisplay extends KunenaControlle
 		$this->messageButtons = new CMSObject;
 		$this->message_closed = null;
 
-		$ktemplate     = KunenaFactory::getTemplate();
+		$ktemplate     = \Joomla\Component\Kunena\Libraries\KunenaFactory::getTemplate();
 		$fullactions   = $ktemplate->params->get('fullactions');
 		$topicicontype = $ktemplate->params->get('topicicontype');
 
@@ -688,7 +688,7 @@ class ComponentKunenaControllerMessageItemActionsDisplay extends KunenaControlle
 	public function getButton($url, $name, $scope, $type, $id = null, $normal = true, $icon = '')
 	{
 		return KunenaLayout::factory('Widget/Button')
-			->setProperties(['url'  => KunenaRoute::_($url), 'name' => $name, 'scope' => $scope,
+			->setProperties(['url'  => \Joomla\Component\Kunena\Libraries\Route\KunenaRoute::_($url), 'name' => $name, 'scope' => $scope,
 							 'type' => $type, 'id' => 'btn_' . $id, 'normal' => $normal, 'icon' => $icon]
 			);
 	}

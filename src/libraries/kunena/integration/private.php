@@ -89,7 +89,7 @@ class KunenaPrivate
 			return '';
 		}
 
-		$ktemplate     = KunenaFactory::getTemplate();
+		$ktemplate     = \Joomla\Component\Kunena\Libraries\KunenaFactory::getTemplate();
 		$topicicontype = $ktemplate->params->get('topicicontype');
 
 		if ($topicicontype == 'fa')
@@ -172,7 +172,7 @@ class KunenaPrivate
 			return '';
 		}
 
-		$ktemplate     = KunenaFactory::getTemplate();
+		$ktemplate     = \Joomla\Component\Kunena\Libraries\KunenaFactory::getTemplate();
 		$topicicontype = $ktemplate->params->get('topicicontype');
 
 		if (empty($class))

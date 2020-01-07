@@ -50,7 +50,7 @@ class KunenaMigratorKunena
 	public function detect()
 	{
 		// Check if Kunena 1.x can be found from the Joomla installation.
-		if (KunenaInstaller::detectTable('fb_version'))
+		if (\Joomla\Component\Kunena\Libraries\Installer::detectTable('fb_version'))
 		{
 			// Get installed version.
 			$db = Factory::getDBO();

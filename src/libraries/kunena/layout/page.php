@@ -54,11 +54,11 @@ class Page extends \Joomla\Component\Kunena\Libraries\Layout
 		// Add all paths for the template overrides.
 		if ($app->isClient('administrator'))
 		{
-			$template = KunenaFactory::getAdminTemplate();
+			$template = \Joomla\Component\Kunena\Libraries\KunenaFactory::getAdminTemplate();
 		}
 		else
 		{
-			$template = KunenaFactory::getTemplate();
+			$template = \Joomla\Component\Kunena\Libraries\KunenaFactory::getTemplate();
 		}
 
 		$templatePaths = [];
@@ -165,7 +165,7 @@ class Page extends \Joomla\Component\Kunena\Libraries\Layout
 	{
 		if ($ignore)
 		{
-			$active = KunenaRoute::$active;
+			$active = \Joomla\Component\Kunena\Libraries\Route\KunenaRoute::$active;
 			$view   = isset($active->query['view']) ? $active->query['view'] : '';
 			$layout = isset($active->query['layout']) ? $active->query['layout'] : 'default';
 
@@ -175,7 +175,7 @@ class Page extends \Joomla\Component\Kunena\Libraries\Layout
 			}
 		}
 
-		$this->breadcrumb->addItem($text, KunenaRoute::normalize($uri));
+		$this->breadcrumb->addItem($text, \Joomla\Component\Kunena\Libraries\Route\KunenaRoute::normalize($uri));
 
 		return $this;
 	}

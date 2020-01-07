@@ -134,12 +134,12 @@ abstract class Legacy
 					$params->set('do', null);
 					break;
 				case 'rules' :
-					$params->set('body', '[article=full]' . KunenaFactory::getConfig()->get('rules_cid', 1) . '[/article]');
+					$params->set('body', '[article=full]' . \Joomla\Component\Kunena\Libraries\KunenaFactory::getConfig()->get('rules_cid', 1) . '[/article]');
 					$params->set('body_format', 'bbcode');
 					$params->set('do', null);
 					break;
 				case 'help' :
-					$params->set('body', '[article=full]' . KunenaFactory::getConfig()->get('help_cid', 1) . '[/article]');
+					$params->set('body', '[article=full]' . \Joomla\Component\Kunena\Libraries\KunenaFactory::getConfig()->get('help_cid', 1) . '[/article]');
 					$params->set('body_format', 'bbcode');
 					$params->set('do', null);
 					break;
@@ -174,7 +174,7 @@ abstract class Legacy
 			return;
 		}
 
-		KUNENA_PROFILER ? KunenaProfiler::instance()->start('function ' . __CLASS__ . '::' . __FUNCTION__ . '()') : null;
+		KUNENA_PROFILER ? \Joomla\Component\Kunena\Libraries\KunenaProfiler::instance()->start('function ' . __CLASS__ . '::' . __FUNCTION__ . '()') : null;
 
 		if ($uri->getVar('func'))
 		{
@@ -184,7 +184,7 @@ abstract class Legacy
 
 		if (!isset(self::$functions[$uri->getVar('view')]))
 		{
-			KUNENA_PROFILER ? KunenaProfiler::instance()->stop('function ' . __CLASS__ . '::' . __FUNCTION__ . '()') : null;
+			KUNENA_PROFILER ? \Joomla\Component\Kunena\Libraries\KunenaProfiler::instance()->stop('function ' . __CLASS__ . '::' . __FUNCTION__ . '()') : null;
 
 			return;
 		}
@@ -199,7 +199,7 @@ abstract class Legacy
 		}
 
 		$app     = Factory::getApplication();
-		$config  = KunenaFactory::getConfig();
+		$config  = \Joomla\Component\Kunena\Libraries\KunenaFactory::getConfig();
 		$changed = false;
 
 		switch ($uri->getVar('view'))
@@ -765,7 +765,7 @@ abstract class Legacy
 			Log::add("Legacy URI {$legacy->toString(['path', 'query'])} was converted to {$uri->toString(['path', 'query'])}", Log::DEBUG, 'kunena');
 		}
 
-		KUNENA_PROFILER ? KunenaProfiler::instance()->stop('function ' . __CLASS__ . '::' . __FUNCTION__ . '()') : null;
+		KUNENA_PROFILER ? \Joomla\Component\Kunena\Libraries\KunenaProfiler::instance()->stop('function ' . __CLASS__ . '::' . __FUNCTION__ . '()') : null;
 
 		return $changed;
 	}

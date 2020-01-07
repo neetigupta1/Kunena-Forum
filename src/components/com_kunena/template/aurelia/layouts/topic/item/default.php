@@ -42,7 +42,7 @@ $this->addScript('jquery.atwho.js');
 
 $this->addScript('assets/js/topic.js');
 
-$this->ktemplate = KunenaFactory::getTemplate();
+$this->ktemplate = \Joomla\Component\Kunena\Libraries\KunenaFactory::getTemplate();
 $social          = $this->ktemplate->params->get('socialshare');
 $quick           = $this->ktemplate->params->get('quick');
 $txt             = '';

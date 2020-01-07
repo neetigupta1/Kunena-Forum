@@ -17,7 +17,7 @@ defined('_JEXEC') or die();
 use Joomla\CMS\Uri\Uri;
 
 $attachment = $this->attachment;
-$config     = KunenaFactory::getConfig();
+$config     = \Joomla\Component\Kunena\Libraries\KunenaFactory::getConfig();
 
 if ($config->attachment_protection)
 {

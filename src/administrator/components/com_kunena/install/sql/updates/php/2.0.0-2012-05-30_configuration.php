@@ -29,7 +29,7 @@ use function defined;
  */
 function kunena_200_2012_05_30_configuration($parent)
 {
-	$config = KunenaFactory::getConfig();
+	$config = \Joomla\Component\Kunena\Libraries\KunenaFactory::getConfig();
 
 	// Unset deprecated configuration options which have been migrated earlier
 	unset($config->board_ofset);

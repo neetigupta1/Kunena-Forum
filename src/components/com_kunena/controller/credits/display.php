@@ -75,20 +75,20 @@ class ComponentKunenaControllerCreditsDisplay extends KunenaControllerDisplay
 		if (PluginHelper::isEnabled('kunena', 'powered'))
 		{
 			$this->baseurl = 'index.php?option=com_kunena';
-			$this->app->redirect(KunenaRoute::_($this->baseurl, false));
+			$this->app->redirect(\Joomla\Component\Kunena\Libraries\Route\KunenaRoute::_($this->baseurl, false));
 		}
 
 		$Itemid = Factory::getApplication()->input->getCmd('Itemid');
 
 		if (!$Itemid && $this->config->sef_redirect)
 		{
-			$itemid     = KunenaRoute::fixMissingItemID();
+			$itemid     = \Joomla\Component\Kunena\Libraries\Route\KunenaRoute::fixMissingItemID();
 			$controller = BaseController::getInstance("kunena");
-			$controller->setRedirect(KunenaRoute::_("index.php?option=com_kunena&view=credits&Itemid={$itemid}", false));
+			$controller->setRedirect(\Joomla\Component\Kunena\Libraries\Route\KunenaRoute::_("index.php?option=com_kunena&view=credits&Itemid={$itemid}", false));
 			$controller->redirect();
 		}
 
-		$this->logo = KunenaFactory::getTemplate()->getImagePath('icons/kunena-logo-48-white.png');
+		$this->logo = \Joomla\Component\Kunena\Libraries\KunenaFactory::getTemplate()->getImagePath('icons/kunena-logo-48-white.png');
 
 		$this->intro = Text::sprintf('COM_KUNENA_CREDITS_INTRODUCTION', 'https://www.kunena.org/team');
 

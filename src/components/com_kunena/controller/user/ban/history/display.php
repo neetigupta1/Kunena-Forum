@@ -70,8 +70,8 @@ class ComponentKunenaControllerUserBanHistoryDisplay extends KunenaControllerDis
 
 		$userid = $this->input->getInt('userid');
 
-		$this->me      = KunenaUserHelper::getMyself();
-		$this->profile = KunenaUserHelper::get($userid);
+		$this->me      = \Joomla\Component\Kunena\Libraries\User\Helper::getMyself();
+		$this->profile = \Joomla\Component\Kunena\Libraries\User\Helper::get($userid);
 		$this->profile->tryAuthorise('ban');
 
 		$this->banHistory = KunenaUserBan::getUserHistory($this->profile->userid);

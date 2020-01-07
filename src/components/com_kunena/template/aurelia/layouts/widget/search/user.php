@@ -18,19 +18,19 @@ use Joomla\CMS\HTML\HTMLHelper;
 use Joomla\CMS\Language\Text;
 use function defined;
 
-$me    = KunenaUserHelper::getMyself();
+$me    = \Joomla\Component\Kunena\Libraries\User\Helper::getMyself();
 $state = $this->state;
 ?>
 
 <div class="kunena-search">
-	<form action="<?php echo KunenaRoute::_('index.php?option=com_kunena&view=user&layout=list'); ?>" method="post"
+	<form action="<?php echo \Joomla\Component\Kunena\Libraries\Route\KunenaRoute::_('index.php?option=com_kunena&view=user&layout=list'); ?>" method="post"
 		  name="usrlform" id="usrlform">
 		<input type="hidden" name="view" value="user"/>
 		<?php if ($me->exists())
 		:
 			?>
 			<input type="hidden" id="kurl_users" name="kurl_users"
-				   value="<?php echo KunenaRoute::_('index.php?option=com_kunena&view=user&layout=listmention&format=raw') ?>"/>
+				   value="<?php echo \Joomla\Component\Kunena\Libraries\Route\KunenaRoute::_('index.php?option=com_kunena&view=user&layout=listmention&format=raw') ?>"/>
 		<?php endif; ?>
 		<?php echo HTMLHelper::_('form.token'); ?>
 		<div class="input-group search">

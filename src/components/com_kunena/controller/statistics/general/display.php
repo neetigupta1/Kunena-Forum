@@ -51,9 +51,9 @@ class ComponentKunenaControllerStatisticsGeneralDisplay extends KunenaController
 
 		if (!$Itemid && $this->config->sef_redirect)
 		{
-			$itemid     = KunenaRoute::fixMissingItemID();
+			$itemid     = \Joomla\Component\Kunena\Libraries\Route\KunenaRoute::fixMissingItemID();
 			$controller = BaseController::getInstance("kunena");
-			$controller->setRedirect(KunenaRoute::_("index.php?option=com_kunena&view=statistics&Itemid={$itemid}", false));
+			$controller->setRedirect(\Joomla\Component\Kunena\Libraries\Route\KunenaRoute::_("index.php?option=com_kunena&view=statistics&Itemid={$itemid}", false));
 			$controller->redirect();
 		}
 
@@ -71,8 +71,8 @@ class ComponentKunenaControllerStatisticsGeneralDisplay extends KunenaController
 		$statistics->loadAll();
 		$this->setProperties($statistics);
 
-		$this->latestMemberLink = KunenaFactory::getUser((int) $this->lastUserId)->getLink(null, null, '');
-		$this->userlistUrl      = KunenaFactory::getProfile()->getUserListUrl();
+		$this->latestMemberLink = \Joomla\Component\Kunena\Libraries\KunenaFactory::getUser((int) $this->lastUserId)->getLink(null, null, '');
+		$this->userlistUrl      = \Joomla\Component\Kunena\Libraries\KunenaFactory::getProfile()->getUserListUrl();
 	}
 
 	/**

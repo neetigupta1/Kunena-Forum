@@ -87,7 +87,7 @@ class ComponentKunenaControllerCategoryTopicsDisplay extends KunenaControllerDis
 		require_once KPATH_SITE . '/models/category.php';
 		$this->model = new KunenaModelCategory;
 
-		$this->me = KunenaUserHelper::getMyself();
+		$this->me = \Joomla\Component\Kunena\Libraries\User\Helper::getMyself();
 
 		$catid      = $this->input->getInt('catid');
 		$limitstart = $this->input->getInt('limitstart', 0);
@@ -97,9 +97,9 @@ class ComponentKunenaControllerCategoryTopicsDisplay extends KunenaControllerDis
 
 		if (!$Itemid && $format != 'feed' && $this->config->sef_redirect)
 		{
-			$itemid     = KunenaRoute::fixMissingItemID();
+			$itemid     = \Joomla\Component\Kunena\Libraries\Route\KunenaRoute::fixMissingItemID();
 			$controller = BaseController::getInstance("kunena");
-			$controller->setRedirect(KunenaRoute::_("index.php?option=com_kunena&view=category&catid={$catid}&Itemid={$itemid}", false));
+			$controller->setRedirect(\Joomla\Component\Kunena\Libraries\Route\KunenaRoute::_("index.php?option=com_kunena&view=category&catid={$catid}&Itemid={$itemid}", false));
 			$controller->redirect();
 		}
 
@@ -111,14 +111,14 @@ class ComponentKunenaControllerCategoryTopicsDisplay extends KunenaControllerDis
 		// TODO:
 		$direction = 'DESC';
 
-		$this->category = KunenaForumCategoryHelper::get($catid);
+		$this->category = \Joomla\Component\Kunena\Libraries\Forum\Category\Helper::get($catid);
 		$this->category->tryAuthorise();
 
 		$this->headerText = $this->category->name;
 
 		$topic_ordering = $this->category->topic_ordering;
 
-		$access = KunenaAccess::getInstance();
+		$access = \Joomla\Component\Kunena\Libraries\Access::getInstance();
 		$hold   = $access->getAllowedHold($this->me, $catid);
 		$moved  = 1;
 		$params = [
@@ -145,12 +145,12 @@ class ComponentKunenaControllerCategoryTopicsDisplay extends KunenaControllerDis
 				$params['orderby'] = 'tt.ordering DESC, tt.last_post_time ' . $direction;
 		}
 
-		list($this->total, $this->topics) = KunenaForumTopicHelper::getLatestTopics($catid, $limitstart, $limit, $params);
+		list($this->total, $this->topics) = \Joomla\Component\Kunena\Libraries\Forum\Topic\Helper::getLatestTopics($catid, $limitstart, $limit, $params);
 
 		if ($limitstart > 1 && !$this->topics)
 		{
 			$controller = BaseController::getInstance("kunena");
-			$controller->setRedirect(KunenaRoute::_("index.php?option=com_kunena&view=category&catid={$catid}&Itemid={$itemid}", false));
+			$controller->setRedirect(\Joomla\Component\Kunena\Libraries\Route\KunenaRoute::_("index.php?option=com_kunena&view=category&catid={$catid}&Itemid={$itemid}", false));
 			$controller->redirect();
 		}
 
@@ -170,14 +170,14 @@ class ComponentKunenaControllerCategoryTopicsDisplay extends KunenaControllerDis
 			// Prefetch all users/avatars to avoid user by user queries during template iterations.
 			if (!empty($userlist))
 			{
-				KunenaUserHelper::loadUsers($userlist);
+				\Joomla\Component\Kunena\Libraries\User\Helper::loadUsers($userlist);
 			}
 
-			KunenaForumTopicHelper::getUserTopics(array_keys($this->topics));
-			$lastreadlist = KunenaForumTopicHelper::fetchNewStatus($this->topics);
+			\Joomla\Component\Kunena\Libraries\Forum\Topic\Helper::getUserTopics(array_keys($this->topics));
+			$lastreadlist = \Joomla\Component\Kunena\Libraries\Forum\Topic\Helper::fetchNewStatus($this->topics);
 
 			// Fetch last / new post positions when user can see unapproved or deleted posts.
-			if ($lastreadlist || $this->me->isAdmin() || KunenaAccess::getInstance()->getModeratorStatus())
+			if ($lastreadlist || $this->me->isAdmin() || \Joomla\Component\Kunena\Libraries\Access::getInstance()->getModeratorStatus())
 			{
 				KunenaForumMessageHelper::loadLocation($lastpostlist + $lastreadlist);
 			}
@@ -287,7 +287,7 @@ class ComponentKunenaControllerCategoryTopicsDisplay extends KunenaControllerDis
 					{
 						if ($value['relation'] == 'canonical')
 						{
-							$canonicalUrl               = KunenaRoute::_();
+							$canonicalUrl               = \Joomla\Component\Kunena\Libraries\Route\KunenaRoute::_();
 							$doc->_links[$canonicalUrl] = $value;
 							unset($doc->_links[$key]);
 							break;

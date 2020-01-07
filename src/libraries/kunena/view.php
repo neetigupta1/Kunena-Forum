@@ -97,11 +97,11 @@ class View extends HtmlView
 		$name           = isset($config['name']) ? $config['name'] : $this->getName();
 		$this->document = Factory::getApplication()->getDocument();
 		$this->document->setBase('');
-		$this->profiler  = KunenaProfiler::instance('Kunena');
+		$this->profiler  = \Joomla\Component\Kunena\Libraries\KunenaProfiler::instance('Kunena');
 		$this->app       = Factory::getApplication();
-		$this->me        = KunenaUserHelper::getMyself();
-		$this->config    = KunenaFactory::getConfig();
-		$this->ktemplate = KunenaFactory::getTemplate();
+		$this->me        = \Joomla\Component\Kunena\Libraries\User\Helper::getMyself();
+		$this->config    = \Joomla\Component\Kunena\Libraries\KunenaFactory::getConfig();
+		$this->ktemplate = \Joomla\Component\Kunena\Libraries\KunenaFactory::getTemplate();
 
 		// Set the default template search path
 		if ($this->app->isClient('site') && !isset($config['template_path']))
@@ -111,7 +111,7 @@ class View extends HtmlView
 
 		if ($this->app->isClient('administrator'))
 		{
-			$templateAdmin = KunenaFactory::getAdminTemplate();
+			$templateAdmin = \Joomla\Component\Kunena\Libraries\KunenaFactory::getAdminTemplate();
 			$templateAdmin->initialize();
 
 			$config['template_path'] = $templateAdmin->getTemplatePaths($name);
@@ -330,7 +330,7 @@ class View extends HtmlView
 			}
 			else
 			{
-				$title = $title . ' - ' . KunenaFactory::getConfig()->board_title;
+				$title = $title . ' - ' . \Joomla\Component\Kunena\Libraries\KunenaFactory::getConfig()->board_title;
 			}
 
 			$this->document->setTitle($title);
@@ -435,7 +435,7 @@ class View extends HtmlView
 			$parent_object = $this;
 		}
 
-		return KunenaHtmlParser::parseBBCode($text, $parent_object, $len);
+		return \Joomla\Component\Kunena\Libraries\Html\Parser::parseBBCode($text, $parent_object, $len);
 	}
 
 	/**
@@ -595,7 +595,7 @@ class View extends HtmlView
 	}
 
 	/**
-	 * @param   KunenaForumCategory  $category  category
+	 * @param  \Joomla\Component\Kunena\Libraries\Forum\Category\Category  $category  category
 	 * @param   null                 $content   content
 	 * @param   null                 $title     title
 	 * @param   null                 $class     class
@@ -642,7 +642,7 @@ class View extends HtmlView
 
 		if (!$content)
 		{
-			$content = KunenaHtmlParser::parseText($topic->subject);
+			$content = \Joomla\Component\Kunena\Libraries\Html\Parser::parseText($topic->subject);
 		}
 
 		$rel = '';

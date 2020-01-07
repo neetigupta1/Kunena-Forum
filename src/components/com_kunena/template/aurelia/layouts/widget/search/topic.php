@@ -23,7 +23,7 @@ $this->addScript('assets/js/search.js');
 $childforums = (int) (!isset($this->childforums) || $this->childforums);
 ?>
 <div class="kunena-search search">
-	<form role="search" action="<?php echo KunenaRoute::_(); ?>" method="post">
+	<form role="search" action="<?php echo \Joomla\Component\Kunena\Libraries\Route\KunenaRoute::_(); ?>" method="post">
 		<input type="hidden" name="view" value="search"/>
 		<input type="hidden" name="task" value="results"/>
 		<?php if (isset($this->catid))

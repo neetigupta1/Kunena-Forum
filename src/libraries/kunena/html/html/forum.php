@@ -67,11 +67,11 @@ abstract class Forum
 
 		if ($catid)
 		{
-			$category = KunenaForumCategoryHelper::get($catid);
+			$category = \Joomla\Component\Kunena\Libraries\Forum\Category\Helper::get($catid);
 
-			if (!$category->getParent()->isAuthorised($action) && !KunenaUserHelper::getMyself()->isAdmin())
+			if (!$category->getParent()->isAuthorised($action) && !\Joomla\Component\Kunena\Libraries\User\Helper::getMyself()->isAdmin())
 			{
-				$categories = KunenaForumCategoryHelper::getParents($catid, $levels, $params);
+				$categories = \Joomla\Component\Kunena\Libraries\Forum\Category\Helper::getParents($catid, $levels, $params);
 			}
 		}
 
@@ -90,8 +90,8 @@ abstract class Forum
 			foreach ($parent as $p)
 			{
 				$channels_local = [];
-				$category       = KunenaForumCategoryHelper::get($p);
-				$children       = KunenaForumCategoryHelper::getChildren($p, $levels, $params);
+				$category       = \Joomla\Component\Kunena\Libraries\Forum\Category\Helper::get($p);
+				$children       = \Joomla\Component\Kunena\Libraries\Forum\Category\Helper::getChildren($p, $levels, $params);
 
 				if ($params['action'] == 'topic.create')
 				{
@@ -99,7 +99,7 @@ abstract class Forum
 
 					if (empty($children) && !isset($channels_local[$category->id]))
 					{
-						$category = KunenaForumCategoryHelper::get();
+						$category = \Joomla\Component\Kunena\Libraries\Forum\Category\Helper::get();
 					}
 
 					foreach ($channels_local as $id => $channel)
@@ -141,7 +141,7 @@ abstract class Forum
 
 		if ($topleveltxt)
 		{
-			$me         = KunenaUserHelper::getMyself();
+			$me         = \Joomla\Component\Kunena\Libraries\User\Helper::getMyself();
 			$disabled   = ($action == 'admin' && !$me->isAdmin());
 			$options [] = HTMLHelper::_('select.option', '0', Text::_($topleveltxt), 'value', 'text', $disabled);
 
@@ -154,7 +154,7 @@ abstract class Forum
 		}
 		else
 		{
-			$toplevel = -KunenaForumCategoryHelper::get($parent)->level;
+			$toplevel = -\Joomla\Component\Kunena\Libraries\Forum\Category\Helper::get($parent)->level;
 		}
 
 		foreach ($categories as $category)
@@ -238,12 +238,12 @@ abstract class Forum
 			}
 			else
 			{
-				$list['href'] = KunenaRoute::_($uri);
+				$list['href'] = \Joomla\Component\Kunena\Libraries\Route\KunenaRoute::_($uri);
 			}
 		}
 		else
 		{
-			$list['href'] = KunenaRoute::_($uri);
+			$list['href'] = \Joomla\Component\Kunena\Libraries\Route\KunenaRoute::_($uri);
 		}
 
 		if ($title)

@@ -43,8 +43,8 @@ $k = 0;
 					</li>
 					<li>
 						<?php
-						$profile    = KunenaFactory::getUser(intval($this->message->userid));
-						$useravatar = $profile->getAvatarImage(KunenaFactory::getTemplate()->params->get('avatarType'), 'profile');
+						$profile    = \Joomla\Component\Kunena\Libraries\KunenaFactory::getUser(intval($this->message->userid));
+						$useravatar = $profile->getAvatarImage(\Joomla\Component\Kunena\Libraries\KunenaFactory::getTemplate()->params->get('avatarType'), 'profile');
 
 						if ($useravatar)
 							:
@@ -61,7 +61,7 @@ $k = 0;
 				<div class="badger-left badger-info khistory"
 				     data-badger="<?php echo $this->message->displayField('subject'); ?>">
 					<div class="kmessage">
-						<p class="kmsg"><?php echo KunenaHtmlParser::parseBBCode($this->message->message, $this) ?></p>
+						<p class="kmsg"><?php echo \Joomla\Component\Kunena\Libraries\Html\Parser::parseBBCode($this->message->message, $this) ?></p>
 					</div>
 					<?php
 					$attachments = $this->message->getAttachments();

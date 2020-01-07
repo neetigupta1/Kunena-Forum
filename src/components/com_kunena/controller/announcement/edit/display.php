@@ -61,16 +61,16 @@ class ComponentKunenaControllerAnnouncementEditDisplay extends KunenaControllerD
 
 		if (!$Itemid && $this->config->sef_redirect)
 		{
-			$itemid     = KunenaRoute::fixMissingItemID();
+			$itemid     = \Joomla\Component\Kunena\Libraries\Route\KunenaRoute::fixMissingItemID();
 			$controller = BaseController::getInstance("kunena");
 
 			if ($id)
 			{
-				$controller->setRedirect(KunenaRoute::_("index.php?option=com_kunena&view=announcement&layout=edit&&id={$id}&Itemid={$itemid}", false));
+				$controller->setRedirect(\Joomla\Component\Kunena\Libraries\Route\KunenaRoute::_("index.php?option=com_kunena&view=announcement&layout=edit&&id={$id}&Itemid={$itemid}", false));
 			}
 			else
 			{
-				$controller->setRedirect(KunenaRoute::_("index.php?option=com_kunena&view=announcement&layout=create&Itemid={$itemid}", false));
+				$controller->setRedirect(\Joomla\Component\Kunena\Libraries\Route\KunenaRoute::_("index.php?option=com_kunena&view=announcement&layout=create&Itemid={$itemid}", false));
 			}
 
 			$controller->redirect();

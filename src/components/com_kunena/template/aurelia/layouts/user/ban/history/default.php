@@ -95,7 +95,7 @@ use function defined;
 					<b><?php echo Text::_('COM_KUNENA_BAN_PUBLICREASON'); ?></b>
 				</td>
 				<td colspan="4">
-					<?php echo KunenaHtmlParser::parseText($banInfo->reason_public); ?>
+					<?php echo \Joomla\Component\Kunena\Libraries\Html\Parser::parseText($banInfo->reason_public); ?>
 				</td>
 			</tr>
 		<?php endif; ?>
@@ -108,7 +108,7 @@ use function defined;
 				<td>
 					<b><?php echo Text::_('COM_KUNENA_BAN_PRIVATEREASON'); ?></b></td>
 				<td colspan="4">
-					<?php echo KunenaHtmlParser::parseText($banInfo->reason_private); ?>
+					<?php echo \Joomla\Component\Kunena\Libraries\Html\Parser::parseText($banInfo->reason_private); ?>
 				</td>
 			</tr>
 		<?php endif; ?>
@@ -124,7 +124,7 @@ use function defined;
 						<td>
 							<strong>
 								<?php echo Text::sprintf(
-									'COM_KUNENA_BAN_COMMENT_BY', KunenaFactory::getUser((int) $comment->userid)->getLink()
+									'COM_KUNENA_BAN_COMMENT_BY', \Joomla\Component\Kunena\Libraries\KunenaFactory::getUser((int) $comment->userid)->getLink()
 								);
 								?>
 							</strong>
@@ -133,7 +133,7 @@ use function defined;
 							<?php echo KunenaDate::getInstance($comment->time)->toKunena(); ?>
 						</td>
 						<td colspan="3">
-							<?php echo KunenaHtmlParser::parseText($comment->comment); ?>
+							<?php echo \Joomla\Component\Kunena\Libraries\Html\Parser::parseText($comment->comment); ?>
 						</td>
 					</tr>
 				<?php endforeach;

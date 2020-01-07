@@ -10,13 +10,16 @@
  * @link            https://www.kunena.org
  **/
 
-namespace Joomla\Component\Kunena;
+namespace Joomla\Component\Kunena\Plugin\Kunena\Comprofiler;
 
 defined('_JEXEC') or die();
 
 use Exception;
 use Joomla\CMS\HTML\HTMLHelper;
 use Joomla\CMS\Language\Text;
+use Joomla\Component\Kunena\Libraries\Database\KunenaDatabaseObject;
+use Joomla\Component\Kunena\Libraries\Forum\Category\Category;
+use Joomla\Component\Kunena\Libraries\Tree;
 use function defined;
 
 require_once dirname(__FILE__) . '/integration.php';
@@ -209,7 +212,7 @@ class KunenaAccessComprofiler
 			$this->categories = [];
 			$params           = ['categories' => &$this->categories, 'groups' => $this->groups];
 			KunenaIntegrationComprofiler::trigger('loadCategories', $params);
-			$this->tree = new KunenaTree($this->categories);
+			$this->tree = new Tree($this->categories);
 
 			if ($this->groups !== false)
 			{
@@ -248,8 +251,8 @@ class KunenaAccessComprofiler
 	 *
 	 * Function returns a list of authorised actions. Missing actions are threaded as inherit.
 	 *
-	 * @param   KunenaForumCategory  $category  category
-	 * @param   int                  $userid    userid
+	 * @param   Category  $category  category
+	 * @param   int       $userid    userid
 	 *
 	 * @return  array
 	 *
@@ -257,7 +260,7 @@ class KunenaAccessComprofiler
 	 *
 	 * @throws  Exception
 	 */
-	public function getAuthoriseActions(KunenaForumCategory $category, $userid)
+	public function getAuthoriseActions(Category $category, $userid)
 	{
 		$actions = [];
 		$params  = ['category' => $category, 'userid' => $userid, 'actions' => &$actions];

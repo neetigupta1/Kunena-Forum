@@ -181,7 +181,7 @@ class TableKunenaUserBans extends Table
 		}
 		catch (ExecutionFailureException $e)
 		{
-			KunenaError::displayDatabaseError($e);
+			\Joomla\Component\Kunena\Libraries\Error::displayDatabaseError($e);
 
 			return false;
 		}
@@ -273,7 +273,7 @@ class TableKunenaUserBans extends Table
 		}
 		catch (ExecutionFailureException $e)
 		{
-			KunenaError::displayDatabaseError($e);
+			\Joomla\Component\Kunena\Libraries\Error::displayDatabaseError($e);
 
 			return false;
 		}
@@ -302,7 +302,7 @@ class TableKunenaUserBans extends Table
 	{
 		if (!$this->ip)
 		{
-			$user = KunenaUserHelper::get($this->userid);
+			$user = \Joomla\Component\Kunena\Libraries\User\Helper::get($this->userid);
 
 			if (!$user->exists())
 			{

@@ -37,14 +37,14 @@ class KunenaLayoutWidgetFooter extends KunenaLayout
 	 */
 	protected function getTime()
 	{
-		$config = KunenaFactory::getConfig();
+		$config = \Joomla\Component\Kunena\Libraries\KunenaFactory::getConfig();
 
 		if (!$config->time_to_create_page)
 		{
 			return;
 		}
 
-		$profiler = KunenaProfiler::instance('Kunena');
+		$profiler = \Joomla\Component\Kunena\Libraries\KunenaProfiler::instance('Kunena');
 		$time     = $profiler->getTime('Total Time');
 
 		return sprintf('%0.3f', $time);
@@ -62,7 +62,7 @@ class KunenaLayoutWidgetFooter extends KunenaLayout
 	 */
 	protected function getRSS()
 	{
-		$config = KunenaFactory::getConfig();
+		$config = \Joomla\Component\Kunena\Libraries\KunenaFactory::getConfig();
 
 		if ($config->enablerss)
 		{
@@ -81,15 +81,15 @@ class KunenaLayoutWidgetFooter extends KunenaLayout
 					break;
 			}
 
-			$itemid = KunenaRoute::fixMissingItemID();
+			$itemid = \Joomla\Component\Kunena\Libraries\Route\KunenaRoute::fixMissingItemID();
 
 			if (CMSApplication::getInstance('site')->get('sef_suffix'))
 			{
-				$url = KunenaRoute::_("index.php?option=com_kunena&view=topics&layout=default&{$rss_type}") . '?format=feed&type=rss';
+				$url = \Joomla\Component\Kunena\Libraries\Route\KunenaRoute::_("index.php?option=com_kunena&view=topics&layout=default&{$rss_type}") . '?format=feed&type=rss';
 			}
 			else
 			{
-				$url = KunenaRoute::_("index.php?option=com_kunena&view=topics&format=feed&type=rss&layout=default&{$rss_type}&Itemid={$itemid}", true);
+				$url = \Joomla\Component\Kunena\Libraries\Route\KunenaRoute::_("index.php?option=com_kunena&view=topics&format=feed&type=rss&layout=default&{$rss_type}&Itemid={$itemid}", true);
 			}
 
 			$doc = Factory::getApplication()->getDocument();

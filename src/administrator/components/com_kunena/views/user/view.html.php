@@ -44,9 +44,9 @@ class KunenaAdminViewUser extends KunenaView
 		$this->subscatslist = $this->get('catsubcriptions');
 		$this->ipslist      = $this->get('IPlist');
 
-		$avatarint        = KunenaFactory::getAvatarIntegration();
-		$this->editavatar = ($avatarint instanceof KunenaAvatarKunena) && $this->user->avatar ? true : false;
-		$this->avatar     = $this->user->getAvatarImage(KunenaFactory::getTemplate()->params->get('avatarType'), 'thumb');
+		$avatarint        = \Joomla\Component\Kunena\Libraries\KunenaFactory::getAvatarIntegration();
+		$this->editavatar = ($avatarint instanceof \Joomla\Component\Kunena\Libraries\Integration\Avatar) && $this->user->avatar ? true : false;
+		$this->avatar     = $this->user->getAvatarImage(\Joomla\Component\Kunena\Libraries\KunenaFactory::getTemplate()->params->get('avatarType'), 'thumb');
 
 		// Make the select list for the moderator flag
 		$yesnoMod [] = HTMLHelper::_('select.option', '1', Text::_('COM_KUNENA_YES'));
@@ -115,7 +115,7 @@ class KunenaAdminViewUser extends KunenaView
 		);
 		$this->settings[] = $item;
 
-		$this->ktemplate = KunenaFactory::getTemplate();
+		$this->ktemplate = \Joomla\Component\Kunena\Libraries\KunenaFactory::getTemplate();
 		$social          = $this->ktemplate->params->get('socialshare');
 
 		if ($social != 0)

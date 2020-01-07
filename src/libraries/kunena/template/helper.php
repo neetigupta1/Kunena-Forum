@@ -46,7 +46,7 @@ abstract class Helper
 	 */
 	public static function isDefault($template)
 	{
-		$config         = KunenaFactory::getConfig();
+		$config         = \Joomla\Component\Kunena\Libraries\KunenaFactory::getConfig();
 		$defaultemplate = $config->template;
 
 		return $defaultemplate == $template ? 1 : 0;
@@ -171,12 +171,12 @@ abstract class Helper
 
 		if ($data->version == '@kunenaversion@')
 		{
-			$data->version = KunenaForum::version();
+			$data->version = \Joomla\Component\Kunena\Libraries\Forum\Forum::version();
 		}
 
 		if ($data->creationdate == '@kunenaversiondate@')
 		{
-			$data->creationdate = KunenaForum::versionDate();
+			$data->creationdate = \Joomla\Component\Kunena\Libraries\Forum\Forum::versionDate();
 		}
 
 		if (!$data->version)

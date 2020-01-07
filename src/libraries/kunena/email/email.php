@@ -49,7 +49,7 @@ abstract class Email
 			return false;
 		}
 
-		$config = KunenaFactory::getConfig();
+		$config = \Joomla\Component\Kunena\Libraries\KunenaFactory::getConfig();
 
 		if (!empty($config->email_recipient_count))
 		{

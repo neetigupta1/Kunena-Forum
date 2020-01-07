@@ -219,7 +219,7 @@ class Poll extends CMSObject
 			}
 			catch (ExecutionFailureException $e)
 			{
-				KunenaError::displayDatabaseError($e);
+				\Joomla\Component\Kunena\Libraries\Error::displayDatabaseError($e);
 			}
 		}
 
@@ -281,7 +281,7 @@ class Poll extends CMSObject
 			}
 			catch (ExecutionFailureException $e)
 			{
-				KunenaError::displayDatabaseError($e);
+				\Joomla\Component\Kunena\Libraries\Error::displayDatabaseError($e);
 			}
 		}
 
@@ -316,7 +316,7 @@ class Poll extends CMSObject
 			}
 			catch (ExecutionFailureException $e)
 			{
-				KunenaError::displayDatabaseError($e);
+				\Joomla\Component\Kunena\Libraries\Error::displayDatabaseError($e);
 			}
 		}
 
@@ -334,7 +334,7 @@ class Poll extends CMSObject
 	 */
 	public function getMyTime($user = null)
 	{
-		$user = KunenaFactory::getUser($user);
+		$user = \Joomla\Component\Kunena\Libraries\KunenaFactory::getUser($user);
 
 		if (!isset($this->mytime[$user->userid]))
 		{
@@ -351,7 +351,7 @@ class Poll extends CMSObject
 			}
 			catch (ExecutionFailureException $e)
 			{
-				KunenaError::displayDatabaseError($e);
+				\Joomla\Component\Kunena\Libraries\Error::displayDatabaseError($e);
 			}
 		}
 
@@ -387,7 +387,7 @@ class Poll extends CMSObject
 			return false;
 		}
 
-		$user = KunenaFactory::getUser($user);
+		$user = \Joomla\Component\Kunena\Libraries\KunenaFactory::getUser($user);
 
 		if (!$user->exists())
 		{
@@ -435,7 +435,7 @@ class Poll extends CMSObject
 			}
 		}
 
-		$votes->lasttime = KunenaUserHelper::getMyself()->getTime();
+		$votes->lasttime = \Joomla\Component\Kunena\Libraries\User\Helper::getMyself()->getTime();
 		$votes->lastvote = $option;
 		$votes->userid   = (int) $user->userid;
 
@@ -466,7 +466,7 @@ class Poll extends CMSObject
 			}
 			catch (ExecutionFailureException $e)
 			{
-				KunenaError::displayDatabaseError($e);
+				\Joomla\Component\Kunena\Libraries\Error::displayDatabaseError($e);
 
 				$this->setError(Text::_('COM_KUNENA_LIB_POLL_VOTE_ERROR_USER_INSERT_FAIL'));
 
@@ -498,7 +498,7 @@ class Poll extends CMSObject
 			}
 			catch (ExecutionFailureException $e)
 			{
-				KunenaError::displayDatabaseError($e);
+				\Joomla\Component\Kunena\Libraries\Error::displayDatabaseError($e);
 
 				$this->setError(Text::_('COM_KUNENA_LIB_POLL_VOTE_ERROR_USER_UPDATE_FAIL'));
 
@@ -539,7 +539,7 @@ class Poll extends CMSObject
 	 */
 	public function getLastVoteId($user = null)
 	{
-		$user  = KunenaFactory::getUser($user);
+		$user  = \Joomla\Component\Kunena\Libraries\KunenaFactory::getUser($user);
 		$query = $this->_db->getQuery(true);
 		$query->select($this->_db->quoteName('lastvote'))
 			->from($this->_db->quoteName('#__kunena_polls_users'))
@@ -553,7 +553,7 @@ class Poll extends CMSObject
 		}
 		catch (ExecutionFailureException $e)
 		{
-			KunenaError::displayDatabaseError($e);
+			\Joomla\Component\Kunena\Libraries\Error::displayDatabaseError($e);
 		}
 
 		return $this->mylastvoteId;
@@ -570,7 +570,7 @@ class Poll extends CMSObject
 	 */
 	public function getMyVotes($user = null)
 	{
-		$user = KunenaFactory::getUser($user);
+		$user = \Joomla\Component\Kunena\Libraries\KunenaFactory::getUser($user);
 
 		if (!isset($this->myvotes[$user->userid]))
 		{
@@ -587,7 +587,7 @@ class Poll extends CMSObject
 			}
 			catch (ExecutionFailureException $e)
 			{
-				KunenaError::displayDatabaseError($e);
+				\Joomla\Component\Kunena\Libraries\Error::displayDatabaseError($e);
 			}
 		}
 
@@ -628,7 +628,7 @@ class Poll extends CMSObject
 		}
 		catch (ExecutionFailureException $e)
 		{
-			KunenaError::displayDatabaseError($e);
+			\Joomla\Component\Kunena\Libraries\Error::displayDatabaseError($e);
 
 			$this->setError(Text::_('COM_KUNENA_LIB_POLL_VOTE_ERROR_OPTION_SAVE_FAIL'));
 
@@ -697,7 +697,7 @@ class Poll extends CMSObject
 		}
 		catch (ExecutionFailureException $e)
 		{
-			KunenaError::displayDatabaseError($e);
+			\Joomla\Component\Kunena\Libraries\Error::displayDatabaseError($e);
 		}
 
 		// Delete votes
@@ -712,11 +712,11 @@ class Poll extends CMSObject
 		}
 		catch (ExecutionFailureException $e)
 		{
-			KunenaError::displayDatabaseError($e);
+			\Joomla\Component\Kunena\Libraries\Error::displayDatabaseError($e);
 		}
 
 		// Remove poll from the topic
-		$topic = KunenaForumTopicHelper::get($this->threadid);
+		$topic = \Joomla\Component\Kunena\Libraries\Forum\Topic\Helper::get($this->threadid);
 
 		if ($success && $topic->exists() && $topic->poll_id)
 		{
@@ -812,7 +812,7 @@ class Poll extends CMSObject
 				}
 				catch (ExecutionFailureException $e)
 				{
-					KunenaError::displayDatabaseError($e);
+					\Joomla\Component\Kunena\Libraries\Error::displayDatabaseError($e);
 				}
 
 				// TODO: Votes in #__kunena_polls_users will be off and there's no way we can fix that
@@ -846,7 +846,7 @@ class Poll extends CMSObject
 				}
 				catch (ExecutionFailureException $e)
 				{
-					KunenaError::displayDatabaseError($e);
+					\Joomla\Component\Kunena\Libraries\Error::displayDatabaseError($e);
 				}
 			}
 			elseif ($options[$key]->text != $value)
@@ -864,7 +864,7 @@ class Poll extends CMSObject
 				}
 				catch (ExecutionFailureException $e)
 				{
-					KunenaError::displayDatabaseError($e);
+					\Joomla\Component\Kunena\Libraries\Error::displayDatabaseError($e);
 				}
 			}
 		}

@@ -82,8 +82,8 @@ class ComponentKunenaControllerCategoryIndexDisplay extends KunenaControllerDisp
 	{
 		parent::before();
 
-		$this->me        = KunenaUserHelper::getMyself();
-		$this->ktemplate = KunenaFactory::getTemplate();
+		$this->me        = \Joomla\Component\Kunena\Libraries\User\Helper::getMyself();
+		$this->ktemplate = \Joomla\Component\Kunena\Libraries\KunenaFactory::getTemplate();
 
 		// Get sections to display.
 		$catid       = $this->input->getInt('catid', 0);
@@ -106,11 +106,11 @@ class ComponentKunenaControllerCategoryIndexDisplay extends KunenaControllerDisp
 
 				if ($view == 'home')
 				{
-					$getid = $menu->getItem(KunenaRoute::getItemID("index.php?option=com_kunena&view=home&defaultmenu={$defaultmenu}"));
+					$getid = $menu->getItem(\Joomla\Component\Kunena\Libraries\Route\KunenaRoute::getItemID("index.php?option=com_kunena&view=home&defaultmenu={$defaultmenu}"));
 				}
 				else
 				{
-					$getid = $menu->getItem(KunenaRoute::getItemID("index.php?option=com_kunena&view=category&layout=list"));
+					$getid = $menu->getItem(\Joomla\Component\Kunena\Libraries\Route\KunenaRoute::getItemID("index.php?option=com_kunena&view=category&layout=list"));
 				}
 
 				$itemidfix = $getid->id;
@@ -118,29 +118,29 @@ class ComponentKunenaControllerCategoryIndexDisplay extends KunenaControllerDisp
 
 			if (!$itemidfix)
 			{
-				$itemidfix = KunenaRoute::fixMissingItemID();
+				$itemidfix = \Joomla\Component\Kunena\Libraries\Route\KunenaRoute::fixMissingItemID();
 			}
 
 			if ($view == 'home')
 			{
 				if ($defaultmenu)
 				{
-					$controller->setRedirect(KunenaRoute::_("index.php?option=com_kunena&view=home&defaultmenu={$defaultmenu}&Itemid={$itemidfix}", false));
+					$controller->setRedirect(\Joomla\Component\Kunena\Libraries\Route\KunenaRoute::_("index.php?option=com_kunena&view=home&defaultmenu={$defaultmenu}&Itemid={$itemidfix}", false));
 				}
 				else
 				{
-					$controller->setRedirect(KunenaRoute::_("index.php?option=com_kunena&view=category&layout=list&Itemid={$itemidfix}", false));
+					$controller->setRedirect(\Joomla\Component\Kunena\Libraries\Route\KunenaRoute::_("index.php?option=com_kunena&view=category&layout=list&Itemid={$itemidfix}", false));
 				}
 			}
 			else
 			{
-				$controller->setRedirect(KunenaRoute::_("index.php?option=com_kunena&view=category&layout=list&Itemid={$itemidfix}", false));
+				$controller->setRedirect(\Joomla\Component\Kunena\Libraries\Route\KunenaRoute::_("index.php?option=com_kunena&view=category&layout=list&Itemid={$itemidfix}", false));
 			}
 
 			$controller->redirect();
 		}
 
-		$allowed = md5(serialize(KunenaAccess::getInstance()->getAllowedCategories()));
+		$allowed = md5(serialize(\Joomla\Component\Kunena\Libraries\Access::getInstance()->getAllowedCategories()));
 
 		/*
 		$cache   = Factory::getCache('com_kunena', 'output');
@@ -157,11 +157,11 @@ class ComponentKunenaControllerCategoryIndexDisplay extends KunenaControllerDisp
 
 		if ($catid)
 		{
-			$sections = KunenaForumCategoryHelper::getCategories($catid);
+			$sections = \Joomla\Component\Kunena\Libraries\Forum\Category\Helper::getCategories($catid);
 		}
 		else
 		{
-			$sections = KunenaForumCategoryHelper::getChildren();
+			$sections = \Joomla\Component\Kunena\Libraries\Forum\Category\Helper::getChildren();
 		}
 
 		$sectionIds = [];
@@ -209,7 +209,7 @@ class ComponentKunenaControllerCategoryIndexDisplay extends KunenaControllerDisp
 		}
 
 		$this->sections = $sections;
-		$categories     = KunenaForumCategoryHelper::getChildren($sectionIds);
+		$categories     = \Joomla\Component\Kunena\Libraries\Forum\Category\Helper::getChildren($sectionIds);
 
 		if (empty($categories))
 		{
@@ -285,7 +285,7 @@ class ComponentKunenaControllerCategoryIndexDisplay extends KunenaControllerDisp
 			}
 		}
 
-		$subcategories = KunenaForumCategoryHelper::getChildren($categoryIds);
+		$subcategories = \Joomla\Component\Kunena\Libraries\Forum\Category\Helper::getChildren($categoryIds);
 
 		foreach ($subcategories as $category)
 		{
@@ -310,7 +310,7 @@ class ComponentKunenaControllerCategoryIndexDisplay extends KunenaControllerDisp
 		}
 
 		// Pre-fetch topics (also display unauthorized topics as they are in allowed categories).
-		$topics = KunenaForumTopicHelper::getTopics($topicIds, 'none');
+		$topics = \Joomla\Component\Kunena\Libraries\Forum\Topic\Helper::getTopics($topicIds, 'none');
 
 		// Pre-fetch users (and get last post ids for moderators).
 		foreach ($topics as $topic)
@@ -319,7 +319,7 @@ class ComponentKunenaControllerCategoryIndexDisplay extends KunenaControllerDisp
 			$postIds[$topic->id]               = $topic->last_post_id;
 		}
 
-		KunenaUserHelper::loadUsers($userIds);
+		\Joomla\Component\Kunena\Libraries\User\Helper::loadUsers($userIds);
 		KunenaForumMessageHelper::getMessages($postIds);
 
 		// Pre-fetch user related stuff.
@@ -328,10 +328,10 @@ class ComponentKunenaControllerCategoryIndexDisplay extends KunenaControllerDisp
 		if ($this->me->exists() && !$this->me->isBanned())
 		{
 			// Load new topic counts.
-			KunenaForumCategoryHelper::getNewTopics(array_keys($categories + $subcategories));
+			\Joomla\Component\Kunena\Libraries\Forum\Category\Helper::getNewTopics(array_keys($categories + $subcategories));
 
 			// Get categories which are moderated by current user.
-			$access   = KunenaAccess::getInstance();
+			$access   = \Joomla\Component\Kunena\Libraries\Access::getInstance();
 			$moderate = $access->getAdminStatus($this->me) + $access->getModeratorStatus($this->me);
 
 			if (!empty($moderate[0]))
@@ -363,7 +363,7 @@ class ComponentKunenaControllerCategoryIndexDisplay extends KunenaControllerDisp
 				}
 				catch (ExecutionFailureException $e)
 				{
-					KunenaError::displayDatabaseError($e);
+					\Joomla\Component\Kunena\Libraries\Error::displayDatabaseError($e);
 				}
 
 				foreach ($pending as $item)
@@ -401,7 +401,7 @@ class ComponentKunenaControllerCategoryIndexDisplay extends KunenaControllerDisp
 				{
 					if ($value['relation'] == 'canonical')
 					{
-						$canonicalUrl               = KunenaRoute::_();
+						$canonicalUrl               = \Joomla\Component\Kunena\Libraries\Route\KunenaRoute::_();
 						$canonicalUrl               = str_replace('?limitstart=0', '', $canonicalUrl);
 						$doc->_links[$canonicalUrl] = $value;
 						unset($doc->_links[$key]);
@@ -411,7 +411,7 @@ class ComponentKunenaControllerCategoryIndexDisplay extends KunenaControllerDisp
 			}
 		}
 
-		\Kunena\KunenaHtmlParser::prepareContent($content, 'index_top');
+		\Kunena\\Joomla\Component\Kunena\Libraries\Html\Parser::prepareContent($content, 'index_top');
 	}
 
 	/**

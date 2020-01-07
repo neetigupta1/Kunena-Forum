@@ -11,12 +11,15 @@
  * @link             https://www.kunena.org
  **/
 
-namespace Joomla\Component\Kunena;
+namespace Joomla\Component\Kunena\Plugin\Kunena\Community;
 
 defined('_JEXEC') or die();
 
 use Exception;
 use Joomla\CMS\Factory;
+use Joomla\Component\Kunena\Libraries\Error;
+use Joomla\Component\Kunena\Libraries\Integration\Profile;
+use Joomla\Component\Kunena\Libraries\KunenaFactory;
 use RuntimeException;
 use function defined;
 
@@ -25,7 +28,7 @@ use function defined;
  *
  * @since   Kunena 6.0
  */
-class KunenaProfileCommunity extends KunenaProfile
+class KunenaProfileCommunity extends Profile
 {
 	/**
 	 * @var     null
@@ -94,7 +97,7 @@ class KunenaProfileCommunity extends KunenaProfile
 		}
 		catch (RuntimeException $e)
 		{
-			KunenaError::displayDatabaseError($e);
+			Error::displayDatabaseError($e);
 		}
 
 		return $top;

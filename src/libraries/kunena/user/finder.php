@@ -155,6 +155,6 @@ class Finder extends KunenaDatabaseObjectFinder
 	{
 		$results = parent::find();
 
-		return KunenaUserHelper::loadUsers($results);
+		return \Joomla\Component\Kunena\Libraries\User\Helper::loadUsers($results);
 	}
 }

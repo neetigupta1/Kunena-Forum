@@ -24,9 +24,9 @@ $cols            = !empty($this->actions) ? 6 : 7;
 $colspan         = !empty($this->actions) ? 4 : 3;
 $view            = Factory::getApplication()->input->getWord('view');
 $layout          = Factory::getApplication()->input->getWord('layout');
-$this->ktemplate = KunenaFactory::getTemplate();
+$this->ktemplate = \Joomla\Component\Kunena\Libraries\KunenaFactory::getTemplate();
 $social          = $this->ktemplate->params->get('socialshare');
-$me              = KunenaUserHelper::getMyself();
+$me              = \Joomla\Component\Kunena\Libraries\User\Helper::getMyself();
 
 if (Config::getInstance()->ratingenabled)
 {
@@ -88,13 +88,13 @@ if ($this->config->enableforumjump && !$this->embedded && $this->topics)
 </div>
 
 <div class="kfrontend shadow-lg rounded mt-4 border">
-	<form action="<?php echo KunenaRoute::_('index.php?option=com_kunena&view=topics'); ?>" method="post" name="ktopicsform"
+	<form action="<?php echo \Joomla\Component\Kunena\Libraries\Route\KunenaRoute::_('index.php?option=com_kunena&view=topics'); ?>" method="post" name="ktopicsform"
 	      id="ktopicsform">
 		<?php echo HTMLHelper::_('form.token'); ?>
 		<?php if ($view == 'user'): ?>
 			<input type="hidden" name="userid" value="<?php echo $this->user->userid; ?>"/>
 		<?php endif; ?>
-		<table class="table<?php echo KunenaTemplate::getInstance()->borderless(); ?> shadow-lg rounded">
+		<table class="table<?php echo \Joomla\Component\Kunena\Libraries\Template\Template::getInstance()->borderless(); ?> shadow-lg rounded">
 			<thead>
 			<tr>
 				<th scope="col" class="center hidden-xs-down">

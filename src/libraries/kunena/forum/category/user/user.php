@@ -69,7 +69,7 @@ class User extends CMSObject
 		$this->setProperties($table->getProperties());
 		$this->_exists     = false;
 		$this->category_id = $category;
-		$this->user_id     = KunenaUserHelper::get($user)->userid;
+		$this->user_id     = \Joomla\Component\Kunena\Libraries\User\Helper::get($user)->userid;
 	}
 
 	/**
@@ -126,7 +126,7 @@ class User extends CMSObject
 	 */
 	public function getCategory()
 	{
-		return KunenaForumCategoryHelper::get($this->category_id);
+		return \Joomla\Component\Kunena\Libraries\Forum\Category\Helper::get($this->category_id);
 	}
 
 	/**
@@ -185,7 +185,7 @@ class User extends CMSObject
 		}
 		catch (Exception $e)
 		{
-			KunenaError::displayDatabaseError($e);
+			\Joomla\Component\Kunena\Libraries\Error::displayDatabaseError($e);
 		}
 
 		// Fill up KunenaForumCategoryUser object in case we created a new category.
@@ -221,7 +221,7 @@ class User extends CMSObject
 			$user = $this->user_id;
 		}
 
-		$user = KunenaUserHelper::get($user);
+		$user = \Joomla\Component\Kunena\Libraries\User\Helper::get($user);
 
 		// Create the table object
 		$table = $this->getTable();
@@ -260,7 +260,7 @@ class User extends CMSObject
 		}
 		catch (Exception $e)
 		{
-			KunenaError::displayDatabaseError($e);
+			\Joomla\Component\Kunena\Libraries\Error::displayDatabaseError($e);
 		}
 
 		$this->_exists = false;

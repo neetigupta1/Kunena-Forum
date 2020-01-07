@@ -29,7 +29,7 @@ use function defined;
  */
 function kunena_160_2010_05_30_configuration($parent)
 {
-	$config = KunenaFactory::getConfig();
+	$config = \Joomla\Component\Kunena\Libraries\KunenaFactory::getConfig();
 
 	// Switch to default template
 	$config->set('template', 'blue_eagle');

@@ -47,9 +47,9 @@ class ComponentKunenaControllerTopicListUnreadDisplay extends ComponentKunenaCon
 		$this->model = new KunenaModelTopics([], $this->input);
 		$this->model->initialize($this->getOptions(), $this->getOptions()->get('embedded', false));
 		$this->state    = $this->model->getState();
-		$this->me       = KunenaUserHelper::getMyself();
+		$this->me       = \Joomla\Component\Kunena\Libraries\User\Helper::getMyself();
 		$this->moreUri  = null;
-		$access         = KunenaAccess::getInstance();
+		$access         = \Joomla\Component\Kunena\Libraries\Access::getInstance();
 		$start          = $this->state->get('list.start');
 		$limit          = $this->state->get('list.limit');
 		$params         = ComponentHelper::getParams('com_kunena');
@@ -65,7 +65,7 @@ class ComponentKunenaControllerTopicListUnreadDisplay extends ComponentKunenaCon
 		}
 		elseif ($time == 0)
 		{
-			$time = new Date(KunenaFactory::getSession()->lasttime);
+			$time = new Date(\Joomla\Component\Kunena\Libraries\KunenaFactory::getSession()->lasttime);
 		}
 		else
 		{
@@ -81,17 +81,17 @@ class ComponentKunenaControllerTopicListUnreadDisplay extends ComponentKunenaCon
 			else
 			{
 				$menu      = $this->app->getMenu();
-				$getid     = $menu->getItem(KunenaRoute::getItemID("index.php?option=com_kunena&view=topics&layout=unread"));
+				$getid     = $menu->getItem(\Joomla\Component\Kunena\Libraries\Route\KunenaRoute::getItemID("index.php?option=com_kunena&view=topics&layout=unread"));
 				$itemidfix = $getid->id;
 			}
 
 			if (!$itemidfix)
 			{
-				$itemidfix = KunenaRoute::fixMissingItemID();
+				$itemidfix = \Joomla\Component\Kunena\Libraries\Route\KunenaRoute::fixMissingItemID();
 			}
 
 			$controller = BaseController::getInstance("kunena");
-			$controller->setRedirect(KunenaRoute::_("index.php?option=com_kunena&view=topics&layout=unread&Itemid={$itemidfix}", false));
+			$controller->setRedirect(\Joomla\Component\Kunena\Libraries\Route\KunenaRoute::_("index.php?option=com_kunena&view=topics&layout=unread&Itemid={$itemidfix}", false));
 			$controller->redirect();
 		}
 
@@ -108,7 +108,7 @@ class ComponentKunenaControllerTopicListUnreadDisplay extends ComponentKunenaCon
 
 		$mesIds = [];
 
-		$mesIds += KunenaForumTopicHelper::fetchNewStatus($this->topics, $this->me->userid);
+		$mesIds += \Joomla\Component\Kunena\Libraries\Forum\Topic\Helper::fetchNewStatus($this->topics, $this->me->userid);
 
 		$list = [];
 

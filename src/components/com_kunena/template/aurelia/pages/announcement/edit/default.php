@@ -25,7 +25,7 @@ $this->addBreadcrumb(
 );
 $this->addBreadcrumb(
 	Text::_('COM_KUNENA_EDIT'),
-	KunenaRoute::normalize()
+	\Joomla\Component\Kunena\Libraries\Route\KunenaRoute::normalize()
 );
 
 echo $content;

@@ -45,7 +45,7 @@ abstract class KunenaFactory
 	 */
 	public static function getTemplate($name = null)
 	{
-		return KunenaTemplate::getInstance($name);
+		return \Joomla\Component\Kunena\Libraries\Template\Template::getInstance($name);
 	}
 
 	/**
@@ -82,7 +82,7 @@ abstract class KunenaFactory
 	 */
 	public static function getUser($id = null, $reload = false)
 	{
-		return KunenaUserHelper::get($id, $reload);
+		return \Joomla\Component\Kunena\Libraries\User\Helper::get($id, $reload);
 	}
 
 	/**
@@ -123,9 +123,9 @@ abstract class KunenaFactory
 	/**
 	 * Get Kunena avatar integration object
 	 *
-	 * Returns the global {@link KunenaAvatar} object, only creating it if it doesn't already exist.
+	 * Returns the global {@link \Joomla\Component\Kunena\Libraries\Integration\Avatar} object, only creating it if it doesn't already exist.
 	 *
-	 * @return  KunenaAvatar
+	 * @return  \Joomla\Component\Kunena\Libraries\Integration\Avatar
 	 *
 	 * @since   Kunena 6.0
 	 *
@@ -133,7 +133,7 @@ abstract class KunenaFactory
 	 */
 	public static function getAvatarIntegration()
 	{
-		return KunenaAvatar::getInstance();
+		return \Joomla\Component\Kunena\Libraries\Integration\Avatar::getInstance();
 	}
 
 	/**
@@ -201,7 +201,7 @@ abstract class KunenaFactory
 	public static function loadLanguage($file = 'com_kunena', $client = 'site')
 	{
 		static $loaded = [];
-		KUNENA_PROFILER ? KunenaProfiler::instance()->start('function ' . __CLASS__ . '::' . __FUNCTION__ . '()') : null;
+		KUNENA_PROFILER ? \Joomla\Component\Kunena\Libraries\KunenaProfiler::instance()->start('function ' . __CLASS__ . '::' . __FUNCTION__ . '()') : null;
 
 		if ($client == 'site')
 		{
@@ -233,7 +233,7 @@ abstract class KunenaFactory
 				|| $lang->load($file, $lookup2, null, $english, false);
 		}
 
-		KUNENA_PROFILER ? KunenaProfiler::instance()->stop('function ' . __CLASS__ . '::' . __FUNCTION__ . '()') : null;
+		KUNENA_PROFILER ? \Joomla\Component\Kunena\Libraries\KunenaProfiler::instance()->stop('function ' . __CLASS__ . '::' . __FUNCTION__ . '()') : null;
 
 		return $loaded[$file];
 	}

@@ -24,7 +24,7 @@ use function defined;
 		<?php
 		foreach ($this->onlineList as $user)
 		{
-			$avatar       = $user->getAvatarImage(KunenaFactory::getTemplate()->params->get('avatarType') . ' ', 20, 20);
+			$avatar       = $user->getAvatarImage(\Joomla\Component\Kunena\Libraries\KunenaFactory::getTemplate()->params->get('avatarType') . ' ', 20, 20);
 			$onlinelist[] = $user->getLink($avatar, null, '', '', null, 0, Config::getInstance()->avataredit) . $user->getLink();
 		}
 		?>
@@ -39,7 +39,7 @@ use function defined;
 		<?php
 		foreach ($this->hiddenList as $user)
 		{
-			$avatar       = $user->getAvatarImage(KunenaFactory::getTemplate()->params->get('avatarType') . ' ', 20, 20);
+			$avatar       = $user->getAvatarImage(\Joomla\Component\Kunena\Libraries\KunenaFactory::getTemplate()->params->get('avatarType') . ' ', 20, 20);
 			$hiddenlist[] = $user->getLink($avatar, null, '', '', null, 0, Config::getInstance()->avataredit) . $user->getLink();
 		}
 		?>

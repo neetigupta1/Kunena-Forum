@@ -48,7 +48,7 @@ class ComponentKunenaControllerTopicListUserDisplay extends ComponentKunenaContr
 		$this->model = new KunenaModelTopics([], $this->input);
 		$this->model->initialize($this->getOptions(), $this->getOptions()->get('embedded', false));
 		$this->state   = $this->model->getState();
-		$this->me      = KunenaUserHelper::getMyself();
+		$this->me      = \Joomla\Component\Kunena\Libraries\User\Helper::getMyself();
 		$this->moreUri = null;
 
 		$this->embedded = $this->getOptions()->get('embedded', true);
@@ -58,7 +58,7 @@ class ComponentKunenaControllerTopicListUserDisplay extends ComponentKunenaContr
 			$this->moreUri = new Uri('index.php?option=com_kunena&view=topics&layout=user&mode=' .
 				$this->state->get('list.mode') . '&userid=' . $this->state->get('user') . '&limit=' . $this->state->get('list.limit')
 			);
-			$this->moreUri->setVar('Itemid', KunenaRoute::getItemID($this->moreUri));
+			$this->moreUri->setVar('Itemid', \Joomla\Component\Kunena\Libraries\Route\KunenaRoute::getItemID($this->moreUri));
 		}
 
 		$start = $this->state->get('list.start');
@@ -73,7 +73,7 @@ class ComponentKunenaControllerTopicListUserDisplay extends ComponentKunenaContr
 		}
 		elseif ($time == 0)
 		{
-			$time = new Date(KunenaFactory::getSession()->lasttime);
+			$time = new Date(\Joomla\Component\Kunena\Libraries\KunenaFactory::getSession()->lasttime);
 		}
 		else
 		{
@@ -91,7 +91,7 @@ class ComponentKunenaControllerTopicListUserDisplay extends ComponentKunenaContr
 			$hold = '0';
 		}
 
-		$this->user = KunenaUserHelper::get($this->state->get('user'));
+		$this->user = \Joomla\Component\Kunena\Libraries\User\Helper::get($this->state->get('user'));
 
 		// Get categories for the filter.
 		$categoryIds = $this->state->get('list.categories');
@@ -157,15 +157,15 @@ class ComponentKunenaControllerTopicListUserDisplay extends ComponentKunenaContr
 
 				if ($view == 'user' && $layout == 'default')
 				{
-					$getid = $menu->getItem(KunenaRoute::getItemID("index.php?option=com_kunena&view=user"));
+					$getid = $menu->getItem(\Joomla\Component\Kunena\Libraries\Route\KunenaRoute::getItemID("index.php?option=com_kunena&view=user"));
 				}
 				elseif ($view == 'topics' && $layout == 'user')
 				{
-					$getid = $menu->getItem(KunenaRoute::getItemID("index.php?option=com_kunena&view=topics&layout=user&mode={$this->state->get('list.mode')}"));
+					$getid = $menu->getItem(\Joomla\Component\Kunena\Libraries\Route\KunenaRoute::getItemID("index.php?option=com_kunena&view=topics&layout=user&mode={$this->state->get('list.mode')}"));
 				}
 				else
 				{
-					$getid = $menu->getItem(KunenaRoute::getItemID("index.php?option=com_kunena&view=user&mode={$this->state->get('list.mode')}"));
+					$getid = $menu->getItem(\Joomla\Component\Kunena\Libraries\Route\KunenaRoute::getItemID("index.php?option=com_kunena&view=user&mode={$this->state->get('list.mode')}"));
 				}
 
 				$itemidfix = $getid->id;
@@ -173,20 +173,20 @@ class ComponentKunenaControllerTopicListUserDisplay extends ComponentKunenaContr
 
 			if (!$itemidfix)
 			{
-				$itemidfix = KunenaRoute::fixMissingItemID();
+				$itemidfix = \Joomla\Component\Kunena\Libraries\Route\KunenaRoute::fixMissingItemID();
 			}
 
 			if ($view == 'user' && $layout == 'default')
 			{
-				$controller->setRedirect(KunenaRoute::_("index.php?option=com_kunena&view=user&Itemid={$itemidfix}", false));
+				$controller->setRedirect(\Joomla\Component\Kunena\Libraries\Route\KunenaRoute::_("index.php?option=com_kunena&view=user&Itemid={$itemidfix}", false));
 			}
 			elseif ($view == 'topics' && $layout == 'user')
 			{
-				$controller->setRedirect(KunenaRoute::_("index.php?option=com_kunena&view=topics&layout=user&mode={$this->state->get('list.mode')}&Itemid={$itemidfix}", false));
+				$controller->setRedirect(\Joomla\Component\Kunena\Libraries\Route\KunenaRoute::_("index.php?option=com_kunena&view=topics&layout=user&mode={$this->state->get('list.mode')}&Itemid={$itemidfix}", false));
 			}
 			else
 			{
-				$controller->setRedirect(KunenaRoute::_("index.php?option=com_kunena&view=user&mode={$this->state->get('list.mode')}&Itemid={$itemidfix}", false));
+				$controller->setRedirect(\Joomla\Component\Kunena\Libraries\Route\KunenaRoute::_("index.php?option=com_kunena&view=user&mode={$this->state->get('list.mode')}&Itemid={$itemidfix}", false));
 			}
 
 			$controller->redirect();
@@ -194,7 +194,7 @@ class ComponentKunenaControllerTopicListUserDisplay extends ComponentKunenaContr
 
 		if ($categoryIds !== null)
 		{
-			$categories = KunenaForumCategoryHelper::getCategories($categoryIds, $reverse, $authorise);
+			$categories = \Joomla\Component\Kunena\Libraries\Forum\Category\Helper::getCategories($categoryIds, $reverse, $authorise);
 			$finder->filterByCategories($categories);
 		}
 
@@ -222,29 +222,29 @@ class ComponentKunenaControllerTopicListUserDisplay extends ComponentKunenaContr
 		{
 			case 'posted' :
 				$this->headerText = Text::_('COM_KUNENA_VIEW_TOPICS_USERS_MODE_POSTED');
-				$canonicalUrl     = KunenaRoute::_('index.php?option=com_kunena&view=topics&layout=user&mode=posted');
+				$canonicalUrl     = \Joomla\Component\Kunena\Libraries\Route\KunenaRoute::_('index.php?option=com_kunena&view=topics&layout=user&mode=posted');
 				break;
 			case 'started' :
 				$this->headerText = Text::_('COM_KUNENA_VIEW_TOPICS_USERS_MODE_STARTED');
-				$canonicalUrl     = KunenaRoute::_('index.php?option=com_kunena&view=topics&layout=user&mode=started');
+				$canonicalUrl     = \Joomla\Component\Kunena\Libraries\Route\KunenaRoute::_('index.php?option=com_kunena&view=topics&layout=user&mode=started');
 				break;
 			case 'favorites' :
 				$this->headerText = Text::_('COM_KUNENA_VIEW_TOPICS_USERS_MODE_FAVORITES');
-				$canonicalUrl     = KunenaRoute::_('index.php?option=com_kunena&view=topics&layout=user&mode=favorites');
+				$canonicalUrl     = \Joomla\Component\Kunena\Libraries\Route\KunenaRoute::_('index.php?option=com_kunena&view=topics&layout=user&mode=favorites');
 				$actions          = ['unfavorite'];
 				break;
 			case 'subscriptions' :
 				$this->headerText = Text::_('COM_KUNENA_VIEW_TOPICS_USERS_MODE_SUBSCRIPTIONS');
-				$canonicalUrl     = KunenaRoute::_('index.php?option=com_kunena&view=topics&layout=user&mode=subscriptions');
+				$canonicalUrl     = \Joomla\Component\Kunena\Libraries\Route\KunenaRoute::_('index.php?option=com_kunena&view=topics&layout=user&mode=subscriptions');
 				$actions          = ['unsubscribe'];
 				break;
 			case 'plugin' :
 				$this->headerText = Text::_('COM_KUNENA_VIEW_TOPICS_USERS_MODE_PLUGIN_' . strtoupper($this->state->get('list.modetype')));
-				$canonicalUrl     = KunenaRoute::_('index.php?option=com_kunena&view=topics&layout=user&mode=plugin');
+				$canonicalUrl     = \Joomla\Component\Kunena\Libraries\Route\KunenaRoute::_('index.php?option=com_kunena&view=topics&layout=user&mode=plugin');
 				break;
 			default :
 				$this->headerText = Text::_('COM_KUNENA_VIEW_TOPICS_USERS_MODE_DEFAULT');
-				$canonicalUrl     = KunenaRoute::_('index.php?option=com_kunena&view=topics&layout=user&mode=default');
+				$canonicalUrl     = \Joomla\Component\Kunena\Libraries\Route\KunenaRoute::_('index.php?option=com_kunena&view=topics&layout=user&mode=default');
 		}
 
 		$doc = Factory::getApplication()->getDocument();
@@ -291,7 +291,7 @@ class ComponentKunenaControllerTopicListUserDisplay extends ComponentKunenaContr
 				{
 					if ($value['relation'] == 'canonical')
 					{
-						$canonicalUrl               = KunenaRoute::_();
+						$canonicalUrl               = \Joomla\Component\Kunena\Libraries\Route\KunenaRoute::_();
 						$doc->_links[$canonicalUrl] = $value;
 						unset($doc->_links[$key]);
 						break;

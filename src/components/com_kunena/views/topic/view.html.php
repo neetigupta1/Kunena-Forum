@@ -215,7 +215,7 @@ class KunenaViewTopic extends KunenaView
 		// Redirect unread layout to the page that contains the first unread message
 		$category = $this->get('Category');
 		$topic    = $this->get('Topic');
-		KunenaForumTopicHelper::fetchNewStatus([$topic->id => $topic]);
+		\Joomla\Component\Kunena\Libraries\Forum\Topic\Helper::fetchNewStatus([$topic->id => $topic]);
 
 		$message = KunenaForumMessage::getInstance($topic->lastread ? $topic->lastread : $topic->last_post_id);
 
@@ -300,7 +300,7 @@ class KunenaViewTopic extends KunenaView
 			$this->topicIcons = $this->ktemplate->getTopicIcons(false, $saved ? $saved['icon_id'] : 0);
 		}
 
-		$categories        = KunenaForumCategoryHelper::getCategories();
+		$categories        = \Joomla\Component\Kunena\Libraries\Forum\Category\Helper::getCategories();
 		$arrayanynomousbox = [];
 		$arraypollcatid    = [];
 
@@ -330,7 +330,7 @@ class KunenaViewTopic extends KunenaView
 					   'action'      => 'topic.create'];
 
 		$this->catid    = $this->state->get('item.catid');
-		$this->category = KunenaForumCategoryHelper::get($this->catid);
+		$this->category = \Joomla\Component\Kunena\Libraries\Forum\Category\Helper::get($this->catid);
 		list($this->topic, $this->message) = $this->category->newTopic($saved);
 
 		if (!$this->topic->category_id)
@@ -396,7 +396,7 @@ class KunenaViewTopic extends KunenaView
 
 		if (!$this->mesid)
 		{
-			$this->topic = KunenaForumTopicHelper::get($this->state->get('item.id'));
+			$this->topic = \Joomla\Component\Kunena\Libraries\Forum\Topic\Helper::get($this->state->get('item.id'));
 			$parent      = KunenaForumMessageHelper::get($this->topic->first_post_id);
 		}
 		else
@@ -603,7 +603,7 @@ class KunenaViewTopic extends KunenaView
 					$this->userrankimage = $this->profile->getRank($this->topic->category_id, 'image');
 					$this->userranktitle = $this->profile->getRank($this->topic->category_id, 'title');
 					$this->userposts     = $this->profile->posts;
-					$activityIntegration = KunenaFactory::getActivityIntegration();
+					$activityIntegration = \Joomla\Component\Kunena\Libraries\KunenaFactory::getActivityIntegration();
 					$this->userthankyou  = $this->profile->thankyou;
 					$this->userpoints    = $activityIntegration->getUserPoints($this->profile->userid);
 					$this->usermedals    = $activityIntegration->getUserMedals($this->profile->userid);
@@ -618,9 +618,9 @@ class KunenaViewTopic extends KunenaView
 					$this->usermedals    = null;
 				}
 
-				$this->personalText = KunenaHtmlParser::parseText($this->profile->personalText);
+				$this->personalText = \Joomla\Component\Kunena\Libraries\Html\Parser::parseText($this->profile->personalText);
 
-				$contents = trim(KunenaFactory::getProfile()->showProfile($this, $params));
+				$contents = trim(\Joomla\Component\Kunena\Libraries\KunenaFactory::getProfile()->showProfile($this, $params));
 
 				if (!$contents)
 				{
@@ -915,14 +915,14 @@ class KunenaViewTopic extends KunenaView
 					$userids_thankyous[] = $userid;
 				}
 
-				$loaded_users = KunenaUserHelper::loadUsers($userids_thankyous);
+				$loaded_users = \Joomla\Component\Kunena\Libraries\User\Helper::loadUsers($userids_thankyous);
 
 				$thankyou_delete = '';
 
 				foreach ($loaded_users as $userid => $user)
 				{
 					$thankyou_delete  = $canUnthankyou === true ? ' <a title="' . Text::_('COM_KUNENA_BUTTON_THANKYOU_REMOVE_LONG') . '" href="'
-						. KunenaRoute::_(sprintf($task, "unthankyou&userid={$userid}")) . '"><img src="' . $this->ktemplate->getImagePath('icons/publish_x.png') . '" title="" alt="" /></a>' : '';
+						. \Joomla\Component\Kunena\Libraries\Route\KunenaRoute::_(sprintf($task, "unthankyou&userid={$userid}")) . '"><img src="' . $this->ktemplate->getImagePath('icons/publish_x.png') . '" title="" alt="" /></a>' : '';
 					$this->thankyou[] = $loaded_users[$userid]->getLink() . $thankyou_delete;
 				}
 			}
@@ -972,7 +972,7 @@ class KunenaViewTopic extends KunenaView
 				}
 			}
 
-			$this->signatureHtml = KunenaHtmlParser::parseBBCode($this->profile->signature, null, $this->config->maxsig);
+			$this->signatureHtml = \Joomla\Component\Kunena\Libraries\Html\Parser::parseBBCode($this->profile->signature, null, $this->config->maxsig);
 			$this->attachments   = $this->message->getAttachments();
 
 			// Link to individual message
@@ -1095,7 +1095,7 @@ class KunenaViewTopic extends KunenaView
 		$pagination = new KunenaPagination($this->total, $this->state->get('list.start'), $this->state->get('list.limit'));
 		$pagination->setDisplayedPages($maxpages);
 
-		$uri = KunenaRoute::normalize(null, true);
+		$uri = \Joomla\Component\Kunena\Libraries\Route\KunenaRoute::normalize(null, true);
 
 		if ($uri)
 		{
@@ -1163,7 +1163,7 @@ class KunenaViewTopic extends KunenaView
 			$userlist[(int) $message->userid] = (int) $message->userid;
 		}
 
-		KunenaUserHelper::loadUsers($userlist);
+		\Joomla\Component\Kunena\Libraries\User\Helper::loadUsers($userlist);
 
 		// Run events
 		$params = new Registry;
@@ -1195,7 +1195,7 @@ class KunenaViewTopic extends KunenaView
 	 */
 	protected function redirectBack($anchor = '')
 	{
-		$default  = Uri::base() . ($this->app->isClient('site') ? ltrim(KunenaRoute::_('index.php?option=com_kunena'), '/') : '');
+		$default  = Uri::base() . ($this->app->isClient('site') ? ltrim(\Joomla\Component\Kunena\Libraries\Route\KunenaRoute::_('index.php?option=com_kunena'), '/') : '');
 		$referrer = $this->app->input->server->getString('HTTP_REFERER');
 
 		$uri = Uri::getInstance($referrer ? $referrer : $default);
@@ -1357,7 +1357,7 @@ class KunenaViewTopic extends KunenaView
 				{
 					// Create Meta Description form the content of the first message
 					// better for search results display but NOT for search ranking!
-					$description = KunenaHtmlParser::stripBBCode($this->topic->first_post_message, 182);
+					$description = \Joomla\Component\Kunena\Libraries\Html\Parser::stripBBCode($this->topic->first_post_message, 182);
 					$description = preg_replace('/\s+/', ' ', $description); // Remove newlines
 					$description = trim($description); // Remove trailing spaces and beginning
 
@@ -1520,7 +1520,7 @@ class KunenaViewTopic extends KunenaView
 			}
 			else
 			{
-				$title = KunenaFactory::getConfig()->board_title . ': ' . $title;
+				$title = \Joomla\Component\Kunena\Libraries\KunenaFactory::getConfig()->board_title . ': ' . $title;
 			}
 
 			$this->document->setTitle($title);

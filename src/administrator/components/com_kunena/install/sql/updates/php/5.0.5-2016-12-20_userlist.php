@@ -28,7 +28,7 @@ use function defined;
  */
 function kunena_505_2016_12_20_userlist()
 {
-	$config = KunenaFactory::getConfig();
+	$config = \Joomla\Component\Kunena\Libraries\KunenaFactory::getConfig();
 
 	if ($config->userlist_allowed)
 	{

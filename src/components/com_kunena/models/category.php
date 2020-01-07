@@ -89,7 +89,7 @@ class KunenaModelCategory extends KunenaAdminModelCategories
 		}
 		elseif ($userid > 0)
 		{
-			$userid = KunenaFactory::getUser($userid)->userid;
+			$userid = \Joomla\Component\Kunena\Libraries\KunenaFactory::getUser($userid)->userid;
 		}
 		else
 		{
@@ -153,8 +153,8 @@ class KunenaModelCategory extends KunenaAdminModelCategories
 		if ($this->items === false)
 		{
 			$this->items = [];
-			$user        = KunenaFactory::getUser();
-			list($total, $categories) = KunenaForumCategoryHelper::getLatestSubscriptions($user->userid);
+			$user        = \Joomla\Component\Kunena\Libraries\KunenaFactory::getUser();
+			list($total, $categories) = \Joomla\Component\Kunena\Libraries\Forum\Category\Helper::getLatestSubscriptions($user->userid);
 			$this->items = $categories;
 		}
 
@@ -180,12 +180,12 @@ class KunenaModelCategory extends KunenaAdminModelCategories
 
 			if ($layout == 'user')
 			{
-				$categories[0] = KunenaForumCategoryHelper::getSubscriptions();
+				$categories[0] = \Joomla\Component\Kunena\Libraries\Forum\Category\Helper::getSubscriptions();
 				$flat          = true;
 			}
 			elseif ($catid)
 			{
-				$categories[0] = KunenaForumCategoryHelper::getCategories($catid);
+				$categories[0] = \Joomla\Component\Kunena\Libraries\Forum\Category\Helper::getCategories($catid);
 
 				if (empty($categories[0]))
 				{
@@ -194,7 +194,7 @@ class KunenaModelCategory extends KunenaAdminModelCategories
 			}
 			else
 			{
-				$categories[0] = KunenaForumCategoryHelper::getChildren();
+				$categories[0] = \Joomla\Component\Kunena\Libraries\Forum\Category\Helper::getChildren();
 			}
 
 			if ($flat)
@@ -203,7 +203,7 @@ class KunenaModelCategory extends KunenaAdminModelCategories
 			}
 			else
 			{
-				$allsubcats = KunenaForumCategoryHelper::getChildren(array_keys($categories [0]), 1);
+				$allsubcats = \Joomla\Component\Kunena\Libraries\Forum\Category\Helper::getChildren(array_keys($categories [0]), 1);
 			}
 
 			if (empty($allsubcats))
@@ -211,7 +211,7 @@ class KunenaModelCategory extends KunenaAdminModelCategories
 				return [];
 			}
 
-			KunenaForumCategoryHelper::getNewTopics(array_keys($allsubcats));
+			\Joomla\Component\Kunena\Libraries\Forum\Category\Helper::getNewTopics(array_keys($allsubcats));
 
 			$modcats      = [];
 			$lastpostlist = [];
@@ -247,7 +247,7 @@ class KunenaModelCategory extends KunenaAdminModelCategories
 			}
 
 			// Prefetch topics
-			$topics = KunenaForumTopicHelper::getTopics($topiclist);
+			$topics = \Joomla\Component\Kunena\Libraries\Forum\Topic\Helper::getTopics($topiclist);
 
 			foreach ($topics as $topic)
 			{
@@ -283,7 +283,7 @@ class KunenaModelCategory extends KunenaAdminModelCategories
 				}
 				catch (ExecutionFailureException $e)
 				{
-					KunenaError::displayDatabaseError($e);
+					\Joomla\Component\Kunena\Libraries\Error::displayDatabaseError($e);
 				}
 
 				foreach ($pending as $item)
@@ -296,14 +296,14 @@ class KunenaModelCategory extends KunenaAdminModelCategories
 			}
 
 			// Fix last post position when user can see unapproved or deleted posts
-			if ($lastpostlist && !$topic_ordering && ($this->me->isAdmin() || KunenaAccess::getInstance()->getModeratorStatus()))
+			if ($lastpostlist && !$topic_ordering && ($this->me->isAdmin() || \Joomla\Component\Kunena\Libraries\Access::getInstance()->getModeratorStatus()))
 			{
 				KunenaForumMessageHelper::getMessages($lastpostlist);
 				KunenaForumMessageHelper::loadLocation($lastpostlist);
 			}
 
 			// Prefetch all users/avatars to avoid user by user queries during template iterations
-			KunenaUserHelper::loadUsers($userlist);
+			\Joomla\Component\Kunena\Libraries\User\Helper::loadUsers($userlist);
 
 			if ($flat)
 			{
@@ -337,7 +337,7 @@ class KunenaModelCategory extends KunenaAdminModelCategories
 	 */
 	public function getCategory()
 	{
-		return KunenaForumCategoryHelper::get($this->getState('item.id'));
+		return \Joomla\Component\Kunena\Libraries\Forum\Category\Helper::get($this->getState('item.id'));
 	}
 
 	/**
@@ -359,7 +359,7 @@ class KunenaModelCategory extends KunenaAdminModelCategories
 
 			$topic_ordering = $this->getCategory()->topic_ordering;
 
-			$access = KunenaAccess::getInstance();
+			$access = \Joomla\Component\Kunena\Libraries\Access::getInstance();
 			$hold   = $format == 'feed' ? 0 : $access->getAllowedHold($this->me, $catid);
 			$moved  = $format == 'feed' ? 0 : 1;
 			$params = [
@@ -387,10 +387,10 @@ class KunenaModelCategory extends KunenaAdminModelCategories
 
 			if ($format == 'feed')
 			{
-				$catid = array_keys(KunenaForumCategoryHelper::getChildren($catid, 100) + [$catid => 1]);
+				$catid = array_keys(\Joomla\Component\Kunena\Libraries\Forum\Category\Helper::getChildren($catid, 100) + [$catid => 1]);
 			}
 
-			list($this->total, $this->topics) = KunenaForumTopicHelper::getLatestTopics($catid, $limitstart, $limit, $params);
+			list($this->total, $this->topics) = \Joomla\Component\Kunena\Libraries\Forum\Topic\Helper::getLatestTopics($catid, $limitstart, $limit, $params);
 
 			if ($this->total > 0)
 			{
@@ -408,14 +408,14 @@ class KunenaModelCategory extends KunenaAdminModelCategories
 				// Prefetch all users/avatars to avoid user by user queries during template iterations
 				if (!empty($userlist))
 				{
-					KunenaUserHelper::loadUsers($userlist);
+					\Joomla\Component\Kunena\Libraries\User\Helper::loadUsers($userlist);
 				}
 
-				KunenaForumTopicHelper::getUserTopics(array_keys($this->topics));
-				$lastreadlist = KunenaForumTopicHelper::fetchNewStatus($this->topics);
+				\Joomla\Component\Kunena\Libraries\Forum\Topic\Helper::getUserTopics(array_keys($this->topics));
+				$lastreadlist = \Joomla\Component\Kunena\Libraries\Forum\Topic\Helper::fetchNewStatus($this->topics);
 
 				// Fetch last / new post positions when user can see unapproved or deleted posts
-				if ($lastreadlist || $this->me->isAdmin() || KunenaAccess::getInstance()->getModeratorStatus())
+				if ($lastreadlist || $this->me->isAdmin() || \Joomla\Component\Kunena\Libraries\Access::getInstance()->getModeratorStatus())
 				{
 					KunenaForumMessageHelper::loadLocation($lastpostlist + $lastreadlist);
 				}

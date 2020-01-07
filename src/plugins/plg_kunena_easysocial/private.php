@@ -10,11 +10,12 @@
  * See COPYRIGHT.php for copyright notices and details.
  */
 
-namespace Joomla\Component\Kunena;
+namespace Joomla\Component\Kunena\Plugin\Kunena\Easysocial;
 
 defined('_JEXEC') or die('Unauthorized Access');
 
 use Joomla\CMS\Language\Text;
+use Joomla\Component\Kunena\Libraries\Integration\KunenaPrivate;
 use function defined;
 
 /**

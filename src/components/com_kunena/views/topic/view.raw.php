@@ -44,7 +44,7 @@ class KunenaViewTopic extends KunenaView
 
 		if ($this->me->exists() || $this->config->pubwrite)
 		{
-			$msgbody              = KunenaHtmlParser::parseBBCode($body, $this);
+			$msgbody              = \Joomla\Component\Kunena\Libraries\Html\Parser::parseBBCode($body, $this);
 			$response ['preview'] = $msgbody;
 		}
 
@@ -88,7 +88,7 @@ class KunenaViewTopic extends KunenaView
 			}
 			catch (ExecutionFailureException $e)
 			{
-				KunenaError::displayDatabaseError($e);
+				\Joomla\Component\Kunena\Libraries\Error::displayDatabaseError($e);
 			}
 
 			foreach ($smileys as $smiley)
@@ -124,7 +124,7 @@ class KunenaViewTopic extends KunenaView
 	{
 		$catid = $this->app->input->getInt('catid', 0);
 
-		$category         = KunenaForumCategoryHelper::get($catid);
+		$category         = \Joomla\Component\Kunena\Libraries\Forum\Category\Helper::get($catid);
 		$category_iconset = $category->iconset;
 		$app              = Factory::getApplication();
 
@@ -142,7 +142,7 @@ class KunenaViewTopic extends KunenaView
 
 		$topicIcons = [];
 
-		$template = KunenaFactory::getTemplate();
+		$template = \Joomla\Component\Kunena\Libraries\KunenaFactory::getTemplate();
 
 		$xmlfile = JPATH_ROOT . '/media/kunena/topic_icons/' . $category_iconset . '/topicicons.xml';
 
@@ -210,7 +210,7 @@ class KunenaViewTopic extends KunenaView
 		$response = [];
 		$app      = Factory::getApplication();
 
-		if ($user->id == 0 || KunenaForumTopicHelper::get($topicid)->first_post_userid == $this->me->userid)
+		if ($user->id == 0 || \Joomla\Component\Kunena\Libraries\Forum\Topic\Helper::get($topicid)->first_post_userid == $this->me->userid)
 		{
 			$response = KunenaForumTopicRateHelper::getSelected($topicid);
 		}
@@ -244,7 +244,7 @@ class KunenaViewTopic extends KunenaView
 		$topicid  = $this->app->input->get('topic_id', 0, 'int');
 		$response = [];
 		$app      = Factory::getApplication();
-		$user     = KunenaUserHelper::getMyself();
+		$user     = \Joomla\Component\Kunena\Libraries\User\Helper::getMyself();
 
 		if ($user->exists() || $this->config->ratingenabled)
 		{
@@ -256,7 +256,7 @@ class KunenaViewTopic extends KunenaView
 
 			$selected = KunenaForumTopicRateHelper::getSelected($topicid);
 
-			$topic         = KunenaForumTopicHelper::get($topicid);
+			$topic         = \Joomla\Component\Kunena\Libraries\Forum\Topic\Helper::get($topicid);
 			$topic->rating = $selected;
 			$topic->save();
 		}
@@ -286,7 +286,7 @@ class KunenaViewTopic extends KunenaView
 		$catid    = $this->app->input->getInt('catid', 0);
 		$response = '';
 
-		$category = KunenaForumCategoryHelper::get($catid);
+		$category = \Joomla\Component\Kunena\Libraries\Forum\Category\Helper::get($catid);
 
 		$response = $category->topictemplate;
 

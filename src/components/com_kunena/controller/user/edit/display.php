@@ -59,7 +59,7 @@ class ComponentKunenaControllerUserEditDisplay extends KunenaControllerDisplay
 		parent::before();
 
 		// If profile integration is disabled, this view doesn't exist.
-		$integration = KunenaFactory::getProfile();
+		$integration = \Joomla\Component\Kunena\Libraries\KunenaFactory::getProfile();
 
 		if (get_class($integration) == 'KunenaProfileNone')
 		{
@@ -69,7 +69,7 @@ class ComponentKunenaControllerUserEditDisplay extends KunenaControllerDisplay
 		$userid = $this->input->getInt('userid');
 
 		$this->user    = Factory::getUser($userid);
-		$this->profile = KunenaUserHelper::get($userid);
+		$this->profile = \Joomla\Component\Kunena\Libraries\User\Helper::get($userid);
 		$this->profile->tryAuthorise('edit');
 
 		$this->headerText = Text::sprintf('COM_KUNENA_VIEW_USER_DEFAULT', $this->profile->getName());

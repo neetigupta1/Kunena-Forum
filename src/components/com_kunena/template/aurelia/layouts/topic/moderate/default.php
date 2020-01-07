@@ -20,12 +20,12 @@ use Joomla\CMS\Uri\Uri;
 use function defined;
 
 $this->addScriptDeclaration("// <![CDATA[
-kunena_url_ajax= '" . KunenaRoute::_("index.php?option=com_kunena&view=category&format=raw") . "';
+kunena_url_ajax= '" . \Joomla\Component\Kunena\Libraries\Route\KunenaRoute::_("index.php?option=com_kunena&view=category&format=raw") . "';
 // ]]>"
 );
 
 $this->addScript('assets/js/topic.js');
-$this->ktemplate = KunenaFactory::getTemplate();
+$this->ktemplate = \Joomla\Component\Kunena\Libraries\KunenaFactory::getTemplate();
 $topicicontype   = $this->ktemplate->params->get('topicicontype');
 $labels          = $this->ktemplate->params->get('labels');
 ?>
@@ -36,7 +36,7 @@ $labels          = $this->ktemplate->params->get('labels');
 		</h3>
 	</div>
 	<div class="card-body">
-		<form action="<?php echo KunenaRoute::_('index.php?option=com_kunena&view=topic') ?>" method="post"
+		<form action="<?php echo \Joomla\Component\Kunena\Libraries\Route\KunenaRoute::_('index.php?option=com_kunena&view=topic') ?>" method="post"
 			  name="myform" id="myform" class="form-horizontal">
 			<input type="hidden" name="task" value="move"/>
 			<input type="hidden" name="catid" value="<?php echo $this->category->id; ?>"/>

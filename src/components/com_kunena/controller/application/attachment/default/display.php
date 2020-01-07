@@ -89,7 +89,7 @@ class ComponentKunenaControllerApplicationAttachmentDefaultDisplay extends Kunen
 	 */
 	public function display()
 	{
-		KunenaFactory::loadLanguage('com_kunena');
+		\Joomla\Component\Kunena\Libraries\KunenaFactory::loadLanguage('com_kunena');
 
 		$format   = $this->input->getWord('format', 'html');
 		$id       = $this->input->getInt('id', 0);
@@ -217,9 +217,9 @@ class ComponentKunenaControllerApplicationAttachmentDefaultDisplay extends Kunen
 	protected function before()
 	{
 		// Load language files.
-		KunenaFactory::loadLanguage('com_kunena.sys', 'admin');
+		\Joomla\Component\Kunena\Libraries\KunenaFactory::loadLanguage('com_kunena.sys', 'admin');
 
-		$this->me       = KunenaUserHelper::getMyself();
+		$this->me       = \Joomla\Component\Kunena\Libraries\User\Helper::getMyself();
 		$this->config   = Config::getInstance();
 		$this->document = Factory::getApplication()->getDocument();
 	}

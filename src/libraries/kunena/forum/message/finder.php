@@ -56,7 +56,7 @@ class Finder extends KunenaDatabaseObjectFinder
 	{
 		parent::__construct();
 
-		$this->limit = KunenaFactory::getConfig()->messages_per_page;
+		$this->limit = \Joomla\Component\Kunena\Libraries\KunenaFactory::getConfig()->messages_per_page;
 	}
 
 	/**

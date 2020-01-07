@@ -77,7 +77,7 @@ class KunenaAdminControllerTemplates extends KunenaController
 		if (!Session::checkToken('post'))
 		{
 			$this->app->enqueueMessage(Text::_('COM_KUNENA_ERROR_TOKEN'), 'error');
-			$this->setRedirect(KunenaRoute::_($this->baseurl, false));
+			$this->setRedirect(\Joomla\Component\Kunena\Libraries\Route\KunenaRoute::_($this->baseurl, false));
 
 			return;
 		}
@@ -88,11 +88,11 @@ class KunenaAdminControllerTemplates extends KunenaController
 			$this->config->save();
 		}
 
-		$template = KunenaFactory::getTemplate($id);
+		$template = \Joomla\Component\Kunena\Libraries\KunenaFactory::getTemplate($id);
 		$template->clearCache();
 
 		$this->app->enqueueMessage(Text::_('COM_KUNENA_A_TEMPLATE_MANAGER_DEFAULT_SELECTED'));
-		$this->setRedirect(KunenaRoute::_($this->baseurl, false));
+		$this->setRedirect(\Joomla\Component\Kunena\Libraries\Route\KunenaRoute::_($this->baseurl, false));
 	}
 
 	/**
@@ -110,12 +110,12 @@ class KunenaAdminControllerTemplates extends KunenaController
 		if (!Session::checkToken('post'))
 		{
 			$this->app->enqueueMessage(Text::_('COM_KUNENA_ERROR_TOKEN'), 'error');
-			$this->setRedirect(KunenaRoute::_($this->baseurl, false));
+			$this->setRedirect(\Joomla\Component\Kunena\Libraries\Route\KunenaRoute::_($this->baseurl, false));
 
 			return;
 		}
 
-		$this->setRedirect(KunenaRoute::_($this->baseurl . "&layout=add", false));
+		$this->setRedirect(\Joomla\Component\Kunena\Libraries\Route\KunenaRoute::_($this->baseurl . "&layout=add", false));
 	}
 
 	/**
@@ -152,7 +152,7 @@ class KunenaAdminControllerTemplates extends KunenaController
 		$template = KunenaPath::clean($template);
 		$this->app->setUserState('kunena.edit.templatename', $template);
 
-		$this->setRedirect(KunenaRoute::_($this->baseurl . "&layout=edit&name={$template}", false));
+		$this->setRedirect(\Joomla\Component\Kunena\Libraries\Route\KunenaRoute::_($this->baseurl . "&layout=edit&name={$template}", false));
 	}
 
 	/**
@@ -174,7 +174,7 @@ class KunenaAdminControllerTemplates extends KunenaController
 		if (!Session::checkToken('post'))
 		{
 			$this->app->enqueueMessage(Text::_('COM_KUNENA_ERROR_TOKEN'), 'error');
-			$this->setRedirect(KunenaRoute::_($this->baseurl, false));
+			$this->setRedirect(\Joomla\Component\Kunena\Libraries\Route\KunenaRoute::_($this->baseurl, false));
 
 			return;
 		}
@@ -277,7 +277,7 @@ class KunenaAdminControllerTemplates extends KunenaController
 			}
 		}
 
-		$this->setRedirect(KunenaRoute::_($this->baseurl, false));
+		$this->setRedirect(\Joomla\Component\Kunena\Libraries\Route\KunenaRoute::_($this->baseurl, false));
 	}
 
 	/**
@@ -299,7 +299,7 @@ class KunenaAdminControllerTemplates extends KunenaController
 		if (!Session::checkToken('post'))
 		{
 			$this->app->enqueueMessage(Text::_('COM_KUNENA_ERROR_TOKEN'), 'error');
-			$this->setRedirect(KunenaRoute::_($this->baseurl, false));
+			$this->setRedirect(\Joomla\Component\Kunena\Libraries\Route\KunenaRoute::_($this->baseurl, false));
 
 			return;
 		}
@@ -310,7 +310,7 @@ class KunenaAdminControllerTemplates extends KunenaController
 		if (!$otemplate)
 		{
 			$this->app->enqueueMessage(Text::_('COM_KUNENA_A_TEMPLATE_MANAGER_TEMPLATE_NOT_SPECIFIED'), 'error');
-			$this->setRedirect(KunenaRoute::_($this->baseurl, false));
+			$this->setRedirect(\Joomla\Component\Kunena\Libraries\Route\KunenaRoute::_($this->baseurl, false));
 
 			return;
 		}
@@ -318,7 +318,7 @@ class KunenaAdminControllerTemplates extends KunenaController
 		if (in_array($id, $this->locked))
 		{
 			$this->app->enqueueMessage(Text::sprintf('COM_KUNENA_A_CTRL_TEMPLATES_ERROR_UNINSTALL_SYSTEM_TEMPLATE', $otemplate->name), 'error');
-			$this->setRedirect(KunenaRoute::_($this->baseurl, false));
+			$this->setRedirect(\Joomla\Component\Kunena\Libraries\Route\KunenaRoute::_($this->baseurl, false));
 
 			return;
 		}
@@ -326,7 +326,7 @@ class KunenaAdminControllerTemplates extends KunenaController
 		if (KunenaTemplateHelper::isDefault($template))
 		{
 			$this->app->enqueueMessage(Text::sprintf('COM_KUNENA_A_CTRL_TEMPLATES_ERROR_UNINSTALL_DEFAULT_TEMPLATE', $otemplate->name), 'error');
-			$this->setRedirect(KunenaRoute::_($this->baseurl, false));
+			$this->setRedirect(\Joomla\Component\Kunena\Libraries\Route\KunenaRoute::_($this->baseurl, false));
 
 			return;
 		}
@@ -348,7 +348,7 @@ class KunenaAdminControllerTemplates extends KunenaController
 			$retval = false;
 		}
 
-		$this->setRedirect(KunenaRoute::_($this->baseurl, false));
+		$this->setRedirect(\Joomla\Component\Kunena\Libraries\Route\KunenaRoute::_($this->baseurl, false));
 	}
 
 	/**
@@ -376,7 +376,7 @@ class KunenaAdminControllerTemplates extends KunenaController
 			return;
 		}
 
-		$this->setRedirect(KunenaRoute::_($this->baseurl . "&layout=chooseless", false));
+		$this->setRedirect(\Joomla\Component\Kunena\Libraries\Route\KunenaRoute::_($this->baseurl . "&layout=chooseless", false));
 	}
 
 	/**
@@ -399,13 +399,13 @@ class KunenaAdminControllerTemplates extends KunenaController
 		if (File::getExt($filename) !== 'less')
 		{
 			$this->app->enqueueMessage(Text::_('COM_KUNENA_A_TEMPLATE_MANAGER_WRONG_LESS'), 'warning');
-			$this->setRedirect(KunenaRoute::_($this->baseurl . '&layout=chooseless&id=' . $template, false));
+			$this->setRedirect(\Joomla\Component\Kunena\Libraries\Route\KunenaRoute::_($this->baseurl . '&layout=chooseless&id=' . $template, false));
 		}
 
 		$this->app->setUserState('kunena.templatename', $templatename);
 		$this->app->setUserState('kunena.editless.filename', $filename);
 
-		$this->setRedirect(KunenaRoute::_($this->baseurl . "&layout=editless", false));
+		$this->setRedirect(\Joomla\Component\Kunena\Libraries\Route\KunenaRoute::_($this->baseurl . "&layout=editless", false));
 	}
 
 	/**
@@ -425,7 +425,7 @@ class KunenaAdminControllerTemplates extends KunenaController
 
 		$this->app->setUserState('kunena.templatename', $templatename);
 
-		$this->setRedirect(KunenaRoute::_($this->baseurl . "&layout=choosecss", false));
+		$this->setRedirect(\Joomla\Component\Kunena\Libraries\Route\KunenaRoute::_($this->baseurl . "&layout=choosecss", false));
 	}
 
 	/**
@@ -449,7 +449,7 @@ class KunenaAdminControllerTemplates extends KunenaController
 		if (!Session::checkToken('post'))
 		{
 			$this->app->enqueueMessage(Text::_('COM_KUNENA_ERROR_TOKEN'), 'error');
-			$this->setRedirect(KunenaRoute::_($this->baseurl, false));
+			$this->setRedirect(\Joomla\Component\Kunena\Libraries\Route\KunenaRoute::_($this->baseurl, false));
 
 			return;
 		}
@@ -457,7 +457,7 @@ class KunenaAdminControllerTemplates extends KunenaController
 		if (!$templatename)
 		{
 			$this->app->enqueueMessage(Text::_('COM_KUNENA_A_TEMPLATE_MANAGER_OPERATION_FAILED') . ': ' . Text::_('COM_KUNENA_A_TEMPLATE_MANAGER_TEMPLATE_NOT_SPECIFIED.'));
-			$this->setRedirect(KunenaRoute::_($this->baseurl, false));
+			$this->setRedirect(\Joomla\Component\Kunena\Libraries\Route\KunenaRoute::_($this->baseurl, false));
 
 			return;
 		}
@@ -498,7 +498,7 @@ class KunenaAdminControllerTemplates extends KunenaController
 		if (!Session::checkToken('post'))
 		{
 			$this->app->enqueueMessage(Text::_('COM_KUNENA_ERROR_TOKEN'), 'error');
-			$this->setRedirect(KunenaRoute::_($this->baseurl, false));
+			$this->setRedirect(\Joomla\Component\Kunena\Libraries\Route\KunenaRoute::_($this->baseurl, false));
 
 			return;
 		}
@@ -508,7 +508,7 @@ class KunenaAdminControllerTemplates extends KunenaController
 			$this->app->enqueueMessage(Text::_('COM_KUNENA_A_TEMPLATE_MANAGER_OPERATION_FAILED') . ': '
 				. Text::_('COM_KUNENA_A_TEMPLATE_MANAGER_TEMPLATE_NOT_SPECIFIED.')
 			);
-			$this->setRedirect(KunenaRoute::_($this->baseurl, false));
+			$this->setRedirect(\Joomla\Component\Kunena\Libraries\Route\KunenaRoute::_($this->baseurl, false));
 
 			return;
 		}
@@ -519,14 +519,14 @@ class KunenaAdminControllerTemplates extends KunenaController
 		if ($return)
 		{
 			$this->app->enqueueMessage(Text::_('COM_KUNENA_A_TEMPLATE_MANAGER_FILE_SAVED'));
-			$this->setRedirect(KunenaRoute::_($this->baseurl . '&layout=chooseless&id=' . $templatename, false));
+			$this->setRedirect(\Joomla\Component\Kunena\Libraries\Route\KunenaRoute::_($this->baseurl . '&layout=chooseless&id=' . $templatename, false));
 		}
 		else
 		{
 			$this->app->enqueueMessage(Text::_('COM_KUNENA_A_TEMPLATE_MANAGER_OPERATION_FAILED') . ': '
 				. Text::sprintf('COM_KUNENA_A_TEMPLATE_MANAGER_FAILED_OPEN_FILE.', $file)
 			);
-			$this->setRedirect(KunenaRoute::_($this->baseurl . '&layout=chooseless&id=' . $templatename, false));
+			$this->setRedirect(\Joomla\Component\Kunena\Libraries\Route\KunenaRoute::_($this->baseurl . '&layout=chooseless&id=' . $templatename, false));
 		}
 	}
 
@@ -550,13 +550,13 @@ class KunenaAdminControllerTemplates extends KunenaController
 		if (File::getExt($filename) !== 'css')
 		{
 			$this->app->enqueueMessage(Text::_('COM_KUNENA_A_TEMPLATE_MANAGER_WRONG_CSS'));
-			$this->setRedirect(KunenaRoute::_($this->baseurl . '&layout=choosecss&id=' . $templatename, false));
+			$this->setRedirect(\Joomla\Component\Kunena\Libraries\Route\KunenaRoute::_($this->baseurl . '&layout=choosecss&id=' . $templatename, false));
 		}
 
 		$this->app->setUserState('kunena.editcss.tmpl', $templatename);
 		$this->app->setUserState('kunena.editcss.filename', $filename);
 
-		$this->setRedirect(KunenaRoute::_($this->baseurl . "&layout=editcss", false));
+		$this->setRedirect(\Joomla\Component\Kunena\Libraries\Route\KunenaRoute::_($this->baseurl . "&layout=editcss", false));
 	}
 
 	/**
@@ -579,7 +579,7 @@ class KunenaAdminControllerTemplates extends KunenaController
 		if (!Session::checkToken('post'))
 		{
 			$this->app->enqueueMessage(Text::_('COM_KUNENA_ERROR_TOKEN'), 'error');
-			$this->setRedirect(KunenaRoute::_($this->baseurl, false));
+			$this->setRedirect(\Joomla\Component\Kunena\Libraries\Route\KunenaRoute::_($this->baseurl, false));
 
 			return;
 		}
@@ -587,7 +587,7 @@ class KunenaAdminControllerTemplates extends KunenaController
 		if (!$templatename)
 		{
 			$this->app->enqueueMessage(Text::_('COM_KUNENA_A_TEMPLATE_MANAGER_OPERATION_FAILED') . ': ' . Text::_('COM_KUNENA_A_TEMPLATE_MANAGER_TEMPLATE_NOT_SPECIFIED.'));
-			$this->setRedirect(KunenaRoute::_($this->baseurl, false));
+			$this->setRedirect(\Joomla\Component\Kunena\Libraries\Route\KunenaRoute::_($this->baseurl, false));
 
 			return;
 		}
@@ -625,7 +625,7 @@ class KunenaAdminControllerTemplates extends KunenaController
 		if (!Session::checkToken('post'))
 		{
 			$this->app->enqueueMessage(Text::_('COM_KUNENA_ERROR_TOKEN'), 'error');
-			$this->setRedirect(KunenaRoute::_($this->baseurl, false));
+			$this->setRedirect(\Joomla\Component\Kunena\Libraries\Route\KunenaRoute::_($this->baseurl, false));
 
 			return;
 		}
@@ -633,7 +633,7 @@ class KunenaAdminControllerTemplates extends KunenaController
 		if (!$templatename)
 		{
 			$this->app->enqueueMessage(Text::_('COM_KUNENA_A_TEMPLATE_MANAGER_OPERATION_FAILED') . ': ' . Text::_('COM_KUNENA_A_TEMPLATE_MANAGER_TEMPLATE_NOT_SPECIFIED.'));
-			$this->setRedirect(KunenaRoute::_($this->baseurl, false));
+			$this->setRedirect(\Joomla\Component\Kunena\Libraries\Route\KunenaRoute::_($this->baseurl, false));
 
 			return;
 		}
@@ -644,12 +644,12 @@ class KunenaAdminControllerTemplates extends KunenaController
 		if ($return)
 		{
 			$this->app->enqueueMessage(Text::_('COM_KUNENA_A_TEMPLATE_MANAGER_FILE_SAVED'));
-			$this->setRedirect(KunenaRoute::_($this->baseurl . "&layout=choosecss", false));
+			$this->setRedirect(\Joomla\Component\Kunena\Libraries\Route\KunenaRoute::_($this->baseurl . "&layout=choosecss", false));
 		}
 		else
 		{
 			$this->app->enqueueMessage(Text::_('COM_KUNENA_A_TEMPLATE_MANAGER_OPERATION_FAILED') . ': ' . Text::sprintf('COM_KUNENA_A_TEMPLATE_MANAGER_FAILED_OPEN_FILE.', $file));
-			$this->setRedirect(KunenaRoute::_($this->baseurl . "&layout=choosecss", false));
+			$this->setRedirect(\Joomla\Component\Kunena\Libraries\Route\KunenaRoute::_($this->baseurl . "&layout=choosecss", false));
 		}
 	}
 
@@ -672,7 +672,7 @@ class KunenaAdminControllerTemplates extends KunenaController
 		if (!Session::checkToken('post'))
 		{
 			$this->app->enqueueMessage(Text::_('COM_KUNENA_ERROR_TOKEN'), 'error');
-			$this->setRedirect(KunenaRoute::_($this->baseurl, false));
+			$this->setRedirect(\Joomla\Component\Kunena\Libraries\Route\KunenaRoute::_($this->baseurl, false));
 
 			return;
 		}
@@ -680,7 +680,7 @@ class KunenaAdminControllerTemplates extends KunenaController
 		if (!$template)
 		{
 			$this->app->enqueueMessage(Text::_('COM_KUNENA_A_TEMPLATE_MANAGER_OPERATION_FAILED') . ': ' . Text::_('COM_KUNENA_A_TEMPLATE_MANAGER_TEMPLATE_NOT_SPECIFIED'));
-			$this->setRedirect(KunenaRoute::_($this->baseurl, false));
+			$this->setRedirect(\Joomla\Component\Kunena\Libraries\Route\KunenaRoute::_($this->baseurl, false));
 
 			return;
 		}
@@ -688,7 +688,7 @@ class KunenaAdminControllerTemplates extends KunenaController
 		$this->_saveParamFile($template);
 
 		$this->app->enqueueMessage(Text::_('COM_KUNENA_A_TEMPLATE_MANAGER_CONFIGURATION_SAVED'));
-		$this->setRedirect(KunenaRoute::_($this->baseurl . '&layout=edit&cid[]=' . $template, false));
+		$this->setRedirect(\Joomla\Component\Kunena\Libraries\Route\KunenaRoute::_($this->baseurl . '&layout=edit&cid[]=' . $template, false));
 	}
 
 	/**
@@ -849,7 +849,7 @@ class KunenaAdminControllerTemplates extends KunenaController
 			if (!$return)
 			{
 				$this->app->enqueueMessage(Text::_('COM_KUNENA_A_TEMPLATE_MANAGER_OPERATION_FAILED') . ': ' . Text::sprintf('COM_KUNENA_A_TEMPLATE_MANAGER_FAILED_WRITE_FILE', $file));
-				$this->app->redirect(KunenaRoute::_($this->baseurl, false));
+				$this->app->redirect(\Joomla\Component\Kunena\Libraries\Route\KunenaRoute::_($this->baseurl, false));
 			}
 		}
 	}
@@ -873,7 +873,7 @@ class KunenaAdminControllerTemplates extends KunenaController
 		if (!Session::checkToken('post'))
 		{
 			$this->app->enqueueMessage(Text::_('COM_KUNENA_ERROR_TOKEN'), 'error');
-			$this->setRedirect(KunenaRoute::_($this->baseurl, false));
+			$this->setRedirect(\Joomla\Component\Kunena\Libraries\Route\KunenaRoute::_($this->baseurl, false));
 
 			return;
 		}
@@ -881,7 +881,7 @@ class KunenaAdminControllerTemplates extends KunenaController
 		if (!$template)
 		{
 			$this->app->enqueueMessage(Text::_('COM_KUNENA_A_TEMPLATE_MANAGER_OPERATION_FAILED') . ': ' . Text::_('COM_KUNENA_A_TEMPLATE_MANAGER_TEMPLATE_NOT_SPECIFIED'));
-			$this->setRedirect(KunenaRoute::_($this->baseurl, false));
+			$this->setRedirect(\Joomla\Component\Kunena\Libraries\Route\KunenaRoute::_($this->baseurl, false));
 
 			return;
 		}
@@ -889,7 +889,7 @@ class KunenaAdminControllerTemplates extends KunenaController
 		$this->_saveParamFile($template);
 
 		$this->app->enqueueMessage(Text::_('COM_KUNENA_A_TEMPLATE_MANAGER_CONFIGURATION_SAVED'));
-		$this->setRedirect(KunenaRoute::_($this->baseurl, false));
+		$this->setRedirect(\Joomla\Component\Kunena\Libraries\Route\KunenaRoute::_($this->baseurl, false));
 	}
 
 	/**
@@ -917,7 +917,7 @@ class KunenaAdminControllerTemplates extends KunenaController
 		}
 
 		$this->app->enqueueMessage(Text::_('COM_KUNENA_TEMPLATES_SETTINGS_RESTORED_SUCCESSFULLY'));
-		$this->setRedirect(KunenaRoute::_($this->baseurl, false));
+		$this->setRedirect(\Joomla\Component\Kunena\Libraries\Route\KunenaRoute::_($this->baseurl, false));
 	}
 
 	/**
@@ -932,6 +932,6 @@ class KunenaAdminControllerTemplates extends KunenaController
 	 */
 	public function cancel()
 	{
-		$this->app->redirect(KunenaRoute::_($this->baseurl, false));
+		$this->app->redirect(\Joomla\Component\Kunena\Libraries\Route\KunenaRoute::_($this->baseurl, false));
 	}
 }

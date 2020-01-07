@@ -168,7 +168,7 @@ abstract class Helper
 		}
 		catch (RuntimeException $e)
 		{
-			KunenaError::displayDatabaseError($e);
+			\Joomla\Component\Kunena\Libraries\Error::displayDatabaseError($e);
 		}
 
 		foreach ($ids as $id)
@@ -263,7 +263,7 @@ abstract class Helper
 		}
 		catch (RuntimeException $e)
 		{
-			KunenaError::displayDatabaseError($e);
+			\Joomla\Component\Kunena\Libraries\Error::displayDatabaseError($e);
 		}
 
 		foreach ($ids as $mesid)
@@ -446,11 +446,11 @@ abstract class Helper
 	{
 		if ($category !== null)
 		{
-			$category = KunenaForumCategoryHelper::get($category);
+			$category = \Joomla\Component\Kunena\Libraries\Forum\Category\Helper::get($category);
 		}
 
-		$user   = KunenaUserHelper::get($user);
-		$config = KunenaFactory::getConfig();
+		$user   = \Joomla\Component\Kunena\Libraries\User\Helper::get($user);
+		$config = \Joomla\Component\Kunena\Libraries\KunenaFactory::getConfig();
 		$types  = explode(',', $config->imagetypes);
 
 		foreach ($types as &$type)
@@ -522,9 +522,9 @@ abstract class Helper
 	 */
 	public static function getFileExtensions($category = null, $user = null)
 	{
-		$category = KunenaForumCategoryHelper::get($category);
-		$user     = KunenaUserHelper::get($user);
-		$config   = KunenaFactory::getConfig();
+		$category = \Joomla\Component\Kunena\Libraries\Forum\Category\Helper::get($category);
+		$user     = \Joomla\Component\Kunena\Libraries\User\Helper::get($user);
+		$config   = \Joomla\Component\Kunena\Libraries\KunenaFactory::getConfig();
 		$types    = explode(',', $config->filetypes);
 
 		foreach ($types as &$type)
@@ -609,7 +609,7 @@ abstract class Helper
 		}
 		catch (ExecutionFailureException $e)
 		{
-			KunenaError::displayDatabaseError($e);
+			\Joomla\Component\Kunena\Libraries\Error::displayDatabaseError($e);
 
 			return false;
 		}
@@ -638,7 +638,7 @@ abstract class Helper
 		}
 		catch (ExecutionFailureException $e)
 		{
-			KunenaError::displayDatabaseError($e);
+			\Joomla\Component\Kunena\Libraries\Error::displayDatabaseError($e);
 
 			return false;
 		}
@@ -726,7 +726,7 @@ abstract class Helper
 		}
 		catch (RuntimeException $e)
 		{
-			KunenaError::displayDatabaseError($e);
+			\Joomla\Component\Kunena\Libraries\Error::displayDatabaseError($e);
 		}
 
 		$list = [];
@@ -774,7 +774,7 @@ abstract class Helper
 		}
 		catch (RuntimeException $e)
 		{
-			KunenaError::displayDatabaseError($e);
+			\Joomla\Component\Kunena\Libraries\Error::displayDatabaseError($e);
 		}
 
 		return $attachments;

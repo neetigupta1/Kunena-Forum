@@ -41,7 +41,7 @@ class Helper
 	 *
 	 * @since   Kunena 6.0
 	 */
-	public static function version($file, $folder, $filename, $maxWidth = 800, $maxHeight = 800, $quality = 70, $scale = KunenaImage::SCALE_INSIDE, $crop = 0)
+	public static function version($file, $folder, $filename, $maxWidth = 800, $maxHeight = 800, $quality = 70, $scale = \Joomla\Component\Kunena\Libraries\Image\KunenaImage::SCALE_INSIDE, $crop = 0)
 	{
 		try
 		{
@@ -54,7 +54,7 @@ class Helper
 			// Make sure that index.html exists in the folder.
 			KunenaFolder::createIndex($folder);
 
-			$info = KunenaImage::getImageFileProperties($file);
+			$info = \Joomla\Component\Kunena\Libraries\Image\KunenaImage::getImageFileProperties($file);
 
 			if ($info->width > $maxWidth || $info->height > $maxHeight)
 			{

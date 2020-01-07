@@ -97,16 +97,16 @@ class KunenaAdminViewTools extends KunenaView
 	{
 		$id = $this->app->input->get('id', 0, 'int');
 
-		$topic           = KunenaForumTopicHelper::get($id);
-		$acl             = KunenaAccess::getInstance();
-		$cat_subscribers = $acl->loadSubscribers($topic, KunenaAccess::CATEGORY_SUBSCRIPTION);
+		$topic           = \Joomla\Component\Kunena\Libraries\Forum\Topic\Helper::get($id);
+		$acl             = \Joomla\Component\Kunena\Libraries\Access::getInstance();
+		$cat_subscribers = $acl->loadSubscribers($topic, \Joomla\Component\Kunena\Libraries\Access::CATEGORY_SUBSCRIPTION);
 
-		$this->cat_subscribers_users = KunenaUserHelper::loadUsers($cat_subscribers);
+		$this->cat_subscribers_users = \Joomla\Component\Kunena\Libraries\User\Helper::loadUsers($cat_subscribers);
 
-		$topic_subscribers             = $acl->loadSubscribers($topic, KunenaAccess::TOPIC_SUBSCRIPTION);
-		$this->topic_subscribers_users = KunenaUserHelper::loadUsers($topic_subscribers);
+		$topic_subscribers             = $acl->loadSubscribers($topic, \Joomla\Component\Kunena\Libraries\Access::TOPIC_SUBSCRIPTION);
+		$this->topic_subscribers_users = \Joomla\Component\Kunena\Libraries\User\Helper::loadUsers($topic_subscribers);
 
-		$this->cat_topic_subscribers = $acl->getSubscribers($topic->getCategory()->id, $id, KunenaAccess::CATEGORY_SUBSCRIPTION | KunenaAccess::TOPIC_SUBSCRIPTION, 1, 1);
+		$this->cat_topic_subscribers = $acl->getSubscribers($topic->getCategory()->id, $id, \Joomla\Component\Kunena\Libraries\Access::CATEGORY_SUBSCRIPTION | \Joomla\Component\Kunena\Libraries\Access::TOPIC_SUBSCRIPTION, 1, 1);
 
 		$this->display();
 	}

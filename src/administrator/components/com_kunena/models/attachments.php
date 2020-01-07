@@ -154,7 +154,7 @@ class KunenaAdminModelAttachments extends ListModel
 			$mesids[$result->mesid]   = $result->mesid;
 		}
 
-		KunenaUserHelper::loadUsers($userids);
+		\Joomla\Component\Kunena\Libraries\User\Helper::loadUsers($userids);
 		KunenaForumMessageHelper::getMessages($mesids);
 
 		return $results;

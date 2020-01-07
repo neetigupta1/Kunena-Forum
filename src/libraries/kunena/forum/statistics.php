@@ -183,7 +183,7 @@ class Statistics
 	public function __construct()
 	{
 		$this->_db     = Factory::getDBO();
-		$this->_config = KunenaFactory::getConfig();
+		$this->_config = \Joomla\Component\Kunena\Libraries\KunenaFactory::getConfig();
 
 		$this->showstats            = (bool) $this->_config->showstats;
 		$this->showgenstats         = (bool) $this->_config->showgenstats;
@@ -261,7 +261,7 @@ class Statistics
 	{
 		if ($this->memberCount === null)
 		{
-			$this->memberCount = KunenaUserHelper::getTotalCount();
+			$this->memberCount = \Joomla\Component\Kunena\Libraries\User\Helper::getTotalCount();
 		}
 	}
 
@@ -276,7 +276,7 @@ class Statistics
 	{
 		if ($this->lastUserId === null)
 		{
-			$this->lastUserId = KunenaUserHelper::getLastId();
+			$this->lastUserId = \Joomla\Component\Kunena\Libraries\User\Helper::getLastId();
 		}
 	}
 
@@ -292,7 +292,7 @@ class Statistics
 		if ($this->sectionCount === null)
 		{
 			$this->sectionCount = $this->categoryCount = 0;
-			$categories         = KunenaForumCategoryHelper::getCategories(false, false, 'none');
+			$categories         = \Joomla\Component\Kunena\Libraries\Forum\Category\Helper::getCategories(false, false, 'none');
 
 			foreach ($categories as $category)
 			{
@@ -348,7 +348,7 @@ class Statistics
 		}
 		catch (RuntimeException $e)
 		{
-			KunenaError::displayDatabaseError($e);
+			\Joomla\Component\Kunena\Libraries\Error::displayDatabaseError($e);
 		}
 
 		return $smilies;
@@ -384,7 +384,7 @@ class Statistics
 			}
 			catch (ExecutionFailureException $e)
 			{
-				KunenaError::displayDatabaseError($e);
+				\Joomla\Component\Kunena\Libraries\Error::displayDatabaseError($e);
 			}
 
 			if ($counts)
@@ -451,7 +451,7 @@ class Statistics
 		if ($this->topTopics < $limit)
 		{
 			$params = ['orderby' => 'posts DESC'];
-			list($total, $this->topTopics) = KunenaForumTopicHelper::getLatestTopics(false, 0, $limit, $params);
+			list($total, $this->topTopics) = \Joomla\Component\Kunena\Libraries\Forum\Topic\Helper::getLatestTopics(false, 0, $limit, $params);
 
 			$top = reset($this->topTopics);
 
@@ -468,7 +468,7 @@ class Statistics
 			{
 				$item          = clone $item;
 				$item->count   = $item->posts;
-				$item->link    = HTMLHelper::_('kunenaforum.link', $item->getUri(), KunenaHtmlParser::parseText($item->subject), null, null, '');
+				$item->link    = HTMLHelper::_('kunenaforum.link', $item->getUri(), \Joomla\Component\Kunena\Libraries\Html\Parser::parseText($item->subject), null, null, '');
 				$item->percent = round(100 * $item->count / $top->posts);
 			}
 		}
@@ -509,10 +509,10 @@ class Statistics
 			}
 			catch (ExecutionFailureException $e)
 			{
-				KunenaError::displayDatabaseError($e);
+				\Joomla\Component\Kunena\Libraries\Error::displayDatabaseError($e);
 			}
 
-			$this->topPolls = KunenaForumTopicHelper::getTopics(array_keys($polls));
+			$this->topPolls = \Joomla\Component\Kunena\Libraries\Forum\Topic\Helper::getTopics(array_keys($polls));
 
 			$top = reset($this->topPolls);
 
@@ -530,7 +530,7 @@ class Statistics
 			{
 				$item          = clone $item;
 				$item->count   = $polls[$item->id]->count;
-				$item->link    = HTMLHelper::_('kunenaforum.link', $item->getUri(), KunenaHtmlParser::parseText($item->subject), null, null, '');
+				$item->link    = HTMLHelper::_('kunenaforum.link', $item->getUri(), \Joomla\Component\Kunena\Libraries\Html\Parser::parseText($item->subject), null, null, '');
 				$item->percent = round(100 * $item->count / $top->count);
 			}
 		}
@@ -592,7 +592,7 @@ class Statistics
 
 		if ($this->topPosters < $limit)
 		{
-			$this->topPosters = KunenaUserHelper::getTopPosters($limit);
+			$this->topPosters = \Joomla\Component\Kunena\Libraries\User\Helper::getTopPosters($limit);
 
 			$top = reset($this->topPosters);
 
@@ -608,7 +608,7 @@ class Statistics
 			foreach ($this->topPosters as &$item)
 			{
 				$item          = clone $item;
-				$item->link    = KunenaUserHelper::get($item->id)->getLink(null, null, '');
+				$item->link    = \Joomla\Component\Kunena\Libraries\User\Helper::get($item->id)->getLink(null, null, '');
 				$item->percent = round(100 * $item->count / $top->count);
 			}
 		}
@@ -631,7 +631,7 @@ class Statistics
 
 		if ($this->topProfiles < $limit)
 		{
-			$this->topProfiles = KunenaFactory::getProfile()->getTopHits($limit);
+			$this->topProfiles = \Joomla\Component\Kunena\Libraries\KunenaFactory::getProfile()->getTopHits($limit);
 
 			$top = reset($this->topProfiles);
 
@@ -647,7 +647,7 @@ class Statistics
 			foreach ($this->topProfiles as &$item)
 			{
 				$item          = clone $item;
-				$item->link    = KunenaUserHelper::get($item->id)->getLink(null, null, '');
+				$item->link    = \Joomla\Component\Kunena\Libraries\User\Helper::get($item->id)->getLink(null, null, '');
 				$item->percent = round(100 * $item->count / $top->count);
 			}
 		}
@@ -679,7 +679,7 @@ class Statistics
 				->group($this->_db->quoteName('t.targetuserid'));
 			$query->order($this->_db->quoteName('count') . ' DESC');
 
-			if (KunenaFactory::getConfig()->superadmin_userlist)
+			if (\Joomla\Component\Kunena\Libraries\KunenaFactory::getConfig()->superadmin_userlist)
 			{
 				$filter = Access::getUsersByGroup(8);
 				$query->where($this->_db->quoteName('u.id') . ' NOT IN (' . implode(',', $filter) . ')');
@@ -694,7 +694,7 @@ class Statistics
 			}
 			catch (ExecutionFailureException $e)
 			{
-				KunenaError::displayDatabaseError($e);
+				\Joomla\Component\Kunena\Libraries\Error::displayDatabaseError($e);
 			}
 
 			$top = reset($this->topThanks);
@@ -711,7 +711,7 @@ class Statistics
 			foreach ($this->topThanks as &$item)
 			{
 				$item          = clone $item;
-				$item->link    = KunenaUserHelper::get($item->id)->getLink(null, null, '');
+				$item->link    = \Joomla\Component\Kunena\Libraries\User\Helper::get($item->id)->getLink(null, null, '');
 				$item->percent = round(100 * $item->count / $top->count);
 			}
 		}

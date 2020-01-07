@@ -31,7 +31,7 @@ $this->addScript('poll.js');
 		&times;
 	</button>
 	<h2>
-		<?php echo Text::_('COM_KUNENA_POLL_NAME') . ' ' . KunenaHtmlParser::parseText($this->poll->title); ?>
+		<?php echo Text::_('COM_KUNENA_POLL_NAME') . ' ' . \Joomla\Component\Kunena\Libraries\Html\Parser::parseText($this->poll->title); ?>
 	</h2>
 <?php endif; ?>
 
@@ -45,7 +45,7 @@ $this->addScript('poll.js');
 			?>
 			<tr>
 				<td>
-					<?php echo KunenaHtmlParser::parseText($option->text); ?>
+					<?php echo \Joomla\Component\Kunena\Libraries\Html\Parser::parseText($option->text); ?>
 				</td>
 				<td class="col-md-8">
 					<div class="progress progress-striped">
@@ -104,7 +104,7 @@ $this->addScript('poll.js');
 		:
 			?>
 
-					<a href="<?php echo KunenaRoute::_("index.php?option=com_kunena&view=topic&layout=vote&catid={$this->category->id}&id={$this->topic->id}"); ?>>">
+					<a href="<?php echo \Joomla\Component\Kunena\Libraries\Route\KunenaRoute::_("index.php?option=com_kunena&view=topic&layout=vote&catid={$this->category->id}&id={$this->topic->id}"); ?>>">
 						<?php echo Text::_('COM_KUNENA_POLL_BUTTON_VOTE'); ?>
 					</a>
 		<?php endif; ?>
@@ -133,7 +133,7 @@ $this->addScript('poll.js');
 								<a data-dismiss="modal" aria-hidden="true" class="btn btn-outline-primary border">
 									<?php echo Text::_('COM_KUNENA_TOPIC_MODAL_LABEL_CLOSE_RESETVOTE'); ?>
 								</a>
-								<a href="<?php echo KunenaRoute::_("index.php?option=com_kunena&view=topic&catid={$this->category->id}&id={$this->topic->id}&pollid={$this->poll->id}&task=resetvotes&" . Session::getFormToken() . '=1') ?>"
+								<a href="<?php echo \Joomla\Component\Kunena\Libraries\Route\KunenaRoute::_("index.php?option=com_kunena&view=topic&catid={$this->category->id}&id={$this->topic->id}&pollid={$this->poll->id}&task=resetvotes&" . Session::getFormToken() . '=1') ?>"
 								   class="btn btn-outline-primary">
 									<?php echo Text::_('COM_KUNENA_TOPIC_MODAL_LABEL_CONFIRM_RESETVOTE'); ?>
 								</a>

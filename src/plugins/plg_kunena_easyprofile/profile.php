@@ -10,13 +10,16 @@
  * @link            https://www.kunena.org
  **/
 
-namespace Joomla\Component\Kunena;
+namespace Joomla\Component\Kunena\Plugin\Kunena\Easyprofile;
 
 defined('_JEXEC') or die();
 
 use Exception;
 use Joomla\CMS\Factory;
 use Joomla\CMS\Router\Route;
+use Joomla\Component\Kunena\Libraries\Integration\Profile;
+use Joomla\Component\Kunena\Libraries\KunenaFactory;
+use Joomla\Component\Kunena\Libraries\Route\KunenaRoute;
 use function defined;
 
 /**
@@ -24,7 +27,7 @@ use function defined;
  *
  * @since   Kunena 6.0
  */
-class KunenaProfileEasyprofile extends KunenaProfile
+class KunenaProfileEasyprofile extends Profile
 {
 	/**
 	 * @var     null

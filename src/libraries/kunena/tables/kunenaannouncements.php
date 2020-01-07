@@ -119,7 +119,7 @@ class TableKunenaAnnouncements extends KunenaTable
 	{
 		if ($this->created_by)
 		{
-			$user = KunenaUserHelper::get($this->created_by);
+			$user = \Joomla\Component\Kunena\Libraries\User\Helper::get($this->created_by);
 
 			if (!$user->exists())
 			{
@@ -128,7 +128,7 @@ class TableKunenaAnnouncements extends KunenaTable
 		}
 		else
 		{
-			$this->created_by = KunenaUserHelper::getMyself()->userid;
+			$this->created_by = \Joomla\Component\Kunena\Libraries\User\Helper::getMyself()->userid;
 		}
 
 		if (!$this->created)

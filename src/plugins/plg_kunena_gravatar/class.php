@@ -16,7 +16,7 @@
  * @since   Kunena
  */
 
-namespace Joomla\Component\Kunena;
+namespace Joomla\Component\Kunena\Plugin\Kunena\Gravatar;
 
 defined('_JEXEC') or die();
 

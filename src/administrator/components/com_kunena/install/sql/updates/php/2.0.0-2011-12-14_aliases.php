@@ -32,16 +32,16 @@ use function defined;
  */
 function kunena_200_2011_12_14_aliases($parent)
 {
-	$config = KunenaFactory::getConfig();
+	$config = \Joomla\Component\Kunena\Libraries\KunenaFactory::getConfig();
 
 	// Create views
-	foreach (KunenaRoute::$views as $view => $dummy)
+	foreach (\Joomla\Component\Kunena\Libraries\Route\KunenaRoute::$views as $view => $dummy)
 	{
 		kCreateAlias('view', $view, $view, 1);
 	}
 
 	// Create layouts
-	foreach (KunenaRoute::$layouts as $layout => $dummy)
+	foreach (\Joomla\Component\Kunena\Libraries\Route\KunenaRoute::$layouts as $layout => $dummy)
 	{
 		kCreateAlias('layout', "category.{$layout}", "category/{$layout}", 1);
 		kCreateAlias('layout', "category.{$layout}", $layout, 0);
@@ -53,7 +53,7 @@ function kunena_200_2011_12_14_aliases($parent)
 		kCreateAlias('legacy', $func, $func, 1);
 	}
 
-	$categories = KunenaForumCategoryHelper::getCategories(false, false, 'none');
+	$categories = \Joomla\Component\Kunena\Libraries\Forum\Category\Helper::getCategories(false, false, 'none');
 	$aliasLit   = $aliasUtf = [];
 
 	// Create SEF: id

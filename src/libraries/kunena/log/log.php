@@ -395,7 +395,7 @@ class Log
 	 * @param   int                  $type       Log entry type.
 	 * @param   string               $operation  Performed operation.
 	 * @param   string|array         $data       JSON encoded string.
-	 * @param   KunenaForumCategory  $category   Target category.
+	 * @param  \Joomla\Component\Kunena\Libraries\Forum\Category\Category  $category   Target category.
 	 * @param   KunenaForumTopic     $topic      Target topic.
 	 * @param   KunenaUser           $user       Target user.
 	 *

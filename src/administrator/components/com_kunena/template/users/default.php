@@ -47,7 +47,7 @@ HTMLHelper::_('dropdown.init');
 					<?php echo Text::_('COM_KUNENA_CPANEL_LABEL_USERS') ?>
 				</div>
 				<hr class="hr-condensed">
-				<form action="<?php echo KunenaRoute::_('administrator/index.php?option=com_kunena&view=users'); ?>"
+				<form action="<?php echo \Joomla\Component\Kunena\Libraries\Route\KunenaRoute::_('administrator/index.php?option=com_kunena&view=users'); ?>"
 				      method="post" id="adminForm"
 				      name="adminForm">
 					<input type="hidden" name="task" value=""/>
@@ -239,7 +239,7 @@ HTMLHelper::_('dropdown.init');
 									<td>
 										<span class="editlinktip hasTip  kwho-<?php echo $user->getType(0, true); ?>"
 										      title="<?php echo $this->escape($user->username); ?> ">
-											<?php echo $user->getAvatarImage(KunenaFactory::getTemplate()->params->get('avatarType'), 'thumb'); ?>
+											<?php echo $user->getAvatarImage(\Joomla\Component\Kunena\Libraries\KunenaFactory::getTemplate()->params->get('avatarType'), 'thumb'); ?>
 											<a href="<?php echo Route::_('index.php?option=com_kunena&view=user&layout=edit&userid=' . (int) $user->id); ?>"
 											   title="<?php echo Text::_('JACTION_EDIT'); ?> <?php echo Text::sprintf('COM_USERS_EDIT_USER', $this->escape($user->name)); ?>">
 											<span class="fa fa-pen-square mr-2"

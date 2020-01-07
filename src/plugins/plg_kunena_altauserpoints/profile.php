@@ -10,13 +10,15 @@
  * @link            https://www.kunena.org
  **/
 
-namespace Joomla\Component\Kunena;
+namespace Joomla\Component\Kunena\Plugin\Kunena\Altauserpoints;
 
 defined('_JEXEC') or die();
 
 use Exception;
 use Joomla\CMS\Factory;
 use Joomla\CMS\Router\Route;
+use Joomla\Component\Kunena\Libraries\Integration\Profile;
+use Joomla\Component\Kunena\Libraries\KunenaFactory;
 use RuntimeException;
 use function defined;
 
@@ -25,7 +27,7 @@ use function defined;
  *
  * @since  5.0
  */
-class KunenaProfileAltaUserPoints extends KunenaProfile
+class KunenaProfileAltaUserPoints extends Profile
 {
 	/**
 	 * @var     null

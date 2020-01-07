@@ -37,7 +37,7 @@ class KunenaAdminModelRank extends KunenaModel
 	 */
 	public function getRankspaths()
 	{
-		$template = KunenaFactory::getTemplate();
+		$template = \Joomla\Component\Kunena\Libraries\KunenaFactory::getTemplate();
 
 		$selected = $this->getRank();
 

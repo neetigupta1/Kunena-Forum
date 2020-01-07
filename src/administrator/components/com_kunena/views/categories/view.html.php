@@ -118,7 +118,7 @@ class KunenaAdminViewCategories extends KunenaView
 		$this->sortDirectionFields = $this->getSortDirectionFields();
 
 		$this->user              = Factory::getApplication()->getIdentity();
-		$this->me                = KunenaUserHelper::getMyself();
+		$this->me                = \Joomla\Component\Kunena\Libraries\User\Helper::getMyself();
 		$this->userId            = $this->user->get('id');
 		$this->filterSearch      = $this->escape($this->state->get('filter.search'));
 		$this->filterPublished   = $this->escape($this->state->get('filter.published'));

@@ -29,7 +29,7 @@ use function defined;
  */
 function kunena_600_2019_05_18_configuration($parent)
 {
-	$config = KunenaFactory::getConfig();
+	$config = \Joomla\Component\Kunena\Libraries\KunenaFactory::getConfig();
 
 	if (isset($config->template))
 	{

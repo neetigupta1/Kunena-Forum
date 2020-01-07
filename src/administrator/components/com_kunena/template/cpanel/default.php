@@ -62,8 +62,8 @@ use Joomla\CMS\Router\Route;
 									<img src="components/com_kunena/media/icons/kunena_logo.png" style="width: 70%"/>
 								</div>
 								<div class="col">
-									<h6 class="mb-0"><?php echo strtoupper(KunenaForum::version()); ?></h6>
-									<h6 class="mb-0 text-cyan"><?php echo strtoupper(KunenaForum::versionDate()); ?></h6>
+									<h6 class="mb-0"><?php echo strtoupper(\Joomla\Component\Kunena\Libraries\Forum\Forum::version()); ?></h6>
+									<h6 class="mb-0 text-cyan"><?php echo strtoupper(\Joomla\Component\Kunena\Libraries\Forum\Forum::versionDate()); ?></h6>
 								</div>
 							</div>
 							<h6 class="pt-badge bg-cyan"><i class="fas fa-check text-white f-18"></i></h6>
@@ -134,8 +134,8 @@ use Joomla\CMS\Router\Route;
 											<?php echo Text::_('COM_KUNENA_CPANEL_LABEL_USERS') ?>
 										</a>
 									</h6>
-									<h3 class="fw-700 text-cyan"><?php echo KunenaUserHelper::getTotalCount(); ?></h3>
-									<p class="mb-0"><?php $lastid = KunenaUserHelper::getLastId();
+									<h3 class="fw-700 text-cyan"><?php echo \Joomla\Component\Kunena\Libraries\User\Helper::getTotalCount(); ?></h3>
+									<p class="mb-0"><?php $lastid = \Joomla\Component\Kunena\Libraries\User\Helper::getLastId();
 										$user                     = KunenaUser::getInstance($lastid)->registerDate;
 										echo KunenaDate::getInstance($user)->toKunena('ago'); ?></p>
 								</div>
@@ -241,7 +241,7 @@ use Joomla\CMS\Router\Route;
 											<?php echo Text::_('COM_KUNENA_CPANEL_LABEL_TEMPLATES') ?>
 										</a>
 									</h6>
-									<h3 class="fw-700 text-cyan"><?php echo count(KunenaTemplate::getInstance()->getTemplatePaths()); ?></h3>
+									<h3 class="fw-700 text-cyan"><?php echo count(\Joomla\Component\Kunena\Libraries\Template\Template::getInstance()->getTemplatePaths()); ?></h3>
 									<p class="mb-0">Installed</p>
 								</div>
 								<div class="col-auto">
@@ -262,7 +262,7 @@ use Joomla\CMS\Router\Route;
 											<?php echo Text::_('COM_KUNENA_CPANEL_LABEL_RANKS') ?>
 										</a>
 									</h6>
-									<h3 class="fw-700 text-cyan"><?php echo KunenaUserHelper::getTotalRanks(); ?></h3>
+									<h3 class="fw-700 text-cyan"><?php echo \Joomla\Component\Kunena\Libraries\User\Helper::getTotalRanks(); ?></h3>
 									<p class="mb-0">Groups</p>
 								</div>
 								<div class="col-auto">

@@ -77,7 +77,7 @@ class KunenaAdminControllerLogs extends KunenaController
 		if (!Session::checkToken('post'))
 		{
 			$this->app->enqueueMessage(Text::_('COM_KUNENA_ERROR_TOKEN'), 'error');
-			$this->setRedirect(KunenaRoute::_($this->baseurl, false));
+			$this->setRedirect(\Joomla\Component\Kunena\Libraries\Route\KunenaRoute::_($this->baseurl, false));
 
 			return;
 		}
@@ -99,7 +99,7 @@ class KunenaAdminControllerLogs extends KunenaController
 		catch (Exception $e)
 		{
 			$this->app->enqueueMessage($e->getMessage(), 'error');
-			$this->setRedirect(KunenaRoute::_($this->baseurl, false));
+			$this->setRedirect(\Joomla\Component\Kunena\Libraries\Route\KunenaRoute::_($this->baseurl, false));
 
 			return false;
 		}
@@ -109,12 +109,12 @@ class KunenaAdminControllerLogs extends KunenaController
 		if ($num_rows > 0)
 		{
 			$this->app->enqueueMessage(Text::sprintf('COM_KUNENA_LOG_ENTRIES_DELETED', $num_rows));
-			$this->setRedirect(KunenaRoute::_($this->baseurl, false));
+			$this->setRedirect(\Joomla\Component\Kunena\Libraries\Route\KunenaRoute::_($this->baseurl, false));
 		}
 		else
 		{
 			$this->app->enqueueMessage(Text::_('COM_KUNENA_LOG_ENTRIES_DELETED_NOTHING_TO_DELETE'));
-			$this->setRedirect(KunenaRoute::_($this->baseurl, false));
+			$this->setRedirect(\Joomla\Component\Kunena\Libraries\Route\KunenaRoute::_($this->baseurl, false));
 		}
 	}
 
@@ -130,6 +130,6 @@ class KunenaAdminControllerLogs extends KunenaController
 	 */
 	public function cancel()
 	{
-		$this->app->redirect(KunenaRoute::_($this->baseurl, false));
+		$this->app->redirect(\Joomla\Component\Kunena\Libraries\Route\KunenaRoute::_($this->baseurl, false));
 	}
 }

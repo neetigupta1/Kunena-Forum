@@ -66,7 +66,7 @@ class KunenaAdminControllerSmilies extends KunenaController
 		if (!Session::checkToken('post'))
 		{
 			$this->app->enqueueMessage(Text::_('COM_KUNENA_ERROR_TOKEN'), 'error');
-			$this->setRedirect(KunenaRoute::_($this->baseurl, false));
+			$this->setRedirect(\Joomla\Component\Kunena\Libraries\Route\KunenaRoute::_($this->baseurl, false));
 
 			return;
 		}
@@ -89,7 +89,7 @@ class KunenaAdminControllerSmilies extends KunenaController
 		if (!Session::checkToken('post'))
 		{
 			$this->app->enqueueMessage(Text::_('COM_KUNENA_ERROR_TOKEN'), 'error');
-			$this->setRedirect(KunenaRoute::_($this->baseurl, false));
+			$this->setRedirect(\Joomla\Component\Kunena\Libraries\Route\KunenaRoute::_($this->baseurl, false));
 
 			return;
 		}
@@ -102,7 +102,7 @@ class KunenaAdminControllerSmilies extends KunenaController
 		if (!$id)
 		{
 			$this->app->enqueueMessage(Text::_('COM_KUNENA_A_NO_SMILEYS_SELECTED'), 'notice');
-			$this->setRedirect(KunenaRoute::_($this->baseurl, false));
+			$this->setRedirect(\Joomla\Component\Kunena\Libraries\Route\KunenaRoute::_($this->baseurl, false));
 
 			return;
 		}
@@ -127,7 +127,7 @@ class KunenaAdminControllerSmilies extends KunenaController
 		if (!Session::checkToken('post'))
 		{
 			$this->app->enqueueMessage(Text::_('COM_KUNENA_ERROR_TOKEN'), 'error');
-			$this->setRedirect(KunenaRoute::_($this->baseurl, false));
+			$this->setRedirect(\Joomla\Component\Kunena\Libraries\Route\KunenaRoute::_($this->baseurl, false));
 
 			return;
 		}
@@ -176,7 +176,7 @@ class KunenaAdminControllerSmilies extends KunenaController
 		}
 
 		$this->app->enqueueMessage(Text::_('COM_KUNENA_SMILEY_SAVED'));
-		$this->setRedirect(KunenaRoute::_($this->baseurl, false));
+		$this->setRedirect(\Joomla\Component\Kunena\Libraries\Route\KunenaRoute::_($this->baseurl, false));
 	}
 
 	/**
@@ -194,7 +194,7 @@ class KunenaAdminControllerSmilies extends KunenaController
 		if (!Session::checkToken('post'))
 		{
 			$this->app->enqueueMessage(Text::_('COM_KUNENA_ERROR_TOKEN'), 'error');
-			$this->setRedirect(KunenaRoute::_($this->baseurl, false));
+			$this->setRedirect(\Joomla\Component\Kunena\Libraries\Route\KunenaRoute::_($this->baseurl, false));
 
 			return;
 		}
@@ -202,7 +202,7 @@ class KunenaAdminControllerSmilies extends KunenaController
 		$file = $this->app->input->files->get('Filedata');
 
 		// TODO : change this part to use other method than KunenaUploadHelper::upload()
-		$upload = KunenaUploadHelper::upload($file, JPATH_ROOT . '/' . KunenaFactory::getTemplate()->getSmileyPath(), 'html');
+		$upload = KunenaUploadHelper::upload($file, JPATH_ROOT . '/' . \Joomla\Component\Kunena\Libraries\KunenaFactory::getTemplate()->getSmileyPath(), 'html');
 
 		if ($upload)
 		{
@@ -213,7 +213,7 @@ class KunenaAdminControllerSmilies extends KunenaController
 			$this->app->enqueueMessage(Text::_('COM_KUNENA_A_EMOTICONS_UPLOAD_ERROR_UNABLE'), 'error');
 		}
 
-		$this->setRedirect(KunenaRoute::_($this->baseurl, false));
+		$this->setRedirect(\Joomla\Component\Kunena\Libraries\Route\KunenaRoute::_($this->baseurl, false));
 	}
 
 	/**
@@ -233,7 +233,7 @@ class KunenaAdminControllerSmilies extends KunenaController
 		if (!Session::checkToken('post'))
 		{
 			$this->app->enqueueMessage(Text::_('COM_KUNENA_ERROR_TOKEN'), 'error');
-			$this->setRedirect(KunenaRoute::_($this->baseurl, false));
+			$this->setRedirect(\Joomla\Component\Kunena\Libraries\Route\KunenaRoute::_($this->baseurl, false));
 
 			return;
 		}
@@ -263,7 +263,7 @@ class KunenaAdminControllerSmilies extends KunenaController
 		}
 
 		$this->app->enqueueMessage(Text::_('COM_KUNENA_SMILEY_DELETED'));
-		$this->setRedirect(KunenaRoute::_($this->baseurl, false));
+		$this->setRedirect(\Joomla\Component\Kunena\Libraries\Route\KunenaRoute::_($this->baseurl, false));
 	}
 
 	/**
@@ -278,6 +278,6 @@ class KunenaAdminControllerSmilies extends KunenaController
 	 */
 	public function cancel()
 	{
-		$this->app->redirect(KunenaRoute::_($this->baseurl, false));
+		$this->app->redirect(\Joomla\Component\Kunena\Libraries\Route\KunenaRoute::_($this->baseurl, false));
 	}
 }

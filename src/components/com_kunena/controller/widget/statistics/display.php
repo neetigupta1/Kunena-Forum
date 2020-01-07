@@ -74,8 +74,8 @@ class ComponentKunenaControllerWidgetStatisticsDisplay extends KunenaControllerD
 		$statistics->loadGeneral();
 		$this->setProperties($statistics);
 
-		$this->latestMemberLink = KunenaFactory::getUser(intval($this->lastUserId))->getLink(null, null, '');
-		$this->statisticsUrl    = KunenaFactory::getProfile()->getStatisticsURL();
+		$this->latestMemberLink = \Joomla\Component\Kunena\Libraries\KunenaFactory::getUser(intval($this->lastUserId))->getLink(null, null, '');
+		$this->statisticsUrl    = \Joomla\Component\Kunena\Libraries\KunenaFactory::getProfile()->getStatisticsURL();
 
 		return true;
 	}

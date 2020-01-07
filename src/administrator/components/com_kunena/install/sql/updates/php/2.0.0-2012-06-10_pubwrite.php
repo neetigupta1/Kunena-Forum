@@ -30,7 +30,7 @@ use function defined;
  */
 function kunena_200_2012_06_10_pubwrite($parent)
 {
-	$config = KunenaFactory::getConfig();
+	$config = \Joomla\Component\Kunena\Libraries\KunenaFactory::getConfig();
 
 	if ($config->pubwrite)
 	{

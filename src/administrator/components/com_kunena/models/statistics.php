@@ -50,7 +50,7 @@ class KunenaAdminModelStatistics extends ListModel
 			];
 		}
 
-		$this->me = KunenaUserHelper::getMyself();
+		$this->me = \Joomla\Component\Kunena\Libraries\User\Helper::getMyself();
 
 		parent::__construct($config);
 	}
@@ -156,7 +156,7 @@ class KunenaAdminModelStatistics extends ListModel
 			$finder->filterByTime($start, $stop);
 		}
 
-		$access = KunenaAccess::getInstance();
+		$access = \Joomla\Component\Kunena\Libraries\Access::getInstance();
 		$finder->where($field, 'IN', array_keys($access->getAdmins() + $access->getModerators()));
 		$finder->where('type', '!=', 3);
 
@@ -194,7 +194,7 @@ class KunenaAdminModelStatistics extends ListModel
 			return $this->cache[$store];
 		}
 
-		$access  = KunenaAccess::getInstance();
+		$access  = \Joomla\Component\Kunena\Libraries\Access::getInstance();
 		$userIds = array_keys($access->getAdmins() + $access->getModerators());
 
 		$data = [];
@@ -285,7 +285,7 @@ class KunenaAdminModelStatistics extends ListModel
 
 		unset($items);
 
-		KunenaUserHelper::loadUsers($userIds);
+		\Joomla\Component\Kunena\Libraries\User\Helper::loadUsers($userIds);
 
 		// Add the items to the internal cache.
 		$this->cache[$store] = $data;

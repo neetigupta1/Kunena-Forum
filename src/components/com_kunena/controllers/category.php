@@ -57,11 +57,11 @@ class KunenaControllerCategory extends KunenaAdminControllerCategories
 
 		if (!$catid)
 		{
-			$this->setRedirect(KunenaRoute::_('index.php?option=com_kunena&view=category&layout=list', false));
+			$this->setRedirect(\Joomla\Component\Kunena\Libraries\Route\KunenaRoute::_('index.php?option=com_kunena&view=category&layout=list', false));
 		}
 		else
 		{
-			$this->setRedirect(KunenaRoute::_("index.php?option=com_kunena&view=category&catid={$catid}", false));
+			$this->setRedirect(\Joomla\Component\Kunena\Libraries\Route\KunenaRoute::_("index.php?option=com_kunena&view=category&catid={$catid}", false));
 		}
 	}
 
@@ -89,7 +89,7 @@ class KunenaControllerCategory extends KunenaAdminControllerCategories
 		if (!$catid)
 		{
 			// All categories
-			$session = KunenaFactory::getSession();
+			$session = \Joomla\Component\Kunena\Libraries\KunenaFactory::getSession();
 			$session->markAllCategoriesRead();
 
 			if (!$session->save())
@@ -104,7 +104,7 @@ class KunenaControllerCategory extends KunenaAdminControllerCategories
 		else
 		{
 			// One category
-			$category = KunenaForumCategoryHelper::get($catid);
+			$category = \Joomla\Component\Kunena\Libraries\Forum\Category\Helper::get($catid);
 
 			if (!$category->isAuthorised('read'))
 			{
@@ -114,7 +114,7 @@ class KunenaControllerCategory extends KunenaAdminControllerCategories
 				return;
 			}
 
-			$session = KunenaFactory::getSession();
+			$session = \Joomla\Component\Kunena\Libraries\KunenaFactory::getSession();
 
 			if ($session->userid)
 			{
@@ -161,7 +161,7 @@ class KunenaControllerCategory extends KunenaAdminControllerCategories
 			return;
 		}
 
-		$category = KunenaForumCategoryHelper::get($this->app->input->getInt('catid', 0));
+		$category = \Joomla\Component\Kunena\Libraries\Forum\Category\Helper::get($this->app->input->getInt('catid', 0));
 
 		if (!$category->isAuthorised('read'))
 		{
@@ -202,7 +202,7 @@ class KunenaControllerCategory extends KunenaAdminControllerCategories
 			return;
 		}
 
-		$me = KunenaUserHelper::getMyself();
+		$me = \Joomla\Component\Kunena\Libraries\User\Helper::getMyself();
 
 		$userid = $this->app->input->getInt('userid');
 
@@ -212,7 +212,7 @@ class KunenaControllerCategory extends KunenaAdminControllerCategories
 			: array_keys($this->app->input->get('categories', [], 'post'));
 		$catids = ArrayHelper::toInteger($catids);
 
-		$categories = KunenaForumCategoryHelper::getCategories($catids);
+		$categories = \Joomla\Component\Kunena\Libraries\Forum\Category\Helper::getCategories($catids);
 
 		foreach ($categories as $category)
 		{

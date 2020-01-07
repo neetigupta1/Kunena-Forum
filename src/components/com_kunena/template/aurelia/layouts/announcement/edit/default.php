@@ -26,7 +26,7 @@ echo $this->subLayout('Widget/Datepicker');
 </h2>
 
 <div class="shadow-lg p-3 mb-5 rounded">
-	<form action="<?php echo KunenaRoute::_('index.php?option=com_kunena&view=announcement'); ?>" method="post"
+	<form action="<?php echo \Joomla\Component\Kunena\Libraries\Route\KunenaRoute::_('index.php?option=com_kunena&view=announcement'); ?>" method="post"
 		  name="editform" id="editform">
 		<input type="hidden" name="task" value="save"/>
 		<?php echo $this->displayInput('id'); ?>

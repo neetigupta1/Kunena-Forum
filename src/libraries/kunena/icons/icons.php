@@ -37,7 +37,7 @@ class Icons
 	 */
 	public static function arrowdown()
 	{
-		$ktemplate     = KunenaFactory::getTemplate();
+		$ktemplate     = \Joomla\Component\Kunena\Libraries\KunenaFactory::getTemplate();
 		$topicicontype = $ktemplate->params->get('topicicontype');
 
 		if ($topicicontype == 'fa')
@@ -69,7 +69,7 @@ class Icons
 	 */
 	public static function arrowup()
 	{
-		$ktemplate     = KunenaFactory::getTemplate();
+		$ktemplate     = \Joomla\Component\Kunena\Libraries\KunenaFactory::getTemplate();
 		$topicicontype = $ktemplate->params->get('topicicontype');
 
 		if ($topicicontype == 'fa')
@@ -101,7 +101,7 @@ class Icons
 	 */
 	public static function arrowdownanchor()
 	{
-		$ktemplate     = KunenaFactory::getTemplate();
+		$ktemplate     = \Joomla\Component\Kunena\Libraries\KunenaFactory::getTemplate();
 		$topicicontype = $ktemplate->params->get('topicicontype');
 
 		if ($topicicontype == 'fa')
@@ -138,7 +138,7 @@ class Icons
 	 */
 	public static function arrowupanchor()
 	{
-		$ktemplate     = KunenaFactory::getTemplate();
+		$ktemplate     = \Joomla\Component\Kunena\Libraries\KunenaFactory::getTemplate();
 		$topicicontype = $ktemplate->params->get('topicicontype');
 
 		if ($topicicontype == 'fa')
@@ -175,7 +175,7 @@ class Icons
 	 */
 	public static function chevronright()
 	{
-		$ktemplate     = KunenaFactory::getTemplate();
+		$ktemplate     = \Joomla\Component\Kunena\Libraries\KunenaFactory::getTemplate();
 		$topicicontype = $ktemplate->params->get('topicicontype');
 
 		if ($topicicontype == 'fa')
@@ -207,7 +207,7 @@ class Icons
 	 */
 	public static function members()
 	{
-		$ktemplate     = KunenaFactory::getTemplate();
+		$ktemplate     = \Joomla\Component\Kunena\Libraries\KunenaFactory::getTemplate();
 		$topicicontype = $ktemplate->params->get('topicicontype');
 
 		if ($topicicontype == 'fa')
@@ -239,7 +239,7 @@ class Icons
 	 */
 	public static function user()
 	{
-		$ktemplate     = KunenaFactory::getTemplate();
+		$ktemplate     = \Joomla\Component\Kunena\Libraries\KunenaFactory::getTemplate();
 		$topicicontype = $ktemplate->params->get('topicicontype');
 
 		if ($topicicontype == 'fa')
@@ -271,7 +271,7 @@ class Icons
 	 */
 	public static function lock()
 	{
-		$ktemplate     = KunenaFactory::getTemplate();
+		$ktemplate     = \Joomla\Component\Kunena\Libraries\KunenaFactory::getTemplate();
 		$topicicontype = $ktemplate->params->get('topicicontype');
 
 		if ($topicicontype == 'fa')
@@ -303,7 +303,7 @@ class Icons
 	 */
 	public static function star()
 	{
-		$ktemplate     = KunenaFactory::getTemplate();
+		$ktemplate     = \Joomla\Component\Kunena\Libraries\KunenaFactory::getTemplate();
 		$topicicontype = $ktemplate->params->get('topicicontype');
 
 		if ($topicicontype == 'fa')
@@ -340,7 +340,7 @@ class Icons
 	 */
 	public static function shield()
 	{
-		$ktemplate     = KunenaFactory::getTemplate();
+		$ktemplate     = \Joomla\Component\Kunena\Libraries\KunenaFactory::getTemplate();
 		$topicicontype = $ktemplate->params->get('topicicontype');
 
 		if ($topicicontype == 'fa')
@@ -372,7 +372,7 @@ class Icons
 	 */
 	public static function flag()
 	{
-		$ktemplate     = KunenaFactory::getTemplate();
+		$ktemplate     = \Joomla\Component\Kunena\Libraries\KunenaFactory::getTemplate();
 		$topicicontype = $ktemplate->params->get('topicicontype');
 
 		if ($topicicontype == 'fa')
@@ -409,7 +409,7 @@ class Icons
 	 */
 	public static function poll()
 	{
-		$ktemplate     = KunenaFactory::getTemplate();
+		$ktemplate     = \Joomla\Component\Kunena\Libraries\KunenaFactory::getTemplate();
 		$topicicontype = $ktemplate->params->get('topicicontype');
 
 		if ($topicicontype == 'fa')
@@ -441,7 +441,7 @@ class Icons
 	 */
 	public static function stats()
 	{
-		$ktemplate     = KunenaFactory::getTemplate();
+		$ktemplate     = \Joomla\Component\Kunena\Libraries\KunenaFactory::getTemplate();
 		$topicicontype = $ktemplate->params->get('topicicontype');
 
 		if ($topicicontype == 'fa')
@@ -473,7 +473,7 @@ class Icons
 	 */
 	public static function search()
 	{
-		$ktemplate     = KunenaFactory::getTemplate();
+		$ktemplate     = \Joomla\Component\Kunena\Libraries\KunenaFactory::getTemplate();
 		$topicicontype = $ktemplate->params->get('topicicontype');
 
 		if ($topicicontype == 'fa')
@@ -505,7 +505,7 @@ class Icons
 	 */
 	public static function collapse()
 	{
-		$ktemplate     = KunenaFactory::getTemplate();
+		$ktemplate     = \Joomla\Component\Kunena\Libraries\KunenaFactory::getTemplate();
 		$topicicontype = $ktemplate->params->get('topicicontype');
 
 		if ($topicicontype == 'fa')
@@ -537,7 +537,7 @@ class Icons
 	 */
 	public static function clock()
 	{
-		$ktemplate     = KunenaFactory::getTemplate();
+		$ktemplate     = \Joomla\Component\Kunena\Libraries\KunenaFactory::getTemplate();
 		$topicicontype = $ktemplate->params->get('topicicontype');
 
 		if ($topicicontype == 'fa')
@@ -569,7 +569,7 @@ class Icons
 	 */
 	public static function thumbsup()
 	{
-		$ktemplate     = KunenaFactory::getTemplate();
+		$ktemplate     = \Joomla\Component\Kunena\Libraries\KunenaFactory::getTemplate();
 		$topicicontype = $ktemplate->params->get('topicicontype');
 
 		if ($topicicontype == 'fa')
@@ -601,7 +601,7 @@ class Icons
 	 */
 	public static function secure()
 	{
-		$ktemplate     = KunenaFactory::getTemplate();
+		$ktemplate     = \Joomla\Component\Kunena\Libraries\KunenaFactory::getTemplate();
 		$topicicontype = $ktemplate->params->get('topicicontype');
 
 		if ($topicicontype == 'fa')
@@ -633,7 +633,7 @@ class Icons
 	 */
 	public static function cancel()
 	{
-		$ktemplate     = KunenaFactory::getTemplate();
+		$ktemplate     = \Joomla\Component\Kunena\Libraries\KunenaFactory::getTemplate();
 		$topicicontype = $ktemplate->params->get('topicicontype');
 
 		if ($topicicontype == 'fa')
@@ -665,10 +665,10 @@ class Icons
 	 */
 	public static function ip()
 	{
-		$ktemplate     = KunenaFactory::getTemplate();
+		$ktemplate     = \Joomla\Component\Kunena\Libraries\KunenaFactory::getTemplate();
 		$topicicontype = $ktemplate->params->get('topicicontype');
 
-		if (!KunenaUserHelper::getMyself()->isModerator())
+		if (!\Joomla\Component\Kunena\Libraries\User\Helper::getMyself()->isModerator())
 		{
 			return false;
 		}
@@ -702,7 +702,7 @@ class Icons
 	 */
 	public static function email()
 	{
-		$ktemplate     = KunenaFactory::getTemplate();
+		$ktemplate     = \Joomla\Component\Kunena\Libraries\KunenaFactory::getTemplate();
 		$topicicontype = $ktemplate->params->get('topicicontype');
 
 		if ($topicicontype == 'fa')
@@ -739,7 +739,7 @@ class Icons
 	 */
 	public static function bookmark()
 	{
-		$ktemplate     = KunenaFactory::getTemplate();
+		$ktemplate     = \Joomla\Component\Kunena\Libraries\KunenaFactory::getTemplate();
 		$topicicontype = $ktemplate->params->get('topicicontype');
 
 		if ($topicicontype == 'fa')
@@ -771,7 +771,7 @@ class Icons
 	 */
 	public static function back()
 	{
-		$ktemplate     = KunenaFactory::getTemplate();
+		$ktemplate     = \Joomla\Component\Kunena\Libraries\KunenaFactory::getTemplate();
 		$topicicontype = $ktemplate->params->get('topicicontype');
 
 		if ($topicicontype == 'fa')
@@ -803,7 +803,7 @@ class Icons
 	 */
 	public static function save()
 	{
-		$ktemplate     = KunenaFactory::getTemplate();
+		$ktemplate     = \Joomla\Component\Kunena\Libraries\KunenaFactory::getTemplate();
 		$topicicontype = $ktemplate->params->get('topicicontype');
 
 		if ($topicicontype == 'fa')
@@ -835,7 +835,7 @@ class Icons
 	 */
 	public static function edit()
 	{
-		$ktemplate     = KunenaFactory::getTemplate();
+		$ktemplate     = \Joomla\Component\Kunena\Libraries\KunenaFactory::getTemplate();
 		$topicicontype = $ktemplate->params->get('topicicontype');
 
 		if ($topicicontype == 'fa')
@@ -867,7 +867,7 @@ class Icons
 	 */
 	public static function pencil()
 	{
-		$ktemplate     = KunenaFactory::getTemplate();
+		$ktemplate     = \Joomla\Component\Kunena\Libraries\KunenaFactory::getTemplate();
 		$topicicontype = $ktemplate->params->get('topicicontype');
 
 		if ($topicicontype == 'fa')
@@ -899,7 +899,7 @@ class Icons
 	 */
 	public static function attach()
 	{
-		$ktemplate     = KunenaFactory::getTemplate();
+		$ktemplate     = \Joomla\Component\Kunena\Libraries\KunenaFactory::getTemplate();
 		$topicicontype = $ktemplate->params->get('topicicontype');
 
 		if ($topicicontype == 'fa')
@@ -936,7 +936,7 @@ class Icons
 	 */
 	public static function plus()
 	{
-		$ktemplate     = KunenaFactory::getTemplate();
+		$ktemplate     = \Joomla\Component\Kunena\Libraries\KunenaFactory::getTemplate();
 		$topicicontype = $ktemplate->params->get('topicicontype');
 
 		if ($topicicontype == 'fa')
@@ -970,9 +970,9 @@ class Icons
 	 */
 	public static function rss($text = null)
 	{
-		$ktemplate     = KunenaFactory::getTemplate();
+		$ktemplate     = \Joomla\Component\Kunena\Libraries\KunenaFactory::getTemplate();
 		$topicicontype = $ktemplate->params->get('topicicontype');
-		$class         = ' ' . KunenaTemplate::getInstance()->tooltips();
+		$class         = ' ' . \Joomla\Component\Kunena\Libraries\Template\Template::getInstance()->tooltips();
 
 		if ($topicicontype == 'fa')
 		{
@@ -1003,7 +1003,7 @@ class Icons
 	 */
 	public static function upload()
 	{
-		$ktemplate     = KunenaFactory::getTemplate();
+		$ktemplate     = \Joomla\Component\Kunena\Libraries\KunenaFactory::getTemplate();
 		$topicicontype = $ktemplate->params->get('topicicontype');
 
 		if ($topicicontype == 'fa')
@@ -1037,7 +1037,7 @@ class Icons
 	 */
 	public static function picture($big = false)
 	{
-		$ktemplate     = KunenaFactory::getTemplate();
+		$ktemplate     = \Joomla\Component\Kunena\Libraries\KunenaFactory::getTemplate();
 		$topicicontype = $ktemplate->params->get('topicicontype');
 
 		if ($big)
@@ -1076,7 +1076,7 @@ class Icons
 	 */
 	public static function file($big = false)
 	{
-		$ktemplate     = KunenaFactory::getTemplate();
+		$ktemplate     = \Joomla\Component\Kunena\Libraries\KunenaFactory::getTemplate();
 		$topicicontype = $ktemplate->params->get('topicicontype');
 
 		if ($big)
@@ -1113,7 +1113,7 @@ class Icons
 	 */
 	public static function delete()
 	{
-		$ktemplate     = KunenaFactory::getTemplate();
+		$ktemplate     = \Joomla\Component\Kunena\Libraries\KunenaFactory::getTemplate();
 		$topicicontype = $ktemplate->params->get('topicicontype');
 
 		if ($topicicontype == 'fa')
@@ -1145,7 +1145,7 @@ class Icons
 	 */
 	public static function poll_add()
 	{
-		$ktemplate     = KunenaFactory::getTemplate();
+		$ktemplate     = \Joomla\Component\Kunena\Libraries\KunenaFactory::getTemplate();
 		$topicicontype = $ktemplate->params->get('topicicontype');
 
 		if ($topicicontype == 'fa')
@@ -1180,7 +1180,7 @@ class Icons
 	 */
 	public static function poll_rem()
 	{
-		$ktemplate     = KunenaFactory::getTemplate();
+		$ktemplate     = \Joomla\Component\Kunena\Libraries\KunenaFactory::getTemplate();
 		$topicicontype = $ktemplate->params->get('topicicontype');
 
 		if ($topicicontype == 'fa')
@@ -1215,7 +1215,7 @@ class Icons
 	 */
 	public static function undo()
 	{
-		$ktemplate     = KunenaFactory::getTemplate();
+		$ktemplate     = \Joomla\Component\Kunena\Libraries\KunenaFactory::getTemplate();
 		$topicicontype = $ktemplate->params->get('topicicontype');
 
 		if ($topicicontype == 'fa')
@@ -1252,7 +1252,7 @@ class Icons
 	 */
 	public static function shuffle()
 	{
-		$ktemplate     = KunenaFactory::getTemplate();
+		$ktemplate     = \Joomla\Component\Kunena\Libraries\KunenaFactory::getTemplate();
 		$topicicontype = $ktemplate->params->get('topicicontype');
 
 		if ($topicicontype == 'fa')
@@ -1288,7 +1288,7 @@ class Icons
 	 */
 	public static function caticon($categoryicon, $new = null, $big = true)
 	{
-		$ktemplate     = KunenaFactory::getTemplate();
+		$ktemplate     = \Joomla\Component\Kunena\Libraries\KunenaFactory::getTemplate();
 		$topicicontype = $ktemplate->params->get('topicicontype');
 		$caticon       = $ktemplate->params->get('DefaultCategoryicon');
 
@@ -1481,7 +1481,7 @@ class Icons
 	 */
 	public static function home()
 	{
-		$ktemplate     = KunenaFactory::getTemplate();
+		$ktemplate     = \Joomla\Component\Kunena\Libraries\KunenaFactory::getTemplate();
 		$topicicontype = $ktemplate->params->get('topicicontype');
 
 		if ($topicicontype == 'fa')
@@ -1513,7 +1513,7 @@ class Icons
 	 */
 	public static function calendar()
 	{
-		$ktemplate     = KunenaFactory::getTemplate();
+		$ktemplate     = \Joomla\Component\Kunena\Libraries\KunenaFactory::getTemplate();
 		$topicicontype = $ktemplate->params->get('topicicontype');
 
 		if ($topicicontype == 'fa')
@@ -1545,7 +1545,7 @@ class Icons
 	 */
 	public static function hamburger()
 	{
-		$ktemplate     = KunenaFactory::getTemplate();
+		$ktemplate     = \Joomla\Component\Kunena\Libraries\KunenaFactory::getTemplate();
 		$topicicontype = $ktemplate->params->get('topicicontype');
 
 		if ($topicicontype == 'fa')
@@ -1577,7 +1577,7 @@ class Icons
 	 */
 	public static function info()
 	{
-		$ktemplate     = KunenaFactory::getTemplate();
+		$ktemplate     = \Joomla\Component\Kunena\Libraries\KunenaFactory::getTemplate();
 		$topicicontype = $ktemplate->params->get('topicicontype');
 
 		if ($topicicontype == 'fa')
@@ -1609,7 +1609,7 @@ class Icons
 	 */
 	public static function online()
 	{
-		$ktemplate     = KunenaFactory::getTemplate();
+		$ktemplate     = \Joomla\Component\Kunena\Libraries\KunenaFactory::getTemplate();
 		$topicicontype = $ktemplate->params->get('topicicontype');
 
 		if ($topicicontype == 'fa')
@@ -1641,7 +1641,7 @@ class Icons
 	 */
 	public static function away()
 	{
-		$ktemplate     = KunenaFactory::getTemplate();
+		$ktemplate     = \Joomla\Component\Kunena\Libraries\KunenaFactory::getTemplate();
 		$topicicontype = $ktemplate->params->get('topicicontype');
 
 		if ($topicicontype == 'fa')
@@ -1673,7 +1673,7 @@ class Icons
 	 */
 	public static function busy()
 	{
-		$ktemplate     = KunenaFactory::getTemplate();
+		$ktemplate     = \Joomla\Component\Kunena\Libraries\KunenaFactory::getTemplate();
 		$topicicontype = $ktemplate->params->get('topicicontype');
 
 		if ($topicicontype == 'fa')
@@ -1705,7 +1705,7 @@ class Icons
 	 */
 	public static function invisible()
 	{
-		$ktemplate     = KunenaFactory::getTemplate();
+		$ktemplate     = \Joomla\Component\Kunena\Libraries\KunenaFactory::getTemplate();
 		$topicicontype = $ktemplate->params->get('topicicontype');
 
 		if ($topicicontype == 'fa')
@@ -1737,7 +1737,7 @@ class Icons
 	 */
 	public static function cog()
 	{
-		$ktemplate     = KunenaFactory::getTemplate();
+		$ktemplate     = \Joomla\Component\Kunena\Libraries\KunenaFactory::getTemplate();
 		$topicicontype = $ktemplate->params->get('topicicontype');
 
 		if ($topicicontype == 'fa')
@@ -1769,7 +1769,7 @@ class Icons
 	 */
 	public static function drawer()
 	{
-		$ktemplate     = KunenaFactory::getTemplate();
+		$ktemplate     = \Joomla\Component\Kunena\Libraries\KunenaFactory::getTemplate();
 		$topicicontype = $ktemplate->params->get('topicicontype');
 
 		if ($topicicontype == 'fa')
@@ -1801,7 +1801,7 @@ class Icons
 	 */
 	public static function out()
 	{
-		$ktemplate     = KunenaFactory::getTemplate();
+		$ktemplate     = \Joomla\Component\Kunena\Libraries\KunenaFactory::getTemplate();
 		$topicicontype = $ktemplate->params->get('topicicontype');
 
 		if ($topicicontype == 'fa')
@@ -1833,7 +1833,7 @@ class Icons
 	 */
 	public static function grid()
 	{
-		$ktemplate     = KunenaFactory::getTemplate();
+		$ktemplate     = \Joomla\Component\Kunena\Libraries\KunenaFactory::getTemplate();
 		$topicicontype = $ktemplate->params->get('topicicontype');
 
 		if ($topicicontype == 'fa')
@@ -1865,7 +1865,7 @@ class Icons
 	 */
 	public static function globe()
 	{
-		$ktemplate     = KunenaFactory::getTemplate();
+		$ktemplate     = \Joomla\Component\Kunena\Libraries\KunenaFactory::getTemplate();
 		$topicicontype = $ktemplate->params->get('topicicontype');
 
 		if ($topicicontype == 'fa')
@@ -1902,7 +1902,7 @@ class Icons
 	 */
 	public static function location()
 	{
-		$ktemplate     = KunenaFactory::getTemplate();
+		$ktemplate     = \Joomla\Component\Kunena\Libraries\KunenaFactory::getTemplate();
 		$topicicontype = $ktemplate->params->get('topicicontype');
 
 		if ($topicicontype == 'fa')
@@ -1939,7 +1939,7 @@ class Icons
 	 */
 	public static function pm()
 	{
-		$ktemplate     = KunenaFactory::getTemplate();
+		$ktemplate     = \Joomla\Component\Kunena\Libraries\KunenaFactory::getTemplate();
 		$topicicontype = $ktemplate->params->get('topicicontype');
 
 		if ($topicicontype == 'fa')
@@ -1976,7 +1976,7 @@ class Icons
 	 */
 	public static function report()
 	{
-		$ktemplate     = KunenaFactory::getTemplate();
+		$ktemplate     = \Joomla\Component\Kunena\Libraries\KunenaFactory::getTemplate();
 		$topicicontype = $ktemplate->params->get('topicicontype');
 
 		if ($topicicontype == 'fa')
@@ -2013,7 +2013,7 @@ class Icons
 	 */
 	public static function reportname()
 	{
-		$ktemplate     = KunenaFactory::getTemplate();
+		$ktemplate     = \Joomla\Component\Kunena\Libraries\KunenaFactory::getTemplate();
 		$topicicontype = $ktemplate->params->get('topicicontype');
 
 		if ($topicicontype == 'B2')

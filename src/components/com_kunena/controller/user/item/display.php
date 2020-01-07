@@ -82,7 +82,7 @@ class ComponentKunenaControllerUserItemDisplay extends KunenaControllerDisplay
 		parent::before();
 
 		// If profile integration is disabled, this view doesn't exist.
-		$integration = KunenaFactory::getProfile();
+		$integration = \Joomla\Component\Kunena\Libraries\KunenaFactory::getProfile();
 
 		if (get_class($integration) == 'KunenaProfileNone')
 		{
@@ -96,19 +96,19 @@ class ComponentKunenaControllerUserItemDisplay extends KunenaControllerDisplay
 		$this->model->initialize($this->getOptions(), $this->getOptions()->get('embedded', false));
 		$this->state = $this->model->getState();
 
-		$this->me      = KunenaUserHelper::getMyself();
+		$this->me      = \Joomla\Component\Kunena\Libraries\User\Helper::getMyself();
 		$this->user    = Factory::getUser($userid);
-		$this->profile = KunenaUserHelper::get($userid);
+		$this->profile = \Joomla\Component\Kunena\Libraries\User\Helper::get($userid);
 		$this->profile->tryAuthorise('read');
 
-		$activityIntegration = KunenaFactory::getActivityIntegration();
+		$activityIntegration = \Joomla\Component\Kunena\Libraries\KunenaFactory::getActivityIntegration();
 		$this->points        = $activityIntegration->getUserPoints($this->profile->userid);
 		$this->medals        = $activityIntegration->getUserMedals($this->profile->userid);
-		$this->private       = KunenaFactory::getPrivateMessaging();
+		$this->private       = \Joomla\Component\Kunena\Libraries\KunenaFactory::getPrivateMessaging();
 		$socials             = $this->profile->socialButtons();
 		$this->socials       = ArrayHelper::toObject($socials);
 
-		$this->avatar  = $this->profile->getAvatarImage(KunenaFactory::getTemplate()->params->get('avatarType'), 'post');
+		$this->avatar  = $this->profile->getAvatarImage(\Joomla\Component\Kunena\Libraries\KunenaFactory::getTemplate()->params->get('avatarType'), 'post');
 		$this->banInfo = $this->config->showbannedreason
 			? KunenaUserBan::getInstanceByUserid($this->profile->userid)
 			: null;
@@ -134,22 +134,22 @@ class ComponentKunenaControllerUserItemDisplay extends KunenaControllerDisplay
 			else
 			{
 				$menu      = $this->app->getMenu();
-				$getid     = $menu->getItem(KunenaRoute::getItemID("index.php?option=com_kunena&view=user"));
+				$getid     = $menu->getItem(\Joomla\Component\Kunena\Libraries\Route\KunenaRoute::getItemID("index.php?option=com_kunena&view=user"));
 				$itemidfix = $getid->id;
 			}
 
 			if (!$itemidfix)
 			{
-				$itemidfix = KunenaRoute::fixMissingItemID();
+				$itemidfix = \Joomla\Component\Kunena\Libraries\Route\KunenaRoute::fixMissingItemID();
 			}
 
 			if (!$userid)
 			{
-				$controller->setRedirect(KunenaRoute::_("index.php?option=com_kunena&view=user&Itemid={$itemidfix}", false));
+				$controller->setRedirect(\Joomla\Component\Kunena\Libraries\Route\KunenaRoute::_("index.php?option=com_kunena&view=user&Itemid={$itemidfix}", false));
 			}
 			else
 			{
-				$controller->setRedirect(KunenaRoute::_("index.php?option=com_kunena&view=user&userid={$userid}&Itemid={$itemidfix}", false));
+				$controller->setRedirect(\Joomla\Component\Kunena\Libraries\Route\KunenaRoute::_("index.php?option=com_kunena&view=user&userid={$userid}&Itemid={$itemidfix}", false));
 			}
 
 			$controller->redirect();
@@ -191,11 +191,11 @@ class ComponentKunenaControllerUserItemDisplay extends KunenaControllerDisplay
 		$this->setMetaData('og:url', Uri::current(), 'property');
 		$this->setMetaData('og:type', 'profile', 'property');
 
-		if (File::exists(JPATH_SITE . '/media/kunena/avatars/' . KunenaFactory::getUser($this->profile->id)->avatar))
+		if (File::exists(JPATH_SITE . '/media/kunena/avatars/' . \Joomla\Component\Kunena\Libraries\KunenaFactory::getUser($this->profile->id)->avatar))
 		{
-			$image = Uri::root() . 'media/kunena/avatars/' . KunenaFactory::getUser($this->profile->id)->avatar;
+			$image = Uri::root() . 'media/kunena/avatars/' . \Joomla\Component\Kunena\Libraries\KunenaFactory::getUser($this->profile->id)->avatar;
 		}
-		elseif ($this->profile->avatar == null || $this->config->avatar_type && KunenaFactory::getUser($this->profile->id)->avatar == null)
+		elseif ($this->profile->avatar == null || $this->config->avatar_type && \Joomla\Component\Kunena\Libraries\KunenaFactory::getUser($this->profile->id)->avatar == null)
 		{
 			if (File::exists(JPATH_SITE . '/' . $this->config->emailheader))
 			{

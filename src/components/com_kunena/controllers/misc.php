@@ -67,6 +67,6 @@ class KunenaControllerMisc extends KunenaController
 			setcookie('kunena_template', null, time() - 3600, Uri::root(true) . '/', '', true);
 		}
 
-		$this->setRedirect(KunenaRoute::_('index.php?option=com_kunena', false));
+		$this->setRedirect(\Joomla\Component\Kunena\Libraries\Route\KunenaRoute::_('index.php?option=com_kunena', false));
 	}
 }

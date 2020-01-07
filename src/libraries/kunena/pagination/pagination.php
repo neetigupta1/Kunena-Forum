@@ -345,7 +345,7 @@ class Pagination
 
 		if (!$this->uri)
 		{
-			$this->uri = KunenaRoute::$current;
+			$this->uri = \Joomla\Component\Kunena\Libraries\Route\KunenaRoute::$current;
 		}
 
 		// Build the additional URL parameters string.
@@ -678,7 +678,7 @@ class Pagination
 	 */
 	protected function setChrome()
 	{
-		$template                 = KunenaFactory::getTemplate();
+		$template                 = \Joomla\Component\Kunena\Libraries\KunenaFactory::getTemplate();
 		$this->itemActiveChrome   = [$template, 'getPaginationItemActive'];
 		$this->itemInactiveChrome = [$template, 'getPaginationItemInactive'];
 		$this->listChrome         = [$template, 'getPaginationListRender'];

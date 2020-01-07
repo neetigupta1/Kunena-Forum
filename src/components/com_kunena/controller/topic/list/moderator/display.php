@@ -41,8 +41,8 @@ class ComponentKunenaControllerTopicListModeratorDisplay extends ComponentKunena
 	{
 		parent::before();
 
-		$this->me       = KunenaUserHelper::getMyself();
-		$access         = KunenaAccess::getInstance();
+		$this->me       = \Joomla\Component\Kunena\Libraries\User\Helper::getMyself();
+		$access         = \Joomla\Component\Kunena\Libraries\Access::getInstance();
 		$this->moreUri  = null;
 		$this->embedded = $this->getOptions()->get('embedded', true);
 
@@ -60,17 +60,17 @@ class ComponentKunenaControllerTopicListModeratorDisplay extends ComponentKunena
 			else
 			{
 				$menu      = $this->app->getMenu();
-				$getid     = $menu->getItem(KunenaRoute::getItemID("index.php?option=com_kunena&view=topics&layout=moderator"));
+				$getid     = $menu->getItem(\Joomla\Component\Kunena\Libraries\Route\KunenaRoute::getItemID("index.php?option=com_kunena&view=topics&layout=moderator"));
 				$itemidfix = $getid->id;
 			}
 
 			if (!$itemidfix)
 			{
-				$itemidfix = KunenaRoute::fixMissingItemID();
+				$itemidfix = \Joomla\Component\Kunena\Libraries\Route\KunenaRoute::fixMissingItemID();
 			}
 
 			$controller = BaseController::getInstance("kunena");
-			$controller->setRedirect(KunenaRoute::_("index.php?option=com_kunena&view=topics&layout=moderator&Itemid={$itemidfix}", false));
+			$controller->setRedirect(\Joomla\Component\Kunena\Libraries\Route\KunenaRoute::_("index.php?option=com_kunena&view=topics&layout=moderator&Itemid={$itemidfix}", false));
 			$controller->redirect();
 		}
 
@@ -94,7 +94,7 @@ class ComponentKunenaControllerTopicListModeratorDisplay extends ComponentKunena
 			$categoryIds = false;
 		}
 
-		$categories = KunenaForumCategoryHelper::getCategories($categoryIds, $reverse);
+		$categories = \Joomla\Component\Kunena\Libraries\Forum\Category\Helper::getCategories($categoryIds, $reverse);
 
 		$finder = new KunenaForumTopicFinder;
 		$finder

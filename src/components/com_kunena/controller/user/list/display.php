@@ -89,7 +89,7 @@ class ComponentKunenaControllerUserListDisplay extends KunenaControllerDisplay
 		$this->model->initialize($this->getOptions(), $this->getOptions()->get('embedded', false));
 		$this->state = $this->model->getState();
 
-		$this->me     = KunenaUserHelper::getMyself();
+		$this->me     = \Joomla\Component\Kunena\Libraries\User\Helper::getMyself();
 
 		$start = $this->state->get('list.start');
 		$limit = $this->state->get('list.limit');
@@ -99,9 +99,9 @@ class ComponentKunenaControllerUserListDisplay extends KunenaControllerDisplay
 
 		if (!$Itemid && $format != 'feed' && $this->config->sef_redirect)
 		{
-			$itemid     = KunenaRoute::fixMissingItemID();
+			$itemid     = \Joomla\Component\Kunena\Libraries\Route\KunenaRoute::fixMissingItemID();
 			$controller = BaseController::getInstance("kunena");
-			$controller->setRedirect(KunenaRoute::_("index.php?option=com_kunena&view=user&layout=list&Itemid={$itemid}", false));
+			$controller->setRedirect(\Joomla\Component\Kunena\Libraries\Route\KunenaRoute::_("index.php?option=com_kunena&view=user&layout=list&Itemid={$itemid}", false));
 			$controller->redirect();
 		}
 

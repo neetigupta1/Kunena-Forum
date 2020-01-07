@@ -18,11 +18,11 @@ use Joomla\CMS\Language\Text;
 use function defined;
 
 $user              = $this->user;
-$this->ktemplate   = KunenaFactory::getTemplate();
+$this->ktemplate   = \Joomla\Component\Kunena\Libraries\KunenaFactory::getTemplate();
 $avatar            = $user->getAvatarImage($this->ktemplate->params->get('avatarType'), 'thumb');
 $config            = Config::getInstance();
 $show              = $config->showuserstats;
-$optional_username = KunenaFactory::getTemplate()->params->get('optional_username');
+$optional_username = \Joomla\Component\Kunena\Libraries\KunenaFactory::getTemplate()->params->get('optional_username');
 
 if ($show)
 {

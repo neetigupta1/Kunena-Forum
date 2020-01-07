@@ -49,7 +49,7 @@ jQuery(function($) {
 					<?php echo Text::_('COM_KUNENA_USRL_USERNAME') ?>
 					: <?php echo $this->escape($this->user->username); ?></div>
 				<hr class="hr-condensed">
-				<form action="<?php echo KunenaRoute::_('administrator/index.php?option=com_kunena&view=users'); ?>"
+				<form action="<?php echo \Joomla\Component\Kunena\Libraries\Route\KunenaRoute::_('administrator/index.php?option=com_kunena&view=users'); ?>"
 				      method="post" id="adminForm"
 				      name="adminForm">
 					<input type="hidden" name="task" value=""/>

@@ -90,7 +90,7 @@ class ComponentKunenaControllerTopicModerateDisplay extends KunenaControllerDisp
 
 		if (!$mesid)
 		{
-			$this->topic = KunenaForumTopicHelper::get($id);
+			$this->topic = \Joomla\Component\Kunena\Libraries\Forum\Topic\Helper::get($id);
 			$this->topic->tryAuthorise('move');
 		}
 		else
@@ -114,7 +114,7 @@ class ComponentKunenaControllerTopicModerateDisplay extends KunenaControllerDisp
 			Text::_('COM_KUNENA_TITLE_MODERATE_TOPIC') :
 			Text::_('COM_KUNENA_TITLE_MODERATE_MESSAGE');
 
-		$this->template = KunenaTemplate::getInstance();
+		$this->template = \Joomla\Component\Kunena\Libraries\Template\Template::getInstance();
 		$this->template->setCategoryIconset($this->topic->getCategory()->iconset);
 		$this->topicIcons = $this->template->getTopicIcons(false);
 
@@ -156,7 +156,7 @@ class ComponentKunenaControllerTopicModerateDisplay extends KunenaControllerDisp
 			}
 			catch (ExecutionFailureException $e)
 			{
-				KunenaError::displayDatabaseError($e);
+				\Joomla\Component\Kunena\Libraries\Error::displayDatabaseError($e);
 
 				return;
 			}

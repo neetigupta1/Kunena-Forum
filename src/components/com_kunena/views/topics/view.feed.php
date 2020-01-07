@@ -44,7 +44,7 @@ class KunenaViewTopics extends KunenaView
 			throw new Exception(Text::_('COM_KUNENA_RSS_DISABLED'), 401);
 		}
 
-		KunenaHtmlParser::$relative = false;
+		\Joomla\Component\Kunena\Libraries\Html\Parser::$relative = false;
 		$cache                      = Factory::getCache('com_kunena_rss', 'output');
 
 		if (!$this->config->cache)
@@ -218,7 +218,7 @@ class KunenaViewTopics extends KunenaView
 				$description = $topic->first_post_message;
 				$date        = new Date($topic->first_post_time);
 				$userid      = $topic->first_post_userid;
-				$username    = KunenaFactory::getUser($userid)->getName($topic->first_post_guest_name);
+				$username    = \Joomla\Component\Kunena\Libraries\KunenaFactory::getUser($userid)->getName($topic->first_post_guest_name);
 			}
 			else
 			{
@@ -236,7 +236,7 @@ class KunenaViewTopics extends KunenaView
 
 				$date     = new Date($topic->last_post_time);
 				$userid   = $topic->last_post_userid;
-				$username = KunenaFactory::getUser($userid)->getName($topic->last_post_guest_name);
+				$username = \Joomla\Component\Kunena\Libraries\KunenaFactory::getUser($userid)->getName($topic->last_post_guest_name);
 			}
 
 			$title    = $topic->subject;
@@ -280,7 +280,7 @@ class KunenaViewTopics extends KunenaView
 
 			$date     = new Date($message->time);
 			$userid   = $message->userid;
-			$username = KunenaFactory::getUser($userid)->getName($message->name);
+			$username = \Joomla\Component\Kunena\Libraries\KunenaFactory::getUser($userid)->getName($message->name);
 
 			$this->createItem($title, $url, $description, $category->name, $date, $userid, $username);
 		}
@@ -322,11 +322,11 @@ class KunenaViewTopics extends KunenaView
 
 			if ((bool) $this->config->rss_allow_html)
 			{
-				$description = KunenaHtmlParser::parseBBCode($description, null, (int) $this->config->rss_word_count);
+				$description = \Joomla\Component\Kunena\Libraries\Html\Parser::parseBBCode($description, null, (int) $this->config->rss_word_count);
 			}
 			else
 			{
-				$description = KunenaHtmlParser::parseText($description, (int) $this->config->rss_word_count);
+				$description = \Joomla\Component\Kunena\Libraries\Html\Parser::parseText($description, (int) $this->config->rss_word_count);
 			}
 		}
 

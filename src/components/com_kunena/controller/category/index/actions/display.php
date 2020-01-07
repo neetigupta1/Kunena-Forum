@@ -60,7 +60,7 @@ class ComponentKunenaControllerCategoryIndexActionsDisplay extends KunenaControl
 		parent::before();
 
 		$catid = $this->input->getInt('id');
-		$me    = KunenaUserHelper::getMyself();
+		$me    = \Joomla\Component\Kunena\Libraries\User\Helper::getMyself();
 
 		$this->category = KunenaForumCategory::getInstance($catid);
 
@@ -69,7 +69,7 @@ class ComponentKunenaControllerCategoryIndexActionsDisplay extends KunenaControl
 		$task   = "index.php?option=com_kunena&view=category&task=%s&catid={$catid}&{$token}=1";
 		$layout = "index.php?option=com_kunena&view=topic&layout=%s&catid={$catid}";
 
-		$this->template        = KunenaFactory::getTemplate();
+		$this->template        = \Joomla\Component\Kunena\Libraries\KunenaFactory::getTemplate();
 		$this->categoryButtons = new CMSObject;
 
 		// Is user allowed to post new topic?
@@ -131,6 +131,6 @@ class ComponentKunenaControllerCategoryIndexActionsDisplay extends KunenaControl
 	public function getButton($url, $name, $scope, $type, $id = null)
 	{
 		return KunenaLayout::factory('Widget/Button')
-			->setProperties(['url' => KunenaRoute::_($url), 'name' => $name, 'scope' => $scope, 'type' => $type, 'id' => $id]);
+			->setProperties(['url' => \Joomla\Component\Kunena\Libraries\Route\KunenaRoute::_($url), 'name' => $name, 'scope' => $scope, 'type' => $type, 'id' => $id]);
 	}
 }

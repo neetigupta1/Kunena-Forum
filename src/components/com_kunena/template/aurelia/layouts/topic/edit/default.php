@@ -103,9 +103,9 @@ $this->addStyleSheet('fileupload.css');
 
 $this->k = 0;
 
-$this->addScriptOptions('com_kunena.kunena_upload_files_rem', KunenaRoute::_('index.php?option=com_kunena&view=topic&task=removeattachments&format=json&' . Session::getFormToken() . '=1', false));
-$this->addScriptOptions('com_kunena.kunena_upload_files_rem_inline', KunenaRoute::_('index.php?option=com_kunena&view=topic&task=setinlinestatus&format=json&' . Session::getFormToken() . '=1', false));
-$this->addScriptOptions('com_kunena.kunena_upload_files_preload', KunenaRoute::_('index.php?option=com_kunena&view=topic&task=loadattachments&format=json&' . Session::getFormToken() . '=1', false));
+$this->addScriptOptions('com_kunena.kunena_upload_files_rem', \Joomla\Component\Kunena\Libraries\Route\KunenaRoute::_('index.php?option=com_kunena&view=topic&task=removeattachments&format=json&' . Session::getFormToken() . '=1', false));
+$this->addScriptOptions('com_kunena.kunena_upload_files_rem_inline', \Joomla\Component\Kunena\Libraries\Route\KunenaRoute::_('index.php?option=com_kunena&view=topic&task=setinlinestatus&format=json&' . Session::getFormToken() . '=1', false));
+$this->addScriptOptions('com_kunena.kunena_upload_files_preload', \Joomla\Component\Kunena\Libraries\Route\KunenaRoute::_('index.php?option=com_kunena&view=topic&task=loadattachments&format=json&' . Session::getFormToken() . '=1', false));
 $this->addScriptOptions('com_kunena.kunena_upload_files_maxfiles', $this->config->attachment_limit);
 $this->addScriptOptions('com_kunena.kunena_upload_files_action', $this->action);
 $this->addScriptOptions('com_kunena.icons.upload', KunenaIcons::upload());
@@ -116,10 +116,10 @@ $this->addScriptOptions('com_kunena.icons.secure', KunenaIcons::secure());
 $suffix = CMSApplication::getInstance('site')->get('sef_suffix');
 $this->addScriptOptions('com_kunena.suffixpreview', $suffix ? true : false);
 
-$this->ktemplate = KunenaFactory::getTemplate();
+$this->ktemplate = \Joomla\Component\Kunena\Libraries\KunenaFactory::getTemplate();
 $topicicontype   = $this->ktemplate->params->get('topicicontype');
 $editor          = $this->ktemplate->params->get('editor');
-$me              = isset($this->me) ? $this->me : KunenaUserHelper::getMyself();
+$me              = isset($this->me) ? $this->me : \Joomla\Component\Kunena\Libraries\User\Helper::getMyself();
 
 // If polls are enabled, load also poll JavaScript.
 if ($this->config->pollenabled)
@@ -137,7 +137,7 @@ $this->addScript('assets/js/edit.js');
 
 echo $this->subLayout('Widget/Lightbox');
 
-if (KunenaFactory::getTemplate()->params->get('formRecover'))
+if (\Joomla\Component\Kunena\Libraries\KunenaFactory::getTemplate()->params->get('formRecover'))
 {
 	$this->addScript('sisyphus.js');
 }
@@ -169,17 +169,17 @@ if (KunenaFactory::getTemplate()->params->get('formRecover'))
 		<?php echo $this->escape($this->headerText) ?>
 	</h1>
 
-	<form action="<?php echo KunenaRoute::_('index.php?option=com_kunena') ?>" method="post"
+	<form action="<?php echo \Joomla\Component\Kunena\Libraries\Route\KunenaRoute::_('index.php?option=com_kunena') ?>" method="post"
 	      class="form-validate" role="form"
 	      id="postform" name="postform" enctype="multipart/form-data" data-page-identifier="1">
 		<input type="hidden" name="view" value="topic"/>
 		<input id="kurl_topicons_request" type="hidden"
-		       value="<?php echo KunenaRoute::_('index.php?option=com_kunena&view=topic&layout=topicicons&format=raw', false); ?>"/>
+		       value="<?php echo \Joomla\Component\Kunena\Libraries\Route\KunenaRoute::_('index.php?option=com_kunena&view=topic&layout=topicicons&format=raw', false); ?>"/>
 		<input id="kurl_category_template_text" type="hidden"
-		       value="<?php echo KunenaRoute::_('index.php?option=com_kunena&view=topic&layout=categorytemplatetext&format=raw', false); ?>"/>
+		       value="<?php echo \Joomla\Component\Kunena\Libraries\Route\KunenaRoute::_('index.php?option=com_kunena&view=topic&layout=categorytemplatetext&format=raw', false); ?>"/>
 		<input id="kcategory_poll" type="hidden" name="kcategory_poll" value="<?php echo $this->message->catid; ?>"/>
 		<input id="kpreview_url" type="hidden" name="kpreview_url"
-		       value="<?php echo KunenaRoute::_('index.php?option=com_kunena&view=topic&layout=edit&format=raw', false) ?>"/>
+		       value="<?php echo \Joomla\Component\Kunena\Libraries\Route\KunenaRoute::_('index.php?option=com_kunena&view=topic&layout=edit&format=raw', false) ?>"/>
 		<?php if (!$this->config->allow_change_subject)
 			:
 			?>
@@ -220,12 +220,12 @@ if (KunenaFactory::getTemplate()->params->get('formRecover'))
 		<input type="hidden" id="kunena_upload" name="kunena_upload"
 		       value="<?php echo intval($this->message->catid) ?>"/>
 		<input type="hidden" id="kunena_upload_files_url"
-		       value="<?php echo KunenaRoute::_('index.php?option=com_kunena&view=topic&task=upload&format=json&' . Session::getFormToken() . '=1', false) ?>"/>
+		       value="<?php echo \Joomla\Component\Kunena\Libraries\Route\KunenaRoute::_('index.php?option=com_kunena&view=topic&task=upload&format=json&' . Session::getFormToken() . '=1', false) ?>"/>
 		<?php if ($this->me->exists())
 			:
 			?>
 			<input type="hidden" id="kurl_users" name="kurl_users"
-			       value="<?php echo KunenaRoute::_('index.php?option=com_kunena&view=user&layout=listmention&format=raw') ?>"/>
+			       value="<?php echo \Joomla\Component\Kunena\Libraries\Route\KunenaRoute::_('index.php?option=com_kunena&view=user&layout=listmention&format=raw') ?>"/>
 		<?php endif; ?>
 		<?php echo HTMLHelper::_('form.token'); ?>
 
@@ -287,7 +287,7 @@ if (KunenaFactory::getTemplate()->params->get('formRecover'))
 				<label for="subject"
 				       class="col-sm-2 col-form-label"><?php echo Text::_('COM_KUNENA_GEN_SUBJECT'); ?></label>
 				<div class="col-md-10">
-					<?php if (!$this->config->allow_change_subject && $this->topic->exists() && !KunenaUserHelper::getMyself()->isModerator($this->message->getCategory())) : ?>
+					<?php if (!$this->config->allow_change_subject && $this->topic->exists() && !\Joomla\Component\Kunena\Libraries\User\Helper::getMyself()->isModerator($this->message->getCategory())) : ?>
 						<input class="form-control" type="text" name="subject" id="subject"
 						       value="<?php echo $this->escape($this->message->subject); ?>" disabled/>
 					<?php else : ?>

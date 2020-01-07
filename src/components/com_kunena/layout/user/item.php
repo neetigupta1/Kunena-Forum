@@ -73,7 +73,7 @@ class KunenaLayoutUserItem extends KunenaLayout
 		$showSubscriptions = $this->config->allowsubscriptions && ($myProfile || $moderator);
 		$showFavorites     = $this->config->allowfavorites && $myProfile;
 		$showThankYou      = $this->config->showthankyou && $this->me->exists();
-		$showUnapproved    = $myProfile && ($this->me->isAdmin() || KunenaAccess::getInstance()->getModeratorStatus());
+		$showUnapproved    = $myProfile && ($this->me->isAdmin() || \Joomla\Component\Kunena\Libraries\Access::getInstance()->getModeratorStatus());
 		$showAttachments   = $this->config->show_imgfiles_manage_profile && ($moderator || $myProfile);
 		$showBanManager    = $moderator && $myProfile;
 
@@ -316,7 +316,7 @@ class KunenaLayoutUserItem extends KunenaLayout
 			'filter_order_Dir'    => 'desc',
 		];
 
-		KunenaForum::display('topics', 'posts', 'embed', $params);
+		\Joomla\Component\Kunena\Libraries\Forum\Forum::display('topics', 'posts', 'embed', $params);
 	}
 
 	/**
@@ -342,7 +342,7 @@ class KunenaLayoutUserItem extends KunenaLayout
 			'filter_order_Dir'    => 'desc',
 		];
 
-		KunenaForum::display('topics', 'posts', 'embed', $params);
+		\Joomla\Component\Kunena\Libraries\Forum\Forum::display('topics', 'posts', 'embed', $params);
 	}
 
 	/**
@@ -368,7 +368,7 @@ class KunenaLayoutUserItem extends KunenaLayout
 			'filter_order_Dir'    => 'desc',
 		];
 
-		KunenaForum::display('topics', 'posts', 'embed', $params);
+		\Joomla\Component\Kunena\Libraries\Forum\Forum::display('topics', 'posts', 'embed', $params);
 	}
 
 	/**
@@ -394,7 +394,7 @@ class KunenaLayoutUserItem extends KunenaLayout
 			'filter_order_Dir'    => 'desc',
 		];
 
-		KunenaForum::display('topics', 'posts', 'embed', $params);
+		\Joomla\Component\Kunena\Libraries\Forum\Forum::display('topics', 'posts', 'embed', $params);
 	}
 
 	/**
@@ -420,7 +420,7 @@ class KunenaLayoutUserItem extends KunenaLayout
 			'filter_order_Dir'    => 'desc',
 		];
 
-		KunenaForum::display('topics', 'user', 'embed', $params);
+		\Joomla\Component\Kunena\Libraries\Forum\Forum::display('topics', 'user', 'embed', $params);
 	}
 
 	/**
@@ -451,7 +451,7 @@ class KunenaLayoutUserItem extends KunenaLayout
 			'filter_order_Dir'    => 'desc',
 		];
 
-		KunenaForum::display('topics', 'user', 'embed', $params);
+		\Joomla\Component\Kunena\Libraries\Forum\Forum::display('topics', 'user', 'embed', $params);
 	}
 
 	/**
@@ -478,6 +478,6 @@ class KunenaLayoutUserItem extends KunenaLayout
 			'filter_order_Dir' => 'desc',
 		];
 
-		KunenaForum::display('category', 'user', 'embed', $params);
+		\Joomla\Component\Kunena\Libraries\Forum\Forum::display('category', 'user', 'embed', $params);
 	}
 }

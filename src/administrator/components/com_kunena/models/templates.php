@@ -40,8 +40,8 @@ class KunenaAdminModelTemplates extends AdminModel
 	{
 		parent::__construct($config);
 		$this->app    = Factory::getApplication();
-		$this->me     = KunenaUserHelper::getMyself();
-		$this->config = KunenaFactory::getConfig();
+		$this->me     = \Joomla\Component\Kunena\Libraries\User\Helper::getMyself();
+		$this->config = \Joomla\Component\Kunena\Libraries\KunenaFactory::getConfig();
 	}
 
 	/**
@@ -60,7 +60,7 @@ class KunenaAdminModelTemplates extends AdminModel
 	{
 		// Load the configuration definition file.
 		$template = $this->getState('template');
-		$xml      = KunenaTemplate::getInstance($template)->getConfigXml();
+		$xml      = \Joomla\Component\Kunena\Libraries\Template\Template::getInstance($template)->getConfigXml();
 
 		// Get the form.
 		$form = $this->loadForm('com_kunena_template', $xml, ['control' => 'jform', 'load_data' => $loadData, 'file' => false], true, '//config');
@@ -338,7 +338,7 @@ class KunenaAdminModelTemplates extends AdminModel
 		if (empty($data))
 		{
 			$template = $this->getState('template');
-			$data     = KunenaTemplate::getInstance($template)->params->toArray();
+			$data     = \Joomla\Component\Kunena\Libraries\Template\Template::getInstance($template)->params->toArray();
 		}
 
 		return $data;

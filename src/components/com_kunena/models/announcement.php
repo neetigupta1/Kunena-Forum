@@ -138,7 +138,7 @@ class KunenaModelAnnouncement extends KunenaModel
 	public function getannouncementActions()
 	{
 		$actions = [];
-		$user    = KunenaUserHelper::getMyself();
+		$user    = \Joomla\Component\Kunena\Libraries\User\Helper::getMyself();
 
 		if ($user->isModerator())
 		{

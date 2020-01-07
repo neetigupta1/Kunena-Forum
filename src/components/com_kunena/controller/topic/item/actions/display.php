@@ -71,7 +71,7 @@ class ComponentKunenaControllerTopicItemActionsDisplay extends KunenaControllerD
 		$layout = "index.php?option=com_kunena&view=topic&layout=%s&catid={$catid}&id={$id}";
 
 		$userTopic          = $this->topic->getUserTopic();
-		$this->template     = KunenaFactory::getTemplate();
+		$this->template     = \Joomla\Component\Kunena\Libraries\KunenaFactory::getTemplate();
 		$this->topicButtons = new CMSObject;
 
 		$fullactions     = $this->template->params->get('fullactions');
@@ -359,7 +359,7 @@ class ComponentKunenaControllerTopicItemActionsDisplay extends KunenaControllerD
 	public function getButton($url, $name, $scope, $type, $primary = false, $normal = true, $icon = '')
 	{
 		return KunenaLayout::factory('Widget/Button')
-			->setProperties(['url'   => KunenaRoute::_($url), 'name' => $name,
+			->setProperties(['url'   => \Joomla\Component\Kunena\Libraries\Route\KunenaRoute::_($url), 'name' => $name,
 							 'scope' => $scope, 'type' => $type, 'primary' => $primary, 'normal' => $normal, 'icon' => $icon,]
 			);
 	}

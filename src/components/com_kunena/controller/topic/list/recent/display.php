@@ -48,7 +48,7 @@ class ComponentKunenaControllerTopicListRecentDisplay extends ComponentKunenaCon
 		$this->model = new KunenaModelTopics([], $this->input);
 		$this->model->initialize($this->getOptions(), $this->getOptions()->get('embedded', false));
 		$this->state    = $this->model->getState();
-		$this->me       = KunenaUserHelper::getMyself();
+		$this->me       = \Joomla\Component\Kunena\Libraries\User\Helper::getMyself();
 		$this->moreUri  = null;
 		$holding        = $this->getOptions()->get('topics_deletedtopics');
 		$this->embedded = $this->getOptions()->get('embedded', true);
@@ -68,17 +68,17 @@ class ComponentKunenaControllerTopicListRecentDisplay extends ComponentKunenaCon
 			else
 			{
 				$menu      = $this->app->getMenu();
-				$getid     = $menu->getItem(KunenaRoute::getItemID("index.php?option=com_kunena&view=topics&mode={$this->state->get('list.mode')}"));
+				$getid     = $menu->getItem(\Joomla\Component\Kunena\Libraries\Route\KunenaRoute::getItemID("index.php?option=com_kunena&view=topics&mode={$this->state->get('list.mode')}"));
 				$itemidfix = $getid->id;
 			}
 
 			if (!$itemidfix)
 			{
-				$itemidfix = KunenaRoute::fixMissingItemID();
+				$itemidfix = \Joomla\Component\Kunena\Libraries\Route\KunenaRoute::fixMissingItemID();
 			}
 
 			$controller = BaseController::getInstance("kunena");
-			$controller->setRedirect(KunenaRoute::_("index.php?option=com_kunena&view=topics&mode={$this->state->get('list.mode')}&Itemid={$itemidfix}", false));
+			$controller->setRedirect(\Joomla\Component\Kunena\Libraries\Route\KunenaRoute::_("index.php?option=com_kunena&view=topics&mode={$this->state->get('list.mode')}&Itemid={$itemidfix}", false));
 			$controller->redirect();
 		}
 
@@ -91,7 +91,7 @@ class ComponentKunenaControllerTopicListRecentDisplay extends ComponentKunenaCon
 		}
 		elseif ($time == 0)
 		{
-			$time = new Date(KunenaFactory::getSession()->lasttime);
+			$time = new Date(\Joomla\Component\Kunena\Libraries\KunenaFactory::getSession()->lasttime);
 		}
 		else
 		{
@@ -162,7 +162,7 @@ class ComponentKunenaControllerTopicListRecentDisplay extends ComponentKunenaCon
 				break;
 		}
 
-		$categories = KunenaForumCategoryHelper::getCategories($categoryIds, $reverse, $authorise);
+		$categories = \Joomla\Component\Kunena\Libraries\Forum\Category\Helper::getCategories($categoryIds, $reverse, $authorise);
 		$finder->filterByCategories($categories);
 
 		$this->pagination = new KunenaPagination($finder->count(), $start, $limit);
@@ -194,7 +194,7 @@ class ComponentKunenaControllerTopicListRecentDisplay extends ComponentKunenaCon
 					{
 						if ($value['relation'] == 'canonical')
 						{
-							$canonicalUrl               = KunenaRoute::_();
+							$canonicalUrl               = \Joomla\Component\Kunena\Libraries\Route\KunenaRoute::_();
 							$doc->_links[$canonicalUrl] = $value;
 							unset($doc->_links[$key]);
 							break;
@@ -238,7 +238,7 @@ class ComponentKunenaControllerTopicListRecentDisplay extends ComponentKunenaCon
 					$this->headerText = Text::_('COM_KUNENA_VIEW_TOPICS_DEFAULT_MODE_TOPICS');
 				}
 
-				$canonicalUrl = KunenaRoute::_('index.php?option=com_kunena&view=topics&mode=topics');
+				$canonicalUrl = \Joomla\Component\Kunena\Libraries\Route\KunenaRoute::_('index.php?option=com_kunena&view=topics&mode=topics');
 				break;
 			case 'sticky' :
 				if (!empty($title) && $pageheading)
@@ -250,7 +250,7 @@ class ComponentKunenaControllerTopicListRecentDisplay extends ComponentKunenaCon
 					$this->headerText = Text::_('COM_KUNENA_VIEW_TOPICS_DEFAULT_MODE_STICKY');
 				}
 
-				$canonicalUrl = KunenaRoute::_('index.php?option=com_kunena&view=topics&mode=sticky');
+				$canonicalUrl = \Joomla\Component\Kunena\Libraries\Route\KunenaRoute::_('index.php?option=com_kunena&view=topics&mode=sticky');
 				break;
 			case 'locked' :
 				if (!empty($title) && $pageheading)
@@ -262,7 +262,7 @@ class ComponentKunenaControllerTopicListRecentDisplay extends ComponentKunenaCon
 					$this->headerText = Text::_('COM_KUNENA_VIEW_TOPICS_DEFAULT_MODE_LOCKED');
 				}
 
-				$canonicalUrl = KunenaRoute::_('index.php?option=com_kunena&view=topics&mode=locked');
+				$canonicalUrl = \Joomla\Component\Kunena\Libraries\Route\KunenaRoute::_('index.php?option=com_kunena&view=topics&mode=locked');
 				break;
 			case 'noreplies' :
 				if (!empty($title) && $pageheading)
@@ -274,7 +274,7 @@ class ComponentKunenaControllerTopicListRecentDisplay extends ComponentKunenaCon
 					$this->headerText = Text::_('COM_KUNENA_VIEW_TOPICS_DEFAULT_MODE_NOREPLIES');
 				}
 
-				$canonicalUrl = KunenaRoute::_('index.php?option=com_kunena&view=topics&mode=noreplies');
+				$canonicalUrl = \Joomla\Component\Kunena\Libraries\Route\KunenaRoute::_('index.php?option=com_kunena&view=topics&mode=noreplies');
 				break;
 			case 'unapproved' :
 				if (!empty($title) && $pageheading)
@@ -286,7 +286,7 @@ class ComponentKunenaControllerTopicListRecentDisplay extends ComponentKunenaCon
 					$this->headerText = Text::_('COM_KUNENA_VIEW_TOPICS_DEFAULT_MODE_UNAPPROVED');
 				}
 
-				$canonicalUrl = KunenaRoute::_('index.php?option=com_kunena&view=topics&mode=unapproved');
+				$canonicalUrl = \Joomla\Component\Kunena\Libraries\Route\KunenaRoute::_('index.php?option=com_kunena&view=topics&mode=unapproved');
 				break;
 			case 'deleted' :
 				if (!empty($title) && $pageheading)
@@ -298,7 +298,7 @@ class ComponentKunenaControllerTopicListRecentDisplay extends ComponentKunenaCon
 					$this->headerText = Text::_('COM_KUNENA_VIEW_TOPICS_DEFAULT_MODE_DELETED');
 				}
 
-				$canonicalUrl = KunenaRoute::_('index.php?option=com_kunena&view=topics&mode=deleted');
+				$canonicalUrl = \Joomla\Component\Kunena\Libraries\Route\KunenaRoute::_('index.php?option=com_kunena&view=topics&mode=deleted');
 				break;
 			case 'replies' :
 			default :
@@ -311,7 +311,7 @@ class ComponentKunenaControllerTopicListRecentDisplay extends ComponentKunenaCon
 					$this->headerText = Text::_('COM_KUNENA_VIEW_TOPICS_DEFAULT_MODE_TOPICS');
 				}
 
-				$canonicalUrl = KunenaRoute::_('index.php?option=com_kunena&view=topics&mode=replies');
+				$canonicalUrl = \Joomla\Component\Kunena\Libraries\Route\KunenaRoute::_('index.php?option=com_kunena&view=topics&mode=replies');
 				break;
 		}
 

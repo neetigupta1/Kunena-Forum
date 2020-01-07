@@ -53,7 +53,7 @@ class ComponentKunenaControllerApplicationTopicThreadedDisplay extends KunenaCon
 	protected function before()
 	{
 		$layout = $this->input->getWord('layout');
-		KunenaUserHelper::getMyself()->setTopicLayout($layout);
+		\Joomla\Component\Kunena\Libraries\User\Helper::getMyself()->setTopicLayout($layout);
 
 		parent::before();
 	}

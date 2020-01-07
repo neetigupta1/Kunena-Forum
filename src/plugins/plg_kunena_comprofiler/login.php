@@ -10,7 +10,7 @@
  * @link            https://www.kunena.org
  **/
 
-namespace Joomla\Component\Kunena;
+namespace Joomla\Component\Kunena\Plugin\Kunena\Comprofiler;
 
 defined('_JEXEC') or die();
 
@@ -66,7 +66,7 @@ class KunenaLoginComprofiler
 
 		$messagesToUser = [];
 		$alertmessages  = [];
-		$redirect_url   = KunenaRoute::current();
+		$redirect_url   = \Joomla\Component\Kunena\Libraries\Route\KunenaRoute::current();
 
 		$loginType   = (isset($ueConfig['login_type']) ? $ueConfig['login_type'] : 0);
 		$resultError = $cbAuthenticate->login($username, $password, $rememberme, 1, $redirect_url, $messagesToUser, $alertmessages, $loginType);
@@ -88,7 +88,7 @@ class KunenaLoginComprofiler
 
 		$cbAuthenticate = new CBAuthentication;
 
-		$redirect_url = KunenaRoute::current();
+		$redirect_url = \Joomla\Component\Kunena\Libraries\Route\KunenaRoute::current();
 		$resultError  = $cbAuthenticate->logout($redirect_url);
 
 		return $resultError ? $resultError : null;

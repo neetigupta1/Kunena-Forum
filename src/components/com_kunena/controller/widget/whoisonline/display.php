@@ -57,12 +57,12 @@ class ComponentKunenaControllerWidgetWhoisonlineDisplay extends KunenaController
 			throw new KunenaExceptionAuthorise(Text::_('COM_KUNENA_NO_ACCESS'), '404');
 		}
 
-		$me        = KunenaUserHelper::getMyself();
+		$me        = \Joomla\Component\Kunena\Libraries\User\Helper::getMyself();
 		$moderator = intval($me->isModerator()) + intval($me->isAdmin());
 
-		$users = KunenaUserHelper::getOnlineUsers();
-		KunenaUserHelper::loadUsers(array_keys($users));
-		$onlineusers = KunenaUserHelper::getOnlineCount();
+		$users = \Joomla\Component\Kunena\Libraries\User\Helper::getOnlineUsers();
+		\Joomla\Component\Kunena\Libraries\User\Helper::loadUsers(array_keys($users));
+		$onlineusers = \Joomla\Component\Kunena\Libraries\User\Helper::getOnlineCount();
 
 		$who = '<strong>' . $onlineusers['user'] . ' </strong>';
 
@@ -95,7 +95,7 @@ class ComponentKunenaControllerWidgetWhoisonlineDisplay extends KunenaController
 
 		foreach ($users as $userid => $usertime)
 		{
-			$user = KunenaUserHelper::get($userid);
+			$user = \Joomla\Component\Kunena\Libraries\User\Helper::get($userid);
 
 			if (!$user->showOnline)
 			{
@@ -113,7 +113,7 @@ class ComponentKunenaControllerWidgetWhoisonlineDisplay extends KunenaController
 		ksort($this->onlineList);
 		ksort($this->hiddenList);
 
-		$profile        = KunenaFactory::getProfile();
+		$profile        = \Joomla\Component\Kunena\Libraries\KunenaFactory::getProfile();
 		$this->usersUrl = $profile->getUserListURL();
 	}
 

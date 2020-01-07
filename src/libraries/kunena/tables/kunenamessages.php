@@ -220,7 +220,7 @@ class TableKunenaMessages extends KunenaTable
 		}
 		catch (ExecutionFailureException $e)
 		{
-			KunenaError::displayDatabaseError($e);
+			\Joomla\Component\Kunena\Libraries\Error::displayDatabaseError($e);
 
 			return false;
 		}
@@ -260,7 +260,7 @@ class TableKunenaMessages extends KunenaTable
 	 */
 	public function check()
 	{
-		$category = KunenaForumCategoryHelper::get($this->catid);
+		$category = \Joomla\Component\Kunena\Libraries\Forum\Category\Helper::get($this->catid);
 
 		if (!$category->exists())
 		{
@@ -348,7 +348,7 @@ class TableKunenaMessages extends KunenaTable
 		}
 		catch (ExecutionFailureException $e)
 		{
-			KunenaError::displayDatabaseError($e);
+			\Joomla\Component\Kunena\Libraries\Error::displayDatabaseError($e);
 
 			return false;
 		}

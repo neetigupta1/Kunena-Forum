@@ -10,11 +10,15 @@
  * See COPYRIGHT.php for copyright notices and details.
  */
 
-namespace Joomla\Component\Kunena;
+namespace Joomla\Component\Kunena\Plugin\Kunena\Easysocial;
 
 defined('_JEXEC') or die('Unauthorized Access');
 
 use Exception;
+use Joomla\Component\Kunena\Libraries\Access;
+use Joomla\Component\Kunena\Libraries\Integration\Activity;
+use Joomla\Component\Kunena\Libraries\KunenaFactory;
+use Joomla\Component\Kunena\Libraries\User\Helper;
 use Joomla\String\StringHelper;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\Uri\Uri;
@@ -25,7 +29,7 @@ use function defined;
  *
  * @since  Kunena 6.0
  */
-class KunenaActivityEasySocial extends KunenaActivity
+class KunenaActivityEasySocial extends Activity
 {
 	/**
 	 * @var     null
@@ -217,19 +221,19 @@ class KunenaActivityEasySocial extends KunenaActivity
 			if (!$message->parent)
 			{
 				// New topic: Send email only to category subscribers
-				$mailsubs = $config->category_subscriptions != 'disabled' ? KunenaAccess::CATEGORY_SUBSCRIPTION : 0;
+				$mailsubs = $config->category_subscriptions != 'disabled' ? Access::CATEGORY_SUBSCRIPTION : 0;
 				$once     = $config->category_subscriptions == 'topic';
 			}
 			elseif ($config->category_subscriptions != 'post')
 			{
 				// Existing topic: Send email only to topic subscribers
-				$mailsubs = $config->topic_subscriptions != 'disabled' ? KunenaAccess::TOPIC_SUBSCRIPTION : 0;
+				$mailsubs = $config->topic_subscriptions != 'disabled' ? Access::TOPIC_SUBSCRIPTION : 0;
 				$once     = $config->topic_subscriptions == 'first';
 			}
 			else
 			{
 				// Existing topic: Send email to both category and topic subscribers
-				$mailsubs = $config->topic_subscriptions == 'disabled' ? KunenaAccess::CATEGORY_SUBSCRIPTION : KunenaAccess::CATEGORY_SUBSCRIPTION | KunenaAccess::TOPIC_SUBSCRIPTION;
+				$mailsubs = $config->topic_subscriptions == 'disabled' ? Access::CATEGORY_SUBSCRIPTION : Access::CATEGORY_SUBSCRIPTION | Access::TOPIC_SUBSCRIPTION;
 
 				// FIXME: category subscription can override topic
 				$once = $config->topic_subscriptions == 'first';
@@ -237,8 +241,8 @@ class KunenaActivityEasySocial extends KunenaActivity
 		}
 
 		// Get all subscribers, moderators and admins who will get the email
-		$me          = KunenaUserHelper::get();
-		$acl         = KunenaAccess::getInstance();
+		$me          = Helper::get();
+		$acl         = Access::getInstance();
 		$subscribers = $acl->getSubscribers($message->catid, $message->thread, $mailsubs, $mailmods, $mailadmins, $me->userid);
 
 		if (!$subscribers)

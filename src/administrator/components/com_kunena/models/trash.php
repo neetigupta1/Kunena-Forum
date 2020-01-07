@@ -362,7 +362,7 @@ class KunenaAdminModelTrash extends KunenaModel
 
 		if ($type == 'topics')
 		{
-			$items = KunenaForumTopicHelper::getTopics($ids, 'none');
+			$items = \Joomla\Component\Kunena\Libraries\Forum\Topic\Helper::getTopics($ids, 'none');
 		}
 		elseif ($type == 'messages')
 		{

@@ -18,10 +18,10 @@ use Joomla\CMS\HTML\HTMLHelper;
 use Joomla\CMS\Language\Text;
 use function defined;
 
-$this->profile = KunenaFactory::getUser($this->user->id);
-$this->me      = KunenaUserHelper::getMyself();
+$this->profile = \Joomla\Component\Kunena\Libraries\KunenaFactory::getUser($this->user->id);
+$this->me      = \Joomla\Component\Kunena\Libraries\User\Helper::getMyself();
 $tabs          = $this->getTabsEdit();
-$avatar        = KunenaFactory::getAvatarIntegration();
+$avatar        = \Joomla\Component\Kunena\Libraries\KunenaFactory::getAvatarIntegration();
 ?>
 <h2>
 	<?php echo Text::_('COM_KUNENA_USER_PROFILE'); ?><?php echo $this->escape($this->profile->getName()); ?>
@@ -32,7 +32,7 @@ $avatar        = KunenaFactory::getAvatarIntegration();
 	); ?>
 </h2>
 
-<form action="<?php echo KunenaRoute::_('index.php?option=com_kunena&view=user'); ?>" method="post"
+<form action="<?php echo \Joomla\Component\Kunena\Libraries\Route\KunenaRoute::_('index.php?option=com_kunena&view=user'); ?>" method="post"
       enctype="multipart/form-data" name="kuserform"
       class="form-validate" id="kuserform">
 	<input type="hidden" name="task" value="save"/>
@@ -45,7 +45,7 @@ $avatar        = KunenaFactory::getAvatarIntegration();
 			<?php foreach ($tabs as $name => $tab)
 				:
 				?>
-				<?php if ($name == 'avatar' && !$avatar instanceof KunenaAvatarKunena): ?>
+				<?php if ($name == 'avatar' && !$avatar instanceof \Joomla\Component\Kunena\Libraries\Integration\Avatar): ?>
 			<?php else : ?>
 				<li class="nav-item <?php echo $tab->active ? 'active' : ''; ?>">
 					<a <?php echo $tab->active ? ' class="nav-link active"' : ' class="nav-link"'; ?>
@@ -60,7 +60,7 @@ $avatar        = KunenaFactory::getAvatarIntegration();
 			<?php foreach ($tabs as $name => $tab)
 				:
 				?>
-				<?php if ($name == 'avatar' && !$avatar instanceof KunenaAvatarKunena): ?>
+				<?php if ($name == 'avatar' && !$avatar instanceof \Joomla\Component\Kunena\Libraries\Integration\Avatar): ?>
 			<?php else : ?>
 				<div class="tab-pane fade<?php echo $tab->active ? ' in active show' : ''; ?>"
 				     id="edit<?php echo $name; ?>">

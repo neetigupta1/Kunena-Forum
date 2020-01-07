@@ -96,9 +96,9 @@ class Message extends KunenaDatabaseObject
 			case 'id':
 				return intval($this->id);
 			case 'subject':
-				return KunenaHtmlParser::parseText($this->subject);
+				return \Joomla\Component\Kunena\Libraries\Html\Parser::parseText($this->subject);
 			case 'body':
-				return KunenaHtmlParser::parseBBCode($this->body, $this);
+				return \Joomla\Component\Kunena\Libraries\Html\Parser::parseBBCode($this->body, $this);
 		}
 
 		return '';

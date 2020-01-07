@@ -74,7 +74,7 @@ class KunenaLayoutCategoryIndex extends KunenaLayout
 	 */
 	public function getCategoryIcon($category)
 	{
-		$template    = KunenaFactory::getTemplate();
+		$template    = \Joomla\Component\Kunena\Libraries\KunenaFactory::getTemplate();
 		$caticonpath = $template->params->get('DefaultCategoryicon');
 
 		if ($category->getNewCount())
@@ -114,7 +114,7 @@ class KunenaLayoutCategoryIndex extends KunenaLayout
 	 */
 	public function getSmallCategoryIcon($subcategory)
 	{
-		$this->ktemplate     = KunenaFactory::getTemplate();
+		$this->ktemplate     = \Joomla\Component\Kunena\Libraries\KunenaFactory::getTemplate();
 		$defaultcategoryicon = $this->ktemplate->params->get('DefaultCategoryicon');
 
 		if ($subcategory->getNewCount())
@@ -157,11 +157,11 @@ class KunenaLayoutCategoryIndex extends KunenaLayout
 	public function getMarkReadButtonURL($category_id, $numTopics)
 	{
 		// Is user allowed to mark forums as read?
-		if (KunenaUserHelper::getMyself()->exists() && $numTopics)
+		if (\Joomla\Component\Kunena\Libraries\User\Helper::getMyself()->exists() && $numTopics)
 		{
 			$token = '&' . Session::getFormToken() . '=1';
 
-			return KunenaRoute::_("index.php?option=com_kunena&view=category&task=markread&catid={$category_id}{$token}");
+			return \Joomla\Component\Kunena\Libraries\Route\KunenaRoute::_("index.php?option=com_kunena&view=category&task=markread&catid={$category_id}{$token}");
 		}
 
 		return;
@@ -188,11 +188,11 @@ class KunenaLayoutCategoryIndex extends KunenaLayout
 
 			if (CMSApplication::getInstance('site')->get('sef_suffix'))
 			{
-				return KunenaRoute::_("index.php?option=com_kunena&view=category&format=feed&layout=default{$params}") . '?format=feed&type=rss';
+				return \Joomla\Component\Kunena\Libraries\Route\KunenaRoute::_("index.php?option=com_kunena&view=category&format=feed&layout=default{$params}") . '?format=feed&type=rss';
 			}
 			else
 			{
-				return KunenaRoute::_("index.php?option=com_kunena&view=category&format=feed&type=rss&layout=default{$params}", $xhtml);
+				return \Joomla\Component\Kunena\Libraries\Route\KunenaRoute::_("index.php?option=com_kunena&view=category&format=feed&type=rss&layout=default{$params}", $xhtml);
 			}
 		}
 

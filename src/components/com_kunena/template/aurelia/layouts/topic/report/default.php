@@ -20,7 +20,7 @@ use function defined;
 
 ?>
 
-<form method="post" action="<?php echo KunenaRoute::_('index.php?option=com_kunena'); ?>" class="form-horizontal">
+<form method="post" action="<?php echo \Joomla\Component\Kunena\Libraries\Route\KunenaRoute::_('index.php?option=com_kunena'); ?>" class="form-horizontal">
 	<input type="hidden" name="view" value="topic"/>
 	<input type="hidden" name="task" value="report"/>
 	<input type="hidden" name="catid" value="<?php echo (int) $this->category->id; ?>"/>

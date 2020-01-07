@@ -130,7 +130,7 @@ abstract class KunenaTable extends Table
 			// Catch any database errors.
 			$this->_db->transactionRollback();
 
-			KunenaError::displayDatabaseError($e);
+			\Joomla\Component\Kunena\Libraries\Error::displayDatabaseError($e);
 
 			return false;
 		}

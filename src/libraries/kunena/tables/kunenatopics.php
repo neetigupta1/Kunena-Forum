@@ -228,7 +228,7 @@ class TableKunenaTopics extends KunenaTable
 		}
 		catch (ExecutionFailureException $e)
 		{
-			KunenaError::displayDatabaseError($e);
+			\Joomla\Component\Kunena\Libraries\Error::displayDatabaseError($e);
 
 			return false;
 		}
@@ -257,7 +257,7 @@ class TableKunenaTopics extends KunenaTable
 	 */
 	public function check()
 	{
-		$category = KunenaForumCategoryHelper::get($this->category_id);
+		$category = \Joomla\Component\Kunena\Libraries\Forum\Category\Helper::get($this->category_id);
 
 		if (!$category->exists())
 		{

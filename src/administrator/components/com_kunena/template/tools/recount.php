@@ -39,7 +39,7 @@ Factory::getApplication()->getDocument()->addScript(Uri::root() . 'administrator
 	<div class="row">
 		<div id="j-main-container" class="col-md-12" role="main">
 			<div class="card card-block bg-faded p-2">
-				<form action="<?php echo KunenaRoute::_('administrator/index.php?option=com_kunena&view=tools') ?>"
+				<form action="<?php echo \Joomla\Component\Kunena\Libraries\Route\KunenaRoute::_('administrator/index.php?option=com_kunena&view=tools') ?>"
 					  method="post" id="adminForm"
 					  name="adminForm">
 					<input type="hidden" name="task" value="recount"/>

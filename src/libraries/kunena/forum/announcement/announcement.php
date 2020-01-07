@@ -137,7 +137,7 @@ class Announcement extends KunenaDatabaseObject
 	{
 		$uri = $this->getUri($layout);
 
-		return KunenaRoute::_($uri, $xhtml);
+		return \Joomla\Component\Kunena\Libraries\Route\KunenaRoute::_($uri, $xhtml);
 	}
 
 	/**
@@ -183,7 +183,7 @@ class Announcement extends KunenaDatabaseObject
 	{
 		$uri = $this->getTaskUri($task);
 
-		return KunenaRoute::_($uri, $xhtml);
+		return \Joomla\Component\Kunena\Libraries\Route\KunenaRoute::_($uri, $xhtml);
 	}
 
 	/**
@@ -234,11 +234,11 @@ class Announcement extends KunenaDatabaseObject
 			case 'id':
 				return intval($this->id);
 			case 'title':
-				return KunenaHtmlParser::parseText($this->title, '', 'announcement_title');
+				return \Joomla\Component\Kunena\Libraries\Html\Parser::parseText($this->title, '', 'announcement_title');
 			case 'sdescription':
-				return KunenaHtmlParser::parseBBCode($this->sdescription, '', '', '', 'announcement_sdescription');
+				return \Joomla\Component\Kunena\Libraries\Html\Parser::parseBBCode($this->sdescription, '', '', '', 'announcement_sdescription');
 			case 'description':
-				return KunenaHtmlParser::parseBBCode($this->description, '', '', '', 'announcement_description');
+				return \Joomla\Component\Kunena\Libraries\Html\Parser::parseBBCode($this->description, '', '', '', 'announcement_description');
 			case 'created_by':
 				return $this->getAuthor()->getLink();
 			case 'publish_up':
@@ -327,7 +327,7 @@ class Announcement extends KunenaDatabaseObject
 		// Load user if not given.
 		if ($user === null)
 		{
-			$user = KunenaUserHelper::getMyself();
+			$user = \Joomla\Component\Kunena\Libraries\User\Helper::getMyself();
 		}
 
 		// Use local authentication cache to speed up the authentication calls.

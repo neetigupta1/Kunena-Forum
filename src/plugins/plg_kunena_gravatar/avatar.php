@@ -10,11 +10,14 @@
  * @link            https://www.kunena.org
  **/
 
-namespace Joomla\Component\Kunena;
+namespace Joomla\Component\Kunena\Plugin\Kunena\Gravatar;
 
 defined('_JEXEC') or die();
 
 use Exception;
+use Joomla\Component\Kunena\Libraries\Integration\Avatar;
+use Joomla\Component\Kunena\Libraries\KunenaFactory;
+use Joomla\Component\Kunena\Libraries\Route\KunenaRoute;
 use function defined;
 
 /**
@@ -22,7 +25,7 @@ use function defined;
  *
  * @since   Kunena 6.0
  */
-class KunenaAvatarGravatar extends KunenaAvatar
+class KunenaAvatarGravatar extends Avatar
 {
 	/**
 	 * @var     null

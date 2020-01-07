@@ -86,17 +86,17 @@ abstract class ComponentKunenaControllerTopicListDisplay extends KunenaControlle
 		// Prefetch all users/avatars to avoid user by user queries during template iterations.
 		if (!empty($userIds))
 		{
-			KunenaUserHelper::loadUsers($userIds);
+			\Joomla\Component\Kunena\Libraries\User\Helper::loadUsers($userIds);
 		}
 
 		$topicIds = array_keys($this->topics);
-		KunenaForumTopicHelper::getUserTopics($topicIds);
+		\Joomla\Component\Kunena\Libraries\Forum\Topic\Helper::getUserTopics($topicIds);
 
-		$mesIds += KunenaForumTopicHelper::fetchNewStatus($this->topics);
+		$mesIds += \Joomla\Component\Kunena\Libraries\Forum\Topic\Helper::fetchNewStatus($this->topics);
 
 		// Fetch also last post positions when user can see unapproved or deleted posts.
 		// TODO: Optimize? Take account of configuration option...
-		if ($this->me->isAdmin() || KunenaAccess::getInstance()->getModeratorStatus())
+		if ($this->me->isAdmin() || \Joomla\Component\Kunena\Libraries\Access::getInstance()->getModeratorStatus())
 		{
 			$mesIds += $lastIds;
 		}
@@ -107,7 +107,7 @@ abstract class ComponentKunenaControllerTopicListDisplay extends KunenaControlle
 			KunenaForumMessageHelper::loadLocation($mesIds);
 		}
 
-		$allowed = md5(serialize(KunenaAccess::getInstance()->getAllowedCategories()));
+		$allowed = md5(serialize(\Joomla\Component\Kunena\Libraries\Access::getInstance()->getAllowedCategories()));
 		$cache   = Factory::getCache('com_kunena', 'output');
 
 		/*
@@ -127,7 +127,7 @@ abstract class ComponentKunenaControllerTopicListDisplay extends KunenaControlle
 		$params->set('kunena_view', 'topic');
 		$params->set('kunena_layout', 'list');
 		PluginHelper::importPlugin('kunena');
-		KunenaHtmlParser::prepareContent($content, 'topic_list_default');
+		\Joomla\Component\Kunena\Libraries\Html\Parser::prepareContent($content, 'topic_list_default');
 		Factory::getApplication()->triggerEvent('onKunenaPrepare', ['kunena.topic.list', &$this->topic, &$params, 0]);
 	}
 

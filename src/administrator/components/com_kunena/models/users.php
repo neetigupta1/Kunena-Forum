@@ -60,7 +60,7 @@ class KunenaAdminModelUsers extends ListModel
 			];
 		}
 
-		$this->me = KunenaUserHelper::getMyself();
+		$this->me = \Joomla\Component\Kunena\Libraries\User\Helper::getMyself();
 
 		parent::__construct($config);
 	}
@@ -106,7 +106,7 @@ class KunenaAdminModelUsers extends ListModel
 			$ids[] = $item->id;
 		}
 
-		$instances = KunenaUserHelper::loadUsers($ids);
+		$instances = \Joomla\Component\Kunena\Libraries\User\Helper::loadUsers($ids);
 
 		// Add the items to the internal cache.
 		$this->cache[$store] = $instances;

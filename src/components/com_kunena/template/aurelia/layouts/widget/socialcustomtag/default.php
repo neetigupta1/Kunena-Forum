@@ -17,12 +17,12 @@ defined('_JEXEC') or die();
 use Joomla\CMS\HTML\HTMLHelper;
 use function defined;
 
-if (KunenaUserHelper::getMyself()->socialshare == 0 && KunenaUserHelper::getMyself()->exists())
+if (\Joomla\Component\Kunena\Libraries\User\Helper::getMyself()->socialshare == 0 && \Joomla\Component\Kunena\Libraries\User\Helper::getMyself()->exists())
 {
 	return false;
 }
 
-$this->ktemplate = KunenaFactory::getTemplate();
+$this->ktemplate = \Joomla\Component\Kunena\Libraries\KunenaFactory::getTemplate();
 $socialsharetag  = $this->ktemplate->params->get('socialsharetag');
 
 echo HTMLHelper::_('content.prepare', $socialsharetag);

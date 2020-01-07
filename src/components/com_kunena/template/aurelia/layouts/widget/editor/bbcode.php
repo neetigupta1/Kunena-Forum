@@ -393,7 +393,7 @@ if (!empty($codeTypes))
 			</div>
 			<div class="modal-body">
 				<div id="smilie"><?php
-					$emoticons = KunenaHtmlParser::getEmoticons(0, 1);
+					$emoticons = \Joomla\Component\Kunena\Libraries\Html\Parser::getEmoticons(0, 1);
 
 				foreach ($emoticons as $emo_code => $emo_properties)
 {
@@ -421,7 +421,7 @@ if (!empty($codeTypes))
 <div class="control-group">
 	<div class="controls">
 		<input type="hidden" id="kurl_emojis" name="kurl_emojis"
-			   value="<?php echo KunenaRoute::_('index.php?option=com_kunena&view=topic&layout=listemoji&format=raw') ?>"/>
+			   value="<?php echo \Joomla\Component\Kunena\Libraries\Route\KunenaRoute::_('index.php?option=com_kunena&view=topic&layout=listemoji&format=raw') ?>"/>
 		<input type="hidden" id="kemojis_allowed" name="kemojis_allowed"
 			   value="<?php echo $this->config->disemoticons ?>"/>
 	</div>

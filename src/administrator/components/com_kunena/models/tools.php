@@ -414,7 +414,7 @@ class KunenaAdminModelTools extends KunenaAdminModelCpanel
 		$this->kunenaVersionInfo = KunenaVersion::getVersionHTML();
 
 		// Get Kunena default template
-		$ktemplate              = KunenaFactory::getTemplate();
+		$ktemplate              = \Joomla\Component\Kunena\Libraries\KunenaFactory::getTemplate();
 		$this->ktemplatedetails = $ktemplate->getTemplateDetails();
 		$this->ktemplateparams  = $this->getKunenaTemplateParams($ktemplate->params);
 

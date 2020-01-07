@@ -10,7 +10,7 @@
  * @link            https://www.kunena.org
  **/
 
-namespace Joomla\Component\Kunena;
+namespace Joomla\Component\Kunena\Plugin\Kunena\Joomla;
 
 defined('_JEXEC') or die();
 
@@ -29,7 +29,7 @@ use function defined;
  *
  * @since   Kunena 6.0
  */
-class KunenaAccessJoomla
+class AccessJoomla
 {
 	/**
 	 * @var     null
@@ -72,7 +72,7 @@ class KunenaAccessJoomla
 	/**
 	 * Get access groups for the selected category.
 	 *
-	 * @param   KunenaForumCategory  $category  Category
+	 * @param  \Joomla\Component\Kunena\Libraries\Forum\Category\Category  $category  Category
 	 *
 	 * @return  array
 	 *
@@ -278,7 +278,7 @@ class KunenaAccessJoomla
 			$item              = new StdClass;
 			$item->user_id     = (int) $userid;
 			$item->category_id = 0;
-			$item->role        = KunenaForum::ADMINISTRATOR;
+			$item->role        = \Joomla\Component\Kunena\Libraries\Forum\Forum::ADMINISTRATOR;
 			$list[]            = $item;
 		}
 
@@ -406,7 +406,7 @@ class KunenaAccessJoomla
 	 *
 	 * Function returns a list of authorised actions. Missing actions are threaded as inherit.
 	 *
-	 * @param   KunenaForumCategory  $category  category
+	 * @param  \Joomla\Component\Kunena\Libraries\Forum\Category\Category  $category  category
 	 * @param   int                  $userid    userid
 	 *
 	 * @return  array

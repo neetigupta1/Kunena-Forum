@@ -36,7 +36,7 @@ class Entry
 	 * @param   mixed                $type       type
 	 * @param   mixed                $operation  operation
 	 * @param   mixed                $data       data
-	 * @param   KunenaForumCategory  $category   category
+	 * @param  \Joomla\Component\Kunena\Libraries\Forum\Category\Category  $category   category
 	 * @param   KunenaForumTopic     $topic      topic
 	 * @param   KunenaUser           $user       user
 	 *
@@ -57,11 +57,11 @@ class Entry
 
 		$this->data = [
 			'type'        => (int) $type,
-			'user_id'     => KunenaUserHelper::getMyself()->userid,
+			'user_id'     => \Joomla\Component\Kunena\Libraries\User\Helper::getMyself()->userid,
 			'category_id' => $category ? $category->id : 0,
 			'topic_id'    => $topic ? $topic->id : 0,
 			'target_user' => $user ? $user->userid : 0,
-			'ip'          => Factory::getApplication()->isClient('site') && KunenaUserHelper::getUserIp() !== null ? KunenaUserHelper::getUserIp() : '',
+			'ip'          => Factory::getApplication()->isClient('site') && \Joomla\Component\Kunena\Libraries\User\Helper::getUserIp() !== null ? \Joomla\Component\Kunena\Libraries\User\Helper::getUserIp() : '',
 			'time'        => $now->toUnix(),
 			'operation'   => $operation,
 			'data'        => json_encode($data),

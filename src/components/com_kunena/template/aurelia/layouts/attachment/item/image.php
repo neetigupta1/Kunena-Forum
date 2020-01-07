@@ -25,7 +25,7 @@ if (!$attachment->isImage())
 	return;
 }
 
-$config = KunenaFactory::getConfig();
+$config = \Joomla\Component\Kunena\Libraries\KunenaFactory::getConfig();
 
 // Load FancyBox library if enabled in configuration
 if ($config->lightbox == 1)

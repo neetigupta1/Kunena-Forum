@@ -49,7 +49,7 @@ class KunenaViewTopics extends KunenaView
 		$this->actionMove       = $this->get('ActionMove');
 		$this->message_ordering = $this->me->getMessageOrdering();
 
-		$this->URL = KunenaRoute::_();
+		$this->URL = \Joomla\Component\Kunena\Libraries\Route\KunenaRoute::_();
 
 		if ($this->embedded)
 		{
@@ -87,7 +87,7 @@ class KunenaViewTopics extends KunenaView
 		$this->actionMove       = $this->get('ActionMove');
 		$this->message_ordering = $this->me->getMessageOrdering();
 
-		$this->URL = KunenaRoute::_();
+		$this->URL = \Joomla\Component\Kunena\Libraries\Route\KunenaRoute::_();
 
 		if ($this->embedded)
 		{
@@ -126,7 +126,7 @@ class KunenaViewTopics extends KunenaView
 		$this->actionMove       = false;
 		$this->message_ordering = $this->me->getMessageOrdering();
 
-		$this->URL = KunenaRoute::_();
+		$this->URL = \Joomla\Component\Kunena\Libraries\Route\KunenaRoute::_();
 
 		if ($this->embedded)
 		{
@@ -215,7 +215,7 @@ class KunenaViewTopics extends KunenaView
 
 				if ($this->config->avataroncat)
 				{
-					$this->topic->avatar = KunenaFactory::getUser($this->topic->last_post_userid)->getAvatarImage('klist-avatar', 'list');
+					$this->topic->avatar = \Joomla\Component\Kunena\Libraries\KunenaFactory::getUser($this->topic->last_post_userid)->getAvatarImage('klist-avatar', 'list');
 				}
 
 				if (is_object($lasttopic) && $lasttopic->ordering != $this->topic->ordering)
@@ -316,7 +316,7 @@ class KunenaViewTopics extends KunenaView
 			if (!$contents)
 			{
 				$this->categoryLink     = $this->getCategoryLink($this->category->getParent()) . ' / ' . $this->getCategoryLink($this->category);
-				$this->postAuthor       = KunenaFactory::getUser($this->message->userid);
+				$this->postAuthor       = \Joomla\Component\Kunena\Libraries\KunenaFactory::getUser($this->message->userid);
 				$this->firstPostAuthor  = $this->topic->getfirstPostAuthor();
 				$this->firstPostTime    = $this->topic->first_post_time;
 				$this->firstUserName    = $this->topic->first_post_guest_name;
@@ -326,7 +326,7 @@ class KunenaViewTopics extends KunenaView
 
 				if ($this->config->avataroncat)
 				{
-					$this->topic->avatar = KunenaFactory::getUser($this->topic->last_post_userid)->getAvatarImage('klist-avatar', 'list');
+					$this->topic->avatar = \Joomla\Component\Kunena\Libraries\KunenaFactory::getUser($this->topic->last_post_userid)->getAvatarImage('klist-avatar', 'list');
 				}
 
 				$contents = $this->loadTemplateFile('row');

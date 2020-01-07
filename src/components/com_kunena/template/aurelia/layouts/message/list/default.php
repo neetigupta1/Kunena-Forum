@@ -68,11 +68,11 @@ $view    = Factory::getApplication()->input->getWord('view');
 		->set('display', true); ?>
 </div>
 
-<form action="<?php echo KunenaRoute::_('index.php?option=com_kunena&view=topics'); ?>" method="post"
+<form action="<?php echo \Joomla\Component\Kunena\Libraries\Route\KunenaRoute::_('index.php?option=com_kunena&view=topics'); ?>" method="post"
       name="ktopicsform" id="ktopicsform">
 	<?php echo HTMLHelper::_('form.token'); ?>
 
-	<table class="table<?php echo KunenaTemplate::getInstance()->borderless(); ?>">
+	<table class="table<?php echo \Joomla\Component\Kunena\Libraries\Template\Template::getInstance()->borderless(); ?>">
 		<thead>
 		<?php if (empty($this->messages)): ?>
 			<tr>

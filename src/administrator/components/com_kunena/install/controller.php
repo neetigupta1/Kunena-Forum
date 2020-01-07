@@ -292,7 +292,7 @@ class KunenaControllerInstall extends BaseController
 		$app = Factory::getApplication();
 		$app->enqueueMessage(Text::_('COM_KUNENA_INSTALL_REMOVED'));
 
-		if (class_exists('KunenaForum') && !KunenaForum::isDev())
+		if (class_exists('KunenaForum') && !\Joomla\Component\Kunena\Libraries\Forum\Forum::isDev())
 		{
 			$installer = new Installer;
 			$component = ComponentHelper::getComponent('com_kunena');

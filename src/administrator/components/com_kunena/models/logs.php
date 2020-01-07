@@ -57,7 +57,7 @@ class KunenaAdminModelLogs extends ListModel
 			];
 		}
 
-		$this->me = KunenaUserHelper::getMyself();
+		$this->me = \Joomla\Component\Kunena\Libraries\User\Helper::getMyself();
 
 		parent::__construct($config);
 	}
@@ -265,7 +265,7 @@ class KunenaAdminModelLogs extends ListModel
 
 		if (is_numeric($usertypes))
 		{
-			$access = KunenaAccess::getInstance();
+			$access = \Joomla\Component\Kunena\Libraries\Access::getInstance();
 
 			switch ($usertypes)
 			{
@@ -346,9 +346,9 @@ class KunenaAdminModelLogs extends ListModel
 
 		$userIds = array_unique(array_merge($userIds1->all(), $userIds2->all()));
 
-		KunenaUserHelper::loadUsers($userIds);
+		\Joomla\Component\Kunena\Libraries\User\Helper::loadUsers($userIds);
 
-		KunenaForumTopicHelper::getTopics($items->map(function ($item, $key) {
+		\Joomla\Component\Kunena\Libraries\Forum\Topic\Helper::getTopics($items->map(function ($item, $key) {
 			return $item->topic_id;
 		})->all());
 

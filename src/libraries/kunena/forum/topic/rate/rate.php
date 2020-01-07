@@ -177,8 +177,8 @@ class Rate extends CMSObject
 	 */
 	public function save($user)
 	{
-		$user  = KunenaFactory::getUser($user);
-		$topic = KunenaForumTopicHelper::get($this->topic_id);
+		$user  = \Joomla\Component\Kunena\Libraries\KunenaFactory::getUser($user);
+		$topic = \Joomla\Component\Kunena\Libraries\Forum\Topic\Helper::get($this->topic_id);
 
 		$this->getUsers();
 
@@ -222,9 +222,9 @@ class Rate extends CMSObject
 		try
 		{
 			$this->_db->execute();
-			$activityIntegration = KunenaFactory::getActivityIntegration();
+			$activityIntegration = \Joomla\Component\Kunena\Libraries\KunenaFactory::getActivityIntegration();
 
-			$topic = KunenaForumTopicHelper::get($this->topic_id);
+			$topic = \Joomla\Component\Kunena\Libraries\Forum\Topic\Helper::get($this->topic_id);
 			$activityIntegration->onAfterRate($user->userid, $topic);
 
 			$response = new JsonResponse(null, 'COM_KUNENA_RATE_SUCCESSFULLY_SAVED');
@@ -264,7 +264,7 @@ class Rate extends CMSObject
 		}
 		catch (ExecutionFailureException $e)
 		{
-			KunenaError::displayDatabaseError($e);
+			\Joomla\Component\Kunena\Libraries\Error::displayDatabaseError($e);
 		}
 
 		foreach ($users as $user)
@@ -311,7 +311,7 @@ class Rate extends CMSObject
 	 */
 	public function getTopicUserRate()
 	{
-		$me = KunenaFactory::getUser();
+		$me = \Joomla\Component\Kunena\Libraries\KunenaFactory::getUser();
 
 		if ($this->userid == $me->userid)
 		{

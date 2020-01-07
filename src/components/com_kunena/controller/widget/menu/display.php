@@ -92,7 +92,7 @@ class ComponentKunenaControllerWidgetMenuDisplay extends KunenaControllerDisplay
 	{
 		parent::before();
 
-		$this->basemenu = $basemenu = KunenaRoute::getMenu();
+		$this->basemenu = $basemenu = \Joomla\Component\Kunena\Libraries\Route\KunenaRoute::getMenu();
 
 		if (!$basemenu)
 		{
@@ -100,7 +100,7 @@ class ComponentKunenaControllerWidgetMenuDisplay extends KunenaControllerDisplay
 		}
 
 		$parameters = new Registry;
-		$template   = KunenaFactory::getTemplate();
+		$template   = \Joomla\Component\Kunena\Libraries\KunenaFactory::getTemplate();
 		$parameters->set('showAllChildren', $template->params->get('menu_showall', 0));
 		$parameters->set('menutype', $basemenu->menutype);
 		$parameters->set('startLevel', $basemenu->level + 1);

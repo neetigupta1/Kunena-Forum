@@ -52,7 +52,7 @@ $this->addStyleSheet('rating.css');
 		</div>
 	<?php endif; ?>
 
-	<form action="<?php echo KunenaRoute::_('index.php?option=com_kunena'); ?>" method="post" id="categoryactions">
+	<form action="<?php echo \Joomla\Component\Kunena\Libraries\Route\KunenaRoute::_('index.php?option=com_kunena'); ?>" method="post" id="categoryactions">
 		<input type="hidden" name="view" value="topics"/>
 		<?php echo HTMLHelper::_('form.token'); ?>
 		<div>
@@ -65,7 +65,7 @@ $this->addStyleSheet('rating.css');
 			</ul>
 		</div>
 		<?php if ($this->topics) : ?>
-		<table class="table<?php echo KunenaTemplate::getInstance()->borderless(); ?>">
+		<table class="table<?php echo \Joomla\Component\Kunena\Libraries\Template\Template::getInstance()->borderless(); ?>">
 			<thead>
 			<tr>
 				<th scope="col" class="center hidden-xs-down">

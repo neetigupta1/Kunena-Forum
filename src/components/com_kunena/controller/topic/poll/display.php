@@ -69,10 +69,10 @@ class ComponentKunenaControllerTopicPollDisplay extends KunenaControllerDisplay
 	{
 		parent::before();
 
-		$this->topic    = KunenaForumTopicHelper::get($this->input->getInt('id'));
+		$this->topic    = \Joomla\Component\Kunena\Libraries\Forum\Topic\Helper::get($this->input->getInt('id'));
 		$this->category = $this->topic->getCategory();
-		$this->config   = KunenaFactory::getConfig();
-		$this->me       = KunenaUserHelper::getMyself();
+		$this->config   = \Joomla\Component\Kunena\Libraries\KunenaFactory::getConfig();
+		$this->me       = \Joomla\Component\Kunena\Libraries\User\Helper::getMyself();
 
 		// Need to check if poll is allowed in this category.
 		$this->topic->tryAuthorise('poll.read');
@@ -119,7 +119,7 @@ class ComponentKunenaControllerTopicPollDisplay extends KunenaControllerDisplay
 					$userids_votes[] = $userid;
 				}
 
-				$loaded_users = KunenaUserHelper::loadUsers($userids_votes);
+				$loaded_users = \Joomla\Component\Kunena\Libraries\User\Helper::loadUsers($userids_votes);
 
 				$i = 0;
 
@@ -169,7 +169,7 @@ class ComponentKunenaControllerTopicPollDisplay extends KunenaControllerDisplay
 			}
 			else
 			{
-				$this->setTitle(Text::_('COM_KUNENA_POLL_NAME') . ' ' . KunenaHtmlParser::parseText($this->poll->title));
+				$this->setTitle(Text::_('COM_KUNENA_POLL_NAME') . ' ' . \Joomla\Component\Kunena\Libraries\Html\Parser::parseText($this->poll->title));
 			}
 
 			if (!empty($params_keywords))
@@ -179,7 +179,7 @@ class ComponentKunenaControllerTopicPollDisplay extends KunenaControllerDisplay
 			}
 			else
 			{
-				$this->setKeywords(Text::_('COM_KUNENA_POLL_NAME') . ' ' . KunenaHtmlParser::parseText($this->poll->title));
+				$this->setKeywords(Text::_('COM_KUNENA_POLL_NAME') . ' ' . \Joomla\Component\Kunena\Libraries\Html\Parser::parseText($this->poll->title));
 			}
 
 			if (!empty($params_description))
@@ -189,7 +189,7 @@ class ComponentKunenaControllerTopicPollDisplay extends KunenaControllerDisplay
 			}
 			else
 			{
-				$this->setDescription(Text::_('COM_KUNENA_POLL_NAME') . ' ' . KunenaHtmlParser::parseText($this->poll->title));
+				$this->setDescription(Text::_('COM_KUNENA_POLL_NAME') . ' ' . \Joomla\Component\Kunena\Libraries\Html\Parser::parseText($this->poll->title));
 			}
 		}
 	}

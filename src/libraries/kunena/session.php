@@ -213,7 +213,7 @@ class Session extends CMSObject
 	{
 		// Perform session timeout check
 		$lifetime              = max(intval(Factory::getConfig()->get('config.lifetime')) * 60,
-			intval(KunenaFactory::getConfig()->sessiontimeout)
+			intval(\Joomla\Component\Kunena\Libraries\KunenaFactory::getConfig()->sessiontimeout)
 		);
 		$this->_sessiontimeout = ($this->currvisit + $lifetime < Factory::getDate()->toUnix());
 

@@ -64,7 +64,7 @@ class ComponentKunenaControllerUserBanFormDisplay extends KunenaControllerDispla
 
 		$userid = $this->input->getInt('userid');
 
-		$this->profile = KunenaUserHelper::get($userid);
+		$this->profile = \Joomla\Component\Kunena\Libraries\User\Helper::get($userid);
 		$this->profile->tryAuthorise('ban');
 
 		$this->banInfo = KunenaUserBan::getInstanceByUserid($userid, true);

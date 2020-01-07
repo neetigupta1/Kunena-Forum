@@ -35,7 +35,7 @@ $this->addScript('assets/js/search.js');
 
 ?>
 
-<form action="<?php echo KunenaRoute::_('index.php?option=com_kunena&view=search'); ?>" method="post"
+<form action="<?php echo \Joomla\Component\Kunena\Libraries\Route\KunenaRoute::_('index.php?option=com_kunena&view=search'); ?>" method="post"
       xmlns="http://www.w3.org/1999/html"
       xmlns="http://www.w3.org/1999/html">
 	<input type="hidden" name="task" value="results"/>
@@ -43,7 +43,7 @@ $this->addScript('assets/js/search.js');
 		:
 		?>
 		<input type="hidden" id="kurl_users" name="kurl_users"
-		       value="<?php echo KunenaRoute::_('index.php?option=com_kunena&view=user&layout=listmention&format=raw') ?>"/>
+		       value="<?php echo \Joomla\Component\Kunena\Libraries\Route\KunenaRoute::_('index.php?option=com_kunena&view=user&layout=listmention&format=raw') ?>"/>
 	<?php endif; ?>
 	<?php echo HTMLHelper::_('form.token'); ?>
 

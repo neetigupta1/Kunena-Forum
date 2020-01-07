@@ -60,7 +60,7 @@ use function defined;
 								<?php echo Text::sprintf('COM_KUNENA_VIEW_COMMON_WHO_TOTAL', $this->membersOnline); ?>
 							</span>
 							<?php
-							$template  = KunenaTemplate::getInstance();
+							$template  = \Joomla\Component\Kunena\Libraries\Template\Template::getInstance();
 							$direction = $template->params->get('whoisonlineName');
 
 							if ($direction == 'both')

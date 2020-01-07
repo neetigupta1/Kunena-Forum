@@ -17,7 +17,7 @@ defined('_JEXEC') or die();
 use Joomla\CMS\Language\Text;
 use function defined;
 
-$user        = isset($this->user) ? $this->user : KunenaUserHelper::getMyself();
+$user        = isset($this->user) ? $this->user : \Joomla\Component\Kunena\Libraries\User\Helper::getMyself();
 $status      = $user->status;
 $status_text = $user->getStatusText();
 $link        = $user->getURL();

@@ -73,9 +73,9 @@ class ComponentKunenaControllerUserAttachmentsDisplay extends KunenaControllerDi
 		$start  = $this->input->getInt('limitstart', 0);
 		$limit  = $this->input->getInt('limit', 30);
 
-		$this->template = KunenaFactory::getTemplate();
-		$this->me       = KunenaUserHelper::getMyself();
-		$this->profile  = KunenaUserHelper::get($userid);
+		$this->template = \Joomla\Component\Kunena\Libraries\KunenaFactory::getTemplate();
+		$this->me       = \Joomla\Component\Kunena\Libraries\User\Helper::getMyself();
+		$this->profile  = \Joomla\Component\Kunena\Libraries\User\Helper::get($userid);
 		$this->moreUri  = null;
 
 		$this->embedded = $this->getOptions()->get('embedded', false);
@@ -83,7 +83,7 @@ class ComponentKunenaControllerUserAttachmentsDisplay extends KunenaControllerDi
 		if ($this->embedded)
 		{
 			$this->moreUri = new Uri('index.php?option=com_kunena&view=user&layout=attachments&userid=' . $userid . '&limit=' . $limit);
-			$this->moreUri->setVar('Itemid', KunenaRoute::getItemID($this->moreUri));
+			$this->moreUri->setVar('Itemid', \Joomla\Component\Kunena\Libraries\Route\KunenaRoute::getItemID($this->moreUri));
 		}
 
 		$finder = new KunenaAttachmentFinder;
@@ -126,7 +126,7 @@ class ComponentKunenaControllerUserAttachmentsDisplay extends KunenaControllerDi
 			$topicIds[] = $message->thread;
 		}
 
-		KunenaForumTopicHelper::getTopics($topicIds, 'none');
+		\Joomla\Component\Kunena\Libraries\Forum\Topic\Helper::getTopics($topicIds, 'none');
 
 		$this->headerText = Text::_('COM_KUNENA_MANAGE_ATTACHMENTS');
 	}

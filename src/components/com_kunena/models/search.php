@@ -235,7 +235,7 @@ class KunenaModelSearch extends KunenaModel
 			switch ($this->getState('query.searchdate'))
 			{
 				case 'lastvisit' :
-					$time = KunenaFactory::GetSession()->lasttime;
+					$time = \Joomla\Component\Kunena\Libraries\KunenaFactory::GetSession()->lasttime;
 					break;
 				case 'all' :
 					break;
@@ -447,7 +447,7 @@ class KunenaModelSearch extends KunenaModel
 
 		if ($topicids)
 		{
-			$topics = KunenaForumTopicHelper::getTopics($topicids);
+			$topics = \Joomla\Component\Kunena\Libraries\Forum\Topic\Helper::getTopics($topicids);
 
 			foreach ($topics as $topic)
 			{
@@ -455,7 +455,7 @@ class KunenaModelSearch extends KunenaModel
 			}
 		}
 
-		KunenaUserHelper::loadUsers($userids);
+		\Joomla\Component\Kunena\Libraries\User\Helper::loadUsers($userids);
 		KunenaForumMessageHelper::loadLocation($this->messages);
 
 		if (empty($this->messages))
@@ -523,7 +523,7 @@ class KunenaModelSearch extends KunenaModel
 	 */
 	public function getSearchURL($view, $searchword = '', $limitstart = 0, $limit = 0, $params = '', $xhtml = true)
 	{
-		$config   = KunenaFactory::getConfig();
+		$config   = \Joomla\Component\Kunena\Libraries\KunenaFactory::getConfig();
 		$limitstr = "";
 
 		if ($limitstart > 0)
@@ -541,6 +541,6 @@ class KunenaModelSearch extends KunenaModel
 			$searchword = '&query=' . urlencode($searchword);
 		}
 
-		return KunenaRoute::_("index.php?option=com_kunena&view={$view}{$searchword}{$params}{$limitstr}", $xhtml);
+		return \Joomla\Component\Kunena\Libraries\Route\KunenaRoute::_("index.php?option=com_kunena&view={$view}{$searchword}{$params}{$limitstr}", $xhtml);
 	}
 }

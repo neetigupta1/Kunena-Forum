@@ -10,20 +10,23 @@
  * @link            https://www.kunena.org
  **/
 
-namespace Joomla\Component\Kunena;
+namespace Joomla\Component\Kunena\Plugin\Kunena\Community;
 
 defined('_JEXEC') or die();
 
 use Exception;
 use Joomla\CMS\Uri\Uri;
+use Joomla\Component\Kunena\Libraries\Integration\Avatar;
+use Joomla\Component\Kunena\Libraries\KunenaFactory;
+use Joomla\Component\Kunena\Libraries\KunenaProfiler;
 use function defined;
 
 /**
- * Class KunenaAvatarCommunity
+ * Class \Joomla\Component\Kunena\Libraries\Integration\AvatarCommunity
  *
  * @since   Kunena 6.0
  */
-class KunenaAvatarCommunity extends KunenaAvatar
+class AvatarCommunity extends Avatar
 {
 	/**
 	 * @var     null
@@ -32,7 +35,7 @@ class KunenaAvatarCommunity extends KunenaAvatar
 	protected $params = null;
 
 	/**
-	 * KunenaAvatarCommunity constructor.
+	 * \Joomla\Component\Kunena\Libraries\Integration\AvatarCommunity constructor.
 	 *
 	 * @param   object  $params params
 	 *

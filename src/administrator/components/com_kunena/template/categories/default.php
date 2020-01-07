@@ -52,7 +52,7 @@ $filterItem = $this->escape($this->state->get('item.id'));
 					<?php echo Text::_('COM_KUNENA_CPANEL_LABEL_CATEGORIES') ?>
 				</div>
 				<hr class="hr-condensed">
-				<form action="<?php echo KunenaRoute::_('administrator/index.php?option=com_kunena&view=categories'); ?>"
+				<form action="<?php echo \Joomla\Component\Kunena\Libraries\Route\KunenaRoute::_('administrator/index.php?option=com_kunena&view=categories'); ?>"
 				      method="post" name="adminForm"
 				      id="adminForm">
 					<input type="hidden" name="task" value=""/>
@@ -349,7 +349,7 @@ $filterItem = $this->escape($this->state->get('item.id'));
 										if ($item->checked_out)
 										{
 											$canCheckin = $item->checked_out == 0 || $item->checked_out == $this->user->id || $this->user->authorise('core.admin', 'com_checkin');
-											$editor     = KunenaFactory::getUser($item->editor)->getName();
+											$editor     = \Joomla\Component\Kunena\Libraries\KunenaFactory::getUser($item->editor)->getName();
 											echo HTMLHelper::_('jgrid.checkedout', $i, $editor, $item->checked_out_time, 'categories.', $canCheckin);
 										}
 										?>

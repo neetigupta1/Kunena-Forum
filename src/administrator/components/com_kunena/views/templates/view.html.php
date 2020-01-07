@@ -110,7 +110,7 @@ class KunenaAdminViewTemplates extends KunenaView
 		$this->params       = $this->get('editparams');
 		$this->details      = $this->get('templatedetails');
 		$this->templatename = $this->app->getUserState('kunena.edit.templatename');
-		$template           = KunenaTemplate::getInstance($this->templatename);
+		$template           = \Joomla\Component\Kunena\Libraries\Template\Template::getInstance($this->templatename);
 		$template->initializeBackend();
 
 		$this->templatefile = KPATH_SITE . '/template/' . $this->templatename . '/config/params.ini';

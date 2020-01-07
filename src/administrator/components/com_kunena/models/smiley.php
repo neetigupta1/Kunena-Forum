@@ -37,7 +37,7 @@ class KunenaAdminModelSmiley extends KunenaModel
 	 */
 	public function getSmileyspaths()
 	{
-		$template = KunenaFactory::getTemplate();
+		$template = \Joomla\Component\Kunena\Libraries\KunenaFactory::getTemplate();
 
 		$selected = $this->getSmiley();
 

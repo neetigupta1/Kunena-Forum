@@ -22,10 +22,10 @@ $topic                = $message->getTopic();
 $category             = $topic->getCategory();
 $author               = $message->getAuthor();
 $isReply              = $message->id != $topic->first_post_id;
-$config               = KunenaFactory::getConfig();
+$config               = \Joomla\Component\Kunena\Libraries\KunenaFactory::getConfig();
 $name                 = $config->username ? $author->username : $author->name;
-$me                   = isset($this->me) ? $this->me : KunenaUserHelper::getMyself();
-$this->ktemplate      = KunenaFactory::getTemplate();
+$me                   = isset($this->me) ? $this->me : \Joomla\Component\Kunena\Libraries\User\Helper::getMyself();
+$this->ktemplate      = \Joomla\Component\Kunena\Libraries\KunenaFactory::getTemplate();
 $subjectlengthmessage = $this->ktemplate->params->get('SubjectLengthMessage', 20);
 
 ?>
@@ -35,7 +35,7 @@ $subjectlengthmessage = $this->ktemplate->params->get('SubjectLengthMessage', 20
 			<li>
 				<strong><?php echo $author->getLink(null, null, 'nofollow', '', null, $topic->getCategory()->id); ?></strong>
 			</li>
-			<li><?php echo $author->getLink($author->getAvatarImage(KunenaFactory::getTemplate()->params->get('avatarType'), 'post')); ?></li>
+			<li><?php echo $author->getLink($author->getAvatarImage(\Joomla\Component\Kunena\Libraries\KunenaFactory::getTemplate()->params->get('avatarType'), 'post')); ?></li>
 		</ul>
 	</div>
 
@@ -50,7 +50,7 @@ $subjectlengthmessage = $this->ktemplate->params->get('SubjectLengthMessage', 20
 				<?php
 				$title   = KunenaForumMessage::getInstance()->getsubstr($this->escape($message->subject), 0, $subjectlengthmessage);
 				$langstr = $isReply ? 'COM_KUNENA_MESSAGE_REPLIED_NEW' : 'COM_KUNENA_MESSAGE_CREATED_NEW';
-				echo Text::sprintf($langstr, $message->getAuthor()->getLink(), $this->getTopicLink($topic, 'first', null, null, KunenaTemplate::getInstance()->tooltips() . ' topictitle', $category, true, false)); ?>
+				echo Text::sprintf($langstr, $message->getAuthor()->getLink(), $this->getTopicLink($topic, 'first', null, null, \Joomla\Component\Kunena\Libraries\Template\Template::getInstance()->tooltips() . ' topictitle', $category, true, false)); ?>
 			</div>
 			<div class="kmessage">
 				<?php if (!$isReply)

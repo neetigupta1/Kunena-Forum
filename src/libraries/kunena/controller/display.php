@@ -141,7 +141,7 @@ abstract class Display extends Base
 	 */
 	public function execute()
 	{
-		KUNENA_PROFILER ? KunenaProfiler::instance()->start('function ' . get_class($this) . '::' . __FUNCTION__ . '()') : null;
+		KUNENA_PROFILER ? \Joomla\Component\Kunena\Libraries\KunenaProfiler::instance()->start('function ' . get_class($this) . '::' . __FUNCTION__ . '()') : null;
 
 		try
 		{
@@ -150,7 +150,7 @@ abstract class Display extends Base
 
 			if ($result === false)
 			{
-				KUNENA_PROFILER ? KunenaProfiler::instance()->stop('function ' . get_class($this) . '::' . __FUNCTION__ . '()') : null;
+				KUNENA_PROFILER ? \Joomla\Component\Kunena\Libraries\KunenaProfiler::instance()->stop('function ' . get_class($this) . '::' . __FUNCTION__ . '()') : null;
 
 				return KunenaLayout::factory('Empty')->setOptions($this->getOptions());
 			}
@@ -165,7 +165,7 @@ abstract class Display extends Base
 		{
 			if ($this->primary)
 			{
-				KUNENA_PROFILER ? KunenaProfiler::instance()->stop('function ' . get_class($this) . '::' . __FUNCTION__ . '()') : null;
+				KUNENA_PROFILER ? \Joomla\Component\Kunena\Libraries\KunenaProfiler::instance()->stop('function ' . get_class($this) . '::' . __FUNCTION__ . '()') : null;
 				throw $e;
 			}
 			else
@@ -174,7 +174,7 @@ abstract class Display extends Base
 			}
 		}
 
-		KUNENA_PROFILER ? KunenaProfiler::instance()->stop('function ' . get_class($this) . '::' . __FUNCTION__ . '()') : null;
+		KUNENA_PROFILER ? \Joomla\Component\Kunena\Libraries\KunenaProfiler::instance()->stop('function ' . get_class($this) . '::' . __FUNCTION__ . '()') : null;
 
 		return $this->output;
 	}
@@ -394,7 +394,7 @@ abstract class Display extends Base
 			}
 			else
 			{
-				$title = $title . ' - ' . KunenaFactory::getConfig()->board_title;
+				$title = $title . ' - ' . \Joomla\Component\Kunena\Libraries\KunenaFactory::getConfig()->board_title;
 			}
 		}
 

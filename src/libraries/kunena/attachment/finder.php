@@ -59,7 +59,7 @@ class Finder extends KunenaDatabaseObjectFinder
 		}
 		catch (RuntimeException $e)
 		{
-			KunenaError::displayDatabaseError($e);
+			\Joomla\Component\Kunena\Libraries\Error::displayDatabaseError($e);
 		}
 
 		$instances = [];

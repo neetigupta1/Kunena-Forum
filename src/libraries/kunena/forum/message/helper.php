@@ -122,7 +122,7 @@ abstract class Helper
 		}
 		catch (ExecutionFailureException $e)
 		{
-			KunenaError::displayDatabaseError($e);
+			\Joomla\Component\Kunena\Libraries\Error::displayDatabaseError($e);
 		}
 
 		foreach ($ids as $id)
@@ -158,7 +158,7 @@ abstract class Helper
 	 */
 	public static function getMessagesByTopic($topic, $start = 0, $limit = 0, $ordering = 'ASC', $hold = 0, $orderbyid = false)
 	{
-		$topic = KunenaForumTopicHelper::get($topic);
+		$topic = \Joomla\Component\Kunena\Libraries\Forum\Topic\Helper::get($topic);
 
 		if (!$topic->exists())
 		{
@@ -174,7 +174,7 @@ abstract class Helper
 
 		if ($limit < 1)
 		{
-			$limit = KunenaFactory::getConfig()->messages_per_page;
+			$limit = \Joomla\Component\Kunena\Libraries\KunenaFactory::getConfig()->messages_per_page;
 		}
 
 		// If out of range, use last page
@@ -226,10 +226,10 @@ abstract class Helper
 		}
 		catch (ExecutionFailureException $e)
 		{
-			KunenaError::displayDatabaseError($e);
+			\Joomla\Component\Kunena\Libraries\Error::displayDatabaseError($e);
 		}
 
-		$location = ($orderbyid || $ordering == 'ASC') ? $start : KunenaForumTopicHelper::get($topic_id)->getTotal($hold) - $start - 1;
+		$location = ($orderbyid || $ordering == 'ASC') ? $start : \Joomla\Component\Kunena\Libraries\Forum\Topic\Helper::get($topic_id)->getTotal($hold) - $start - 1;
 		$order    = ($ordering == 'ASC') ? 1 : -1;
 		$list     = [];
 
@@ -279,15 +279,15 @@ abstract class Helper
 
 			if ($view == 'search')
 			{
-				$limit = KunenaFactory::getConfig()->messages_per_page_search;
+				$limit = \Joomla\Component\Kunena\Libraries\KunenaFactory::getConfig()->messages_per_page_search;
 			}
 			elseif ($view == 'topics')
 			{
-				$limit = KunenaFactory::getConfig()->threads_per_page;
+				$limit = \Joomla\Component\Kunena\Libraries\KunenaFactory::getConfig()->threads_per_page;
 			}
 			else
 			{
-				$limit = KunenaFactory::getConfig()->messages_per_page;
+				$limit = \Joomla\Component\Kunena\Libraries\KunenaFactory::getConfig()->messages_per_page;
 			}
 		}
 
@@ -329,11 +329,11 @@ abstract class Helper
 			$categories = false;
 		}
 
-		$categories = KunenaForumCategoryHelper::getCategories($categories, $reverse, 'topic.' . $authorise);
+		$categories = \Joomla\Component\Kunena\Libraries\Forum\Category\Helper::getCategories($categories, $reverse, 'topic.' . $authorise);
 
 		if ($childforums)
 		{
-			$categories += KunenaForumCategoryHelper::getChildren($categories, -1, ['action' => 'topic.' . $authorise]);
+			$categories += \Joomla\Component\Kunena\Libraries\Forum\Category\Helper::getChildren($categories, -1, ['action' => 'topic.' . $authorise]);
 		}
 
 		$catlist = [];
@@ -361,7 +361,7 @@ abstract class Helper
 		// Negative time means no time
 		if ($starttime == 0)
 		{
-			$starttime = KunenaFactory::getSession()->lasttime;
+			$starttime = \Joomla\Component\Kunena\Libraries\KunenaFactory::getSession()->lasttime;
 		}
 		elseif ($starttime > 0)
 		{
@@ -390,7 +390,7 @@ abstract class Helper
 		}
 		catch (ExecutionFailureException $e)
 		{
-			KunenaError::displayDatabaseError($e);
+			\Joomla\Component\Kunena\Libraries\Error::displayDatabaseError($e);
 
 			return [0, []];
 		}
@@ -415,7 +415,7 @@ abstract class Helper
 		}
 		catch (ExecutionFailureException $e)
 		{
-			KunenaError::displayDatabaseError($e);
+			\Joomla\Component\Kunena\Libraries\Error::displayDatabaseError($e);
 
 			return [0, []];
 		}
@@ -453,14 +453,14 @@ abstract class Helper
 	{
 		if (is_null($direction))
 		{
-			$direction = KunenaUserHelper::getMyself()->getMessageOrdering();
+			$direction = \Joomla\Component\Kunena\Libraries\User\Helper::getMyself()->getMessageOrdering();
 		}
 
 		if (!$hold)
 		{
-			$me           = KunenaUserHelper::getMyself();
+			$me           = \Joomla\Component\Kunena\Libraries\User\Helper::getMyself();
 			$mes_instance = self::get($mesid);
-			$hold         = KunenaAccess::getInstance()->getAllowedHold($me->userid, $mes_instance->catid, false);
+			$hold         = \Joomla\Component\Kunena\Libraries\Access::getInstance()->getAllowedHold($me->userid, $mes_instance->catid, false);
 		}
 
 		if (!isset(self::$_location [$mesid]))
@@ -592,7 +592,7 @@ abstract class Helper
 		}
 		catch (ExecutionFailureException $e)
 		{
-			KunenaError::displayDatabaseError($e);
+			\Joomla\Component\Kunena\Libraries\Error::displayDatabaseError($e);
 		}
 
 		if (!empty($results))
@@ -666,7 +666,7 @@ abstract class Helper
 		}
 		catch (ExecutionFailureException $e)
 		{
-			KunenaError::displayDatabaseError($e);
+			\Joomla\Component\Kunena\Libraries\Error::displayDatabaseError($e);
 
 			return false;
 		}
@@ -707,7 +707,7 @@ abstract class Helper
 		}
 		catch (ExecutionFailureException $e)
 		{
-			KunenaError::displayDatabaseError($e);
+			\Joomla\Component\Kunena\Libraries\Error::displayDatabaseError($e);
 		}
 
 		return $results;
@@ -748,7 +748,7 @@ abstract class Helper
 		}
 		catch (ExecutionFailureException $e)
 		{
-			KunenaError::displayDatabaseError($e);
+			\Joomla\Component\Kunena\Libraries\Error::displayDatabaseError($e);
 		}
 
 		return $ip;

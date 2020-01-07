@@ -10,7 +10,7 @@
  * @link           https://www.kunena.org
  **/
 
-namespace Joomla\Component\Kunena;
+namespace Joomla\Component\Kunena\Plugin\Kunena\Altauserpoints;
 
 defined('_JEXEC') or die();
 
@@ -18,6 +18,10 @@ use Exception;
 use Joomla\CMS\Factory;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\Uri\Uri;
+use Joomla\Component\Kunena\Libraries\Error;
+use Joomla\Component\Kunena\Libraries\Integration\Activity;
+use Joomla\Component\Kunena\Libraries\KunenaFactory;
+use Joomla\Component\Kunena\Libraries\Route\KunenaRoute;
 use Joomla\String\StringHelper;
 use RuntimeException;
 use function defined;
@@ -27,7 +31,7 @@ use function defined;
  *
  * @since  5.0
  */
-class KunenaActivityAltaUserPoints extends KunenaActivity
+class KunenaActivityAltaUserPoints extends Activity
 {
 	/**
 	 * @var     null
@@ -314,7 +318,7 @@ class KunenaActivityAltaUserPoints extends KunenaActivity
 		}
 		catch (RuntimeException $e)
 		{
-			KunenaError::displayDatabaseError($e);
+			Error::displayDatabaseError($e);
 		}
 
 		return $userpoints;

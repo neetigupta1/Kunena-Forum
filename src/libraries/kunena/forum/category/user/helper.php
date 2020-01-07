@@ -53,7 +53,7 @@ abstract class Helper
 		}
 
 		$category = intval($category);
-		$user     = KunenaUserHelper::get($user);
+		$user     = \Joomla\Component\Kunena\Libraries\User\Helper::get($user);
 
 		if ($category === null)
 		{
@@ -83,12 +83,12 @@ abstract class Helper
 	 */
 	public static function getCategories($ids = false, $user = null)
 	{
-		$user = KunenaUserHelper::get($user);
+		$user = \Joomla\Component\Kunena\Libraries\User\Helper::get($user);
 
 		if ($ids === false)
 		{
 			// Get categories which are seen by current user
-			$ids = KunenaForumCategoryHelper::getCategories();
+			$ids = \Joomla\Component\Kunena\Libraries\Forum\Category\Helper::getCategories();
 		}
 		elseif (!is_array($ids))
 		{
@@ -164,7 +164,7 @@ abstract class Helper
 		}
 		catch (ExecutionFailureException $e)
 		{
-			KunenaError::displayDatabaseError($e);
+			\Joomla\Component\Kunena\Libraries\Error::displayDatabaseError($e);
 		}
 
 		foreach ($ids as $id)
@@ -197,7 +197,7 @@ abstract class Helper
 	 */
 	public static function markRead(array $ids, $user = null)
 	{
-		$user = KunenaUserHelper::get($user);
+		$user = \Joomla\Component\Kunena\Libraries\User\Helper::get($user);
 
 		$items      = self::getCategories($ids, $user);
 		$updateList = [];
@@ -235,7 +235,7 @@ abstract class Helper
 			}
 			catch (ExecutionFailureException $e)
 			{
-				KunenaError::displayDatabaseError($e);
+				\Joomla\Component\Kunena\Libraries\Error::displayDatabaseError($e);
 			}
 		}
 
@@ -254,7 +254,7 @@ abstract class Helper
 			}
 			catch (ExecutionFailureException $e)
 			{
-				KunenaError::displayDatabaseError($e);
+				\Joomla\Component\Kunena\Libraries\Error::displayDatabaseError($e);
 			}
 		}
 	}

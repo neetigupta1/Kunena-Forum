@@ -10,7 +10,7 @@
  * @link            https://www.kunena.org
  **/
 
-namespace Joomla\Component\Kunena;
+namespace Joomla\Component\Kunena\Plugin\Kunena\Comprofiler;
 
 defined('_JEXEC') or die();
 
@@ -66,7 +66,7 @@ class KunenaIntegrationComprofiler
 	public static function trigger($event, &$params)
 	{
 		global $_PLUGINS;
-		$config            = KunenaFactory::getConfig();
+		$config            = \Joomla\Component\Kunena\Libraries\KunenaFactory::getConfig();
 		$params ['config'] = $config;
 		$_PLUGINS->loadPluginGroup('user');
 		$_PLUGINS->trigger('kunenaIntegration', [$event, &$config, &$params]);

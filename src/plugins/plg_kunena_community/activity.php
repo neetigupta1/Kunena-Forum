@@ -11,13 +11,16 @@
  * @link             https://www.kunena.org
  **/
 
-namespace Joomla\Component\Kunena;
+namespace Joomla\Component\Kunena\Plugin\Kunena\Community;
 
 defined('_JEXEC') or die();
 
 use Exception;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\Uri\Uri;
+use Joomla\Component\Kunena\Libraries\Access;
+use Joomla\Component\Kunena\Libraries\Html\Parser;
+use Joomla\Component\Kunena\Libraries\Integration\Activity;
 use Joomla\String\StringHelper;
 use stdClass;
 use function defined;
@@ -27,7 +30,7 @@ use function defined;
  *
  * @since   Kunena 6.0
  */
-class KunenaActivityCommunity extends KunenaActivity
+class KunenaActivityCommunity extends Activity
 {
 	/**
 	 * @var     null
@@ -113,7 +116,7 @@ class KunenaActivityCommunity extends KunenaActivity
 		$parent->forceSecure  = true;
 		$parent->forceMinimal = true;
 
-		$content = KunenaHtmlParser::parseBBCode($message->message, $parent, $this->params->get('activity_stream_limit', 0));
+		$content = Parser::parseBBCode($message->message, $parent, $this->params->get('activity_stream_limit', 0));
 
 		// Add readmore permalink
 		$content .= '<br/><br /><a rel="nofollow" href="' . $message->getPermaUrl() . '" class="small profile-newsfeed-item-action">' . Text::_('COM_KUNENA_READMORE') . '</a>';
@@ -179,9 +182,9 @@ class KunenaActivityCommunity extends KunenaActivity
 		}
 
 		// Get users who have subscribed to the topic, excluding current user.
-		$acl         = KunenaAccess::getInstance();
+		$acl         = Access::getInstance();
 		$subscribers = $acl->getSubscribers(
-			$message->catid, $message->thread, KunenaAccess::TOPIC_SUBSCRIPTION, false, false, [$message->userid]
+			$message->catid, $message->thread, Access::TOPIC_SUBSCRIPTION, false, false, [$message->userid]
 		);
 
 		foreach ($subscribers as $userid)

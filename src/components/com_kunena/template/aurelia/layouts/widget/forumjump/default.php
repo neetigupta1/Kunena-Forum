@@ -24,7 +24,7 @@ $catid = Factory::getApplication()->input->getInt('catid', 0);
 		$("#jumpto option[value=<?php echo $catid;?>]").prop("selected", "selected");
 	})
 </script>
-<form action="<?php echo KunenaRoute::_('index.php?option=com_kunena'); ?>" id="jumpto" name="jumpto" method="post"
+<form action="<?php echo \Joomla\Component\Kunena\Libraries\Route\KunenaRoute::_('index.php?option=com_kunena'); ?>" id="jumpto" name="jumpto" method="post"
 	  target="_self">
 	<input type="hidden" name="view" value="category"/>
 	<input type="hidden" name="task" value="jump"/>

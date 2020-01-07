@@ -10,13 +10,14 @@
  * @link            https://www.kunena.org
  **/
 
-namespace Joomla\Component\Kunena;
+namespace Joomla\Component\Kunena\Plugin\Kunena\Comprofiler;
 
 defined('_JEXEC') or die();
 
 use \CBLib\Application\Application;
 use CBLib\Language\CBTxt;
 use Joomla\CMS\Language\Text;
+use Joomla\Component\Kunena\Libraries\Integration\KunenaPrivate;
 use function defined;
 
 /**

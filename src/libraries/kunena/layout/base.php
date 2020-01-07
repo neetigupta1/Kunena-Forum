@@ -423,7 +423,7 @@ class Base extends LayoutBase
 	 */
 	public function addStyleSheet($filename)
 	{
-		return KunenaFactory::getTemplate()->addStyleSheet($filename);
+		return \Joomla\Component\Kunena\Libraries\KunenaFactory::getTemplate()->addStyleSheet($filename);
 	}
 
 	/**
@@ -439,7 +439,7 @@ class Base extends LayoutBase
 	 */
 	public function addScript($filename)
 	{
-		return KunenaFactory::getTemplate()->addScript($filename);
+		return \Joomla\Component\Kunena\Libraries\KunenaFactory::getTemplate()->addScript($filename);
 	}
 
 	/**
@@ -456,7 +456,7 @@ class Base extends LayoutBase
 	 */
 	public function addScriptDeclaration($content, $type = 'text/javascript')
 	{
-		return KunenaFactory::getTemplate()->addScriptDeclaration($content, $type);
+		return \Joomla\Component\Kunena\Libraries\KunenaFactory::getTemplate()->addScriptDeclaration($content, $type);
 	}
 
 	/**
@@ -474,7 +474,7 @@ class Base extends LayoutBase
 	 */
 	public function addScriptOptions($key, $options, $merge = true)
 	{
-		return KunenaFactory::getTemplate()->addScriptOptions($key, $options, $merge);
+		return \Joomla\Component\Kunena\Libraries\KunenaFactory::getTemplate()->addScriptOptions($key, $options, $merge);
 	}
 
 	/**
@@ -721,11 +721,11 @@ class Base extends LayoutBase
 		// Add all paths for the template overrides.
 		if ($app->isClient('administrator'))
 		{
-			$template = KunenaFactory::getAdminTemplate();
+			$template = \Joomla\Component\Kunena\Libraries\KunenaFactory::getAdminTemplate();
 		}
 		else
 		{
-			$template = KunenaFactory::getTemplate();
+			$template = \Joomla\Component\Kunena\Libraries\KunenaFactory::getTemplate();
 		}
 
 		$templatePaths = [];

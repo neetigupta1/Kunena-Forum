@@ -67,7 +67,7 @@ class KunenaAdminModelUser extends KunenaModel
 				$topic_list[] = $sub->thread;
 			}
 
-			$topic_list = KunenaForumTopicHelper::getTopics($topic_list);
+			$topic_list = \Joomla\Component\Kunena\Libraries\Forum\Topic\Helper::getTopics($topic_list);
 		}
 
 		return $topic_list;
@@ -84,7 +84,7 @@ class KunenaAdminModelUser extends KunenaModel
 	{
 		$userid = $this->getState($this->getName() . '.id');
 
-		$subscatslist = KunenaForumCategoryHelper::getSubscriptions($userid);
+		$subscatslist = \Joomla\Component\Kunena\Libraries\Forum\Category\Helper::getSubscriptions($userid);
 
 		return $subscatslist;
 	}
@@ -165,7 +165,7 @@ class KunenaAdminModelUser extends KunenaModel
 	{
 		$user = $this->getUser();
 
-		$modCatList = array_keys(KunenaAccess::getInstance()->getModeratorStatus($user));
+		$modCatList = array_keys(\Joomla\Component\Kunena\Libraries\Access::getInstance()->getModeratorStatus($user));
 
 		if (empty($modCatList))
 		{
@@ -198,7 +198,7 @@ class KunenaAdminModelUser extends KunenaModel
 	{
 		$userid = $this->getState($this->getName() . '.id');
 
-		$user = KunenaUserHelper::get($userid);
+		$user = \Joomla\Component\Kunena\Libraries\User\Helper::get($userid);
 
 		return $user;
 	}

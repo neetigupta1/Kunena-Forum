@@ -37,7 +37,7 @@ class ComponentKunenaControllerApplicationTopicUnreadDisplay extends KunenaContr
 	 */
 	public function exists()
 	{
-		return KunenaFactory::getTemplate()->isHmvc();
+		return \Joomla\Component\Kunena\Libraries\KunenaFactory::getTemplate()->isHmvc();
 	}
 
 	/**
@@ -54,13 +54,13 @@ class ComponentKunenaControllerApplicationTopicUnreadDisplay extends KunenaContr
 		$catid = $this->input->getInt('catid', 0);
 		$id    = $this->input->getInt('id', 0);
 
-		$category = KunenaForumCategoryHelper::get($catid);
+		$category = \Joomla\Component\Kunena\Libraries\Forum\Category\Helper::get($catid);
 		$category->tryAuthorise();
 
-		$topic = KunenaForumTopicHelper::get($id);
+		$topic = \Joomla\Component\Kunena\Libraries\Forum\Topic\Helper::get($id);
 		$topic->tryAuthorise();
 
-		KunenaForumTopicHelper::fetchNewStatus([$topic->id => $topic]);
+		\Joomla\Component\Kunena\Libraries\Forum\Topic\Helper::fetchNewStatus([$topic->id => $topic]);
 		$message = KunenaForumMessageHelper::get($topic->lastread ? $topic->lastread : $topic->last_post_id);
 		$message->tryAuthorise();
 

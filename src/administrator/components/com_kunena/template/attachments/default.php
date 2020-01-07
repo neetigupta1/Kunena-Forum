@@ -44,7 +44,7 @@ HTMLHelper::_('dropdown.init');
 					<?php echo KunenaAttachmentHelper::getTotalAttachments() . ' ' . Text::_('COM_KUNENA_CPANEL_LABEL_FILES') ?>
 				</div>
 				<hr class="hr-condensed">
-				<form action="<?php echo KunenaRoute::_('administrator/index.php?option=com_kunena&view=attachments') ?>"
+				<form action="<?php echo \Joomla\Component\Kunena\Libraries\Route\KunenaRoute::_('administrator/index.php?option=com_kunena&view=attachments') ?>"
 				      method="post" id="adminForm"
 				      name="adminForm">
 					<input type="hidden" name="task" value=""/>

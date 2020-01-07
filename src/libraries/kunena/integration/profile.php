@@ -82,7 +82,7 @@ class Profile
 	{
 		if (!$limit)
 		{
-			$limit = KunenaFactory::getConfig()->popusercount;
+			$limit = \Joomla\Component\Kunena\Libraries\KunenaFactory::getConfig()->popusercount;
 		}
 
 		return (array) $this->_getTopHits($limit);
@@ -113,7 +113,7 @@ class Profile
 	 */
 	public function getStatisticsURL($action = '', $xhtml = true)
 	{
-		$config = KunenaFactory::getConfig();
+		$config = \Joomla\Component\Kunena\Libraries\KunenaFactory::getConfig();
 		$my     = Factory::getApplication()->getIdentity();
 
 		if ($config->statslink_allowed == 0 && $my->id == 0)
@@ -121,7 +121,7 @@ class Profile
 			return false;
 		}
 
-		return KunenaRoute::_('index.php?option=com_kunena&view=statistics' . $action, $xhtml);
+		return \Joomla\Component\Kunena\Libraries\Route\KunenaRoute::_('index.php?option=com_kunena&view=statistics' . $action, $xhtml);
 	}
 
 	/**

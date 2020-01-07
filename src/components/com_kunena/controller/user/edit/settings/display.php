@@ -119,7 +119,7 @@ class ComponentKunenaControllerUserEditSettingsDisplay extends ComponentKunenaCo
 		);
 		$this->settings[] = $item;
 
-		$this->ktemplate = KunenaFactory::getTemplate();
+		$this->ktemplate = \Joomla\Component\Kunena\Libraries\KunenaFactory::getTemplate();
 		$social          = $this->ktemplate->params->get('socialshare');
 
 		if ($social != 0)

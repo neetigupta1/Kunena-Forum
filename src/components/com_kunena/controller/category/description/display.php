@@ -46,7 +46,7 @@ class ComponentKunenaControllerCategoryDescriptionDisplay extends KunenaControll
 
 		$catid = $this->input->getInt('catid');
 
-		$this->category = KunenaForumCategoryHelper::get($catid);
+		$this->category = \Joomla\Component\Kunena\Libraries\Forum\Category\Helper::get($catid);
 		$this->category->tryAuthorise();
 	}
 }

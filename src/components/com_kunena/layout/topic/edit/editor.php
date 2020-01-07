@@ -91,7 +91,7 @@ class KunenaLayoutTopicEditEditor extends KunenaLayout
 	 */
 	public function getBBcodesEnabled()
 	{
-		$this->ktemplate  = KunenaFactory::getTemplate();
+		$this->ktemplate  = \Joomla\Component\Kunena\Libraries\KunenaFactory::getTemplate();
 		$templatesettings = $this->ktemplate->params;
 
 		$bbcodes = [

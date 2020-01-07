@@ -18,15 +18,15 @@ use Joomla\CMS\Language\Text;
 use function defined;
 
 $user            = $this->user;
-$this->ktemplate = KunenaFactory::getTemplate();
+$this->ktemplate = \Joomla\Component\Kunena\Libraries\KunenaFactory::getTemplate();
 $avatar          = $user->getAvatarImage($this->ktemplate->params->get('avatarType'), 'post');
 $config          = Config::getInstance();
 $show            = $config->showuserstats;
 
-$activityIntegration = KunenaFactory::getActivityIntegration();
+$activityIntegration = \Joomla\Component\Kunena\Libraries\KunenaFactory::getActivityIntegration();
 $points              = $activityIntegration->getUserPoints($user->userid);
 $medals              = $activityIntegration->getUserMedals($user->userid);
-$optional_username   = KunenaFactory::getTemplate()->params->get('optional_username');
+$optional_username   = \Joomla\Component\Kunena\Libraries\KunenaFactory::getTemplate()->params->get('optional_username');
 
 if ($show)
 {
@@ -188,7 +188,7 @@ if ($user->userid > 1)
 					</li>
 				<?php endif; ?>
 
-				<?php if (KunenaFactory::getPrivateMessaging())
+				<?php if (\Joomla\Component\Kunena\Libraries\KunenaFactory::getPrivateMessaging())
 				:
 					?>
 					<li>

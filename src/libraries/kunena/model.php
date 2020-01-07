@@ -92,8 +92,8 @@ class Model extends BaseDatabaseModel
 		parent::__construct($config);
 
 		$this->app    = Factory::getApplication();
-		$this->me     = KunenaUserHelper::getMyself();
-		$this->config = KunenaFactory::getConfig();
+		$this->me     = \Joomla\Component\Kunena\Libraries\User\Helper::getMyself();
+		$this->config = \Joomla\Component\Kunena\Libraries\KunenaFactory::getConfig();
 		$this->input  = $input ? $input : $this->app->input;
 	}
 
