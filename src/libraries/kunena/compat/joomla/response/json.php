@@ -7,7 +7,7 @@
  * @license     GNU General Public License version 2 or later; see LICENSE
  */
 
-namespace Kunena;
+namespace Joomla\Component\Kunena;
 
 defined('JPATH_PLATFORM') or die;
 

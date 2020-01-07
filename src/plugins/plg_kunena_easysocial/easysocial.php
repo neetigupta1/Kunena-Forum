@@ -10,7 +10,7 @@
  * See COPYRIGHT.php for copyright notices and details.
  */
 
-namespace Kunena;
+namespace Joomla\Component\Kunena;
 
 defined('_JEXEC') or die('Unauthorized Access');
 

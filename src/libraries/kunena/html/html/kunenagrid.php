@@ -14,7 +14,7 @@
  * Taken from Joomla Platform 11.1
  */
 
-namespace Kunena;
+namespace Joomla\Component\Kunena;
 
 defined('_JEXEC') or die();
 

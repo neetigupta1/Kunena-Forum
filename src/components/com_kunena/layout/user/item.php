@@ -10,7 +10,7 @@
  * @link            https://www.kunena.org
  **/
 
-namespace Kunena;
+namespace Joomla\Component\Kunena;
 
 defined('_JEXEC') or die;
 

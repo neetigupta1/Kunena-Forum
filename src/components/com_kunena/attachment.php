@@ -9,7 +9,7 @@
  * @link           https://www.kunena.org
  **/
 
-namespace Kunena;
+namespace Joomla\Component\Kunena;
 
 /*
  * A light application to serve attachments to the users. Will only partially initialize Joomla to gain some speed.

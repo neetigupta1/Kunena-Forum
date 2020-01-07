@@ -8,11 +8,14 @@
  * @license        https://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link           https://www.kunena.org
  **/
+
+namespace Joomla\Component\Kunena;
+
 defined('_JEXEC') or die();
 
 use Joomla\CMS\Factory;
 use Joomla\CMS\Uri\Uri;
-
+use function defined;
 // KUNENA FORUM INSTALLER
 
 

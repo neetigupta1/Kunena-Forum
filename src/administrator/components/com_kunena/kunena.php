@@ -9,7 +9,7 @@
  * @link           https://www.kunena.org
  **/
 
-namespace Kunena;
+namespace Joomla\Component\Kunena;
 
 defined('_JEXEC') or die();
 
@@ -23,19 +23,8 @@ if (!Factory::getApplication()->getIdentity()->authorise('core.manage', 'com_kun
 	throw new KunenaExceptionAuthorise(Text::_('COM_KUNENA_NO_ACCESS'), 401);
 }
 
-// Check if installation hasn't been completed.
-if (is_file(__DIR__ . '/install.php'))
-{
-	require_once __DIR__ . '/install.php';
-
-	if (class_exists('KunenaControllerInstall'))
-	{
-		return;
-	}
-}
-
 // Display time it took to create the entire page in the footer.
-$kunena_profiler = KunenaProfiler::instance('Kunena');
+$kunena_profiler = Kunena\KunenaProfiler::instance('Kunena');
 $kunena_profiler->start('Total Time');
 KUNENA_PROFILER ? $kunena_profiler->mark('afterLoad') : null;
 

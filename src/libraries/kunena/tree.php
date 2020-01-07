@@ -9,7 +9,7 @@
  * @link           https://www.kunena.org
  **/
 
-namespace Kunena;
+namespace Joomla\Component\Kunena;
 
 use Iterator;
 use function defined;
