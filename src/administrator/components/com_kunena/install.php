@@ -9,12 +9,13 @@
  * @link           https://www.kunena.org
  **/
 
-namespace Joomla\Component\Kunena\Administrator\Install;
+namespace Kunena\Forum\Administrator\Install;
 
 defined('_JEXEC') or die();
 
 use Joomla\CMS\Factory;
 use Joomla\CMS\Uri\Uri;
+use Kunena\Forum\Libraries\Forum\KunenaForum;
 use function defined;
 
 $app  = Factory::getApplication();
@@ -22,7 +23,7 @@ $view = $app->input->getCmd('view');
 $task = $app->input->getCmd('task');
 
 // Special case for developer versions.
-if ($view != 'install' && class_exists('KunenaForum') && \Joomla\Component\Kunena\Libraries\Forum\Forum::isDev())
+if ($view != 'install' && class_exists('KunenaForum') && KunenaForum::isDev())
 {
 	// Developer version found: Check if latest version of Kunena has been installed. If not, prepare installation.
 	require_once __DIR__ . '/install/version.php';
@@ -40,6 +41,6 @@ if ($view != 'install' && class_exists('KunenaForum') && \Joomla\Component\Kunen
 // Run the installer...
 require_once __DIR__ . '/install/controller.php';
 
-$controller = new \Joomla\Component\Kunena\Administrator\Install\Controller\KunenaControllerInstall;
+$controller = new KunenaControllerInstall;
 $controller->execute($task);
 $controller->redirect();

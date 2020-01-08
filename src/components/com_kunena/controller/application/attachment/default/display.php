@@ -10,17 +10,19 @@
  * @link            https://www.kunena.org
  **/
 
-namespace Joomla\Component\Kunena\Site\Controller\Application\Attachment;
+namespace Kunena\Forum\Site\Controller\Application\Attachment;
 
 defined('_JEXEC') or die();
 
 use Exception;
 use Joomla\CMS\Factory;
 use Joomla\CMS\Language\Text;
-use Joomla\Component\Kunena\Libraries\Controller\Application\Display;
-use Joomla\Component\Kunena\Libraries\Exception\Authorise;
-use Joomla\Component\Kunena\Libraries\KunenaFactory;
-use Joomla\Component\Kunena\Libraries\User\Helper;
+use Kunena\Forum\Libraries\Config;
+use Kunena\Forum\Libraries\Controller\KunenaControllerDisplay;
+use Kunena\Forum\Libraries\Exception\Authorise;
+use Kunena\Forum\Libraries\KunenaFactory;
+use Kunena\Forum\Libraries\User\Helper;
+use Kunena\Forum\Libraries\User\KunenaUser;
 use RuntimeException;
 use function defined;
 
@@ -31,7 +33,7 @@ use function defined;
  *
  * @since   Kunena 4.0
  */
-class ComponentKunenaControllerApplicationAttachmentDefaultDisplay extends Display
+class ComponentKunenaControllerApplicationAttachmentDefaultDisplay extends KunenaControllerDisplay
 {
 	/**
 	 * Return true if layout exists.
@@ -52,7 +54,7 @@ class ComponentKunenaControllerApplicationAttachmentDefaultDisplay extends Displ
 	 *
 	 * @since   Kunena 6.0
 	 *
-	 * @throws  KunenaExceptionAuthorise
+	 * @throws  Authorise
 	 * @throws  RuntimeException
 	 * @throws  null
 	 */
@@ -118,7 +120,7 @@ class ComponentKunenaControllerApplicationAttachmentDefaultDisplay extends Displ
 			throw new Authorise(Text::_('COM_KUNENA_LOGIN_NOTIFICATION'), 403);
 		}
 
-		$attachment = \Joomla\Component\Kunena\Libraries\Attachment\Helper::get($id);
+		$attachment = \Kunena\Forum\Libraries\Attachment\Helper::get($id);
 		$attachment->tryAuthorise();
 
 		$path = $attachment->getPath($thumb);

@@ -10,24 +10,29 @@
  * @link            https://www.kunena.org
  **/
 
-namespace Joomla\Component\Kunena\Administrator;
+namespace Kunena\Forum\Administrator\Views;
 
 defined('_JEXEC') or die();
 
-use Joomla\CMS\HTML\HTMLHelper;
+use Exception;
 use Joomla\CMS\Factory;
+use Joomla\CMS\HTML\HTMLHelper;
 use Joomla\CMS\Language\Text;
+use Joomla\CMS\Toolbar\Toolbar;
 use Joomla\CMS\Toolbar\ToolbarHelper;
+use Kunena\Forum\Libraries\Forum\Category\Category;
+use Kunena\Forum\Libraries\User\Helper;
+use Kunena\Forum\Libraries\View;
 
 /**
  * About view for Kunena backend
  *
  * @since   Kunena 6.0
  */
-class KunenaAdminViewCategories extends \Joomla\Component\Kunena\Libraries\View
+class KunenaAdminViewCategories extends View
 {
 	/**
-	 * @var     array|KunenaForumCategory[]
+	 * @var     array|Category[]
 	 * @since   Kunena 6.0
 	 */
 	public $categories = [];
@@ -118,7 +123,7 @@ class KunenaAdminViewCategories extends \Joomla\Component\Kunena\Libraries\View
 		$this->sortDirectionFields = $this->getSortDirectionFields();
 
 		$this->user              = Factory::getApplication()->getIdentity();
-		$this->me                = \Joomla\Component\Kunena\Libraries\User\Helper::getMyself();
+		$this->me                = Helper::getMyself();
 		$this->userId            = $this->user->get('id');
 		$this->filterSearch      = $this->escape($this->state->get('filter.search'));
 		$this->filterPublished   = $this->escape($this->state->get('filter.published'));
@@ -149,7 +154,7 @@ class KunenaAdminViewCategories extends \Joomla\Component\Kunena\Libraries\View
 		$this->pagination   = $this->get('AdminNavigation');
 
 		// Get the toolbar object instance
-		$bar = Joomla\CMS\Toolbar\Toolbar::getInstance('toolbar');
+		$bar = Toolbar::getInstance('toolbar');
 
 		ToolbarHelper::title(Text::_('COM_KUNENA') . ': ' . Text::_('COM_KUNENA_CATEGORY_MANAGER'), 'list-view');
 		ToolbarHelper::spacer();

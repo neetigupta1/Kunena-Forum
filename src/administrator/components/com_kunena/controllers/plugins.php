@@ -10,7 +10,7 @@
  * @link            https://www.kunena.org
  **/
 
-namespace Joomla\Component\Kunena\Administrator;
+namespace Kunena\Forum\Administrator\Controllers;
 
 defined('_JEXEC') or die();
 
@@ -20,6 +20,8 @@ use Joomla\CMS\Language\Text;
 use Joomla\CMS\Log\Log;
 use Joomla\CMS\Router\Route;
 use Joomla\CMS\Session\Session;
+use Kunena\Forum\Libraries\Bbcode\KunenaBbcodeEditor;
+use Kunena\Forum\Libraries\Controller;
 use Joomla\Utilities\ArrayHelper;
 use function defined;
 
@@ -28,7 +30,7 @@ use function defined;
  *
  * @since   Kunena 2.0
  */
-class KunenaAdminControllerPlugins extends KunenaController
+class KunenaAdminControllerPlugins extends Controller
 {
 	/**
 	 * @var     null|string

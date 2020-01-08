@@ -10,11 +10,12 @@
  * @link            https://www.kunena.org
  **/
 
-namespace Joomla\Component\Kunena\Administrator;
+namespace Kunena\Forum\Administrator\Views;
 
 defined('_JEXEC') or die();
 
 use Joomla\CMS\Factory;
+use Kunena\Forum\Libraries\View;
 use Joomla\Database\Exception\ExecutionFailureException;
 use function defined;
 
@@ -23,7 +24,7 @@ use function defined;
  *
  * @since   Kunena 5.0
  */
-class KunenaAdminViewCategories extends \Joomla\Component\Kunena\Libraries\View
+class KunenaAdminViewCategories extends View
 {
 	/**
 	 * @return  void

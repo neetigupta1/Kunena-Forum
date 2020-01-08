@@ -10,14 +10,16 @@
  * @link            https://www.kunena.org
  **/
 
-namespace Joomla\Component\Kunena\Site\Controller\User\Ban\Form;
+namespace Kunena\Forum\Site\Controller\User\Ban\Form;
 
 defined('_JEXEC') or die();
 
 use Exception;
 use Joomla\CMS\Language\Text;
-use Joomla\Component\Kunena\Libraries\Controller\Display;
-use Joomla\Component\Kunena\Libraries\User\Helper;
+use Kunena\Forum\Libraries\Controller\KunenaControllerDisplay;
+use Kunena\Forum\Libraries\User\Ban;
+use Kunena\Forum\Libraries\User\Helper;
+use Kunena\Forum\Libraries\User\KunenaUser;
 use function defined;
 
 /**
@@ -25,7 +27,7 @@ use function defined;
  *
  * @since   Kunena 4.0
  */
-class ComponentKunenaControllerUserBanFormDisplay extends Display
+class ComponentKunenaControllerUserBanFormDisplay extends KunenaControllerDisplay
 {
 	/**
 	 * @var     string
@@ -40,7 +42,7 @@ class ComponentKunenaControllerUserBanFormDisplay extends Display
 	public $profile;
 
 	/**
-	 * @var     KunenaUserBan
+	 * @var     Ban
 	 * @since   Kunena 6.0
 	 */
 	public $banInfo;
@@ -69,7 +71,7 @@ class ComponentKunenaControllerUserBanFormDisplay extends Display
 		$this->profile = Helper::get($userid);
 		$this->profile->tryAuthorise('ban');
 
-		$this->banInfo = KunenaUserBan::getInstanceByUserid($userid, true);
+		$this->banInfo = Ban::getInstanceByUserid($userid, true);
 
 		$this->headerText = $this->banInfo->exists() ? Text::_('COM_KUNENA_BAN_EDIT') : Text::_('COM_KUNENA_BAN_NEW');
 	}

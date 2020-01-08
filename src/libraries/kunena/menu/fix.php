@@ -11,7 +11,7 @@
  * @link            https://www.kunena.org
  **/
 
-namespace Joomla\Component\Kunena\Libraries\Menu;
+namespace Kunena\Forum\Libraries\Menu;
 
 defined('_JEXEC') or die();
 
@@ -20,10 +20,11 @@ use Joomla\CMS\Factory;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\Table\Table;
 use Joomla\Database\Exception\ExecutionFailureException;
+use Kunena\Forum\Libraries\Route\Legacy;
 use StdClass;
 use function defined;
 
-KunenaMenuFix::initialize();
+Fix::initialize();
 
 /**
  * Class KunenaMenuFix
@@ -203,7 +204,7 @@ abstract class Fix
 					self::$same[$item->route][$item->id]                                 = $item;
 					self::$structure[$language][$home ? $home->id : 0][$view][$item->id] = $itemid;
 
-					if (KunenaRouteLegacy::isLegacy($view))
+					if (Legacy::isLegacy($view))
 					{
 						self::$legacy[$item->id] = $item->id;
 					}
@@ -275,7 +276,7 @@ abstract class Fix
 		foreach (self::$legacy as $itemid)
 		{
 			$item = self::$items[$itemid];
-			KunenaRouteLegacy::convertMenuItem($item);
+			Legacy::convertMenuItem($item);
 			$table = Table::getInstance('menu');
 			$table->load($item->id);
 			$data = [
@@ -289,7 +290,7 @@ abstract class Fix
 			}
 		}
 
-		\Joomla\Component\Kunena\Libraries\Menu\Helper::cleanCache();
+		Helper::cleanCache();
 
 		return !empty($errors) ? $errors : null;
 	}
@@ -311,7 +312,7 @@ abstract class Fix
 
 		$table  = Table::getInstance('menu');
 		$result = $table->delete($itemid);
-		\Joomla\Component\Kunena\Libraries\Menu\Helper::cleanCache();
+		Helper::cleanCache();
 
 		return $result;
 	}

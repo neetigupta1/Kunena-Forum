@@ -10,10 +10,11 @@
  * @link            https://www.kunena.org
  **/
 
-namespace Joomla\Component\Kunena\Administrator;
+namespace Kunena\Forum\Administrator\Models;
 
 defined('_JEXEC') or die();
 
+use Kunena\Forum\Libraries\Model;
 use function defined;
 
 /**
@@ -21,6 +22,6 @@ use function defined;
  *
  * @since   Kunena 2.0
  */
-class KunenaAdminModelStats extends \Joomla\Component\Kunena\Libraries\Model
+class KunenaAdminModelStats extends Model
 {
 }

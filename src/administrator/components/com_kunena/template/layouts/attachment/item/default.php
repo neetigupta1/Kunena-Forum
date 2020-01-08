@@ -10,14 +10,14 @@
  * @link            https://www.kunena.org
  **/
 
-namespace Joomla\Component\Kunena\Administrator;
+namespace Kunena\Forum\Administrator;
 
 defined('_JEXEC') or die();
 
 use Joomla\CMS\Uri\Uri;
 
 $attachment = $this->attachment;
-$config     = \Joomla\Component\Kunena\Libraries\KunenaFactory::getConfig();
+$config     = \Kunena\Forum\Libraries\KunenaFactory::getConfig();
 
 if ($config->attachment_protection)
 {

@@ -10,19 +10,19 @@
  * @link            https://www.kunena.org
 **/
 
-namespace Joomla\Component\Kunena\Site;
+namespace Kunena\Forum\Site;
 
 defined('_JEXEC') or die();
 
 use Joomla\CMS\HTML\HTMLHelper;
 use function defined;
 
-if (\Joomla\Component\Kunena\Libraries\User\Helper::getMyself()->socialshare == 0 && \Joomla\Component\Kunena\Libraries\User\Helper::getMyself()->exists())
+if (\Kunena\Forum\Libraries\User\Helper::getMyself()->socialshare == 0 && \Kunena\Forum\Libraries\User\Helper::getMyself()->exists())
 {
 	return false;
 }
 
-$this->ktemplate = \Joomla\Component\Kunena\Libraries\KunenaFactory::getTemplate();
+$this->ktemplate = \Kunena\Forum\Libraries\KunenaFactory::getTemplate();
 $socialsharetag  = $this->ktemplate->params->get('socialsharetag');
 
 echo HTMLHelper::_('content.prepare', $socialsharetag);

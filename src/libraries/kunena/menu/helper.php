@@ -11,14 +11,14 @@
  * @link          https://www.kunena.org
  **/
 
-namespace Joomla\Component\Kunena\Libraries\Menu;
+namespace Kunena\Forum\Libraries\Menu;
 
 defined('_JEXEC') or die();
 
 use Exception;
 use Joomla\CMS\Factory;
-use Joomla\CMS\Router\Route;
 use Joomla\CMS\Language\Multilanguage;
+use Joomla\CMS\Router\Route;
 use Joomla\Registry\Registry;
 use function defined;
 
@@ -242,7 +242,7 @@ abstract class Helper
 	 *
 	 * @since   Kunena 6.0
 	 *
-	 * @throws  Exception
+	 * @throws  \Exception
 	 */
 	public static function getDefault()
 	{

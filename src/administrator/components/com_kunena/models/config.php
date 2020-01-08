@@ -10,15 +10,16 @@
  * @link            https://www.kunena.org
  **/
 
-namespace Joomla\Component\Kunena\Administrator;
+namespace Kunena\Forum\Administrator\Models;
 
 defined('_JEXEC') or die();
 
-use Exception;
-use Joomla\CMS\HTML\HTMLHelper;
 use Joomla\CMS\Factory;
+use Joomla\CMS\HTML\HTMLHelper;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\Uri\Uri;
+use Kunena\Forum\Libraries\KunenaDate;
+use Kunena\Forum\Libraries\Model;
 use function defined;
 
 /**
@@ -26,14 +27,14 @@ use function defined;
  *
  * @since 2.0
  */
-class KunenaAdminModelConfig extends \Joomla\Component\Kunena\Libraries\Model
+class KunenaAdminModelConfig extends Model
 {
 	/**
 	 * @return  array
 	 *
 	 * @since   Kunena 6.0
 	 *
-	 * @throws  Exception
+	 * @throws  \Exception
 	 */
 	public function getConfiglists()
 	{
@@ -221,7 +222,7 @@ class KunenaAdminModelConfig extends \Joomla\Component\Kunena\Libraries\Model
 
 		// New for 1.6: datetime
 		$dateformatlist                 = [];
-		$time                           = \Joomla\Component\Kunena\Libraries\KunenaDate::getInstance(time() - 80000);
+		$time                           = KunenaDate::getInstance(time() - 80000);
 		$dateformatlist[]               = HTMLHelper::_('select.option', 'none', Text::_('COM_KUNENA_OPTION_DATEFORMAT_NONE'));
 		$dateformatlist[]               = HTMLHelper::_('select.option', 'ago', $time->toKunena('ago'));
 		$dateformatlist[]               = HTMLHelper::_('select.option', 'datetime_today', $time->toKunena('datetime_today'));

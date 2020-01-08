@@ -10,15 +10,16 @@
  * @link            https://www.kunena.org
  **/
 
-namespace Joomla\Component\Kunena\Administrator;
+namespace Kunena\Forum\Administrator\Views;
 
 defined('_JEXEC') or die();
 
-use Exception;
-use Joomla\CMS\Language\Text;
 use Joomla\CMS\Filesystem\File;
 use Joomla\CMS\Filesystem\Folder;
+use Joomla\CMS\Language\Text;
 use Joomla\CMS\Toolbar\ToolbarHelper;
+use Kunena\Forum\Libraries\Template\Template;
+use Kunena\Forum\Libraries\View;
 use function defined;
 
 /**
@@ -26,14 +27,14 @@ use function defined;
  *
  * @since   Kunena 6.0
  */
-class KunenaAdminViewTemplates extends \Joomla\Component\Kunena\Libraries\View
+class KunenaAdminViewTemplates extends View
 {
 	/**
 	 * @return  void
 	 *
 	 * @since   Kunena 6.0
 	 *
-	 * @throws  Exception
+	 * @throws  \Exception
 	 */
 	public function displayDefault()
 	{
@@ -72,7 +73,7 @@ class KunenaAdminViewTemplates extends \Joomla\Component\Kunena\Libraries\View
 	 *
 	 * @since   Kunena 6.0
 	 *
-	 * @throws  Exception
+	 * @throws  \Exception
 	 */
 	public function displayAdd()
 	{
@@ -100,7 +101,7 @@ class KunenaAdminViewTemplates extends \Joomla\Component\Kunena\Libraries\View
 	 *
 	 * @since   Kunena 6.0
 	 *
-	 * @throws  Exception
+	 * @throws  \Exception
 	 */
 	public function displayEdit()
 	{
@@ -110,7 +111,7 @@ class KunenaAdminViewTemplates extends \Joomla\Component\Kunena\Libraries\View
 		$this->params       = $this->get('editparams');
 		$this->details      = $this->get('templatedetails');
 		$this->templatename = $this->app->getUserState('kunena.edit.templatename');
-		$template           = \Joomla\Component\Kunena\Libraries\Template\Template::getInstance($this->templatename);
+		$template           = Template::getInstance($this->templatename);
 		$template->initializeBackend();
 
 		$this->templatefile = KPATH_SITE . '/template/' . $this->templatename . '/config/params.ini';
@@ -154,7 +155,7 @@ class KunenaAdminViewTemplates extends \Joomla\Component\Kunena\Libraries\View
 	 *
 	 * @since   Kunena 6.0
 	 *
-	 * @throws  Exception
+	 * @throws  \Exception
 	 */
 	public function displayChooseless()
 	{
@@ -198,7 +199,7 @@ class KunenaAdminViewTemplates extends \Joomla\Component\Kunena\Libraries\View
 	 *
 	 * @since   Kunena 6.0
 	 *
-	 * @throws  Exception
+	 * @throws  \Exception
 	 */
 	public function displayEditless()
 	{
@@ -235,7 +236,7 @@ class KunenaAdminViewTemplates extends \Joomla\Component\Kunena\Libraries\View
 	 *
 	 * @since   Kunena 6.0
 	 *
-	 * @throws  Exception
+	 * @throws  \Exception
 	 */
 	public function displayChoosecss()
 	{
@@ -283,7 +284,7 @@ class KunenaAdminViewTemplates extends \Joomla\Component\Kunena\Libraries\View
 	 *
 	 * @since   Kunena 6.0
 	 *
-	 * @throws  Exception
+	 * @throws  \Exception
 	 */
 	public function displayEditcss()
 	{

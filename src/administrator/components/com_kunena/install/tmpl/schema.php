@@ -9,13 +9,9 @@
  * @license         https://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link            https://www.kunena.org
  **/
-
-namespace Joomla\Component\Kunena\Administrator;
-
 defined('_JEXEC') or die();
 
 use Joomla\CMS\Uri\Uri;
-use function defined;
 
 $this->document->addStyleSheet(Uri::base(true) . '/components/com_kunena/install/media/install.css');
 ?>

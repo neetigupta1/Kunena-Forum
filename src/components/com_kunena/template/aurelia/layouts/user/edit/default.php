@@ -10,7 +10,7 @@
  * @link            https://www.kunena.org
 **/
 
-namespace Joomla\Component\Kunena\Site;
+namespace Kunena\Forum\Site;
 
 defined('_JEXEC') or die();
 
@@ -18,21 +18,21 @@ use Joomla\CMS\HTML\HTMLHelper;
 use Joomla\CMS\Language\Text;
 use function defined;
 
-$this->profile = \Joomla\Component\Kunena\Libraries\KunenaFactory::getUser($this->user->id);
-$this->me      = \Joomla\Component\Kunena\Libraries\User\Helper::getMyself();
+$this->profile = \Kunena\Forum\Libraries\KunenaFactory::getUser($this->user->id);
+$this->me      = \Kunena\Forum\Libraries\User\Helper::getMyself();
 $tabs          = $this->getTabsEdit();
-$avatar        = \Joomla\Component\Kunena\Libraries\KunenaFactory::getAvatarIntegration();
+$avatar        = \Kunena\Forum\Libraries\KunenaFactory::getAvatarIntegration();
 ?>
 <h2>
 	<?php echo Text::_('COM_KUNENA_USER_PROFILE'); ?><?php echo $this->escape($this->profile->getName()); ?>
 
 	<?php echo $this->profile->getLink(
-		KunenaIcons::back() . ' ' . Text::_('COM_KUNENA_BACK'),
+		\Kunena\Forum\Libraries\Icons\Icons::back() . ' ' . Text::_('COM_KUNENA_BACK'),
 		Text::_('COM_KUNENA_BACK'), 'nofollow', '', 'btn btn-outline-primary border float-right'
 	); ?>
 </h2>
 
-<form action="<?php echo \Joomla\Component\Kunena\Libraries\Route\KunenaRoute::_('index.php?option=com_kunena&view=user'); ?>" method="post"
+<form action="<?php echo \Kunena\Forum\Libraries\Route\KunenaRoute::_('index.php?option=com_kunena&view=user'); ?>" method="post"
       enctype="multipart/form-data" name="kuserform"
       class="form-validate" id="kuserform">
 	<input type="hidden" name="task" value="save"/>
@@ -40,12 +40,12 @@ $avatar        = \Joomla\Component\Kunena\Libraries\KunenaFactory::getAvatarInte
 	<?php echo HTMLHelper::_('form.token'); ?>
 
 	<div class="tabs">
-		<ul id="KunenaUserEdit" class="nav nav-tabs">
+		<ul id="\Kunena\Forum\Libraries\User\KunenaUserEdit" class="nav nav-tabs">
 
 			<?php foreach ($tabs as $name => $tab)
 				:
 				?>
-				<?php if ($name == 'avatar' && !$avatar instanceof \Joomla\Component\Kunena\Libraries\Integration\Avatar): ?>
+				<?php if ($name == 'avatar' && !$avatar instanceof \Kunena\Forum\Libraries\Integration\Avatar): ?>
 			<?php else : ?>
 				<li class="nav-item <?php echo $tab->active ? 'active' : ''; ?>">
 					<a <?php echo $tab->active ? ' class="nav-link active"' : ' class="nav-link"'; ?>
@@ -60,7 +60,7 @@ $avatar        = \Joomla\Component\Kunena\Libraries\KunenaFactory::getAvatarInte
 			<?php foreach ($tabs as $name => $tab)
 				:
 				?>
-				<?php if ($name == 'avatar' && !$avatar instanceof \Joomla\Component\Kunena\Libraries\Integration\Avatar): ?>
+				<?php if ($name == 'avatar' && !$avatar instanceof \Kunena\Forum\Libraries\Integration\Avatar): ?>
 			<?php else : ?>
 				<div class="tab-pane fade<?php echo $tab->active ? ' in active show' : ''; ?>"
 				     id="edit<?php echo $name; ?>">
@@ -76,11 +76,11 @@ $avatar        = \Joomla\Component\Kunena\Libraries\KunenaFactory::getAvatarInte
 
 		<div class="center">
 			<button class="btn btn-outline-primary validate" type="submit">
-				<?php echo KunenaIcons::save(); ?><?php echo Text::_('COM_KUNENA_SAVE'); ?>
+				<?php echo \Kunena\Forum\Libraries\Icons\Icons::save(); ?><?php echo Text::_('COM_KUNENA_SAVE'); ?>
 			</button>
 			<button class="btn btn-outline-primary border" type="button" name="cancel" onclick="window.history.back();"
 			        title="<?php echo Text::_('COM_KUNENA_EDITOR_HELPLINE_CANCEL'); ?>">
-				<?php echo KunenaIcons::cancel(); ?><?php echo Text::_('COM_KUNENA_CANCEL'); ?>
+				<?php echo \Kunena\Forum\Libraries\Icons\Icons::cancel(); ?><?php echo Text::_('COM_KUNENA_CANCEL'); ?>
 			</button>
 		</div>
 	</div>

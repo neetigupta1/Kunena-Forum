@@ -9,7 +9,7 @@
  * @link           https://www.kunena.org
  **/
 
-namespace Joomla\Component\Kunena\Administrator;
+namespace Kunena\Forum\Administrator\Updates\Php;
 
 defined('_JEXEC') or die();
 
@@ -26,7 +26,7 @@ use function defined;
  *
  * @since   Kunena 6.0
  *
- * @throws  Exception
+ * @throws  \Exception
  */
 function kunena_600_2019_07_21_datetimeupdatevalue($parent)
 {
@@ -41,7 +41,7 @@ function kunena_600_2019_07_21_datetimeupdatevalue($parent)
 	}
 	catch (Exception $e)
 	{
-		throw new KunenaInstallerException($e->getMessage(), $e->getCode());
+		throw new Exception($e->getMessage(), $e->getCode());
 	}
 
 	$query = "ALTER TABLE `#__kunena_announcement` MODIFY COLUMN `created` DATETIME NOT NULL DEFAULT '1000-01-01 00:00:00';";
@@ -53,7 +53,7 @@ function kunena_600_2019_07_21_datetimeupdatevalue($parent)
 	}
 	catch (Exception $e)
 	{
-		throw new KunenaInstallerException($e->getMessage(), $e->getCode());
+		throw new Exception($e->getMessage(), $e->getCode());
 	}
 
 	$query = "UPDATE `#__kunena_announcement` SET  publish_up='1000-01-01 00:00:00' WHERE publish_up='null'";
@@ -65,7 +65,7 @@ function kunena_600_2019_07_21_datetimeupdatevalue($parent)
 	}
 	catch (Exception $e)
 	{
-		throw new KunenaInstallerException($e->getMessage(), $e->getCode());
+		throw new Exception($e->getMessage(), $e->getCode());
 	}
 
 	$query = "ALTER TABLE `#__kunena_announcement` MODIFY COLUMN `publish_up` DATETIME NOT NULL DEFAULT '1000-01-01 00:00:00';";
@@ -77,7 +77,7 @@ function kunena_600_2019_07_21_datetimeupdatevalue($parent)
 	}
 	catch (Exception $e)
 	{
-		throw new KunenaInstallerException($e->getMessage(), $e->getCode());
+		throw new Exception($e->getMessage(), $e->getCode());
 	}
 
 	$query = "UPDATE `#__kunena_announcement` SET publish_down='1000-01-01 00:00:00' WHERE publish_down='null'";
@@ -89,7 +89,7 @@ function kunena_600_2019_07_21_datetimeupdatevalue($parent)
 	}
 	catch (Exception $e)
 	{
-		throw new KunenaInstallerException($e->getMessage(), $e->getCode());
+		throw new Exception($e->getMessage(), $e->getCode());
 	}
 
 	$query = "ALTER TABLE `#__kunena_announcement` MODIFY COLUMN `publish_down` DATETIME NOT NULL DEFAULT '1000-01-01 00:00:00';";
@@ -101,7 +101,7 @@ function kunena_600_2019_07_21_datetimeupdatevalue($parent)
 	}
 	catch (Exception $e)
 	{
-		throw new KunenaInstallerException($e->getMessage(), $e->getCode());
+		throw new Exception($e->getMessage(), $e->getCode());
 	}
 
 	$query = "UPDATE `#__kunena_categories` SET checked_out_time='1000-01-01 00:00:00' WHERE checked_out_time='null'";
@@ -113,7 +113,7 @@ function kunena_600_2019_07_21_datetimeupdatevalue($parent)
 	}
 	catch (Exception $e)
 	{
-		throw new KunenaInstallerException($e->getMessage(), $e->getCode());
+		throw new Exception($e->getMessage(), $e->getCode());
 	}
 
 	$query = "ALTER TABLE `#__kunena_categories` MODIFY COLUMN `checked_out_time` DATETIME NOT NULL DEFAULT '1000-01-01 00:00:00';";
@@ -125,7 +125,7 @@ function kunena_600_2019_07_21_datetimeupdatevalue($parent)
 	}
 	catch (Exception $e)
 	{
-		throw new KunenaInstallerException($e->getMessage(), $e->getCode());
+		throw new Exception($e->getMessage(), $e->getCode());
 	}
 
 	$query = "UPDATE `#__kunena_polls` SET polltimetolive='1000-01-01 00:00:00' WHERE polltimetolive='null'";
@@ -137,7 +137,7 @@ function kunena_600_2019_07_21_datetimeupdatevalue($parent)
 	}
 	catch (Exception $e)
 	{
-		throw new KunenaInstallerException($e->getMessage(), $e->getCode());
+		throw new Exception($e->getMessage(), $e->getCode());
 	}
 
 	$query = "ALTER TABLE `#__kunena_polls` MODIFY COLUMN `polltimetolive` DATETIME NOT NULL DEFAULT '1000-01-01 00:00:00';";
@@ -149,7 +149,7 @@ function kunena_600_2019_07_21_datetimeupdatevalue($parent)
 	}
 	catch (Exception $e)
 	{
-		throw new KunenaInstallerException($e->getMessage(), $e->getCode());
+		throw new Exception($e->getMessage(), $e->getCode());
 	}
 
 	$query = "UPDATE `#__kunena_polls_users` SET lasttime='1000-01-01 00:00:00' WHERE lasttime='null'";
@@ -161,7 +161,7 @@ function kunena_600_2019_07_21_datetimeupdatevalue($parent)
 	}
 	catch (Exception $e)
 	{
-		throw new KunenaInstallerException($e->getMessage(), $e->getCode());
+		throw new Exception($e->getMessage(), $e->getCode());
 	}
 
 	$query = "ALTER TABLE `#__kunena_polls_users` MODIFY COLUMN `lasttime` DATETIME NOT NULL DEFAULT '1000-01-01 00:00:00';";
@@ -173,7 +173,7 @@ function kunena_600_2019_07_21_datetimeupdatevalue($parent)
 	}
 	catch (Exception $e)
 	{
-		throw new KunenaInstallerException($e->getMessage(), $e->getCode());
+		throw new Exception($e->getMessage(), $e->getCode());
 	}
 
 	$query = "UPDATE `#__kunena_rate` SET time='1000-01-01 00:00:00' WHERE time='null'";
@@ -185,7 +185,7 @@ function kunena_600_2019_07_21_datetimeupdatevalue($parent)
 	}
 	catch (Exception $e)
 	{
-		throw new KunenaInstallerException($e->getMessage(), $e->getCode());
+		throw new Exception($e->getMessage(), $e->getCode());
 	}
 
 	$query = "ALTER TABLE `#__kunena_rate` MODIFY COLUMN `time` DATETIME NOT NULL DEFAULT '1000-01-01 00:00:00';";
@@ -197,7 +197,7 @@ function kunena_600_2019_07_21_datetimeupdatevalue($parent)
 	}
 	catch (Exception $e)
 	{
-		throw new KunenaInstallerException($e->getMessage(), $e->getCode());
+		throw new Exception($e->getMessage(), $e->getCode());
 	}
 
 	$query = "UPDATE `#__kunena_users_banned` SET expiration='1000-01-01 00:00:00' WHERE expiration='null'";
@@ -209,7 +209,7 @@ function kunena_600_2019_07_21_datetimeupdatevalue($parent)
 	}
 	catch (Exception $e)
 	{
-		throw new KunenaInstallerException($e->getMessage(), $e->getCode());
+		throw new Exception($e->getMessage(), $e->getCode());
 	}
 
 	$query = "ALTER TABLE `#__kunena_users_banned` MODIFY COLUMN `expiration` DATETIME NOT NULL DEFAULT '1000-01-01 00:00:00';";
@@ -221,7 +221,7 @@ function kunena_600_2019_07_21_datetimeupdatevalue($parent)
 	}
 	catch (Exception $e)
 	{
-		throw new KunenaInstallerException($e->getMessage(), $e->getCode());
+		throw new Exception($e->getMessage(), $e->getCode());
 	}
 
 	$query = "UPDATE `#__kunena_users_banned` SET created_time='1000-01-01 00:00:00' WHERE created_time='null'";
@@ -233,7 +233,7 @@ function kunena_600_2019_07_21_datetimeupdatevalue($parent)
 	}
 	catch (Exception $e)
 	{
-		throw new KunenaInstallerException($e->getMessage(), $e->getCode());
+		throw new Exception($e->getMessage(), $e->getCode());
 	}
 
 	$query = "ALTER TABLE `#__kunena_users_banned` MODIFY COLUMN `created_time` DATETIME NOT NULL DEFAULT '1000-01-01 00:00:00';";
@@ -247,7 +247,7 @@ function kunena_600_2019_07_21_datetimeupdatevalue($parent)
 	}
 	catch (Exception $e)
 	{
-		throw new KunenaInstallerException($e->getMessage(), $e->getCode());
+		throw new Exception($e->getMessage(), $e->getCode());
 	}
 
 	$query = "ALTER TABLE `#__kunena_users_banned` MODIFY COLUMN `modified_time` DATETIME NOT NULL DEFAULT '1000-01-01 00:00:00';";
@@ -259,7 +259,7 @@ function kunena_600_2019_07_21_datetimeupdatevalue($parent)
 	}
 	catch (Exception $e)
 	{
-		throw new KunenaInstallerException($e->getMessage(), $e->getCode());
+		throw new Exception($e->getMessage(), $e->getCode());
 	}
 
 	return ['action' => '', 'name' => Text::_('COM_KUNENA_INSTALL_600_DATETIME_VALUE_IN_TABLES'), 'success' => true];

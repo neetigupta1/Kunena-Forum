@@ -10,22 +10,25 @@
  * @link            https://www.kunena.org
  **/
 
-namespace Joomla\Component\Kunena\Site\Controller\Category\Manage;
+namespace Kunena\Forum\Site\Controller\Category\Manage;
 
 defined('_JEXEC') or die();
 
 use Exception;
 use Joomla\CMS\Factory;
+use Joomla\CMS\Filesystem\Folder;
 use Joomla\CMS\HTML\HTMLHelper;
 use Joomla\CMS\Language\Text;
-use Joomla\Component\Kunena\Libraries\Access;
-use Joomla\Component\Kunena\Libraries\Controller\Display;
-use Joomla\Component\Kunena\Libraries\Exception\Authorise;
-use Joomla\Component\Kunena\Libraries\Forum\Category\Helper;
-use Joomla\Component\Kunena\Libraries\KunenaFactory;
-use Joomla\Component\Kunena\Libraries\Template\Template;
+use Kunena\Forum\Libraries\Access;
+use Kunena\Forum\Libraries\Controller\KunenaControllerDisplay;
+use Kunena\Forum\Libraries\Exception\Authorise;
+use Kunena\Forum\Libraries\Forum\Category\Category;
+use Kunena\Forum\Libraries\Forum\Category\Helper;
+use Kunena\Forum\Libraries\KunenaFactory;
+use Kunena\Forum\Libraries\Pagination\Pagination;
+use Kunena\Forum\Libraries\Template\Template;
 use Joomla\Registry\Registry;
-use Joomla\CMS\Filesystem\Folder;
+use Kunena\Forum\Libraries\User\KunenaUser;
 use function defined;
 
 /**
@@ -33,7 +36,7 @@ use function defined;
  *
  * @since   Kunena 4.0
  */
-class ComponentKunenaControllerCategoryManageDisplay extends Display
+class ComponentKunenaControllerCategoryManageDisplay extends KunenaControllerDisplay
 {
 	/**
 	 * @var     string
@@ -48,7 +51,7 @@ class ComponentKunenaControllerCategoryManageDisplay extends Display
 	public $headerText;
 
 	/**
-	 * @var     KunenaForumCategory
+	 * @var     Category
 	 * @since   Kunena 5.1
 	 */
 	public $category;
@@ -66,7 +69,7 @@ class ComponentKunenaControllerCategoryManageDisplay extends Display
 	public $topics;
 
 	/**
-	 * @var     KunenaPagination
+	 * @var     Pagination
 	 * @since   Kunena 5.1
 	 */
 	public $pagination;
@@ -86,7 +89,7 @@ class ComponentKunenaControllerCategoryManageDisplay extends Display
 	/**
 	 * Prepare category display.
 	 *
-	 * @return  KunenaExceptionAuthorise|void
+	 * @return  Authorise|void
 	 *
 	 * @since   Kunena 5.1
 	 *
@@ -94,7 +97,7 @@ class ComponentKunenaControllerCategoryManageDisplay extends Display
 	 */
 	protected function before()
 	{
-		$this->me = \Joomla\Component\Kunena\Libraries\User\Helper::getMyself();
+		$this->me = \Kunena\Forum\Libraries\User\Helper::getMyself();
 
 		if (!$this->me->isAdmin())
 		{

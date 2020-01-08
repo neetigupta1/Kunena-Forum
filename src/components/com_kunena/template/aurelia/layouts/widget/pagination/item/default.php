@@ -10,7 +10,7 @@
  * @link            https://www.kunena.org
 **/
 
-namespace Joomla\Component\Kunena\Site;
+namespace Kunena\Forum\Site;
 
 defined('_JEXEC') or die();
 
@@ -24,7 +24,7 @@ if ($item->base !== null)
 	// Check if the item can be clicked.
 	$limit = 'limitstart.value=' . (int) $item->base;
 	echo '<li class="page-item">
-			<a class="page-link" ' . \Joomla\Component\Kunena\Libraries\Template\Template::getInstance()->tooltips(true) . ' href="' . $item->link . '" title="' . Text::_('COM_KUNENA_PAGE') . $item->text . '">' . $item->text . '</a>
+			<a class="page-link" ' . \Kunena\Forum\Libraries\Template\Template::getInstance()->tooltips(true) . ' href="' . $item->link . '" title="' . Text::_('COM_KUNENA_PAGE') . $item->text . '">' . $item->text . '</a>
 		  </li>';
 }
 elseif (!empty($item->active))

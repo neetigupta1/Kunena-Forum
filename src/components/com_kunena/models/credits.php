@@ -10,11 +10,11 @@
  * @link            https://www.kunena.org
  **/
 
-namespace Joomla\Component\Kunena\Site\Models;
+namespace Kunena\Forum\Site\Models;
 
 defined('_JEXEC') or die();
 
-use Joomla\Component\Kunena\Libraries\Model;
+use Kunena\Forum\Libraries\Model;
 use function defined;
 
 /**

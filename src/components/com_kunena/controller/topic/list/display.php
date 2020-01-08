@@ -10,7 +10,7 @@
  * @link            https://www.kunena.org
 **/
 
-namespace Joomla\Component\Kunena\Site\Controller\Topic\KunenaList;
+namespace Kunena\Forum\Site\Controller\Topic\KunenaList;
 
 defined('_JEXEC') or die();
 
@@ -19,11 +19,14 @@ use Joomla\CMS\Factory;
 use Joomla\CMS\HTML\HTMLHelper;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\Plugin\PluginHelper;
-use Joomla\Component\Kunena\Libraries\Access;
-use Joomla\Component\Kunena\Libraries\Controller\Display;
-use Joomla\Component\Kunena\Libraries\Forum\Message\Helper;
-use Joomla\Component\Kunena\Libraries\Html\Parser;
+use Kunena\Forum\Libraries\Access;
+use Kunena\Forum\Libraries\Controller\KunenaControllerDisplay;
+use Kunena\Forum\Libraries\Forum\Message\Helper;
+use Kunena\Forum\Libraries\Forum\Topic\Topic;
+use Kunena\Forum\Libraries\Html\Parser;
 use Joomla\Registry\Registry;
+use Kunena\Forum\Libraries\Pagination\Pagination;
+use Kunena\Forum\Libraries\User\KunenaUser;
 use function defined;
 
 /**
@@ -31,7 +34,7 @@ use function defined;
  *
  * @since   Kunena 4.0
  */
-abstract class ComponentKunenaControllerTopicListDisplay extends Display
+abstract class ComponentKunenaControllerTopicListDisplay extends KunenaControllerDisplay
 {
 	/**
 	 * @var     string
@@ -46,13 +49,13 @@ abstract class ComponentKunenaControllerTopicListDisplay extends Display
 	public $me;
 
 	/**
-	 * @var     array|KunenaForumTopic[]
+	 * @var     array|Topic[]
 	 * @since   Kunena 6.0
 	 */
 	public $topics;
 
 	/**
-	 * @var     KunenaPagination
+	 * @var     Pagination
 	 * @since   Kunena 6.0
 	 */
 	public $pagination;
@@ -90,13 +93,13 @@ abstract class ComponentKunenaControllerTopicListDisplay extends Display
 		// Prefetch all users/avatars to avoid user by user queries during template iterations.
 		if (!empty($userIds))
 		{
-			\Joomla\Component\Kunena\Libraries\User\Helper::loadUsers($userIds);
+			\Kunena\Forum\Libraries\User\Helper::loadUsers($userIds);
 		}
 
 		$topicIds = array_keys($this->topics);
-		\Joomla\Component\Kunena\Libraries\Forum\Topic\Helper::getUserTopics($topicIds);
+		\Kunena\Forum\Libraries\Forum\Topic\Helper::getUserTopics($topicIds);
 
-		$mesIds += \Joomla\Component\Kunena\Libraries\Forum\Topic\Helper::fetchNewStatus($this->topics);
+		$mesIds += \Kunena\Forum\Libraries\Forum\Topic\Helper::fetchNewStatus($this->topics);
 
 		// Fetch also last post positions when user can see unapproved or deleted posts.
 		// TODO: Optimize? Take account of configuration option...

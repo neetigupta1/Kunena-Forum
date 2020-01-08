@@ -10,18 +10,17 @@
  * @link            https://www.kunena.org
  **/
 
-namespace Joomla\Component\Kunena\Site\View\Topics;
+namespace Kunena\Forum\Site\View\Topics;
 
 defined('_JEXEC') or die();
 
-use Exception;
 use Joomla\CMS\Factory;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\Plugin\PluginHelper;
-use Joomla\Component\Kunena\Libraries\KunenaDate;
-use Joomla\Component\Kunena\Libraries\KunenaFactory;
-use Joomla\Component\Kunena\Libraries\Route\KunenaRoute;
-use Joomla\Component\Kunena\Libraries\View;
+use Kunena\Forum\Libraries\KunenaDate;
+use Kunena\Forum\Libraries\KunenaFactory;
+use Kunena\Forum\Libraries\Route\KunenaRoute;
+use Kunena\Forum\Libraries\View;
 use Joomla\Registry\Registry;
 use function defined;
 
@@ -39,7 +38,7 @@ class html extends View
 	 *
 	 * @since   Kunena 6.0
 	 *
-	 * @throws  Exception
+	 * @throws  \Exception
 	 * @throws  null
 	 */
 	public function displayDefault($tpl = null)
@@ -78,7 +77,7 @@ class html extends View
 	 *
 	 * @since   Kunena 6.0
 	 *
-	 * @throws  Exception
+	 * @throws  \Exception
 	 * @throws  null
 	 */
 	public function displayUser($tpl = null)
@@ -116,7 +115,7 @@ class html extends View
 	 *
 	 * @since   Kunena 6.0
 	 *
-	 * @throws  Exception
+	 * @throws  \Exception
 	 * @throws  null
 	 */
 	public function displayPosts($tpl = null)
@@ -153,7 +152,7 @@ class html extends View
 	 *
 	 * @since   Kunena 6.0
 	 *
-	 * @throws  Exception
+	 * @throws  \Exception
 	 */
 	public function displayRows()
 	{
@@ -172,7 +171,7 @@ class html extends View
 	 *
 	 * @since   Kunena 6.0
 	 *
-	 * @throws  Exception
+	 * @throws  \Exception
 	 */
 	public function displayTopicRows()
 	{
@@ -259,7 +258,7 @@ class html extends View
 	 *
 	 * @since   Kunena 6.0
 	 *
-	 * @throws  Exception
+	 * @throws  \Exception
 	 * @throws  null
 	 */
 	public function fillTopicInfo($matches)
@@ -284,7 +283,7 @@ class html extends View
 	 *
 	 * @since   Kunena 6.0
 	 *
-	 * @throws  Exception
+	 * @throws  \Exception
 	 */
 	public function displayPostRows()
 	{

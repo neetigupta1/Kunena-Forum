@@ -10,7 +10,7 @@
  * @link            https://www.kunena.org
 **/
 
-namespace Joomla\Component\Kunena\Site;
+namespace Kunena\Forum\Site;
 
 defined('_JEXEC') or die();
 
@@ -66,7 +66,7 @@ $announcement = $this->announcement;
 	<?php endif; ?>
 
 	<td>
-		<?php if (Config::getInstance()->username)
+		<?php if (\Kunena\Forum\Libraries\Config::getInstance()->username)
 			:
 			?>
 			<?php echo $announcement->getAuthor()->username; ?>

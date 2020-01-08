@@ -10,7 +10,7 @@
  * @link            https://www.kunena.org
 **/
 
-namespace Joomla\Component\Kunena\Site;
+namespace Kunena\Forum\Site;
 
 defined('_JEXEC') or die();
 
@@ -42,7 +42,7 @@ $this->addScript('jquery.atwho.js');
 
 $this->addScript('assets/js/topic.js');
 
-$this->ktemplate = \Joomla\Component\Kunena\Libraries\KunenaFactory::getTemplate();
+$this->ktemplate = \Kunena\Forum\Libraries\KunenaFactory::getTemplate();
 $social          = $this->ktemplate->params->get('socialshare');
 $quick           = $this->ktemplate->params->get('quick');
 $txt             = '';
@@ -132,7 +132,7 @@ if ($topic->locked)
 
 	echo '</div>';
 
-	if ($quick == 2 && Config::getInstance()->quickreply)
+	if ($quick == 2 && \Kunena\Forum\Libraries\Config::getInstance()->quickreply)
 	{
 		echo $this->subLayout('Message/Edit')
 			->set('message', $this->message)

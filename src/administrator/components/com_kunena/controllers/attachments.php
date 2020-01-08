@@ -10,13 +10,15 @@
  * @link            https://www.kunena.org
  **/
 
-namespace Joomla\Component\Kunena\Administrator;
+namespace Kunena\Forum\Administrator\Controllers;
 
 defined('_JEXEC') or die();
 
-use Exception;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\Session\Session;
+use Kunena\Forum\Libraries\Attachment\Helper;
+use Kunena\Forum\Libraries\Controller;
+use Kunena\Forum\Libraries\Route\KunenaRoute;
 use Joomla\Utilities\ArrayHelper;
 use function defined;
 
@@ -25,7 +27,7 @@ use function defined;
  *
  * @since   Kunena 2.0
  */
-class KunenaAdminControllerAttachments extends KunenaController
+class KunenaAdminControllerAttachments extends Controller
 {
 	/**
 	 * @var     null|string
@@ -40,7 +42,7 @@ class KunenaAdminControllerAttachments extends KunenaController
 	 *
 	 * @since   Kunena 2.0
 	 *
-	 * @throws  Exception
+	 * @throws  \Exception
 	 */
 	public function __construct($config = [])
 	{
@@ -55,7 +57,7 @@ class KunenaAdminControllerAttachments extends KunenaController
 	 *
 	 * @since   Kunena 2.0
 	 *
-	 * @throws  Exception
+	 * @throws  \Exception
 	 * @throws  null
 	 */
 	public function delete()
@@ -63,7 +65,7 @@ class KunenaAdminControllerAttachments extends KunenaController
 		if (!Session::checkToken('post'))
 		{
 			$this->app->enqueueMessage(Text::_('COM_KUNENA_ERROR_TOKEN'), 'error');
-			$this->setRedirect(\Joomla\Component\Kunena\Libraries\Route\KunenaRoute::_($this->baseurl, false));
+			$this->setRedirect(KunenaRoute::_($this->baseurl, false));
 
 			return;
 		}
@@ -74,14 +76,14 @@ class KunenaAdminControllerAttachments extends KunenaController
 		if (!$cid)
 		{
 			$this->app->enqueueMessage(Text::_('COM_KUNENA_NO_ATTACHMENTS_SELECTED'), 'error');
-			$this->setRedirect(\Joomla\Component\Kunena\Libraries\Route\KunenaRoute::_($this->baseurl, false));
+			$this->setRedirect(KunenaRoute::_($this->baseurl, false));
 
 			return;
 		}
 
 		foreach ($cid as $id)
 		{
-			$attachment = \Joomla\Component\Kunena\Libraries\Attachment\Helper::get($id);
+			$attachment = Helper::get($id);
 
 			$message     = $attachment->getMessage();
 			$attachments = [$attachment->id, 1];
@@ -105,6 +107,6 @@ class KunenaAdminControllerAttachments extends KunenaController
 		}
 
 		$this->app->enqueueMessage(Text::_('COM_KUNENA_ATTACHMENTS_DELETED_SUCCESSFULLY'));
-		$this->setRedirect(\Joomla\Component\Kunena\Libraries\Route\KunenaRoute::_($this->baseurl, false));
+		$this->setRedirect(KunenaRoute::_($this->baseurl, false));
 	}
 }

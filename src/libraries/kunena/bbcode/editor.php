@@ -10,7 +10,7 @@
  * @link          https://www.kunena.org
  **/
 
-namespace Joomla\Component\Kunena\Libraries\Bbcode;
+namespace Kunena\Forum\Libraries\Bbcode;
 
 defined('_JEXEC') or die();
 
@@ -18,6 +18,7 @@ use Exception;
 use Joomla\CMS\Factory;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\Plugin\PluginHelper;
+use Kunena\Forum\Libraries\KunenaFactory;
 use SimpleXMLElement;
 use function defined;
 
@@ -47,7 +48,7 @@ class KunenaBbcodeEditor
 	public function __construct($config = [])
 	{
 		$this->config   = $config;
-		$this->template = \Joomla\Component\Kunena\Libraries\KunenaFactory::getTemplate();
+		$this->template = KunenaFactory::getTemplate();
 	}
 
 	/**
@@ -163,7 +164,7 @@ class KunenaBbcodeEditor
 	 */
 	public function initialize()
 	{
-		$template     = \Joomla\Component\Kunena\Libraries\KunenaFactory::getTemplate();
+		$template     = KunenaFactory::getTemplate();
 		$this->isHMVC = $template->isHmvc();
 	}
 
@@ -236,7 +237,7 @@ class KunenaBbcodeEditor
 					$cfgVariable = substr($cfgVariable, 1);
 				}
 
-				if (\Joomla\Component\Kunena\Libraries\KunenaFactory::getConfig()->$cfgVariable != $cfgValue)
+				if (KunenaFactory::getConfig()->$cfgVariable != $cfgValue)
 				{
 					continue;
 				}
@@ -394,7 +395,7 @@ class KunenaBbcodeEditorButton extends KunenaBbcodeEditorElement
 					$cfgVariable = substr($cfgVariable, 1);
 				}
 
-				if (\Joomla\Component\Kunena\Libraries\KunenaFactory::getConfig()->$cfgVariable != $cfgValue)
+				if (KunenaFactory::getConfig()->$cfgVariable != $cfgValue)
 				{
 					continue;
 				}

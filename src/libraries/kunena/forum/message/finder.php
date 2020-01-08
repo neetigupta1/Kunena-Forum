@@ -10,22 +10,25 @@
  * @link          https://www.kunena.org
  **/
 
-namespace Joomla\Component\Kunena\Libraries\Forum\Message;
+namespace Kunena\Forum\Libraries\Forum\Message;
 
 defined('_JEXEC') or die();
 
 use Exception;
 use Joomla\CMS\Date\Date;
-use Joomla\Utilities\ArrayHelper;
 use Joomla\Database\QueryInterface;
+use Joomla\Utilities\ArrayHelper;
+use Kunena\Forum\Libraries\Forum\Category\Category;
+use Kunena\Forum\Libraries\KunenaFactory;
+use Kunena\Forum\Libraries\User\KunenaUser;
 use function defined;
 
 /**
- * Class KunenaForumMessageFinder
+ * Class \Kunena\Forum\Libraries\Forum\Message\MessageFinder
  *
  * @since   Kunena 6.0
  */
-class Finder extends KunenaDatabaseObjectFinder
+class Finder extends \Kunena\Forum\Libraries\Database\Object\Finder
 {
 	/**
 	 * @var     string
@@ -56,7 +59,7 @@ class Finder extends KunenaDatabaseObjectFinder
 	{
 		parent::__construct();
 
-		$this->limit = \Joomla\Component\Kunena\Libraries\KunenaFactory::getConfig()->messages_per_page;
+		$this->limit = KunenaFactory::getConfig()->messages_per_page;
 	}
 
 	/**
@@ -104,7 +107,7 @@ class Finder extends KunenaDatabaseObjectFinder
 		{
 			foreach ($categories as $category)
 			{
-				if ($category instanceof KunenaForumCategory)
+				if ($category instanceof Category)
 				{
 					$list[] = (int) $category->id;
 				}
@@ -220,7 +223,7 @@ class Finder extends KunenaDatabaseObjectFinder
 	 *
 	 * @param   string  $access  Kunena action access control check.
 	 *
-	 * @return  array|KunenaForumMessage[]
+	 * @return  array|Message[]
 	 *
 	 * @since   Kunena 6.0
 	 *
@@ -231,7 +234,7 @@ class Finder extends KunenaDatabaseObjectFinder
 	{
 		$results = parent::find();
 
-		return \Joomla\Component\Kunena\Libraries\Forum\Message\Helper::getMessages($results, $access);
+		return Helper::getMessages($results, $access);
 	}
 
 	/**

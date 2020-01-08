@@ -10,13 +10,12 @@
  * @link            https://www.kunena.org
  **/
 
-namespace Joomla\Component\Kunena\Site\Layout\Widget;
+namespace Kunena\Forum\Site\Layout\Widget;
 
 defined('_JEXEC') or die;
 
-use Exception;
 use Joomla\CMS\Factory;
-use Joomla\Component\Kunena\Libraries\Layout\Layout;
+use Kunena\Forum\Libraries\Layout\Layout;
 use function defined;
 
 /**
@@ -39,7 +38,7 @@ class KunenaLayoutWidgetModule extends Layout
 	 *
 	 * @since   Kunena 6.0
 	 *
-	 * @throws  Exception
+	 * @throws  \Exception
 	 */
 	public function renderPosition()
 	{

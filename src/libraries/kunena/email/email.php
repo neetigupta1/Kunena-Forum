@@ -10,14 +10,16 @@
  * @link          https://www.kunena.org
  **/
 
-namespace Joomla\Component\Kunena\Libraries\Email;
+namespace Kunena\Forum\Libraries\Email;
 
 defined('_JEXEC') or die();
 
+use ErrorException;
 use Exception;
 use Joomla\CMS\Log\Log;
 use Joomla\CMS\Mail\MailHelper;
 use Joomla\CMS\Mail\MailTemplate;
+use Kunena\Forum\Libraries\KunenaFactory;
 use function defined;
 
 /**
@@ -49,7 +51,7 @@ abstract class Email
 			return false;
 		}
 
-		$config = \Joomla\Component\Kunena\Libraries\KunenaFactory::getConfig();
+		$config = KunenaFactory::getConfig();
 
 		if (!empty($config->email_recipient_count))
 		{

@@ -10,14 +10,15 @@
  * See COPYRIGHT.php for copyright notices and details.
  */
 
-namespace Joomla\Component\Kunena\Plugin\Kunena\Easysocial;
+namespace Kunena\Forum\Plugin\Kunena\Easysocial;
 
 defined('_JEXEC') or die('Unauthorized Access');
 
 use Exception;
-use Joomla\CMS\Uri\Uri;
 use Joomla\CMS\Factory;
-use Joomla\Component\Kunena\Libraries\Integration\Profile;
+use Joomla\CMS\Uri\Uri;
+use Kunena\Forum\Libraries\Integration\Profile;
+use Kunena\Forum\Libraries\KunenaFactory;
 use function defined;
 
 /**
@@ -57,7 +58,7 @@ class KunenaProfileEasySocial extends Profile
 	 */
 	public function getUserListURL($action = '', $xhtml = true)
 	{
-		$config = \Joomla\Component\Kunena\Libraries\KunenaFactory::getConfig();
+		$config = KunenaFactory::getConfig();
 		$my     = Factory::getApplication()->getIdentity();
 
 		if ($config->userlist_allowed == 0 && $my->guest)

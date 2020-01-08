@@ -10,16 +10,17 @@
  * @link          https://www.kunena.org
  **/
 
-namespace Joomla\Component\Kunena\Libraries\Tables;
+namespace Kunena\Forum\Libraries\Tables;
 
 defined('_JEXEC') or die();
 
 use Exception;
 use Joomla\CMS\Date\Date;
 use Joomla\CMS\Language\Text;
-use Joomla\CMS\Table\Table;
-use Joomla\Database\Exception\ExecutionFailureException;
 use Joomla\Database\DatabaseDriver;
+use Joomla\Database\Exception\ExecutionFailureException;
+use Kunena\Forum\Libraries\Error;
+use Kunena\Forum\Libraries\User\Helper;
 use RuntimeException;
 use function defined;
 
@@ -31,7 +32,7 @@ require_once __DIR__ . '/kunena.php';
  *
  * @since   Kunena 6.0
  */
-class TableKunenaUserBans extends Table
+class KunenaUserBans extends KunenaTable
 {
 	/**
 	 * @since   Kunena 6.0
@@ -181,7 +182,7 @@ class TableKunenaUserBans extends Table
 		}
 		catch (ExecutionFailureException $e)
 		{
-			\Joomla\Component\Kunena\Libraries\Error::displayDatabaseError($e);
+			Error::displayDatabaseError($e);
 
 			return false;
 		}
@@ -273,7 +274,7 @@ class TableKunenaUserBans extends Table
 		}
 		catch (ExecutionFailureException $e)
 		{
-			\Joomla\Component\Kunena\Libraries\Error::displayDatabaseError($e);
+			Error::displayDatabaseError($e);
 
 			return false;
 		}
@@ -302,7 +303,7 @@ class TableKunenaUserBans extends Table
 	{
 		if (!$this->ip)
 		{
-			$user = \Joomla\Component\Kunena\Libraries\User\Helper::get($this->userid);
+			$user = Helper::get($this->userid);
 
 			if (!$user->exists())
 			{

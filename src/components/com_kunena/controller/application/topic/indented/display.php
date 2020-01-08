@@ -10,11 +10,14 @@
  * @link            https://www.kunena.org
  **/
 
-namespace Joomla\Component\Kunena\Site\Controller\Application\Topic\Indented;
+namespace Kunena\Forum\Site\Controller\Application\Topic\Indented;
 
 defined('_JEXEC') or die();
 
 use Exception;
+use Kunena\Forum\Libraries\Controller\KunenaControllerDisplay;
+use Kunena\Forum\Libraries\Layout\Page;
+use Kunena\Forum\Libraries\User\Helper;
 use function defined;
 
 /**
@@ -22,7 +25,7 @@ use function defined;
  *
  * @since   Kunena 4.0
  */
-class ComponentKunenaControllerApplicationTopicIndentedDisplay extends \Joomla\Component\Kunena\Libraries\Controller\Application\Display
+class ComponentKunenaControllerApplicationTopicIndentedDisplay extends KunenaControllerDisplay
 {
 	/**
 	 * Return true if layout exists.
@@ -35,7 +38,7 @@ class ComponentKunenaControllerApplicationTopicIndentedDisplay extends \Joomla\C
 	 */
 	public function exists()
 	{
-		$this->page = KunenaLayoutPage::factory("{$this->input->getCmd('view')}/default");
+		$this->page = Page::factory("{$this->input->getCmd('view')}/default");
 
 		return (bool) $this->page->getPath();
 	}
@@ -53,7 +56,7 @@ class ComponentKunenaControllerApplicationTopicIndentedDisplay extends \Joomla\C
 	protected function before()
 	{
 		$layout = $this->input->getWord('layout');
-		\Joomla\Component\Kunena\Libraries\User\Helper::getMyself()->setTopicLayout($layout);
+		Helper::getMyself()->setTopicLayout($layout);
 
 		parent::before();
 	}

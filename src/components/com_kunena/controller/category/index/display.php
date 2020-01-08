@@ -10,26 +10,25 @@
  * @link            https://www.kunena.org
  **/
 
-namespace Joomla\Component\Kunena\Site\Controller\Category\Index;
+namespace Kunena\Forum\Site\Controller\Category\Index;
 
 defined('_JEXEC') or die();
 
-use Exception;
 use Joomla\CMS\Factory;
+use Joomla\CMS\Filesystem\File;
 use Joomla\CMS\HTML\HTMLHelper;
 use Joomla\CMS\Language\Text;
-use Joomla\CMS\Uri\Uri;
 use Joomla\CMS\MVC\Controller\BaseController;
-use Joomla\Component\Kunena\Libraries\Access;
-use Joomla\Component\Kunena\Libraries\Controller\Display;
-use Joomla\Component\Kunena\Libraries\Error;
-use Joomla\Component\Kunena\Libraries\Forum\Message\Helper;
-use Joomla\Component\Kunena\Libraries\Html\Parser;
-use Joomla\Component\Kunena\Libraries\KunenaFactory;
-use Joomla\Component\Kunena\Libraries\Route\KunenaRoute;
-use Joomla\Registry\Registry;
-use Joomla\CMS\Filesystem\File;
+use Joomla\CMS\Uri\Uri;
+use Kunena\Forum\Libraries\Access;
+use Kunena\Forum\Libraries\Controller\KunenaControllerDisplay;
+use Kunena\Forum\Libraries\Error;
+use Kunena\Forum\Libraries\Forum\Message\Helper;
+use Kunena\Forum\Libraries\Html\Parser;
+use Kunena\Forum\Libraries\KunenaFactory;
+use Kunena\Forum\Libraries\Route\KunenaRoute;
 use Joomla\Database\Exception\ExecutionFailureException;
+use Joomla\Registry\Registry;
 use function defined;
 
 /**
@@ -37,7 +36,7 @@ use function defined;
  *
  * @since   Kunena 4.0
  */
-class ComponentKunenaControllerCategoryIndexDisplay extends Display
+class ComponentKunenaControllerCategoryIndexDisplay extends KunenaControllerDisplay
 {
 	/**
 	 * @var     string
@@ -46,7 +45,7 @@ class ComponentKunenaControllerCategoryIndexDisplay extends Display
 	protected $name = 'Category/Index';
 
 	/**
-	 * @var     KunenaUser
+	 * @var     \Kunena\Forum\Libraries\User\KunenaUser
 	 * @since   Kunena 6.0
 	 */
 	public $me;
@@ -83,13 +82,13 @@ class ComponentKunenaControllerCategoryIndexDisplay extends Display
 	 * @since   Kunena 6.0
 	 *
 	 * @throws  null
-	 * @throws  Exception
+	 * @throws  \Exception
 	 */
 	protected function before()
 	{
 		parent::before();
 
-		$this->me        = \Joomla\Component\Kunena\Libraries\User\Helper::getMyself();
+		$this->me        = \Kunena\Forum\Libraries\User\Helper::getMyself();
 		$this->ktemplate = KunenaFactory::getTemplate();
 
 		// Get sections to display.
@@ -164,11 +163,11 @@ class ComponentKunenaControllerCategoryIndexDisplay extends Display
 
 		if ($catid)
 		{
-			$sections = \Joomla\Component\Kunena\Libraries\Forum\Category\Helper::getCategories($catid);
+			$sections = \Kunena\Forum\Libraries\Forum\Category\Helper::getCategories($catid);
 		}
 		else
 		{
-			$sections = \Joomla\Component\Kunena\Libraries\Forum\Category\Helper::getChildren();
+			$sections = \Kunena\Forum\Libraries\Forum\Category\Helper::getChildren();
 		}
 
 		$sectionIds = [];
@@ -216,7 +215,7 @@ class ComponentKunenaControllerCategoryIndexDisplay extends Display
 		}
 
 		$this->sections = $sections;
-		$categories     = \Joomla\Component\Kunena\Libraries\Forum\Category\Helper::getChildren($sectionIds);
+		$categories     = \Kunena\Forum\Libraries\Forum\Category\Helper::getChildren($sectionIds);
 
 		if (empty($categories))
 		{
@@ -292,7 +291,7 @@ class ComponentKunenaControllerCategoryIndexDisplay extends Display
 			}
 		}
 
-		$subcategories = \Joomla\Component\Kunena\Libraries\Forum\Category\Helper::getChildren($categoryIds);
+		$subcategories = \Kunena\Forum\Libraries\Forum\Category\Helper::getChildren($categoryIds);
 
 		foreach ($subcategories as $category)
 		{
@@ -317,7 +316,7 @@ class ComponentKunenaControllerCategoryIndexDisplay extends Display
 		}
 
 		// Pre-fetch topics (also display unauthorized topics as they are in allowed categories).
-		$topics = \Joomla\Component\Kunena\Libraries\Forum\Topic\Helper::getTopics($topicIds, 'none');
+		$topics = \Kunena\Forum\Libraries\Forum\Topic\Helper::getTopics($topicIds, 'none');
 
 		// Pre-fetch users (and get last post ids for moderators).
 		foreach ($topics as $topic)
@@ -326,7 +325,7 @@ class ComponentKunenaControllerCategoryIndexDisplay extends Display
 			$postIds[$topic->id]               = $topic->last_post_id;
 		}
 
-		\Joomla\Component\Kunena\Libraries\User\Helper::loadUsers($userIds);
+		\Kunena\Forum\Libraries\User\Helper::loadUsers($userIds);
 		Helper::getMessages($postIds);
 
 		// Pre-fetch user related stuff.
@@ -335,7 +334,7 @@ class ComponentKunenaControllerCategoryIndexDisplay extends Display
 		if ($this->me->exists() && !$this->me->isBanned())
 		{
 			// Load new topic counts.
-			\Joomla\Component\Kunena\Libraries\Forum\Category\Helper::getNewTopics(array_keys($categories + $subcategories));
+			\Kunena\Forum\Libraries\Forum\Category\Helper::getNewTopics(array_keys($categories + $subcategories));
 
 			// Get categories which are moderated by current user.
 			$access   = Access::getInstance();
@@ -428,7 +427,7 @@ class ComponentKunenaControllerCategoryIndexDisplay extends Display
 	 *
 	 * @since   Kunena 6.0
 	 *
-	 * @throws  Exception
+	 * @throws  \Exception
 	 */
 	protected function prepareDocument()
 	{

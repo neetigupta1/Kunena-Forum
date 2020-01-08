@@ -10,7 +10,7 @@
  * @link          https://www.kunena.org
  **/
 
-namespace Joomla\Component\Kunena\Libraries\Folder;
+namespace Kunena\Forum\Libraries\Folder;
 
 defined('_JEXEC') or die();
 

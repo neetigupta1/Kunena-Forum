@@ -10,13 +10,14 @@
  * @link          https://www.kunena.org
  **/
 
-namespace Joomla\Component\Kunena\Libraries\Tables;
+namespace Kunena\Forum\Libraries\Tables;
 
 defined('_JEXEC') or die();
 
 use Exception;
 use Joomla\CMS\Language\Text;
 use Joomla\Database\DatabaseDriver;
+use Kunena\Forum\Libraries\User\Helper;
 use RuntimeException;
 use function defined;
 
@@ -113,7 +114,7 @@ class TableKunenaSessions extends KunenaTable
 	 */
 	public function check()
 	{
-		$user = \Joomla\Component\Kunena\Libraries\User\Helper::get($this->userid);
+		$user = Helper::get($this->userid);
 
 		if (!$user->exists())
 		{

@@ -10,7 +10,7 @@
  * @link            https://www.kunena.org
  **/
 
-namespace Joomla\Component\Kunena\Site\Controller\User\Edit\Profile;
+namespace Kunena\Forum\Site\Controller\User\Edit\Profile;
 
 defined('_JEXEC') or die();
 
@@ -18,6 +18,8 @@ use Exception;
 use Joomla\CMS\HTML\HTMLHelper;
 use Joomla\CMS\Language\Text;
 use Joomla\Utilities\ArrayHelper;
+use Kunena\Forum\Libraries\Config;
+use Kunena\Forum\Libraries\Controller\KunenaControllerDisplay;
 use function defined;
 
 /**
@@ -25,7 +27,7 @@ use function defined;
  *
  * @since   Kunena 4.0
  */
-class ComponentKunenaControllerUserEditProfileDisplay extends ComponentKunenaControllerUserEditDisplay
+class ComponentKunenaControllerUserEditProfileDisplay extends KunenaControllerDisplay
 {
 	/**
 	 * @var     string

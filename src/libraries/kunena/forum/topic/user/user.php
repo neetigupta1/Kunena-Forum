@@ -10,7 +10,7 @@
  * @link          https://www.kunena.org
  **/
 
-namespace Joomla\Component\Kunena\Libraries\Forum\Topic\User;
+namespace Kunena\Forum\Libraries\Forum\Topic\User;
 
 defined('_JEXEC') or die();
 
@@ -18,13 +18,19 @@ use Exception;
 use Joomla\CMS\Factory;
 use Joomla\CMS\Object\CMSObject;
 use Joomla\CMS\Table\Table;
-use Joomla\Database\Exception\ExecutionFailureException;
 use Joomla\Database\DatabaseDriver;
+use Joomla\Database\Exception\ExecutionFailureException;
+use Kunena\Forum\Libraries\Error;
+use Kunena\Forum\Libraries\Forum\Message\Message;
+use Kunena\Forum\Libraries\Forum\Topic\Topic;
+use Kunena\Forum\Libraries\Table\KunenaTableObject;
+use Kunena\Forum\Libraries\Tables\KunenaUserTopics;
 use function defined;
 
 /**
- * Class KunenaForumTopicUser
+ * Class \Kunena\Forum\Libraries\Forum\Topic\TopicUser
  *
+ * @since   Kunena 6.0
  * @property int    $user_id
  * @property int    $topic_id
  * @property int    $category_id
@@ -35,7 +41,6 @@ use function defined;
  * @property int    $subscribed
  * @property string $params
  *
- * @since   Kunena 6.0
  */
 class User extends CMSObject
 {
@@ -63,7 +68,7 @@ class User extends CMSObject
 	 */
 	public function __construct($topic = null, $user = null)
 	{
-		$topic = \Joomla\Component\Kunena\Libraries\Forum\Topic\Helper::get($topic);
+		$topic = \Kunena\Forum\Libraries\Forum\Topic\Helper::get($topic);
 
 		// Always fill empty data
 		$this->_db = Factory::getDBO();
@@ -76,7 +81,7 @@ class User extends CMSObject
 		$this->_exists     = false;
 		$this->topic_id    = $topic->id;
 		$this->category_id = $topic->category_id;
-		$this->user_id     = \Joomla\Component\Kunena\Libraries\User\Helper::get($user)->userid;
+		$this->user_id     = \Kunena\Forum\Libraries\User\Helper::get($user)->userid;
 	}
 
 	/**
@@ -85,7 +90,7 @@ class User extends CMSObject
 	 * @param   string  $type    Topics table name to be used.
 	 * @param   string  $prefix  Topics table prefix to be used.
 	 *
-	 * @return  boolean|Table|KunenaTable|TableKunenaUserTopics
+	 * @return  boolean|Table|KunenaTableObject|KunenaUserTopics
 	 *
 	 * @since   Kunena 6.0
 	 */
@@ -109,7 +114,7 @@ class User extends CMSObject
 	 * @param   mixed  $user    user
 	 * @param   bool   $reload  reload
 	 *
-	 * @return  KunenaForumTopicUser
+	 * @return  User
 	 *
 	 * @since   Kunena 6.0
 	 *
@@ -117,7 +122,7 @@ class User extends CMSObject
 	 */
 	public static function getInstance($id = null, $user = null, $reload = false)
 	{
-		return KunenaForumTopicUserHelper::get($id, $user, $reload);
+		return Helper::get($id, $user, $reload);
 	}
 
 	/**
@@ -134,7 +139,7 @@ class User extends CMSObject
 	}
 
 	/**
-	 * Method to load a KunenaForumTopicUser object by id.
+	 * Method to load a \Kunena\Forum\Libraries\Forum\Topic\TopicUser object by id.
 	 *
 	 * @param   int    $topic_id  Topic id to be loaded.
 	 * @param   mixed  $user      user
@@ -157,7 +162,7 @@ class User extends CMSObject
 			$user = $this->user_id;
 		}
 
-		$user = \Joomla\Component\Kunena\Libraries\User\Helper::get($user);
+		$user = \Kunena\Forum\Libraries\User\Helper::get($user);
 
 		// Create the table object
 		$table = $this->getTable();
@@ -179,7 +184,7 @@ class User extends CMSObject
 	}
 
 	/**
-	 * Method to delete the KunenaForumTopicUser object from the database.
+	 * Method to delete the \Kunena\Forum\Libraries\Forum\Topic\TopicUser object from the database.
 	 *
 	 * @return  boolean  True on success.
 	 *
@@ -229,8 +234,8 @@ class User extends CMSObject
 	}
 
 	/**
-	 * @param   KunenaForumMessage  $message    message
-	 * @param   int                 $postDelta  postdelta
+	 * @param   Message  $message    message
+	 * @param   int      $postDelta  postdelta
 	 *
 	 * @return  boolean|void
 	 *
@@ -238,7 +243,7 @@ class User extends CMSObject
 	 *
 	 * @throws  Exception
 	 */
-	public function update(KunenaForumMessage $message = null, $postDelta = 0)
+	public function update(Message $message = null, $postDelta = 0)
 	{
 		$this->posts       += $postDelta;
 		$this->category_id = $this->getTopic()->category_id;
@@ -274,7 +279,7 @@ class User extends CMSObject
 			}
 			catch (ExecutionFailureException $e)
 			{
-				\Joomla\Component\Kunena\Libraries\Error::displayDatabaseError($e);
+				Error::displayDatabaseError($e);
 
 				return;
 			}
@@ -289,7 +294,7 @@ class User extends CMSObject
 	}
 
 	/**
-	 * @return  KunenaForumTopic
+	 * @return  Topic
 	 *
 	 * @since   Kunena 6.0
 	 *
@@ -297,7 +302,7 @@ class User extends CMSObject
 	 */
 	public function getTopic()
 	{
-		return \Joomla\Component\Kunena\Libraries\Forum\Topic\Helper::get($this->topic_id);
+		return \Kunena\Forum\Libraries\Forum\Topic\Helper::get($this->topic_id);
 	}
 
 	/**
@@ -315,7 +320,7 @@ class User extends CMSObject
 	}
 
 	/**
-	 * Method to save the KunenaForumTopicUser object to the database.
+	 * Method to save the \Kunena\Forum\Libraries\Forum\Topic\TopicUser object to the database.
 	 *
 	 * @param   bool  $updateOnly  Save the object only if not a new topic.
 	 *
@@ -355,7 +360,7 @@ class User extends CMSObject
 			$this->setError($table->getError());
 		}
 
-		// Fill up KunenaForumTopicUser object in case we created a new topic.
+		// Fill up \Kunena\Forum\Libraries\Forum\Topic\TopicUser object in case we created a new topic.
 		if ($result && $isnew)
 		{
 			$this->load();

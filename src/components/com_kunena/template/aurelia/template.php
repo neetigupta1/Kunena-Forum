@@ -10,7 +10,7 @@
  * @link            https://www.kunena.org
  **/
 
-namespace Joomla\Component\Kunena\Site;
+namespace Kunena\Forum\Site;
 
 defined('_JEXEC') or die();
 
@@ -18,6 +18,8 @@ use Exception;
 use Joomla\CMS\Factory;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\HTML\HTMLHelper;
+use Kunena\Forum\Libraries\KunenaFactory;
+use Kunena\Forum\Libraries\Template\Template;
 use function defined;
 
 /**
@@ -25,7 +27,7 @@ use function defined;
  *
  * @since   Kunena 4.0
  */
-class KunenaTemplateAurelia extends KunenaTemplate
+class KunenaTemplateAurelia extends Template
 {
 	/**
 	 * List of parent template names.
@@ -88,7 +90,7 @@ class KunenaTemplateAurelia extends KunenaTemplate
 	public function loadLanguage()
 	{
 		$lang = Factory::getLanguage();
-		\Joomla\Component\Kunena\Libraries\KunenaFactory::loadLanguage('kunena_tmpl_aurelia');
+		KunenaFactory::loadLanguage('kunena_tmpl_aurelia');
 
 		foreach (array_reverse($this->default) as $template)
 		{
@@ -118,7 +120,7 @@ class KunenaTemplateAurelia extends KunenaTemplate
 		$this->compileLess('assets/less/aurelia.less', 'kunena.css');
 		$this->addStyleSheet('kunena.css');
 
-		$this->ktemplate = \Joomla\Component\Kunena\Libraries\KunenaFactory::getTemplate();
+		$this->ktemplate = KunenaFactory::getTemplate();
 		$storage         = $this->ktemplate->params->get('storage');
 
 		if ($storage)

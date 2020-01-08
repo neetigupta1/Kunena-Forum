@@ -10,15 +10,15 @@
  * @link            https://www.kunena.org
  **/
 
-namespace Joomla\Component\Kunena\Plugin\Kunena\Altauserpoints;
+namespace Kunena\Forum\Plugin\Kunena\Altauserpoints;
 
 defined('_JEXEC') or die();
 
 use Exception;
 use Joomla\CMS\Factory;
 use Joomla\CMS\Router\Route;
-use Joomla\Component\Kunena\Libraries\Integration\Profile;
-use Joomla\Component\Kunena\Libraries\KunenaFactory;
+use Kunena\Forum\Libraries\Integration\Profile;
+use Kunena\Forum\Libraries\KunenaFactory;
 use RuntimeException;
 use function defined;
 

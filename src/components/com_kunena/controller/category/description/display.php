@@ -10,12 +10,12 @@
  * @link            https://www.kunena.org
  **/
 
-namespace Joomla\Component\Kunena\Site\Controller\Category\Description;
+namespace Kunena\Forum\Site\Controller\Category\Description;
 
 defined('_JEXEC') or die();
 
-use Joomla\Component\Kunena\Libraries\Controller\Display;
-use Joomla\Component\Kunena\Libraries\Forum\Category\Helper;
+use Kunena\Forum\Libraries\Controller\KunenaControllerDisplay;
+use Kunena\Forum\Libraries\Forum\Category\Helper;
 use function defined;
 
 /**
@@ -23,7 +23,7 @@ use function defined;
  *
  * @since   Kunena 4.0
  */
-class ComponentKunenaControllerCategoryDescriptionDisplay extends Display
+class ComponentKunenaControllerCategoryDescriptionDisplay extends KunenaControllerDisplay
 {
 	/**
 	 * @var     string

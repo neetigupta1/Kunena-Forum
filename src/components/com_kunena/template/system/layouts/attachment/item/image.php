@@ -10,7 +10,7 @@
  * @link            https://www.kunena.org
  **/
 
-namespace Joomla\Component\Kunena\Site;
+namespace Kunena\Forum\Site;
 
 defined('_JEXEC') or die();
 
@@ -25,7 +25,7 @@ if (!$attachment->isImage())
 	return;
 }
 
-$config = Config::getInstance();
+$config = \Kunena\Forum\Libraries\Config::getInstance();
 
 // Load FancyBox library if enabled in configuration
 if ($config->lightbox == 1)

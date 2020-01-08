@@ -10,12 +10,13 @@
  * @link            https://www.kunena.org
  **/
 
-namespace Joomla\Component\Kunena\Administrator;
+namespace Kunena\Forum\Administrator;
 
 defined('_JEXEC') or die();
 
 use Joomla\CMS\Router\Route;
 use Joomla\CMS\Language\Text;
+use Kunena\Forum\Administrator\Install\KunenaVersion;
 
 ?>
 
@@ -75,7 +76,7 @@ use Joomla\CMS\Language\Text;
 						<span><?php echo Text::_('COM_KUNENA_TOOLS_LABEL_UNINSTALL_PROCESS'); ?></span>
 					</a>
 
-					<?php if (\Joomla\Component\Kunena\Libraries\Forum\Forum::isDev())
+					<?php if (\Kunena\Forum\Libraries\Forum\KunenaForum::isDev())
 						:
 						?>
 						<a class="btn btn-outline-primary"

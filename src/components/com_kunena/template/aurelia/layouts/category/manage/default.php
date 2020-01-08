@@ -10,7 +10,7 @@
  * @link            https://www.kunena.org
 **/
 
-namespace Joomla\Component\Kunena\Site;
+namespace Kunena\Forum\Site;
 
 defined('_JEXEC') or die();
 
@@ -35,7 +35,7 @@ Factory::getApplication()->getDocument()->addScript(Uri::root() . 'administrator
 		: <?php echo $this->escape($this->category->name); ?>
 	</div>
 	<div class="card-body">
-		<form action="<?php echo \Joomla\Component\Kunena\Libraries\Route\KunenaRoute::_('administrator/index.php?option=com_kunena&view=categories') ?>"
+		<form action="<?php echo \Kunena\Forum\Libraries\Route\KunenaRoute::_('administrator/index.php?option=com_kunena&view=categories') ?>"
 		      method="post" id="adminForm"
 		      name="adminForm">
 			<input type="hidden" name="task" value="save"/>

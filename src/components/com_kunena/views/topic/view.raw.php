@@ -10,21 +10,20 @@
  * @link            https://www.kunena.org
  **/
 
-namespace Joomla\Component\Kunena\Site\View\Topic;
+namespace Kunena\Forum\Site\View\Topic;
 
 defined('_JEXEC') or die();
 
-use Exception;
 use Joomla\CMS\Factory;
 use Joomla\CMS\Uri\Uri;
-use Joomla\Component\Kunena\Libraries\Error;
-use Joomla\Component\Kunena\Libraries\Forum\Category\Helper;
-use Joomla\Component\Kunena\Libraries\Html\Parser;
-use Joomla\Component\Kunena\Libraries\KunenaFactory;
-use Joomla\Component\Kunena\Libraries\Forum\Topic\Rate;
-use Joomla\Component\Kunena\Libraries\Forum;
-use Joomla\Component\Kunena\Libraries\View;
-use Joomla\Component\Kunena\Libraries;
+use Kunena\Forum\Libraries;
+use Kunena\Forum\Libraries\Error;
+use Kunena\Forum\Libraries\Forum;
+use Kunena\Forum\Libraries\Forum\Category\Helper;
+use Kunena\Forum\Libraries\Forum\Topic\Rate;
+use Kunena\Forum\Libraries\Html\Parser;
+use Kunena\Forum\Libraries\KunenaFactory;
+use Kunena\Forum\Libraries\View;
 use Joomla\Database\Exception\ExecutionFailureException;
 use stdClass;
 use function defined;
@@ -43,7 +42,7 @@ class raw extends View
 	 *
 	 * @since   Kunena 6.0
 	 *
-	 * @throws  Exception
+	 * @throws  \Exception
 	 */
 	public function displayEdit($tpl = null)
 	{
@@ -75,7 +74,7 @@ class raw extends View
 	 *
 	 * @since   Kunena 4.0
 	 *
-	 * @throws  Exception
+	 * @throws  \Exception
 	 */
 	public function displayListEmoji($tpl = null)
 	{
@@ -126,7 +125,7 @@ class raw extends View
 	 *
 	 * @since   Kunena 6.0
 	 *
-	 * @throws  Exception
+	 * @throws  \Exception
 	 */
 	public function displayTopicIcons()
 	{
@@ -208,7 +207,7 @@ class raw extends View
 	 *
 	 * @since   Kunena 6.0
 	 *
-	 * @throws  Exception
+	 * @throws  \Exception
 	 */
 	public function displayGetrate()
 	{
@@ -244,7 +243,7 @@ class raw extends View
 	 *
 	 * @since   Kunena 6.0
 	 *
-	 * @throws  Exception
+	 * @throws  \Exception
 	 */
 	public function displayRate($tpl = null)
 	{
@@ -286,7 +285,7 @@ class raw extends View
 	 *
 	 * @since   Kunena 5.1
 	 *
-	 * @throws  Exception
+	 * @throws  \Exception
 	 */
 	public function displayCategorytemplatetext($tpl = null)
 	{

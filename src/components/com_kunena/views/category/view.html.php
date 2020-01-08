@@ -10,11 +10,11 @@
  * @link            https://www.kunena.org
  **/
 
-namespace Joomla\Component\Kunena\Site\View\Category;
+namespace Kunena\Forum\Site\View\Category;
 
 defined('_JEXEC') or die();
 
-use Joomla\Component\Kunena\Libraries\View;
+use Kunena\Forum\Libraries\View;
 use function defined;
 
 /**

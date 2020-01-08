@@ -10,7 +10,7 @@
  * @link            https://www.kunena.org
  **/
 
-namespace Joomla\Component\Kunena\Site\Controller\User\KunenaList;
+namespace Kunena\Forum\Site\Controller\User\KunenaList;
 
 defined('_JEXEC') or die();
 
@@ -19,12 +19,13 @@ use Joomla\CMS\Access\Access;
 use Joomla\CMS\Factory;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\MVC\Controller\BaseController;
-use Joomla\Component\Kunena\Libraries\Controller\Display;
-use Joomla\Component\Kunena\Libraries\Exception\Authorise;
-use Joomla\Component\Kunena\Libraries\Pagination\Pagination;
-use Joomla\Component\Kunena\Libraries\Route\KunenaRoute;
-use Joomla\Component\Kunena\Libraries\User\Helper;
-use phpDocumentor\Reflection\Types\This;
+use Kunena\Forum\Libraries\Controller\KunenaControllerDisplay;
+use Kunena\Forum\Libraries\Exception\Authorise;
+use Kunena\Forum\Libraries\Pagination\Pagination;
+use Kunena\Forum\Libraries\Route\KunenaRoute;
+use Kunena\Forum\Libraries\User\Finder;
+use Kunena\Forum\Libraries\User\Helper;
+use Kunena\Forum\Site\Models\KunenaModelUser;
 use function defined;
 
 /**
@@ -32,7 +33,7 @@ use function defined;
  *
  * @since   Kunena 4.0
  */
-class ComponentKunenaControllerUserListDisplay extends Display
+class ComponentKunenaControllerUserListDisplay extends KunenaControllerDisplay
 {
 	/**
 	 * @var     object
@@ -120,7 +121,7 @@ class ComponentKunenaControllerUserListDisplay extends Display
 			$filter = [];
 		}
 
-		$finder = new KunenaUserFinder;
+		$finder = new Finder;
 		$finder
 			->filterByConfiguration($filter)
 			->filterByName($this->state->get('list.search'));

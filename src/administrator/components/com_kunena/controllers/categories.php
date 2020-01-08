@@ -10,7 +10,7 @@
  * @link            https://www.kunena.org
  **/
 
-namespace Joomla\Component\Kunena\Administrator;
+namespace Kunena\Forum\Administrator\Controllers;
 
 defined('_JEXEC') or die();
 
@@ -18,8 +18,14 @@ use Exception;
 use Joomla\CMS\Factory;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\Session\Session;
+use Kunena\Forum\Libraries\Controller;
 use Joomla\String\StringHelper;
 use Joomla\Utilities\ArrayHelper;
+use Kunena\Forum\Libraries\Forum\Category\Category;
+use Kunena\Forum\Libraries\Forum\Category\Helper;
+use Kunena\Forum\Libraries\KunenaFactory;
+use Kunena\Forum\Libraries\Route\KunenaRoute;
+use Kunena\Forum\Libraries\Tables\TableKunenaCategories;
 use RuntimeException;
 use function defined;
 
@@ -28,7 +34,7 @@ use function defined;
  *
  * @since   Kunena 2.0
  */
-class KunenaAdminControllerCategories extends KunenaController
+class KunenaAdminControllerCategories extends Controller
 {
 	/**
 	 * @var     string
@@ -92,7 +98,7 @@ class KunenaAdminControllerCategories extends KunenaController
 	 */
 	protected function setVariable($cid, $variable, $value)
 	{
-		\Joomla\Component\Kunena\Libraries\KunenaFactory::loadLanguage('com_kunena', 'admin');
+		KunenaFactory::loadLanguage('com_kunena', 'admin');
 
 		if (!Session::checkToken('post'))
 		{
@@ -111,7 +117,7 @@ class KunenaAdminControllerCategories extends KunenaController
 		$count = 0;
 		$name  = null;
 
-		$categories = \Joomla\Component\Kunena\Libraries\Forum\Category\Helper::getCategories($cid);
+		$categories = Helper::getCategories($cid);
 
 		foreach ($categories as $category)
 		{
@@ -338,7 +344,7 @@ class KunenaAdminControllerCategories extends KunenaController
 	 */
 	public function add()
 	{
-		\Joomla\Component\Kunena\Libraries\KunenaFactory::loadLanguage('com_kunena', 'admin');
+		KunenaFactory::loadLanguage('com_kunena', 'admin');
 
 		if (!Session::checkToken('post'))
 		{
@@ -352,7 +358,7 @@ class KunenaAdminControllerCategories extends KunenaController
 		$cid = ArrayHelper::toInteger($cid);
 
 		$id = array_shift($cid);
-		$this->setRedirect(\Joomla\Component\Kunena\Libraries\Route\KunenaRoute::_($this->baseurl2 . "&layout=create&catid={$id}", false));
+		$this->setRedirect(KunenaRoute::_($this->baseurl2 . "&layout=create&catid={$id}", false));
 	}
 
 	/**
@@ -367,7 +373,7 @@ class KunenaAdminControllerCategories extends KunenaController
 	 */
 	public function edit()
 	{
-		\Joomla\Component\Kunena\Libraries\KunenaFactory::loadLanguage('com_kunena', 'admin');
+		KunenaFactory::loadLanguage('com_kunena', 'admin');
 
 		if (!Session::checkToken('post'))
 		{
@@ -391,7 +397,7 @@ class KunenaAdminControllerCategories extends KunenaController
 		}
 		else
 		{
-			$this->setRedirect(\Joomla\Component\Kunena\Libraries\Route\KunenaRoute::_($this->baseurl2 . "&layout=edit&catid={$id}", false));
+			$this->setRedirect(KunenaRoute::_($this->baseurl2 . "&layout=edit&catid={$id}", false));
 		}
 	}
 
@@ -411,18 +417,18 @@ class KunenaAdminControllerCategories extends KunenaController
 
 		if ($category->exists())
 		{
-			$this->setRedirect(\Joomla\Component\Kunena\Libraries\Route\KunenaRoute::_($this->baseurl2 . "&layout=edit&catid={$category->id}", false));
+			$this->setRedirect(KunenaRoute::_($this->baseurl2 . "&layout=edit&catid={$category->id}", false));
 		}
 		else
 		{
-			$this->setRedirect(\Joomla\Component\Kunena\Libraries\Route\KunenaRoute::_($this->baseurl2 . "&layout=create", false));
+			$this->setRedirect(KunenaRoute::_($this->baseurl2 . "&layout=create", false));
 		}
 	}
 
 	/**
 	 * Save
 	 *
-	 * @return  KunenaForumCategory|void
+	 * @return  Category|void
 	 *
 	 * @since   Kunena 2.0.0-BETA2
 	 *
@@ -431,11 +437,11 @@ class KunenaAdminControllerCategories extends KunenaController
 	 */
 	protected function _save()
 	{
-		\Joomla\Component\Kunena\Libraries\KunenaFactory::loadLanguage('com_kunena', 'admin');
+		KunenaFactory::loadLanguage('com_kunena', 'admin');
 
 		if ($this->app->isClient('site'))
 		{
-			\Joomla\Component\Kunena\Libraries\KunenaFactory::loadLanguage('com_kunena.controllers', 'admin');
+			KunenaFactory::loadLanguage('com_kunena.controllers', 'admin');
 		}
 
 		if (!Session::checkToken('post'))
@@ -462,8 +468,8 @@ class KunenaAdminControllerCategories extends KunenaController
 		$post['params'] += $input->get("params", [], 'array');
 		$success        = false;
 
-		$category = \Joomla\Component\Kunena\Libraries\Forum\Category\Helper::get(intval($post ['catid']));
-		$parent   = \Joomla\Component\Kunena\Libraries\Forum\Category\Helper::get(intval($post ['parent_id']));
+		$category = Helper::get(intval($post ['catid']));
+		$parent   = Helper::get(intval($post ['parent_id']));
 
 		if ($category->exists() && !$category->isAuthorised('admin'))
 		{
@@ -551,7 +557,7 @@ class KunenaAdminControllerCategories extends KunenaController
 		{
 			foreach ((array) $post['rmmod'] as $userid => $value)
 			{
-				$user = \Joomla\Component\Kunena\Libraries\KunenaFactory::getUser($userid);
+				$user = KunenaFactory::getUser($userid);
 
 				if ($category->tryAuthorise('admin', null, false) && $category->removeModerator($user))
 				{
@@ -576,7 +582,7 @@ class KunenaAdminControllerCategories extends KunenaController
 	public function save2new()
 	{
 		$this->_save();
-		$this->setRedirect(\Joomla\Component\Kunena\Libraries\Route\KunenaRoute::_($this->baseurl2 . "&layout=create", false));
+		$this->setRedirect(KunenaRoute::_($this->baseurl2 . "&layout=create", false));
 	}
 
 	/**
@@ -595,12 +601,12 @@ class KunenaAdminControllerCategories extends KunenaController
 
 		if ($this->app->isClient('administrator'))
 		{
-			$this->setRedirect(\Joomla\Component\Kunena\Libraries\Route\KunenaRoute::_($this->baseurl, false));
+			$this->setRedirect(KunenaRoute::_($this->baseurl, false));
 		}
 		else
 		{
 			$post_catid = $this->app->input->post->get('catid', '', 'raw');
-			$this->setRedirect(\Joomla\Component\Kunena\Libraries\Route\KunenaRoute::_('index.php?option=com_kunena&view=category&catid=' . $post_catid));
+			$this->setRedirect(KunenaRoute::_('index.php?option=com_kunena&view=category&catid=' . $post_catid));
 		}
 	}
 
@@ -627,7 +633,7 @@ class KunenaAdminControllerCategories extends KunenaController
 		$this->app->setUserState('com_kunena.category_catid', 0);
 
 		$this->_save();
-		$this->setRedirect(\Joomla\Component\Kunena\Libraries\Route\KunenaRoute::_($this->baseurl, false));
+		$this->setRedirect(KunenaRoute::_($this->baseurl, false));
 	}
 
 	/**
@@ -645,7 +651,7 @@ class KunenaAdminControllerCategories extends KunenaController
 	 */
 	protected function _generateNewTitle($category_id, $alias, $name)
 	{
-		while (\Joomla\Component\Kunena\Libraries\Forum\Category\Helper::getAlias($category_id, $alias))
+		while (Helper::getAlias($category_id, $alias))
 		{
 			$name  = StringHelper::increment($name);
 			$alias = StringHelper::increment($alias, 'dash');
@@ -666,7 +672,7 @@ class KunenaAdminControllerCategories extends KunenaController
 	 */
 	public function remove()
 	{
-		\Joomla\Component\Kunena\Libraries\KunenaFactory::loadLanguage('com_kunena', 'admin');
+		KunenaFactory::loadLanguage('com_kunena', 'admin');
 
 		if (!Session::checkToken('post'))
 		{
@@ -690,7 +696,7 @@ class KunenaAdminControllerCategories extends KunenaController
 		$count = 0;
 		$name  = null;
 
-		$categories = \Joomla\Component\Kunena\Libraries\Forum\Category\Helper::getCategories($cid);
+		$categories = Helper::getCategories($cid);
 
 		foreach ($categories as $category)
 		{
@@ -741,7 +747,7 @@ class KunenaAdminControllerCategories extends KunenaController
 	 */
 	public function cancel()
 	{
-		\Joomla\Component\Kunena\Libraries\KunenaFactory::loadLanguage('com_kunena', 'admin');
+		KunenaFactory::loadLanguage('com_kunena', 'admin');
 
 		if (!Session::checkToken('post'))
 		{
@@ -753,7 +759,7 @@ class KunenaAdminControllerCategories extends KunenaController
 
 		$id = $this->app->input->getInt('catid', 0);
 
-		$category = \Joomla\Component\Kunena\Libraries\Forum\Category\Helper::get($id);
+		$category = Helper::get($id);
 
 		if (!$category->isAuthorised('admin'))
 		{
@@ -768,7 +774,7 @@ class KunenaAdminControllerCategories extends KunenaController
 			$this->app->enqueueMessage(Text::sprintf('COM_KUNENA_A_CATEGORY_X_CHECKED_OUT', $this->escape($category->name)), 'notice');
 		}
 
-		$this->setRedirect(\Joomla\Component\Kunena\Libraries\Route\KunenaRoute::_($this->baseurl, false));
+		$this->setRedirect(KunenaRoute::_($this->baseurl, false));
 	}
 
 	/**
@@ -783,7 +789,7 @@ class KunenaAdminControllerCategories extends KunenaController
 	 */
 	public function saveorder()
 	{
-		\Joomla\Component\Kunena\Libraries\KunenaFactory::loadLanguage('com_kunena', 'admin');
+		KunenaFactory::loadLanguage('com_kunena', 'admin');
 
 		if (!Session::checkToken('post'))
 		{
@@ -808,7 +814,7 @@ class KunenaAdminControllerCategories extends KunenaController
 
 		$success = false;
 
-		$categories = \Joomla\Component\Kunena\Libraries\Forum\Category\Helper::getCategories($cid);
+		$categories = Helper::getCategories($cid);
 
 		foreach ($categories as $category)
 		{
@@ -917,7 +923,7 @@ class KunenaAdminControllerCategories extends KunenaController
 	 */
 	protected function orderUpDown($id, $direction)
 	{
-		\Joomla\Component\Kunena\Libraries\KunenaFactory::loadLanguage('com_kunena', 'admin');
+		KunenaFactory::loadLanguage('com_kunena', 'admin');
 
 		if (!$id)
 		{
@@ -931,7 +937,7 @@ class KunenaAdminControllerCategories extends KunenaController
 			return;
 		}
 
-		$category = \Joomla\Component\Kunena\Libraries\Forum\Category\Helper::get($id);
+		$category = Helper::get($id);
 
 		if (!$category->getParent()->tryAuthorise('admin'))
 		{
@@ -1044,7 +1050,7 @@ class KunenaAdminControllerCategories extends KunenaController
 		if ($cat_parent == 0 || empty($cid))
 		{
 			$this->app->enqueueMessage(Text::_('COM_KUNENA_CATEGORIES_LABEL_BATCH_NOT_SELECTED'));
-			$this->setRedirect(\Joomla\Component\Kunena\Libraries\Route\KunenaRoute::_($this->baseurl, false));
+			$this->setRedirect(KunenaRoute::_($this->baseurl, false));
 
 			return false;
 		}
@@ -1079,7 +1085,7 @@ class KunenaAdminControllerCategories extends KunenaController
 			$this->app->enqueueMessage(Text::_('COM_KUNENA_CATEGORIES_LABEL_BATCH_MOVE_SUCCESS'));
 		}
 
-		$this->setRedirect(\Joomla\Component\Kunena\Libraries\Route\KunenaRoute::_($this->baseurl, false));
+		$this->setRedirect(KunenaRoute::_($this->baseurl, false));
 
 		return true;
 	}

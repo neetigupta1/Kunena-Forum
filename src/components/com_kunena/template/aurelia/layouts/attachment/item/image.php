@@ -10,7 +10,7 @@
  * @link            https://www.kunena.org
  **/
 
-namespace Joomla\Component\Kunena\Site;
+namespace Kunena\Forum\Site;
 
 defined('_JEXEC') or die();
 
@@ -25,14 +25,14 @@ if (!$attachment->isImage())
 	return;
 }
 
-$config = \Joomla\Component\Kunena\Libraries\KunenaFactory::getConfig();
+$config = \Kunena\Forum\Libraries\KunenaFactory::getConfig();
 
 // Load FancyBox library if enabled in configuration
 if ($config->lightbox == 1)
 {
 	echo $this->subLayout('Widget/Lightbox');
 
-	$config = Config::getInstance();
+	$config = \Kunena\Forum\Libraries\Config::getInstance();
 
 	$attributesLink = $config->lightbox ? ' data-fancybox="gallery"' : '';
 	$attributesImg  = ' style="max-height:' . (int) $config->imageheight . 'px;"';

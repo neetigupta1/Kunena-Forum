@@ -10,12 +10,13 @@
  * @link            https://www.kunena.org
  **/
 
-namespace Joomla\Component\Kunena\Administrator;
+namespace Kunena\Forum\Administrator;
 
 defined('_JEXEC') or die();
 
 use Joomla\CMS\HTML\HTMLHelper;
 use Joomla\CMS\Language\Text;
+use Kunena\Forum\Administrator\Install\KunenaVersion;
 
 HTMLHelper::_('behavior.multiselect');
 HTMLHelper::_('dropdown.init');
@@ -58,7 +59,7 @@ HTMLHelper::_('dropdown.init');
 
 						<div class="tab-content">
 							<div class="tab-pane active" id="tab1">
-								<form action="<?php echo \Joomla\Component\Kunena\Libraries\Route\KunenaRoute::_('administrator/index.php?option=com_kunena&view=ranks') ?>"
+								<form action="<?php echo \Kunena\Forum\Libraries\Route\KunenaRoute::_('administrator/index.php?option=com_kunena&view=ranks') ?>"
 								      method="post"
 								      id="adminForm" name="adminForm">
 									<input type="hidden" name="task" value=""/>
@@ -91,7 +92,7 @@ HTMLHelper::_('dropdown.init');
 											</button>
 										</div>
 										<div class="btn-group pull-right hidden-phone">
-											<?php echo KunenaLayout::factory('pagination/limitbox')->set('pagination', $this->pagination); ?>
+											<?php echo \Kunena\Forum\Libraries\Layout\Layout::factory('pagination/limitbox')->set('pagination', $this->pagination); ?>
 										</div>
 										<div class="btn-group pull-right hidden-phone">
 											<label for="directionTable"
@@ -179,7 +180,7 @@ HTMLHelper::_('dropdown.init');
 										<tfoot>
 										<tr>
 											<td colspan="6">
-												<?php echo KunenaLayout::factory('pagination/footer')->set('pagination', $this->pagination); ?>
+												<?php echo \Kunena\Forum\Libraries\Layout\Layout::factory('pagination/footer')->set('pagination', $this->pagination); ?>
 											</td>
 										</tr>
 										</tfoot>
@@ -255,7 +256,7 @@ HTMLHelper::_('dropdown.init');
 							</div>
 
 							<div class="tab-pane" id="tab2">
-								<form action="<?php echo \Joomla\Component\Kunena\Libraries\Route\KunenaRoute::_('administrator/index.php?option=com_kunena') ?>"
+								<form action="<?php echo \Kunena\Forum\Libraries\Route\KunenaRoute::_('administrator/index.php?option=com_kunena') ?>"
 								      id="uploadForm" method="post"
 								      enctype="multipart/form-data">
 									<input type="hidden" name="view" value="ranks"/>

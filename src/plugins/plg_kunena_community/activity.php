@@ -11,16 +11,16 @@
  * @link             https://www.kunena.org
  **/
 
-namespace Joomla\Component\Kunena\Plugin\Kunena\Community;
+namespace Kunena\Forum\Plugin\Kunena\Community;
 
 defined('_JEXEC') or die();
 
 use Exception;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\Uri\Uri;
-use Joomla\Component\Kunena\Libraries\Access;
-use Joomla\Component\Kunena\Libraries\Html\Parser;
-use Joomla\Component\Kunena\Libraries\Integration\Activity;
+use Kunena\Forum\Libraries\Access;
+use Kunena\Forum\Libraries\Html\Parser;
+use Kunena\Forum\Libraries\Integration\Activity;
 use Joomla\String\StringHelper;
 use stdClass;
 use function defined;

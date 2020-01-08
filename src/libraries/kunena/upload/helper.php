@@ -10,13 +10,13 @@
  * @link            https://www.kunena.org
  **/
 
-namespace Joomla\Component\Kunena\Libraries\Upload;
+namespace Kunena\Forum\Libraries\Upload;
 
 defined('_JEXEC') or die();
 
+use Joomla\CMS\Client\ClientHelper;
 use Joomla\CMS\Filesystem\File;
 use Joomla\CMS\Filesystem\Folder;
-use Joomla\CMS\Client\ClientHelper;
 use Joomla\CMS\Filesystem\Path;
 use function defined;
 

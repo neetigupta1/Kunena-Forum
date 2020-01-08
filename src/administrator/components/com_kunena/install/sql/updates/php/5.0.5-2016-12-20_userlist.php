@@ -9,11 +9,10 @@
  * @link           https://www.kunena.org
  **/
 
-namespace Joomla\Component\Kunena\Administrator;
+namespace Kunena\Forum\Administrator\Updates\Php;
 
 defined('_JEXEC') or die();
 
-use Exception;
 use function defined;
 
 // Kunena 5.0.5: Update setting allow guest to see userlist
@@ -24,11 +23,11 @@ use function defined;
  *
  * @since   Kunena 6.0
  *
- * @throws  Exception
+ * @throws  \Exception
  */
 function kunena_505_2016_12_20_userlist()
 {
-	$config = \Joomla\Component\Kunena\Libraries\KunenaFactory::getConfig();
+	$config = \Kunena\Forum\Libraries\KunenaFactory::getConfig();
 
 	if ($config->userlist_allowed)
 	{

@@ -11,14 +11,15 @@
  * @link             https://www.kunena.org
  **/
 
-namespace Joomla\Component\Kunena\Plugin\Kunena\Community;
+namespace Kunena\Forum\Plugin\Kunena\Community;
 
 defined('_JEXEC') or die();
 
 use Joomla\CMS\Factory;
 use Joomla\CMS\Plugin\CMSPlugin;
 use Joomla\CMS\Plugin\PluginHelper;
-use Joomla\Component\Kunena\Libraries\Forum\Forum;
+use Kunena\Forum\Libraries\Access;
+use Kunena\Forum\Libraries\Forum\KunenaForum;
 use function defined;
 
 /**
@@ -39,7 +40,7 @@ class plgKunenaCommunity extends CMSPlugin
 	public function __construct(&$subject, $config)
 	{
 		// Do not load if Kunena version is not supported or Kunena is offline
-		if (!(class_exists('KunenaForum') && Forum::isCompatible('4.0') && Forum::installed()))
+		if (!(class_exists('KunenaForum') && KunenaForum::isCompatible('4.0') && KunenaForum::installed()))
 		{
 			return;
 		}
@@ -75,7 +76,7 @@ class plgKunenaCommunity extends CMSPlugin
 	/**
 	 * Get Kunena access control object.
 	 *
-	 * @return  KunenaAccess|KunenaAccessCommunity|void
+	 * @return  Access|KunenaAccessCommunity|void
 	 *
 	 * @since   Kunena
 	 * @todo  Should we remove category ACL integration?

@@ -10,7 +10,7 @@
  * @link          https://www.kunena.org
  **/
 
-namespace Joomla\Component\Kunena\Libraries\Integration;
+namespace Kunena\Forum\Libraries\Integration;
 
 defined('_JEXEC') or die();
 
@@ -18,6 +18,8 @@ use Exception;
 use Joomla\CMS\Factory;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\Plugin\PluginHelper;
+use Kunena\Forum\Libraries\Icons\Icons;
+use Kunena\Forum\Libraries\KunenaFactory;
 use function defined;
 
 /**
@@ -89,7 +91,7 @@ class KunenaPrivate
 			return '';
 		}
 
-		$ktemplate     = \Joomla\Component\Kunena\Libraries\KunenaFactory::getTemplate();
+		$ktemplate     = KunenaFactory::getTemplate();
 		$topicicontype = $ktemplate->params->get('topicicontype');
 
 		if ($topicicontype == 'fa')
@@ -120,7 +122,7 @@ class KunenaPrivate
 		}
 
 		// We should offer the user a PM link
-		return '<a class="' . $class . '" href="' . $url . '""' . $onclick . '">' . KunenaIcons::pm() . '</a>';
+		return '<a class="' . $class . '" href="' . $url . '""' . $onclick . '">' . Icons::pm() . '</a>';
 	}
 
 	/**
@@ -172,7 +174,7 @@ class KunenaPrivate
 			return '';
 		}
 
-		$ktemplate     = \Joomla\Component\Kunena\Libraries\KunenaFactory::getTemplate();
+		$ktemplate     = KunenaFactory::getTemplate();
 		$topicicontype = $ktemplate->params->get('topicicontype');
 
 		if (empty($class))
@@ -202,11 +204,11 @@ class KunenaPrivate
 			$text    = $pmCount ? Text::sprintf('COM_KUNENA_PMS_INBOX_NEW', $pmCount) : Text::_('COM_KUNENA_PMS_INBOX');
 			$url     = $this->getInboxURL();
 
-			return '<a class="' . $class . '" href="' . $url . '">' . KunenaIcons::pm() . ' ' . $text . '</a>';
+			return '<a class="' . $class . '" href="' . $url . '">' . Icons::pm() . ' ' . $text . '</a>';
 		}
 
 		// We should offer the user a PM link
-		return '<a class="' . $class . '" href="' . $url . '"' . $onclick . '>' . KunenaIcons::pm() . ' ' . Text::_('COM_KUNENA_PM_WRITE') . '</a>';
+		return '<a class="' . $class . '" href="' . $url . '"' . $onclick . '>' . Icons::pm() . ' ' . Text::_('COM_KUNENA_PM_WRITE') . '</a>';
 	}
 
 	/**

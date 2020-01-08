@@ -10,7 +10,7 @@
  * @link            https://www.kunena.org
  **/
 
-namespace Joomla\Component\Kunena\Site;
+namespace Kunena\Forum\Site;
 
 defined('_JEXEC') or die();
 
@@ -25,7 +25,7 @@ $exception = $attachment->tryAuthorise('read', $user, false);
 
 if (!$exception)
 {
-	$exception = new \Joomla\Component\Kunena\Libraries\Exception\Authorise('Bad Request.', 400);
+	$exception = new \Kunena\Forum\Libraries\Exception\Authorise('Bad Request.', 400);
 }
 ?>
 <div class="kmsgattach">

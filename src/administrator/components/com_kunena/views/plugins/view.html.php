@@ -7,14 +7,14 @@
  * @license     GNU General Public License version 2 or later; see LICENSE.txt
  */
 
-namespace Joomla\Component\Kunena\Administrator;
+namespace Kunena\Forum\Administrator\Views;
 
 defined('_JEXEC') or die;
 
-use Exception;
 use Joomla\CMS\HTML\HTMLHelper;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\Toolbar\ToolbarHelper;
+use Kunena\Forum\Libraries\View;
 use function defined;
 
 /**
@@ -25,7 +25,7 @@ use function defined;
  *
  * @since       K1.5
  */
-class KunenaAdminViewPlugins extends \Joomla\Component\Kunena\Libraries\View
+class KunenaAdminViewPlugins extends View
 {
 	/**
 	 * Display the view
@@ -36,7 +36,7 @@ class KunenaAdminViewPlugins extends \Joomla\Component\Kunena\Libraries\View
 	 *
 	 * @since   Kunena 6.0
 	 *
-	 * @throws  Exception
+	 * @throws  \Exception
 	 */
 	public function displayDefault($tpl = null)
 	{

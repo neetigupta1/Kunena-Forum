@@ -10,7 +10,7 @@
  * See COPYRIGHT.php for copyright notices and details.
  */
 
-namespace Joomla\Component\Kunena\Plugin\Kunena\Easysocial;
+namespace Kunena\Forum\Plugin\Kunena\Easysocial;
 
 defined('_JEXEC') or die('Unauthorized Access');
 

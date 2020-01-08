@@ -10,7 +10,7 @@
  * @link            https://www.kunena.org
  **/
 
-namespace Joomla\Component\Kunena\Site\Controller\Topic\Form\Reply;
+namespace Kunena\Forum\Site\Controller\Topic\Form\Reply;
 
 defined('_JEXEC') or die();
 
@@ -18,11 +18,12 @@ use Exception;
 use Joomla\CMS\Factory;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\Plugin\PluginHelper;
-use Joomla\Component\Kunena\Libraries\Attachment\Helper;
-use Joomla\Component\Kunena\Libraries\Controller\Display;
-use Joomla\Component\Kunena\Libraries\Exception\Authorise;
-use Joomla\Component\Kunena\Libraries\KunenaFactory;
-use Joomla\Component\Kunena\Libraries\Template\Template;
+use Kunena\Forum\Libraries\Attachment\Helper;
+use Kunena\Forum\Libraries\Controller\KunenaControllerDisplay;
+use Kunena\Forum\Libraries\Exception\Authorise;
+use Kunena\Forum\Libraries\KunenaFactory;
+use Kunena\Forum\Libraries\KunenaPrivate\Message;
+use Kunena\Forum\Libraries\Template\Template;
 use Joomla\Registry\Registry;
 use function defined;
 
@@ -31,7 +32,7 @@ use function defined;
  *
  * @since   Kunena 4.0
  */
-class ComponentKunenaControllerTopicFormReplyDisplay extends Display
+class ComponentKunenaControllerTopicFormReplyDisplay extends KunenaControllerDisplay
 {
 	/**
 	 * @var     string
@@ -65,17 +66,17 @@ class ComponentKunenaControllerTopicFormReplyDisplay extends Display
 
 		$saved = $this->app->getUserState('com_kunena.postfields');
 
-		$this->me       = \Joomla\Component\Kunena\Libraries\User\Helper::getMyself();
+		$this->me       = \Kunena\Forum\Libraries\User\Helper::getMyself();
 		$this->template = KunenaFactory::getTemplate();
 
 		if (!$mesid)
 		{
-			$this->topic = \Joomla\Component\Kunena\Libraries\Forum\Topic\Helper::get($id);
-			$parent      = \Joomla\Component\Kunena\Libraries\Forum\Message\Helper::get($this->topic->first_post_id);
+			$this->topic = \Kunena\Forum\Libraries\Forum\Topic\Helper::get($id);
+			$parent      = \Kunena\Forum\Libraries\Forum\Message\Helper::get($this->topic->first_post_id);
 		}
 		else
 		{
-			$parent      = \Joomla\Component\Kunena\Libraries\Forum\Message\Helper::get($mesid);
+			$parent      = \Kunena\Forum\Libraries\Forum\Message\Helper::get($mesid);
 			$this->topic = $parent->getTopic();
 		}
 
@@ -144,7 +145,7 @@ class ComponentKunenaControllerTopicFormReplyDisplay extends Display
 		list($this->topic, $this->message) = $parent->newReply($saved ? $saved : ['quote' => $quote]);
 		$this->action = 'post';
 
-		$this->privateMessage       = new KunenaPrivateMessage;
+		$this->privateMessage       = new Message;
 		$this->privateMessage->body = $saved ? $saved['private'] : $this->privateMessage->body;
 
 		$this->allowedExtensions = Helper::getExtensions($this->category);

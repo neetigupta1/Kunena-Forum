@@ -10,14 +10,14 @@
  * @link            https://www.kunena.org
 **/
 
-namespace Joomla\Component\Kunena\Site;
+namespace Kunena\Forum\Site;
 
 defined('_JEXEC') or die();
 
 use function defined;
 
 $topicStarter = $this->topic->first_post_userid == $this->message->userid;
-$template     = \Joomla\Component\Kunena\Libraries\Template\Template::getInstance();
+$template     = \Kunena\Forum\Libraries\Template\Template::getInstance();
 $direction    = $template->params->get('avatarPosition');
 $sideProfile  = $this->profile->getSideProfile($this);
 $quick        = $template->params->get('quick');

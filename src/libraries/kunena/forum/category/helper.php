@@ -10,7 +10,7 @@
  * @link          https://www.kunena.org
  **/
 
-namespace Joomla\Component\Kunena\Libraries\Forum\Category;
+namespace Kunena\Forum\Libraries\Forum\Category;
 
 defined('_JEXEC') or die();
 
@@ -19,6 +19,11 @@ use Joomla\CMS\Factory;
 use Joomla\CMS\Language\Text;
 use Joomla\Database\Exception\ExecutionFailureException;
 use Joomla\String\StringHelper;
+use Kunena\Forum\Libraries\Access;
+use Kunena\Forum\Libraries\Error;
+use Kunena\Forum\Libraries\KunenaFactory;
+use Kunena\Forum\Libraries\KunenaProfiler;
+use Kunena\Forum\Libraries\Tree;
 use RuntimeException;
 use function defined;
 
@@ -58,9 +63,9 @@ abstract class Helper
 	 */
 	public static function initialize()
 	{
-		KUNENA_PROFILER ? \Joomla\Component\Kunena\Libraries\KunenaProfiler::instance()->start('function ' . __CLASS__ . '::' . __FUNCTION__ . '()') : null;
+		KUNENA_PROFILER ? KunenaProfiler::instance()->start('function ' . __CLASS__ . '::' . __FUNCTION__ . '()') : null;
 
-		if (\Joomla\Component\Kunena\Libraries\KunenaFactory::getConfig()->get('cache_cat'))
+		if (KunenaFactory::getConfig()->get('cache_cat'))
 		{
 			$cache = Factory::getCache('com_kunena', 'callback');
 			$cache->setLifeTime(180);
@@ -76,8 +81,8 @@ abstract class Helper
 			self::buildTree(self::$_instances);
 		}
 
-		self::$allowed = \Joomla\Component\Kunena\Libraries\Access::getInstance()->getAllowedCategories();
-		KUNENA_PROFILER ? \Joomla\Component\Kunena\Libraries\KunenaProfiler::instance()->stop('function ' . __CLASS__ . '::' . __FUNCTION__ . '()') : null;
+		self::$allowed = Access::getInstance()->getAllowedCategories();
+		KUNENA_PROFILER ? KunenaProfiler::instance()->stop('function ' . __CLASS__ . '::' . __FUNCTION__ . '()') : null;
 	}
 
 	/**
@@ -89,7 +94,7 @@ abstract class Helper
 	 */
 	public static function &loadCategories()
 	{
-		KUNENA_PROFILER ? \Joomla\Component\Kunena\Libraries\KunenaProfiler::instance()->start('function ' . __CLASS__ . '::' . __FUNCTION__ . '()') : null;
+		KUNENA_PROFILER ? KunenaProfiler::instance()->start('function ' . __CLASS__ . '::' . __FUNCTION__ . '()') : null;
 
 		$db    = Factory::getDBO();
 		$query = $db->getQuery(true);
@@ -104,7 +109,7 @@ abstract class Helper
 		}
 		catch (ExecutionFailureException $e)
 		{
-			\Joomla\Component\Kunena\Libraries\Error::displayDatabaseError($e);
+			Error::displayDatabaseError($e);
 
 			return false;
 		}
@@ -132,7 +137,7 @@ abstract class Helper
 			}
 		}
 
-		KUNENA_PROFILER ? \Joomla\Component\Kunena\Libraries\KunenaProfiler::instance()->stop('function ' . __CLASS__ . '::' . __FUNCTION__ . '()') : null;
+		KUNENA_PROFILER ? KunenaProfiler::instance()->stop('function ' . __CLASS__ . '::' . __FUNCTION__ . '()') : null;
 
 		return $cat_instances;
 	}
@@ -146,7 +151,7 @@ abstract class Helper
 	 */
 	protected static function buildTree(array &$instances)
 	{
-		KUNENA_PROFILER ? \Joomla\Component\Kunena\Libraries\KunenaProfiler::instance()->start('function ' . __CLASS__ . '::' . __FUNCTION__ . '()') : null;
+		KUNENA_PROFILER ? KunenaProfiler::instance()->start('function ' . __CLASS__ . '::' . __FUNCTION__ . '()') : null;
 		self::$_tree = [];
 
 		foreach ($instances as $instance)
@@ -159,7 +164,7 @@ abstract class Helper
 			self::$_tree [$instance->parent_id][$instance->id] = &self::$_tree [(int) $instance->id];
 		}
 
-		KUNENA_PROFILER ? \Joomla\Component\Kunena\Libraries\KunenaProfiler::instance()->stop('function ' . __CLASS__ . '::' . __FUNCTION__ . '()') : null;
+		KUNENA_PROFILER ? KunenaProfiler::instance()->stop('function ' . __CLASS__ . '::' . __FUNCTION__ . '()') : null;
 	}
 
 	/**
@@ -202,7 +207,7 @@ abstract class Helper
 	 */
 	public static function getSubscriptions($user = null)
 	{
-		$user  = \Joomla\Component\Kunena\Libraries\User\Helper::get($user);
+		$user  = \Kunena\Forum\Libraries\User\Helper::get($user);
 		$db    = Factory::getDBO();
 		$query = $db->getQuery(true);
 		$query->select($db->quoteName('category_id'))
@@ -217,7 +222,7 @@ abstract class Helper
 		}
 		catch (ExecutionFailureException $e)
 		{
-			\Joomla\Component\Kunena\Libraries\Error::displayDatabaseError($e);
+			Error::displayDatabaseError($e);
 
 			return [];
 		}
@@ -238,13 +243,13 @@ abstract class Helper
 	 */
 	public static function getCategories($ids = false, $reverse = false, $authorise = 'read')
 	{
-		KUNENA_PROFILER ? \Joomla\Component\Kunena\Libraries\KunenaProfiler::instance()->start('function ' . __CLASS__ . '::' . __FUNCTION__ . '()') : null;
+		KUNENA_PROFILER ? KunenaProfiler::instance()->start('function ' . __CLASS__ . '::' . __FUNCTION__ . '()') : null;
 
 		if ($ids === false)
 		{
 			if ($authorise == 'none')
 			{
-				KUNENA_PROFILER ? \Joomla\Component\Kunena\Libraries\KunenaProfiler::instance()->stop('function ' . __CLASS__ . '::' . __FUNCTION__ . '()') : null;
+				KUNENA_PROFILER ? KunenaProfiler::instance()->stop('function ' . __CLASS__ . '::' . __FUNCTION__ . '()') : null;
 
 				return self::$_instances;
 			}
@@ -262,7 +267,7 @@ abstract class Helper
 
 		if (!$reverse)
 		{
-			$allowed = $authorise != 'none' ? array_intersect_key($ids, \Joomla\Component\Kunena\Libraries\Access::getInstance()->getAllowedCategories()) : $ids;
+			$allowed = $authorise != 'none' ? array_intersect_key($ids, Access::getInstance()->getAllowedCategories()) : $ids;
 			$list    = array_intersect_key(self::$_instances, $allowed);
 
 			if ($authorise != 'none' && $authorise != 'read')
@@ -278,7 +283,7 @@ abstract class Helper
 		}
 		else
 		{
-			$allowed = $authorise != 'none' ? array_intersect_key(self::$_instances, \Joomla\Component\Kunena\Libraries\Access::getInstance()->getAllowedCategories()) : self::$_instances;
+			$allowed = $authorise != 'none' ? array_intersect_key(self::$_instances, Access::getInstance()->getAllowedCategories()) : self::$_instances;
 			$list    = array_diff_key($allowed, $ids);
 
 			if ($authorise != 'none' && $authorise != 'read')
@@ -293,7 +298,7 @@ abstract class Helper
 			}
 		}
 
-		KUNENA_PROFILER ? \Joomla\Component\Kunena\Libraries\KunenaProfiler::instance()->stop('function ' . __CLASS__ . '::' . __FUNCTION__ . '()') : null;
+		KUNENA_PROFILER ? KunenaProfiler::instance()->stop('function ' . __CLASS__ . '::' . __FUNCTION__ . '()') : null;
 
 		return $list;
 	}
@@ -314,7 +319,7 @@ abstract class Helper
 		$count = 0;
 
 		// Pre-load all items
-		$usercategories = CategoryUserHelper::getCategories($ids, $user);
+		$usercategories = User\Helper::getCategories($ids, $user);
 
 		foreach ($usercategories as $usercategory)
 		{
@@ -352,19 +357,19 @@ abstract class Helper
 	 */
 	public static function getLatestSubscriptions($user, $limitstart = 0, $limit = 0, $params = [])
 	{
-		KUNENA_PROFILER ? \Joomla\Component\Kunena\Libraries\KunenaProfiler::instance()->start('function ' . __CLASS__ . '::' . __FUNCTION__ . '()') : null;
+		KUNENA_PROFILER ? KunenaProfiler::instance()->start('function ' . __CLASS__ . '::' . __FUNCTION__ . '()') : null;
 		$db     = Factory::getDBO();
-		$config = \Joomla\Component\Kunena\Libraries\KunenaFactory::getConfig();
+		$config = KunenaFactory::getConfig();
 
 		if ($limit < 1)
 		{
 			$limit = $config->threads_per_page;
 		}
 
-		$userids = is_array($user) ? implode(",", $user) : \Joomla\Component\Kunena\Libraries\User\Helper::get($user)->userid;
+		$userids = is_array($user) ? implode(",", $user) : \Kunena\Forum\Libraries\User\Helper::get($user)->userid;
 		$orderby = isset($params['orderby']) ? (string) $params['orderby'] : 'c.last_post_time DESC';
 		$where   = isset($params['where']) ? (string) $params['where'] : '';
-		$allowed = implode(',', array_keys(\Joomla\Component\Kunena\Libraries\Access::getInstance()->getAllowedCategories()));
+		$allowed = implode(',', array_keys(Access::getInstance()->getAllowedCategories()));
 
 		if (!$userids || !$allowed)
 		{
@@ -387,14 +392,14 @@ abstract class Helper
 		}
 		catch (Exception $e)
 		{
-			\Joomla\Component\Kunena\Libraries\Error::displayDatabaseError($e);
+			Error::displayDatabaseError($e);
 
 			return [0, []];
 		}
 
 		if (!$total)
 		{
-			KUNENA_PROFILER ? \Joomla\Component\Kunena\Libraries\KunenaProfiler::instance()->stop('function ' . __CLASS__ . '::' . __FUNCTION__ . '()') : null;
+			KUNENA_PROFILER ? KunenaProfiler::instance()->stop('function ' . __CLASS__ . '::' . __FUNCTION__ . '()') : null;
 
 			return [0, []];
 		}
@@ -421,7 +426,7 @@ abstract class Helper
 		}
 		catch (ExecutionFailureException $e)
 		{
-			\Joomla\Component\Kunena\Libraries\Error::displayDatabaseError($e);
+			Error::displayDatabaseError($e);
 
 			return [0, []];
 		}
@@ -450,14 +455,14 @@ abstract class Helper
 	 */
 	public static function getNewTopics($catids)
 	{
-		$user = \Joomla\Component\Kunena\Libraries\User\Helper::getMyself();
+		$user = \Kunena\Forum\Libraries\User\Helper::getMyself();
 
-		if (!\Joomla\Component\Kunena\Libraries\KunenaFactory::getConfig()->shownew || !$user->exists())
+		if (!KunenaFactory::getConfig()->shownew || !$user->exists())
 		{
 			return;
 		}
 
-		$session    = \Joomla\Component\Kunena\Libraries\KunenaFactory::getSession();
+		$session    = KunenaFactory::getSession();
 		$categories = self::getCategories($catids);
 		$catlist    = [];
 
@@ -493,7 +498,7 @@ abstract class Helper
 		}
 		catch (ExecutionFailureException $e)
 		{
-			\Joomla\Component\Kunena\Libraries\Error::displayDatabaseError($e);
+			Error::displayDatabaseError($e);
 
 			return;
 		}
@@ -563,14 +568,14 @@ abstract class Helper
 	 */
 	public static function getParents($id = 0, $levels = 100, $params = [])
 	{
-		KUNENA_PROFILER ? \Joomla\Component\Kunena\Libraries\KunenaProfiler::instance()->start('function ' . __CLASS__ . '::' . __FUNCTION__ . '()') : null;
+		KUNENA_PROFILER ? KunenaProfiler::instance()->start('function ' . __CLASS__ . '::' . __FUNCTION__ . '()') : null;
 
 		$unpublished = isset($params['unpublished']) ? (bool) $params['unpublished'] : 0;
 		$action      = isset($params['action']) ? (string) $params['action'] : 'read';
 
 		if (!isset(self::$_instances [$id]) || !self::$_instances [$id]->isAuthorised($action, null))
 		{
-			KUNENA_PROFILER ? \Joomla\Component\Kunena\Libraries\KunenaProfiler::instance()->stop('function ' . __CLASS__ . '::' . __FUNCTION__ . '()') : null;
+			KUNENA_PROFILER ? KunenaProfiler::instance()->stop('function ' . __CLASS__ . '::' . __FUNCTION__ . '()') : null;
 
 			return [];
 		}
@@ -582,14 +587,14 @@ abstract class Helper
 		{
 			if (!isset(self::$_instances [$parent]))
 			{
-				KUNENA_PROFILER ? \Joomla\Component\Kunena\Libraries\KunenaProfiler::instance()->stop('function ' . __CLASS__ . '::' . __FUNCTION__ . '()') : null;
+				KUNENA_PROFILER ? KunenaProfiler::instance()->stop('function ' . __CLASS__ . '::' . __FUNCTION__ . '()') : null;
 
 				return [];
 			}
 
 			if (!$unpublished && self::$_instances[$parent]->published != 1)
 			{
-				KUNENA_PROFILER ? \Joomla\Component\Kunena\Libraries\KunenaProfiler::instance()->stop('function ' . __CLASS__ . '::' . __FUNCTION__ . '()') : null;
+				KUNENA_PROFILER ? KunenaProfiler::instance()->stop('function ' . __CLASS__ . '::' . __FUNCTION__ . '()') : null;
 
 				return [];
 			}
@@ -599,7 +604,7 @@ abstract class Helper
 			$parent = self::$_instances [$parent]->parent_id;
 		}
 
-		KUNENA_PROFILER ? \Joomla\Component\Kunena\Libraries\KunenaProfiler::instance()->stop('function ' . __CLASS__ . '::' . __FUNCTION__ . '()') : null;
+		KUNENA_PROFILER ? KunenaProfiler::instance()->stop('function ' . __CLASS__ . '::' . __FUNCTION__ . '()') : null;
 
 		return array_reverse($list, true);
 	}
@@ -668,18 +673,18 @@ abstract class Helper
 	 */
 	public static function get($identifier = null, $reload = false)
 	{
-		KUNENA_PROFILER ? \Joomla\Component\Kunena\Libraries\KunenaProfiler::instance()->start('function ' . __CLASS__ . '::' . __FUNCTION__ . '()') : null;
+		KUNENA_PROFILER ? KunenaProfiler::instance()->start('function ' . __CLASS__ . '::' . __FUNCTION__ . '()') : null;
 
 		if ($identifier instanceof Category)
 		{
-			KUNENA_PROFILER ? \Joomla\Component\Kunena\Libraries\KunenaProfiler::instance()->stop('function ' . __CLASS__ . '::' . __FUNCTION__ . '()') : null;
+			KUNENA_PROFILER ? KunenaProfiler::instance()->stop('function ' . __CLASS__ . '::' . __FUNCTION__ . '()') : null;
 
 			return $identifier;
 		}
 
 		if (!is_numeric($identifier))
 		{
-			KUNENA_PROFILER ? \Joomla\Component\Kunena\Libraries\KunenaProfiler::instance()->stop('function ' . __CLASS__ . '::' . __FUNCTION__ . '()') : null;
+			KUNENA_PROFILER ? KunenaProfiler::instance()->stop('function ' . __CLASS__ . '::' . __FUNCTION__ . '()') : null;
 			$category = new Category;
 			$category->load();
 
@@ -698,7 +703,7 @@ abstract class Helper
 			self::$_instances [$id]->load();
 		}
 
-		KUNENA_PROFILER ? \Joomla\Component\Kunena\Libraries\KunenaProfiler::instance()->stop('function ' . __CLASS__ . '::' . __FUNCTION__ . '()') : null;
+		KUNENA_PROFILER ? KunenaProfiler::instance()->stop('function ' . __CLASS__ . '::' . __FUNCTION__ . '()') : null;
 
 		return self::$_instances [$id];
 	}
@@ -716,11 +721,11 @@ abstract class Helper
 	 */
 	public static function getChildren($parents = 0, $levels = 0, $params = [])
 	{
-		KUNENA_PROFILER ? \Joomla\Component\Kunena\Libraries\KunenaProfiler::instance()->start('function ' . __CLASS__ . '::' . __FUNCTION__ . '()') : null;
+		KUNENA_PROFILER ? KunenaProfiler::instance()->start('function ' . __CLASS__ . '::' . __FUNCTION__ . '()') : null;
 
 		if (!is_array($parents) && !isset(self::$_tree[$parents]))
 		{
-			KUNENA_PROFILER ? \Joomla\Component\Kunena\Libraries\KunenaProfiler::instance()->stop('function ' . __CLASS__ . '::' . __FUNCTION__ . '()') : null;
+			KUNENA_PROFILER ? KunenaProfiler::instance()->stop('function ' . __CLASS__ . '::' . __FUNCTION__ . '()') : null;
 
 			return [];
 		}
@@ -742,7 +747,7 @@ abstract class Helper
 
 		$list = self::_getChildren($parents, $levels, $params, $optimize);
 
-		KUNENA_PROFILER ? \Joomla\Component\Kunena\Libraries\KunenaProfiler::instance()->stop('function ' . __CLASS__ . '::' . __FUNCTION__ . '()') : null;
+		KUNENA_PROFILER ? KunenaProfiler::instance()->stop('function ' . __CLASS__ . '::' . __FUNCTION__ . '()') : null;
 
 		return $list;
 	}
@@ -882,7 +887,7 @@ abstract class Helper
 	 */
 	public static function &getIndentation($categories)
 	{
-		$tree = new \Joomla\Component\Kunena\Libraries\Tree($categories);
+		$tree = new Tree($categories);
 
 		return $tree->getIndentation();
 	}
@@ -941,7 +946,7 @@ abstract class Helper
 		}
 		catch (ExecutionFailureException $e)
 		{
-			\Joomla\Component\Kunena\Libraries\Error::displayDatabaseError($e);
+			Error::displayDatabaseError($e);
 
 			return false;
 		}
@@ -968,7 +973,7 @@ abstract class Helper
 		}
 		catch (ExecutionFailureException $e)
 		{
-			\Joomla\Component\Kunena\Libraries\Error::displayDatabaseError($e);
+			Error::displayDatabaseError($e);
 
 			return false;
 		}
@@ -978,7 +983,7 @@ abstract class Helper
 		if ($rows)
 		{
 			// If something changed, clean our cache
-			KunenaCacheHelper::clearCategories();
+			\Kunena\Forum\Libraries\Cache\Helper::clearCategories();
 		}
 
 		return $rows;
@@ -1017,7 +1022,7 @@ abstract class Helper
 			}
 			catch (ExecutionFailureException $e)
 			{
-				\Joomla\Component\Kunena\Libraries\Error::displayDatabaseError($e);
+				Error::displayDatabaseError($e);
 
 				return false;
 			}
@@ -1126,4 +1131,4 @@ abstract class Helper
 	}
 }
 
-CategoryHelper::initialize();
+Helper::initialize();

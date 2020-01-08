@@ -9,16 +9,19 @@
  * @license       https://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link          https://www.kunena.org
  **/
-namespace Joomla\Component\Kunena\Libraries\Controller;
+
+namespace Kunena\Forum\Libraries\Controller;
 
 defined('_JEXEC') or die();
+
+use function defined;
 
 /**
  * Class KunenaControllerApplication
  *
  * @since   Kunena 6.0
  */
-abstract class Application extends KunenaControllerDisplay
+abstract class KunenaControllerApplication extends KunenaControllerDisplay
 {
 	/**
 	 * @param   mixed  $view     view

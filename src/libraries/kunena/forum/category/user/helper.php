@@ -10,17 +10,20 @@
  * @link          https://www.kunena.org
  **/
 
-namespace Joomla\Component\Kunena\Libraries\Forum\Category\User;
+namespace Kunena\Forum\Libraries\Forum\Category\User;
 
 defined('_JEXEC') or die();
 
 use Exception;
 use Joomla\CMS\Factory;
 use Joomla\Database\Exception\ExecutionFailureException;
+use Kunena\Forum\Libraries\Error;
+use Kunena\Forum\Libraries\Forum\Category\Category;
+use Kunena\Forum\Libraries\User\KunenaUser;
 use function defined;
 
 /**
- * Class KunenaForumCategoryUserHelper
+ * Class \Kunena\Forum\Libraries\Forum\Category\CategoryUserHelper
  *
  * @since   Kunena 6.0
  */
@@ -33,13 +36,13 @@ abstract class Helper
 	protected static $_instances = [];
 
 	/**
-	 * Get an instance of KunenaForumCategoryUser object.
+	 * Get an instance of \Kunena\Forum\Libraries\Forum\Category\CategoryUser object.
 	 *
 	 * @param   null|int  $category  The category id to load.
 	 * @param   mixed     $user      The user id to load - Can be only an integer.
 	 * @param   bool      $reload    Reload objects from the database.
 	 *
-	 * @return  KunenaForumCategoryUser    The user category object.
+	 * @return  User    The user category object.
 	 *
 	 * @since   Kunena 6.0
 	 *
@@ -47,17 +50,17 @@ abstract class Helper
 	 */
 	public static function get($category = null, $user = null, $reload = false)
 	{
-		if ($category instanceof KunenaForumCategory)
+		if ($category instanceof Category)
 		{
 			$category = $category->id;
 		}
 
 		$category = intval($category);
-		$user     = \Joomla\Component\Kunena\Libraries\User\Helper::get($user);
+		$user     = \Kunena\Forum\Libraries\User\Helper::get($user);
 
 		if ($category === null)
 		{
-			return new KunenaForumCategoryUser(null, $user);
+			return new User(null, $user);
 		}
 
 		if ($reload || empty(self::$_instances [$user->userid][$category]))
@@ -75,7 +78,7 @@ abstract class Helper
 	 * @param   bool|array|int  $ids   The category ids to load.
 	 * @param   mixed           $user  The user id to load.
 	 *
-	 * @return  KunenaForumCategoryUser[]
+	 * @return  User[]
 	 *
 	 * @since   Kunena 6.0
 	 *
@@ -83,12 +86,12 @@ abstract class Helper
 	 */
 	public static function getCategories($ids = false, $user = null)
 	{
-		$user = \Joomla\Component\Kunena\Libraries\User\Helper::get($user);
+		$user = \Kunena\Forum\Libraries\User\Helper::get($user);
 
 		if ($ids === false)
 		{
 			// Get categories which are seen by current user
-			$ids = \Joomla\Component\Kunena\Libraries\Forum\Category\Helper::getCategories();
+			$ids = \Kunena\Forum\Libraries\Forum\Category\Helper::getCategories();
 		}
 		elseif (!is_array($ids))
 		{
@@ -98,7 +101,7 @@ abstract class Helper
 		// Convert category objects into ids
 		foreach ($ids as $i => $id)
 		{
-			if ($id instanceof KunenaForumCategory)
+			if ($id instanceof Category)
 			{
 				$ids[$i] = $id->id;
 			}
@@ -164,21 +167,21 @@ abstract class Helper
 		}
 		catch (ExecutionFailureException $e)
 		{
-			\Joomla\Component\Kunena\Libraries\Error::displayDatabaseError($e);
+			Error::displayDatabaseError($e);
 		}
 
 		foreach ($ids as $id)
 		{
 			if (isset($results[$id]))
 			{
-				$instance = new KunenaForumCategoryUser;
+				$instance = new User;
 				$instance->bind($results[$id]);
 				$instance->exists(true);
 				self::$_instances [$user->userid][$id] = $instance;
 			}
 			else
 			{
-				self::$_instances [$user->userid][$id] = new KunenaForumCategoryUser($id, $user);
+				self::$_instances [$user->userid][$id] = new User($id, $user);
 			}
 		}
 
@@ -197,7 +200,7 @@ abstract class Helper
 	 */
 	public static function markRead(array $ids, $user = null)
 	{
-		$user = \Joomla\Component\Kunena\Libraries\User\Helper::get($user);
+		$user = \Kunena\Forum\Libraries\User\Helper::get($user);
 
 		$items      = self::getCategories($ids, $user);
 		$updateList = [];
@@ -235,7 +238,7 @@ abstract class Helper
 			}
 			catch (ExecutionFailureException $e)
 			{
-				\Joomla\Component\Kunena\Libraries\Error::displayDatabaseError($e);
+				Error::displayDatabaseError($e);
 			}
 		}
 
@@ -254,7 +257,7 @@ abstract class Helper
 			}
 			catch (ExecutionFailureException $e)
 			{
-				\Joomla\Component\Kunena\Libraries\Error::displayDatabaseError($e);
+				Error::displayDatabaseError($e);
 			}
 		}
 	}

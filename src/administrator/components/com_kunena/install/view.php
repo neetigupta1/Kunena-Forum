@@ -9,7 +9,7 @@
  * @link           https://www.kunena.org
  **/
 
-namespace Joomla\Component\Kunena\Administrator;
+namespace Kunena\Forum\Administrator\Install;
 
 defined('_JEXEC') or die();
 
@@ -17,6 +17,7 @@ use Exception;
 use Joomla\CMS\Factory;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\MVC\View\HtmlView;
+use Kunena\Forum\Libraries\Forum\KunenaForum;
 use JToolbarHelper;
 use function defined;
 
@@ -42,7 +43,7 @@ class KunenaViewInstall extends HtmlView
 	 *
 	 * @since   Kunena 1.6
 	 *
-	 * @throws  Exception
+	 * @throws  \Exception
 	 */
 	public function display($tpl = null)
 	{
@@ -80,7 +81,7 @@ class KunenaViewInstall extends HtmlView
 	public function setToolBar()
 	{
 		// Set the titlebar text
-		JToolbarHelper::title('<span>Kunena ' . \Joomla\Component\Kunena\Libraries\Forum\Forum::version() . '</span> ' . Text::_('COM_KUNENA_INSTALLER'), 'kunena.png');
+		JToolbarHelper::title('<span>Kunena ' . KunenaForum::version() . '</span> ' . Text::_('COM_KUNENA_INSTALLER'), 'kunena.png');
 	}
 
 	/**
@@ -89,7 +90,7 @@ class KunenaViewInstall extends HtmlView
 	 * @since   Kunena 6.0
 	 *
 	 * @throws  KunenaSchemaException
-	 * @throws  Exception
+	 * @throws  \Exception
 	 */
 	public function displaySchema()
 	{
@@ -100,7 +101,7 @@ class KunenaViewInstall extends HtmlView
 		echo $this->escape($schema->getSchema()->saveXML());
 		echo '</textarea>';
 
-		if (\Joomla\Component\Kunena\Libraries\Forum\Forum::isDev())
+		if (KunenaForum::isDev())
 		{
 			echo '<textarea cols="80" rows="20">';
 
@@ -119,7 +120,7 @@ class KunenaViewInstall extends HtmlView
 	 * @since   Kunena 6.0
 	 *
 	 * @throws  KunenaSchemaException
-	 * @throws  Exception
+	 * @throws  \Exception
 	 */
 	public function displaySchemaDiff()
 	{
@@ -131,7 +132,7 @@ class KunenaViewInstall extends HtmlView
 		echo $this->escape($diff->saveXML());
 		echo '</textarea>';
 
-		if (\Joomla\Component\Kunena\Libraries\Forum\Forum::isDev())
+		if (KunenaForum::isDev())
 		{
 			echo '<textarea cols="80" rows="20">';
 

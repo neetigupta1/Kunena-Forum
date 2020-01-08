@@ -10,13 +10,14 @@
  * @link            https://www.kunena.org
  **/
 
-namespace Joomla\Component\Kunena\Libraries\Image;
+namespace Kunena\Forum\Libraries\Image;
 
 defined('_JEXEC') or die;
 
 use Exception;
 use Joomla\CMS\Filesystem\File;
 use Joomla\CMS\Filesystem\Folder;
+use Kunena\Forum\Libraries\Path\KunenaPath;
 
 /**
  * Helper class for image manipulation.
@@ -41,7 +42,7 @@ class Helper
 	 *
 	 * @since   Kunena 6.0
 	 */
-	public static function version($file, $folder, $filename, $maxWidth = 800, $maxHeight = 800, $quality = 70, $scale = \Joomla\Component\Kunena\Libraries\Image\KunenaImage::SCALE_INSIDE, $crop = 0)
+	public static function version($file, $folder, $filename, $maxWidth = 800, $maxHeight = 800, $quality = 70, $scale = KunenaImage::SCALE_INSIDE, $crop = 0)
 	{
 		try
 		{
@@ -52,9 +53,9 @@ class Helper
 			}
 
 			// Make sure that index.html exists in the folder.
-			KunenaFolder::createIndex($folder);
+			\Kunena\Forum\Libraries\Folder\Folder::createIndex($folder);
 
-			$info = \Joomla\Component\Kunena\Libraries\Image\KunenaImage::getImageFileProperties($file);
+			$info = KunenaImage::getImageFileProperties($file);
 
 			if ($info->width > $maxWidth || $info->height > $maxHeight)
 			{

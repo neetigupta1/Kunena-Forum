@@ -10,11 +10,10 @@
  * @link          http://www.kunena.org
  **/
 
-namespace Joomla\Component\Kunena\Libraries\Tables;
+namespace Kunena\Forum\Libraries\Tables;
 
 defined('_JEXEC') or die();
 
-use Exception;
 use Joomla\CMS\Date\Date;
 use Joomla\CMS\Language\Text;
 use Joomla\Database\DatabaseDriver;
@@ -95,7 +94,7 @@ class TableKunenaPrivate extends KunenaTable
 	 *
 	 * @since   Kunena 6.0
 	 *
-	 * @throws  Exception
+	 * @throws  \Exception
 	 */
 	public function check()
 	{

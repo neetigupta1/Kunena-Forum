@@ -15,7 +15,7 @@ use Joomla\CMS\HTML\HTMLHelper;
 use Joomla\CMS\Language\Text;
 
 ?>
-<form action="<?php echo \Joomla\Component\Kunena\Libraries\Route\KunenaRoute::_('administrator/index.php?option=com_kunena&view=config') ?>" method="post"
+<form action="<?php echo \Kunena\Forum\Libraries\Route\KunenaRoute::_('administrator/index.php?option=com_kunena&view=config') ?>" method="post"
 	  name="settingFormModal"
 	  id="settingFormModal">
 	<div class="modal hide fade" id="settingModal">

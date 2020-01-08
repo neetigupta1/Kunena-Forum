@@ -10,15 +10,14 @@
  * @link            https://www.kunena.org
  **/
 
-namespace Joomla\Component\Kunena\Site\Controller\Widget\Menu;
+namespace Kunena\Forum\Site\Controller\Widget\Menu;
 
 defined('_JEXEC') or die();
 
-use Exception;
-use Joomla\Component\Kunena\Libraries\Controller\Display;
-use Joomla\Component\Kunena\Libraries\KunenaFactory;
-use Joomla\Component\Kunena\Libraries\Menu\Helper;
-use Joomla\Component\Kunena\Libraries\Route\KunenaRoute;
+use Kunena\Forum\Libraries\Controller\KunenaControllerDisplay;
+use Kunena\Forum\Libraries\KunenaFactory;
+use Kunena\Forum\Libraries\Menu\Helper;
+use Kunena\Forum\Libraries\Route\KunenaRoute;
 use Joomla\Registry\Registry;
 use function defined;
 
@@ -27,7 +26,7 @@ use function defined;
  *
  * @since   Kunena 4.0
  */
-class ComponentKunenaControllerWidgetMenuDisplay extends Display
+class ComponentKunenaControllerWidgetMenuDisplay extends KunenaControllerDisplay
 {
 	/**
 	 * @var     string
@@ -90,7 +89,7 @@ class ComponentKunenaControllerWidgetMenuDisplay extends Display
 	 *
 	 * @since   Kunena 6.0
 	 *
-	 * @throws  Exception
+	 * @throws  \Exception
 	 */
 	protected function before()
 	{

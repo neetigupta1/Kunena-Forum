@@ -10,14 +10,13 @@
  * @link            https://www.kunena.org
  **/
 
-namespace Joomla\Component\Kunena\Site\Controllers;
+namespace Kunena\Forum\Site\Controllers;
 
 defined('_JEXEC') or die();
 
-use Exception;
 use Joomla\CMS\Uri\Uri;
-use Joomla\Component\Kunena\Libraries\Controller;
-use Joomla\Component\Kunena\Libraries\Route\KunenaRoute;
+use Kunena\Forum\Libraries\Controller;
+use Kunena\Forum\Libraries\Route\KunenaRoute;
 use function defined;
 
 /**
@@ -32,7 +31,7 @@ class KunenaControllerMisc extends Controller
 	 *
 	 * @since   Kunena 6.0
 	 *
-	 * @throws  Exception
+	 * @throws  \Exception
 	 */
 	public function __construct($config = [])
 	{
@@ -44,7 +43,7 @@ class KunenaControllerMisc extends Controller
 	 *
 	 * @since   Kunena 6.0
 	 *
-	 * @throws  Exception
+	 * @throws  \Exception
 	 * @throws  null
 	 */
 	public function template()
@@ -55,7 +54,7 @@ class KunenaControllerMisc extends Controller
 
 		if ($name)
 		{
-			$name = KunenaPath::clean($name);
+			$name = \Kunena\Forum\Libraries\Path\KunenaPath::clean($name);
 
 			if (!is_readable(KPATH_SITE . "/template/{$name}/config/template.xml"))
 			{

@@ -9,7 +9,7 @@
  * @link           https://www.kunena.org
  **/
 
-namespace Joomla\Component\Kunena\Administrator;
+namespace Kunena\Forum\Administrator\Updates\Php;
 
 defined('_JEXEC') or die();
 
@@ -26,7 +26,7 @@ use function defined;
  *
  * @since   Kunena 6.0
  *
- * @throws  KunenaInstallerException
+ * @throws  Exception
  */
 function kunena_160_2010_05_30_polls($parent)
 {
@@ -54,7 +54,7 @@ function kunena_160_2010_05_30_polls($parent)
 				}
 				catch (Exception $e)
 				{
-					throw new KunenaInstallerException($e->getMessage(), $e->getCode());
+					throw new Exception($e->getMessage(), $e->getCode());
 				}
 
 				$upgraded = true;
@@ -71,7 +71,7 @@ function kunena_160_2010_05_30_polls($parent)
 				}
 				catch (Exception $e)
 				{
-					throw new KunenaInstallerException($e->getMessage(), $e->getCode());
+					throw new Exception($e->getMessage(), $e->getCode());
 				}
 
 				$upgraded = true;
@@ -88,7 +88,7 @@ function kunena_160_2010_05_30_polls($parent)
 				}
 				catch (Exception $e)
 				{
-					throw new KunenaInstallerException($e->getMessage(), $e->getCode());
+					throw new Exception($e->getMessage(), $e->getCode());
 				}
 
 				$upgraded = true;
@@ -106,7 +106,7 @@ function kunena_160_2010_05_30_polls($parent)
 			}
 			catch (Exception $e)
 			{
-				throw new KunenaInstallerException($e->getMessage(), $e->getCode());
+				throw new Exception($e->getMessage(), $e->getCode());
 			}
 
 			$query = "ALTER TABLE `{$db->quoteName($db->getPrefix() . 'kunena_polls_datas')}` MODIFY `id` int(11) AUTO_INCREMENT, MODIFY `text` varchar(100), CHANGE `hits` `votes` int(11)";
@@ -118,7 +118,7 @@ function kunena_160_2010_05_30_polls($parent)
 			}
 			catch (Exception $e)
 			{
-				throw new KunenaInstallerException($e->getMessage(), $e->getCode());
+				throw new Exception($e->getMessage(), $e->getCode());
 			}
 
 			$query = "ALTER TABLE `{$db->quoteName($db->getPrefix() . 'kunena_polls_users')}` DROP COLUMN `id`, ADD `votes` int(11), ADD `lasttime` timestamp NOT NULL default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP, ADD `lastvote` int(11), ADD UNIQUE KEY `pollid` (pollid,userid)";
@@ -130,7 +130,7 @@ function kunena_160_2010_05_30_polls($parent)
 			}
 			catch (Exception $e)
 			{
-				throw new KunenaInstallerException($e->getMessage(), $e->getCode());
+				throw new Exception($e->getMessage(), $e->getCode());
 			}
 
 			$query = "ALTER TABLE `{$db->quoteName($db->getPrefix() . 'kunena_polls_datas')}` RENAME TO `{$db->quoteName($db->getPrefix() . 'kunena_polls_options')}`";
@@ -142,7 +142,7 @@ function kunena_160_2010_05_30_polls($parent)
 			}
 			catch (Exception $e)
 			{
-				throw new KunenaInstallerException($e->getMessage(), $e->getCode());
+				throw new Exception($e->getMessage(), $e->getCode());
 			}
 
 			$upgraded = true;
@@ -160,7 +160,7 @@ function kunena_160_2010_05_30_polls($parent)
 			}
 			catch (Exception $e)
 			{
-				throw new KunenaInstallerException($e->getMessage(), $e->getCode());
+				throw new Exception($e->getMessage(), $e->getCode());
 			}
 		}
 
@@ -179,7 +179,7 @@ function kunena_160_2010_05_30_polls($parent)
 				}
 				catch (Exception $e)
 				{
-					throw new KunenaInstallerException($e->getMessage(), $e->getCode());
+					throw new Exception($e->getMessage(), $e->getCode());
 				}
 
 				$upgraded = true;

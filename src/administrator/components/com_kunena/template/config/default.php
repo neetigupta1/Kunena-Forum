@@ -10,13 +10,14 @@
  * @link            https://www.kunena.org
  **/
 
-namespace Joomla\Component\Kunena\Administrator;
+namespace Kunena\Forum\Administrator;
 
 defined('_JEXEC') or die();
 
 use Joomla\CMS\HTML\HTMLHelper;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\Uri\Uri;
+use Kunena\Forum\Administrator\Install\KunenaVersion;
 
 HTMLHelper::_('behavior.multiselect');
 HTMLHelper::_('dropdown.init');
@@ -32,7 +33,7 @@ HTMLHelper::_('dropdown.init');
 					<?php echo Text::_('COM_KUNENA_CPANEL_LABEL_CONFIG') ?>
 				</div>
 				<hr class="hr-condensed">
-				<form action="<?php echo \Joomla\Component\Kunena\Libraries\Route\KunenaRoute::_('administrator/index.php?option=com_kunena'); ?>" method="post"
+				<form action="<?php echo \Kunena\Forum\Libraries\Route\KunenaRoute::_('administrator/index.php?option=com_kunena'); ?>" method="post"
 					  id="adminForm" name="adminForm">
 					<input type="hidden" name="view" value="config"/>
 					<input type="hidden" name="task" value=""/>

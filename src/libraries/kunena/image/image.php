@@ -10,7 +10,7 @@
  * @link            https://www.kunena.org
  **/
 
-namespace Joomla\Component\Kunena\Libraries\Image;
+namespace Kunena\Forum\Libraries\Image;
 
 defined('_JEXEC') or die;
 

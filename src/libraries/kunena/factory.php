@@ -9,12 +9,20 @@
  * @link           https://www.kunena.org
  **/
 
-namespace Joomla\Component\Kunena\Libraries;
+namespace Kunena\Forum\Libraries;
 
 defined('_JEXEC') or die();
 
 use Exception;
 use Joomla\CMS\Factory;
+use Kunena\Forum\Administrator\KunenaAdminTemplate;
+use Kunena\Forum\Libraries\Integration\Activity;
+use Kunena\Forum\Libraries\Integration\Avatar;
+use Kunena\Forum\Libraries\Integration\KunenaPrivate;
+use Kunena\Forum\Libraries\Integration\Profile;
+use Kunena\Forum\Libraries\Template\Template;
+use Kunena\Forum\Libraries\User\Helper;
+use Kunena\Forum\Libraries\User\KunenaUser;
 use function defined;
 
 /**
@@ -37,7 +45,7 @@ abstract class KunenaFactory
 	 *
 	 * @param   string  $name  name
 	 *
-	 * @return  KunenaTemplate
+	 * @return  Template
 	 *
 	 * @since   Kunena 6.0
 	 *
@@ -45,7 +53,7 @@ abstract class KunenaFactory
 	 */
 	public static function getTemplate($name = null)
 	{
-		return \Joomla\Component\Kunena\Libraries\Template\Template::getInstance($name);
+		return Template::getInstance($name);
 	}
 
 	/**
@@ -53,7 +61,7 @@ abstract class KunenaFactory
 	 *
 	 * Returns the global {@link KunenaTemplate} object, only creating it if it doesn't already exist.
 	 *
-	 * @return  KunenaAdminTemplate|KunenaTemplate
+	 * @return KunenaAdminTemplate|Template
 	 *
 	 * @since   Kunena 6.0
 	 */
@@ -68,7 +76,7 @@ abstract class KunenaFactory
 	/**
 	 * Get Kunena user object
 	 *
-	 * Returns the global {@link KunenaUser} object, only creating it if it doesn't already exist.
+	 * Returns the global {@link \Kunena\Forum\Libraries\User\KunenaUser} object, only creating it if it doesn't already exist.
 	 *
 	 * @param   int   $id      The user to load - Can be an integer or string - If string, it is converted to Id
 	 *                         automatically.
@@ -82,17 +90,17 @@ abstract class KunenaFactory
 	 */
 	public static function getUser($id = null, $reload = false)
 	{
-		return \Joomla\Component\Kunena\Libraries\User\Helper::get($id, $reload);
+		return Helper::get($id, $reload);
 	}
 
 	/**
 	 * Get Kunena session object
 	 *
-	 * Returns the global {@link KunenaSession} object, only creating it if it doesn't already exist.
+	 * Returns the global {@link Session} object, only creating it if it doesn't already exist.
 	 *
 	 * @param   array|bool  $update  An array containing session options
 	 *
-	 * @return  KunenaSession
+	 * @return  Session
 	 *
 	 * @since   Kunena 6.0
 	 *
@@ -102,7 +110,7 @@ abstract class KunenaFactory
 	{
 		if (!is_object(self::$session))
 		{
-			self::$session = KunenaSession::getInstance($update);
+			self::$session = Session::getInstance($update);
 		}
 
 		return self::$session;
@@ -123,9 +131,9 @@ abstract class KunenaFactory
 	/**
 	 * Get Kunena avatar integration object
 	 *
-	 * Returns the global {@link \Joomla\Component\Kunena\Libraries\Integration\Avatar} object, only creating it if it doesn't already exist.
+	 * Returns the global {@link \Kunena\Forum\Libraries\Integration\Avatar} object, only creating it if it doesn't already exist.
 	 *
-	 * @return  \Joomla\Component\Kunena\Libraries\Integration\Avatar
+	 * @return  Avatar
 	 *
 	 * @since   Kunena 6.0
 	 *
@@ -133,7 +141,7 @@ abstract class KunenaFactory
 	 */
 	public static function getAvatarIntegration()
 	{
-		return \Joomla\Component\Kunena\Libraries\Integration\Avatar::getInstance();
+		return Avatar::getInstance();
 	}
 
 	/**
@@ -141,7 +149,7 @@ abstract class KunenaFactory
 	 *
 	 * Returns the global {@link KunenaPrivate} object, only creating it if it doesn't already exist.
 	 *
-	 * @return  KunenaPrivate
+	 * @return   KunenaPrivate
 	 *
 	 * @since   Kunena 6.0
 	 *
@@ -157,7 +165,7 @@ abstract class KunenaFactory
 	 *
 	 * Returns the global {@link KunenaIntegrationActivity} object, only creating it if it doesn't already exist.
 	 *
-	 * @return  KunenaIntegrationActivity
+	 * @return  Activity
 	 *
 	 * @since   Kunena 6.0
 	 *
@@ -165,15 +173,15 @@ abstract class KunenaFactory
 	 */
 	public static function getActivityIntegration()
 	{
-		return KunenaIntegrationActivity::getInstance();
+		return Activity::getInstance();
 	}
 
 	/**
 	 * Get Kunena profile integration object
 	 *
-	 * Returns the global {@link KunenaProfile} object, only creating it if it doesn't already exist.
+	 * Returns the global {@link Profile} object, only creating it if it doesn't already exist.
 	 *
-	 * @return  KunenaProfile
+	 * @return  Profile
 	 *
 	 * @since   Kunena 6.0
 	 *
@@ -181,7 +189,7 @@ abstract class KunenaFactory
 	 */
 	public static function getProfile()
 	{
-		return KunenaProfile::getInstance();
+		return Profile::getInstance();
 	}
 
 	/**
@@ -201,7 +209,7 @@ abstract class KunenaFactory
 	public static function loadLanguage($file = 'com_kunena', $client = 'site')
 	{
 		static $loaded = [];
-		KUNENA_PROFILER ? \Joomla\Component\Kunena\Libraries\KunenaProfiler::instance()->start('function ' . __CLASS__ . '::' . __FUNCTION__ . '()') : null;
+		KUNENA_PROFILER ? KunenaProfiler::instance()->start('function ' . __CLASS__ . '::' . __FUNCTION__ . '()') : null;
 
 		if ($client == 'site')
 		{
@@ -233,7 +241,7 @@ abstract class KunenaFactory
 				|| $lang->load($file, $lookup2, null, $english, false);
 		}
 
-		KUNENA_PROFILER ? \Joomla\Component\Kunena\Libraries\KunenaProfiler::instance()->stop('function ' . __CLASS__ . '::' . __FUNCTION__ . '()') : null;
+		KUNENA_PROFILER ? KunenaProfiler::instance()->stop('function ' . __CLASS__ . '::' . __FUNCTION__ . '()') : null;
 
 		return $loaded[$file];
 	}

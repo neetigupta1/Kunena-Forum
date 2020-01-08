@@ -10,13 +10,14 @@
  * @link            https://www.kunena.org
  **/
 
-namespace Joomla\Component\Kunena\Site\Controller\Application\Topic\Threaded;
+namespace Kunena\Forum\Site\Controller\Application\Topic\Threaded;
 
 defined('_JEXEC') or die();
 
 use Exception;
-use Joomla\Component\Kunena\Libraries\Controller\Application\Display;
-use Joomla\Component\Kunena\Libraries\User\Helper;
+use Kunena\Forum\Libraries\Controller\KunenaControllerDisplay;
+use Kunena\Forum\Libraries\Layout\Page;
+use Kunena\Forum\Libraries\User\Helper;
 use function defined;
 
 /**
@@ -24,7 +25,7 @@ use function defined;
  *
  * @since   Kunena 4.0
  */
-class ComponentKunenaControllerApplicationTopicThreadedDisplay extends Display
+class ComponentKunenaControllerApplicationTopicThreadedDisplay extends KunenaControllerDisplay
 {
 	/**
 	 * Return true if layout exists.
@@ -37,7 +38,7 @@ class ComponentKunenaControllerApplicationTopicThreadedDisplay extends Display
 	 */
 	public function exists()
 	{
-		$this->page = KunenaLayoutPage::factory("{$this->input->getCmd('view')}/default");
+		$this->page = Page::factory("{$this->input->getCmd('view')}/default");
 
 		return (bool) $this->page->getPath();
 	}

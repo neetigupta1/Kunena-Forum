@@ -10,7 +10,7 @@
  * @link            https://www.kunena.org
  **/
 
-namespace Joomla\Component\Kunena\Site\Layout\User;
+namespace Kunena\Forum\Site\Layout\User;
 
 defined('_JEXEC') or die;
 
@@ -18,8 +18,10 @@ use Exception;
 use Joomla\CMS\Factory;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\Plugin\PluginHelper;
-use Joomla\Component\Kunena\Libraries\Layout\Layout;
-use Joomla\Component\Kunena\Libraries\User\Helper;
+use Kunena\Forum\Libraries\Config;
+use Kunena\Forum\Libraries\Layout\Layout;
+use Kunena\Forum\Libraries\User\Helper;
+use Kunena\Forum\Libraries\User\KunenaUser;
 use stdClass;
 use function defined;
 
@@ -93,7 +95,7 @@ class KunenaLayoutUserEdit extends Layout
 
 		PluginHelper::importPlugin('kunena');
 
-		$plugins = Factory::getApplication()->triggerEvent('onKunenaUserTabsEdit', [$tabs]);
+		$plugins = Factory::getApplication()->triggerEvent('on\Kunena\Forum\Libraries\User\KunenaUserTabsEdit', [$tabs]);
 
 		$tabs = $tabs + $plugins;
 

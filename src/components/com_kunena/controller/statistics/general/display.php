@@ -10,7 +10,7 @@
  * @link            https://www.kunena.org
  **/
 
-namespace Joomla\Component\Kunena\Site\Controller\Statistics\General;
+namespace Kunena\Forum\Site\Controller\Statistics\General;
 
 defined('_JEXEC') or die();
 
@@ -18,11 +18,11 @@ use Exception;
 use Joomla\CMS\Factory;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\MVC\Controller\BaseController;
-use Joomla\Component\Kunena\Libraries\Controller\Display;
-use Joomla\Component\Kunena\Libraries\Exception\Authorise;
-use Joomla\Component\Kunena\Libraries\Forum\Statistics;
-use Joomla\Component\Kunena\Libraries\KunenaFactory;
-use Joomla\Component\Kunena\Libraries\Route\KunenaRoute;
+use Kunena\Forum\Libraries\Controller\KunenaControllerDisplay;
+use Kunena\Forum\Libraries\Exception\Authorise;
+use Kunena\Forum\Libraries\Forum\Statistics;
+use Kunena\Forum\Libraries\KunenaFactory;
+use Kunena\Forum\Libraries\Route\KunenaRoute;
 use function defined;
 
 /**
@@ -30,7 +30,7 @@ use function defined;
  *
  * @since   Kunena 4.0
  */
-class ComponentKunenaControllerStatisticsGeneralDisplay extends Display
+class ComponentKunenaControllerStatisticsGeneralDisplay extends KunenaControllerDisplay
 {
 	/**
 	 * @var     string

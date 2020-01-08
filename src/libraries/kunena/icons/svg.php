@@ -10,7 +10,7 @@
  * @link       https://www.kunena.org
  **/
 
-namespace Joomla\Component\Kunena\Libraries\Icons;
+namespace Kunena\Forum\Libraries\Icons;
 
 defined('_JEXEC') or die();
 

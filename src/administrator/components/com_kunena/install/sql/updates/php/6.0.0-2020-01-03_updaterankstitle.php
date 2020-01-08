@@ -9,7 +9,7 @@
  * @link           https://www.kunena.org
  **/
 
-namespace Joomla\Component\Kunena\Administrator;
+namespace Kunena\Forum\Administrator\Updates\Php;
 
 defined('_JEXEC') or die();
 
@@ -26,7 +26,7 @@ use function defined;
  *
  * @since   Kunena 6.0
  *
- * @throws  Exception
+ * @throws  \Exception
  */
 function kunena_600_2020_01_03_updaterankstitle($parent)
 {
@@ -53,7 +53,7 @@ function kunena_600_2020_01_03_updaterankstitle($parent)
 	}
 	catch (Exception $e)
 	{
-		throw new KunenaInstallerException($e->getMessage(), $e->getCode());
+		throw new Exception($e->getMessage(), $e->getCode());
 	}
 
 	$query = $db->getQuery(true);
@@ -77,7 +77,7 @@ function kunena_600_2020_01_03_updaterankstitle($parent)
 	}
 	catch (Exception $e)
 	{
-		throw new KunenaInstallerException($e->getMessage(), $e->getCode());
+		throw new Exception($e->getMessage(), $e->getCode());
 	}
 
 	$query = $db->getQuery(true);
@@ -101,7 +101,7 @@ function kunena_600_2020_01_03_updaterankstitle($parent)
 	}
 	catch (Exception $e)
 	{
-		throw new KunenaInstallerException($e->getMessage(), $e->getCode());
+		throw new Exception($e->getMessage(), $e->getCode());
 	}
 
 	$query = $db->getQuery(true);
@@ -125,7 +125,7 @@ function kunena_600_2020_01_03_updaterankstitle($parent)
 	}
 	catch (Exception $e)
 	{
-		throw new KunenaInstallerException($e->getMessage(), $e->getCode());
+		throw new Exception($e->getMessage(), $e->getCode());
 	}
 
 	$query = $db->getQuery(true);
@@ -149,7 +149,7 @@ function kunena_600_2020_01_03_updaterankstitle($parent)
 	}
 	catch (Exception $e)
 	{
-		throw new KunenaInstallerException($e->getMessage(), $e->getCode());
+		throw new Exception($e->getMessage(), $e->getCode());
 	}
 
 	$query = $db->getQuery(true);
@@ -173,7 +173,7 @@ function kunena_600_2020_01_03_updaterankstitle($parent)
 	}
 	catch (Exception $e)
 	{
-		throw new KunenaInstallerException($e->getMessage(), $e->getCode());
+		throw new Exception($e->getMessage(), $e->getCode());
 	}
 
 	$query = $db->getQuery(true);
@@ -197,7 +197,7 @@ function kunena_600_2020_01_03_updaterankstitle($parent)
 	}
 	catch (Exception $e)
 	{
-		throw new KunenaInstallerException($e->getMessage(), $e->getCode());
+		throw new Exception($e->getMessage(), $e->getCode());
 	}
 
 	$query = $db->getQuery(true);
@@ -221,7 +221,7 @@ function kunena_600_2020_01_03_updaterankstitle($parent)
 	}
 	catch (Exception $e)
 	{
-		throw new KunenaInstallerException($e->getMessage(), $e->getCode());
+		throw new Exception($e->getMessage(), $e->getCode());
 	}
 
 	$query = $db->getQuery(true);
@@ -245,7 +245,7 @@ function kunena_600_2020_01_03_updaterankstitle($parent)
 	}
 	catch (Exception $e)
 	{
-		throw new KunenaInstallerException($e->getMessage(), $e->getCode());
+		throw new Exception($e->getMessage(), $e->getCode());
 	}
 
 	$query = $db->getQuery(true);
@@ -269,7 +269,7 @@ function kunena_600_2020_01_03_updaterankstitle($parent)
 	}
 	catch (Exception $e)
 	{
-		throw new KunenaInstallerException($e->getMessage(), $e->getCode());
+		throw new Exception($e->getMessage(), $e->getCode());
 	}
 
 	return ['action' => '', 'name' => Text::_('COM_KUNENA_INSTALL_600_RANKS_TITLE_VALUE_IN_TABLES'), 'success' => true];

@@ -10,13 +10,13 @@
  * @link            https://www.kunena.org
  **/
 
-namespace Joomla\Component\Kunena\Plugin\Kunena\Comprofiler;
+namespace Kunena\Forum\Plugin\Kunena\Comprofiler;
 
 defined('_JEXEC') or die();
 
 use Exception;
 use Joomla\CMS\Factory;
-use Joomla\Component\Kunena\Libraries\Integration\Activity;
+use Kunena\Forum\Libraries\Integration\Activity;
 use function defined;
 
 require_once dirname(__FILE__) . '/integration.php';

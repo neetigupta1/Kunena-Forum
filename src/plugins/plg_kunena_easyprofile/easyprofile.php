@@ -10,14 +10,14 @@
  * @link            https://www.kunena.org
  **/
 
-namespace Joomla\Component\Kunena\Plugin\Kunena\Easyprofile;
+namespace Kunena\Forum\Plugin\Kunena\Easyprofile;
 
 defined('_JEXEC') or die();
 
 use Joomla\CMS\Factory;
 use Joomla\CMS\Plugin\CMSPlugin;
 use Joomla\CMS\Plugin\PluginHelper;
-use Joomla\Component\Kunena\Libraries\Forum\Forum;
+use Kunena\Forum\Libraries\Forum\KunenaForum;
 use function defined;
 
 /**
@@ -38,7 +38,7 @@ class plgKunenaEasyprofile extends CMSPlugin
 	public function __construct(&$subject, $config)
 	{
 		// Do not load if Kunena version is not supported or Kunena is offline
-		if (!(class_exists('KunenaForum') && Forum::isCompatible('3.0') && Forum::installed()))
+		if (!(class_exists('KunenaForum') && KunenaForum::isCompatible('3.0') && KunenaForum::installed()))
 		{
 			return;
 		}

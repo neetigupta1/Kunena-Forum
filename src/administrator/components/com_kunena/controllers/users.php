@@ -10,7 +10,7 @@
  * @link            https://www.kunena.org
  **/
 
-namespace Joomla\Component\Kunena\Administrator;
+namespace Kunena\Forum\Administrator\Controllers;
 
 defined('_JEXEC') or die();
 
@@ -21,6 +21,15 @@ use Joomla\CMS\Language\Text;
 use Joomla\CMS\Router\Route;
 use Joomla\CMS\Session\Session;
 use Joomla\CMS\User\User;
+use Kunena\Forum\Libraries\Access;
+use Kunena\Forum\Libraries\Controller;
+use Kunena\Forum\Libraries\Forum\Category\Category;
+use Kunena\Forum\Libraries\Forum\Category\Helper;
+use Kunena\Forum\Libraries\Forum\KunenaForum;
+use Kunena\Forum\Libraries\KunenaFactory;
+use Kunena\Forum\Libraries\Route\KunenaRoute;
+use Kunena\Forum\Libraries\User\Ban;
+use Kunena\Forum\Libraries\User\KunenaUser;
 use Joomla\Utilities\ArrayHelper;
 use function defined;
 
@@ -29,7 +38,7 @@ use function defined;
  *
  * @since   Kunena 2.0
  */
-class KunenaAdminControllerUsers extends KunenaController
+class KunenaAdminControllerUsers extends Controller
 {
 	/**
 	 * @var     null|string
@@ -67,7 +76,7 @@ class KunenaAdminControllerUsers extends KunenaController
 		if (!Session::checkToken('post'))
 		{
 			$this->app->enqueueMessage(Text::_('COM_KUNENA_ERROR_TOKEN'), 'error');
-			$this->setRedirect(\Joomla\Component\Kunena\Libraries\Route\KunenaRoute::_($this->baseurl, false));
+			$this->setRedirect(KunenaRoute::_($this->baseurl, false));
 
 			return;
 		}
@@ -79,7 +88,7 @@ class KunenaAdminControllerUsers extends KunenaController
 		if ($userid <= 0)
 		{
 			$this->app->enqueueMessage(Text::_('COM_KUNENA_PROFILE_NO_USER'), 'error');
-			$this->setRedirect(\Joomla\Component\Kunena\Libraries\Route\KunenaRoute::_($this->baseurl, false));
+			$this->setRedirect(KunenaRoute::_($this->baseurl, false));
 
 			return;
 		}
@@ -104,7 +113,7 @@ class KunenaAdminControllerUsers extends KunenaController
 		if (!Session::checkToken('post'))
 		{
 			$this->app->enqueueMessage(Text::_('COM_KUNENA_ERROR_TOKEN'), 'error');
-			$this->setRedirect(\Joomla\Component\Kunena\Libraries\Route\KunenaRoute::_($this->baseurl, false));
+			$this->setRedirect(KunenaRoute::_($this->baseurl, false));
 
 			return;
 		}
@@ -122,7 +131,7 @@ class KunenaAdminControllerUsers extends KunenaController
 
 		if ($uid)
 		{
-			$user = \Joomla\Component\Kunena\Libraries\KunenaFactory::getUser($uid);
+			$user = KunenaFactory::getUser($uid);
 
 			// Prepare variables
 			if ($deleteSig == 1)
@@ -176,7 +185,7 @@ class KunenaAdminControllerUsers extends KunenaController
 			$this->setModerate($user, $modCatids);
 		}
 
-		$this->setRedirect(\Joomla\Component\Kunena\Libraries\Route\KunenaRoute::_($this->baseurl, false));
+		$this->setRedirect(KunenaRoute::_($this->baseurl, false));
 	}
 
 	/**
@@ -212,7 +221,7 @@ class KunenaAdminControllerUsers extends KunenaController
 	protected function setModerate(KunenaUser $user, $modCatids)
 	{
 		// Update moderator rights
-		$categories = \Joomla\Component\Kunena\Libraries\Forum\Category\Helper::getCategories(false, false, 'admin');
+		$categories = Helper::getCategories(false, false, 'admin');
 
 		foreach ($categories as $category)
 		{
@@ -222,7 +231,7 @@ class KunenaAdminControllerUsers extends KunenaController
 		// Global moderator is a special case
 		if ($this->me->isAdmin())
 		{
-			\Joomla\Component\Kunena\Libraries\Access::getInstance()->setModerator(0, $user, in_array(0, $modCatids));
+			Access::getInstance()->setModerator(0, $user, in_array(0, $modCatids));
 		}
 
 		return true;
@@ -259,7 +268,7 @@ class KunenaAdminControllerUsers extends KunenaController
 
 		if ($uid)
 		{
-			$user = \Joomla\Component\Kunena\Libraries\KunenaFactory::getUser($uid);
+			$user = KunenaFactory::getUser($uid);
 
 			// Prepare variables
 			if ($deleteSig == 1)
@@ -312,7 +321,7 @@ class KunenaAdminControllerUsers extends KunenaController
 			}
 
 			// Update moderator rights
-			$categories = \Joomla\Component\Kunena\Libraries\Forum\Category\Helper::getCategories(false, false, 'admin');
+			$categories = Helper::getCategories(false, false, 'admin');
 
 			foreach ($categories as $category)
 			{
@@ -322,7 +331,7 @@ class KunenaAdminControllerUsers extends KunenaController
 			// Global moderator is a special case
 			if ($this->me->isAdmin())
 			{
-				\Joomla\Component\Kunena\Libraries\Access::getInstance()->setModerator(0, $user, in_array(0, $modCatids));
+				Access::getInstance()->setModerator(0, $user, in_array(0, $modCatids));
 			}
 		}
 	}
@@ -342,7 +351,7 @@ class KunenaAdminControllerUsers extends KunenaController
 		if (!Session::checkToken('post'))
 		{
 			$this->app->enqueueMessage(Text::_('COM_KUNENA_ERROR_TOKEN'), 'error');
-			$this->setRedirect(\Joomla\Component\Kunena\Libraries\Route\KunenaRoute::_($this->baseurl, false));
+			$this->setRedirect(KunenaRoute::_($this->baseurl, false));
 
 			return;
 		}
@@ -354,24 +363,24 @@ class KunenaAdminControllerUsers extends KunenaController
 		{
 			foreach ($cid as $id)
 			{
-				list($total, $messages) = \Joomla\Component\Kunena\Libraries\Forum\Message\Helper::getLatestMessages(false, 0, 0, ['starttime' => '-1', 'user' => $id]);
+				list($total, $messages) = \Kunena\Forum\Libraries\Forum\Message\Helper::getLatestMessages(false, 0, 0, ['starttime' => '-1', 'user' => $id]);
 
 				foreach ($messages as $mes)
 				{
-					$mes->publish(\Joomla\Component\Kunena\Libraries\Forum\Forum::DELETED);
+					$mes->publish(KunenaForum::DELETED);
 				}
 			}
 		}
 		else
 		{
 			$this->app->enqueueMessage(Text::_('COM_KUNENA_PROFILE_NO_USER'), 'error');
-			$this->setRedirect(\Joomla\Component\Kunena\Libraries\Route\KunenaRoute::_($this->baseurl, false));
+			$this->setRedirect(KunenaRoute::_($this->baseurl, false));
 
 			return;
 		}
 
 		$this->app->enqueueMessage(Text::_('COM_KUNENA_A_USERMES_TRASHED_DONE'));
-		$this->setRedirect(\Joomla\Component\Kunena\Libraries\Route\KunenaRoute::_($this->baseurl, false));
+		$this->setRedirect(KunenaRoute::_($this->baseurl, false));
 	}
 
 	/**
@@ -389,7 +398,7 @@ class KunenaAdminControllerUsers extends KunenaController
 		if (!Session::checkToken('post'))
 		{
 			$this->app->enqueueMessage(Text::_('COM_KUNENA_ERROR_TOKEN'), 'error');
-			$this->setRedirect(\Joomla\Component\Kunena\Libraries\Route\KunenaRoute::_($this->baseurl, false));
+			$this->setRedirect(KunenaRoute::_($this->baseurl, false));
 
 			return;
 		}
@@ -400,7 +409,7 @@ class KunenaAdminControllerUsers extends KunenaController
 		if (empty($cid))
 		{
 			$this->app->enqueueMessage(Text::_('COM_KUNENA_PROFILE_NO_USER'), 'error');
-			$this->setRedirect(\Joomla\Component\Kunena\Libraries\Route\KunenaRoute::_($this->baseurl, false));
+			$this->setRedirect(KunenaRoute::_($this->baseurl, false));
 
 			return;
 		}
@@ -425,7 +434,7 @@ class KunenaAdminControllerUsers extends KunenaController
 		if (!Session::checkToken('post'))
 		{
 			$this->app->enqueueMessage(Text::_('COM_KUNENA_ERROR_TOKEN'), 'error');
-			$this->setRedirect(\Joomla\Component\Kunena\Libraries\Route\KunenaRoute::_($this->baseurl, false));
+			$this->setRedirect(KunenaRoute::_($this->baseurl, false));
 
 			return;
 		}
@@ -439,7 +448,7 @@ class KunenaAdminControllerUsers extends KunenaController
 		{
 			foreach ($uids as $id)
 			{
-				list($total, $messages) = \Joomla\Component\Kunena\Libraries\Forum\Message\Helper::getLatestMessages(false, 0, 0, ['starttime' => '-1', 'user' => $id]);
+				list($total, $messages) = \Kunena\Forum\Libraries\Forum\Message\Helper::getLatestMessages(false, 0, 0, ['starttime' => '-1', 'user' => $id]);
 
 				foreach ($messages as $object)
 				{
@@ -451,7 +460,7 @@ class KunenaAdminControllerUsers extends KunenaController
 					}
 					else
 					{
-						$target = \Joomla\Component\Kunena\Libraries\Forum\Category\Helper::get($catid);
+						$target = Helper::get($catid);
 
 						if (!$topic->move($target, false, false, '', false))
 						{
@@ -464,7 +473,7 @@ class KunenaAdminControllerUsers extends KunenaController
 		else
 		{
 			$this->app->enqueueMessage(Text::_('COM_KUNENA_PROFILE_NO_USER'), 'error');
-			$this->setRedirect(\Joomla\Component\Kunena\Libraries\Route\KunenaRoute::_($this->baseurl, false));
+			$this->setRedirect(KunenaRoute::_($this->baseurl, false));
 
 			return;
 		}
@@ -478,7 +487,7 @@ class KunenaAdminControllerUsers extends KunenaController
 			$this->app->enqueueMessage(Text::_('COM_KUNENA_A_USERMES_MOVED_DONE'));
 		}
 
-		$this->setRedirect(\Joomla\Component\Kunena\Libraries\Route\KunenaRoute::_($this->baseurl, false));
+		$this->setRedirect(KunenaRoute::_($this->baseurl, false));
 	}
 
 	/**
@@ -496,7 +505,7 @@ class KunenaAdminControllerUsers extends KunenaController
 		if (!Session::checkToken('post'))
 		{
 			$this->app->enqueueMessage(Text::_('COM_KUNENA_ERROR_TOKEN'), 'error');
-			$this->setRedirect(\Joomla\Component\Kunena\Libraries\Route\KunenaRoute::_($this->baseurl, false));
+			$this->setRedirect(KunenaRoute::_($this->baseurl, false));
 
 			return;
 		}
@@ -508,7 +517,7 @@ class KunenaAdminControllerUsers extends KunenaController
 		if ($id <= 0)
 		{
 			$this->app->enqueueMessage(Text::_('COM_KUNENA_PROFILE_NO_USER'), 'error');
-			$this->setRedirect(\Joomla\Component\Kunena\Libraries\Route\KunenaRoute::_($this->baseurl, false));
+			$this->setRedirect(KunenaRoute::_($this->baseurl, false));
 
 			return;
 		}
@@ -517,7 +526,7 @@ class KunenaAdminControllerUsers extends KunenaController
 		$this->app->logout((int) $id, $options);
 
 		$this->app->enqueueMessage(Text::_('COM_KUNENA_A_USER_LOGOUT_DONE'));
-		$this->setRedirect(\Joomla\Component\Kunena\Libraries\Route\KunenaRoute::_($this->baseurl, false));
+		$this->setRedirect(KunenaRoute::_($this->baseurl, false));
 	}
 
 	/**
@@ -535,7 +544,7 @@ class KunenaAdminControllerUsers extends KunenaController
 		if (!Session::checkToken('post'))
 		{
 			$this->app->enqueueMessage(Text::_('COM_KUNENA_ERROR_TOKEN'), 'error');
-			$this->setRedirect(\Joomla\Component\Kunena\Libraries\Route\KunenaRoute::_($this->baseurl, false));
+			$this->setRedirect(KunenaRoute::_($this->baseurl, false));
 
 			return;
 		}
@@ -546,12 +555,12 @@ class KunenaAdminControllerUsers extends KunenaController
 		if (empty($cid))
 		{
 			$this->app->enqueueMessage(Text::_('COM_KUNENA_PROFILE_NO_USER'), 'error');
-			$this->setRedirect(\Joomla\Component\Kunena\Libraries\Route\KunenaRoute::_($this->baseurl, false));
+			$this->setRedirect(KunenaRoute::_($this->baseurl, false));
 
 			return;
 		}
 
-		$users = \Joomla\Component\Kunena\Libraries\User\Helper::loadUsers($cid);
+		$users = \Kunena\Forum\Libraries\User\Helper::loadUsers($cid);
 
 		$my        = Factory::getApplication()->getIdentity();
 		$usernames = [];
@@ -597,7 +606,7 @@ class KunenaAdminControllerUsers extends KunenaController
 			$this->app->enqueueMessage(Text::sprintf('COM_KUNENA_USER_DELETE_DONE_SUCCESSFULLY', implode(', ', $usernames)));
 		}
 
-		$this->setRedirect(\Joomla\Component\Kunena\Libraries\Route\KunenaRoute::_($this->baseurl, false));
+		$this->setRedirect(KunenaRoute::_($this->baseurl, false));
 	}
 
 	/**
@@ -615,7 +624,7 @@ class KunenaAdminControllerUsers extends KunenaController
 		if (!Session::checkToken('post'))
 		{
 			$this->app->enqueueMessage(Text::_('COM_KUNENA_ERROR_TOKEN'), 'error');
-			$this->setRedirect(\Joomla\Component\Kunena\Libraries\Route\KunenaRoute::_($this->baseurl, false));
+			$this->setRedirect(KunenaRoute::_($this->baseurl, false));
 
 			return;
 		}
@@ -627,12 +636,12 @@ class KunenaAdminControllerUsers extends KunenaController
 		if ($userid <= 0)
 		{
 			$this->app->enqueueMessage(Text::_('COM_KUNENA_PROFILE_NO_USER'), 'error');
-			$this->setRedirect(\Joomla\Component\Kunena\Libraries\Route\KunenaRoute::_($this->baseurl, false));
+			$this->setRedirect(KunenaRoute::_($this->baseurl, false));
 
 			return;
 		}
 
-		$ban = KunenaUserBan::getInstanceByUserid($userid, true);
+		$ban = Ban::getInstanceByUserid($userid, true);
 
 		if (!$ban->id)
 		{
@@ -657,7 +666,7 @@ class KunenaAdminControllerUsers extends KunenaController
 			$this->app->enqueueMessage($message);
 		}
 
-		$this->setRedirect(\Joomla\Component\Kunena\Libraries\Route\KunenaRoute::_($this->baseurl, false));
+		$this->setRedirect(KunenaRoute::_($this->baseurl, false));
 	}
 
 	/**
@@ -675,7 +684,7 @@ class KunenaAdminControllerUsers extends KunenaController
 		if (!Session::checkToken('post'))
 		{
 			$this->app->enqueueMessage(Text::_('COM_KUNENA_ERROR_TOKEN'), 'error');
-			$this->setRedirect(\Joomla\Component\Kunena\Libraries\Route\KunenaRoute::_($this->baseurl, false));
+			$this->setRedirect(KunenaRoute::_($this->baseurl, false));
 
 			return;
 		}
@@ -687,12 +696,12 @@ class KunenaAdminControllerUsers extends KunenaController
 		if ($userid <= 0)
 		{
 			$this->app->enqueueMessage(Text::_('COM_KUNENA_PROFILE_NO_USER'), 'error');
-			$this->setRedirect(\Joomla\Component\Kunena\Libraries\Route\KunenaRoute::_($this->baseurl, false));
+			$this->setRedirect(KunenaRoute::_($this->baseurl, false));
 
 			return;
 		}
 
-		$ban = KunenaUserBan::getInstanceByUserid($userid, true);
+		$ban = Ban::getInstanceByUserid($userid, true);
 
 		if (!$ban->id)
 		{
@@ -717,7 +726,7 @@ class KunenaAdminControllerUsers extends KunenaController
 			$this->app->enqueueMessage($message);
 		}
 
-		$this->setRedirect(\Joomla\Component\Kunena\Libraries\Route\KunenaRoute::_($this->baseurl, false));
+		$this->setRedirect(KunenaRoute::_($this->baseurl, false));
 	}
 
 	/**
@@ -734,7 +743,7 @@ class KunenaAdminControllerUsers extends KunenaController
 		if (!Session::checkToken('post'))
 		{
 			$this->app->enqueueMessage(Text::_('COM_KUNENA_ERROR_TOKEN'), 'error');
-			$this->setRedirect(\Joomla\Component\Kunena\Libraries\Route\KunenaRoute::_($this->baseurl, false));
+			$this->setRedirect(KunenaRoute::_($this->baseurl, false));
 
 			return;
 		}
@@ -749,7 +758,7 @@ class KunenaAdminControllerUsers extends KunenaController
 		if ($userid <= 0)
 		{
 			$this->app->enqueueMessage(Text::_('COM_KUNENA_PROFILE_NO_USER'), 'error');
-			$this->setRedirect(\Joomla\Component\Kunena\Libraries\Route\KunenaRoute::_($this->baseurl, false));
+			$this->setRedirect(KunenaRoute::_($this->baseurl, false));
 
 			return;
 		}
@@ -757,18 +766,18 @@ class KunenaAdminControllerUsers extends KunenaController
 		if ($userid <= 0)
 		{
 			$this->app->enqueueMessage(Text::_('COM_KUNENA_PROFILE_NO_USER'), 'error');
-			$this->setRedirect(\Joomla\Component\Kunena\Libraries\Route\KunenaRoute::_($this->baseurl, false));
+			$this->setRedirect(KunenaRoute::_($this->baseurl, false));
 
 			return;
 		}
 
-		$user = \Joomla\Component\Kunena\Libraries\User\Helper::get($userid);
+		$user = \Kunena\Forum\Libraries\User\Helper::get($userid);
 
 		$this->setModerate($user, $modCatids);
 
 		$this->app->enqueueMessage(Text::_('COM_KUNENA_USER_MODERATE_DONE'));
 
-		$this->setRedirect(\Joomla\Component\Kunena\Libraries\Route\KunenaRoute::_($this->baseurl, false));
+		$this->setRedirect(KunenaRoute::_($this->baseurl, false));
 	}
 
 	/**
@@ -786,7 +795,7 @@ class KunenaAdminControllerUsers extends KunenaController
 		if (!Session::checkToken('post'))
 		{
 			$this->app->enqueueMessage(Text::_('COM_KUNENA_ERROR_TOKEN'), 'error');
-			$this->setRedirect(\Joomla\Component\Kunena\Libraries\Route\KunenaRoute::_($this->baseurl, false));
+			$this->setRedirect(KunenaRoute::_($this->baseurl, false));
 
 			return;
 		}
@@ -798,22 +807,22 @@ class KunenaAdminControllerUsers extends KunenaController
 		if ($userid <= 0)
 		{
 			$this->app->enqueueMessage(Text::_('COM_KUNENA_PROFILE_NO_USER'), 'error');
-			$this->setRedirect(\Joomla\Component\Kunena\Libraries\Route\KunenaRoute::_($this->baseurl, false));
+			$this->setRedirect(KunenaRoute::_($this->baseurl, false));
 
 			return;
 		}
 
-		$user     = \Joomla\Component\Kunena\Libraries\User\Helper::get($userid);
+		$user     = \Kunena\Forum\Libraries\User\Helper::get($userid);
 		$category = null;
 
-		if ($category instanceof KunenaForumCategory)
+		if ($category instanceof Category)
 		{
 			$category = $category->id;
 		}
 
 		$category = intval($category);
 
-		$usercategory = KunenaForumCategoryUserHelper::get($category, $user);
+		$usercategory = \Kunena\Forum\Libraries\Forum\Category\User\Helper::get($category, $user);
 
 		if ($usercategory->role == 1)
 		{
@@ -827,10 +836,10 @@ class KunenaAdminControllerUsers extends KunenaController
 			$success = $usercategory->save();
 
 			// Clear role cache
-			\Joomla\Component\Kunena\Libraries\Access::getInstance()->clearCache();
+			Access::getInstance()->clearCache();
 
 			// Change user moderator status
-			$moderator = \Joomla\Component\Kunena\Libraries\Access::getInstance()->getModeratorStatus($user);
+			$moderator = Access::getInstance()->getModeratorStatus($user);
 
 			if ($user->moderator != !empty($moderator))
 			{
@@ -850,7 +859,7 @@ class KunenaAdminControllerUsers extends KunenaController
 			$this->app->enqueueMessage($message);
 		}
 
-		$this->setRedirect(\Joomla\Component\Kunena\Libraries\Route\KunenaRoute::_($this->baseurl, false));
+		$this->setRedirect(KunenaRoute::_($this->baseurl, false));
 	}
 
 	/**
@@ -868,7 +877,7 @@ class KunenaAdminControllerUsers extends KunenaController
 		if (!Session::checkToken('post'))
 		{
 			$this->app->enqueueMessage(Text::_('COM_KUNENA_ERROR_TOKEN'), 'error');
-			$this->setRedirect(\Joomla\Component\Kunena\Libraries\Route\KunenaRoute::_($this->baseurl, false));
+			$this->setRedirect(KunenaRoute::_($this->baseurl, false));
 
 			return;
 		}
@@ -880,12 +889,12 @@ class KunenaAdminControllerUsers extends KunenaController
 		if ($userid <= 0)
 		{
 			$this->app->enqueueMessage(Text::_('COM_KUNENA_PROFILE_NO_USER'), 'error');
-			$this->setRedirect(\Joomla\Component\Kunena\Libraries\Route\KunenaRoute::_($this->baseurl, false));
+			$this->setRedirect(KunenaRoute::_($this->baseurl, false));
 
 			return;
 		}
 
-		$ban = KunenaUserBan::getInstanceByUserid($userid, true);
+		$ban = Ban::getInstanceByUserid($userid, true);
 
 		if (!$ban->id)
 		{
@@ -910,7 +919,7 @@ class KunenaAdminControllerUsers extends KunenaController
 			$this->app->enqueueMessage($message);
 		}
 
-		$this->setRedirect(\Joomla\Component\Kunena\Libraries\Route\KunenaRoute::_($this->baseurl, false));
+		$this->setRedirect(KunenaRoute::_($this->baseurl, false));
 	}
 
 	/**
@@ -928,7 +937,7 @@ class KunenaAdminControllerUsers extends KunenaController
 		if (!Session::checkToken('post'))
 		{
 			$this->app->enqueueMessage(Text::_('COM_KUNENA_ERROR_TOKEN'), 'error');
-			$this->setRedirect(\Joomla\Component\Kunena\Libraries\Route\KunenaRoute::_($this->baseurl, false));
+			$this->setRedirect(KunenaRoute::_($this->baseurl, false));
 
 			return;
 		}
@@ -940,12 +949,12 @@ class KunenaAdminControllerUsers extends KunenaController
 		if ($userid <= 0)
 		{
 			$this->app->enqueueMessage(Text::_('COM_KUNENA_PROFILE_NO_USER'), 'error');
-			$this->setRedirect(\Joomla\Component\Kunena\Libraries\Route\KunenaRoute::_($this->baseurl, false));
+			$this->setRedirect(KunenaRoute::_($this->baseurl, false));
 
 			return;
 		}
 
-		$ban = KunenaUserBan::getInstanceByUserid($userid, true);
+		$ban = Ban::getInstanceByUserid($userid, true);
 
 		if (!$ban->id)
 		{
@@ -970,7 +979,7 @@ class KunenaAdminControllerUsers extends KunenaController
 			$this->app->enqueueMessage($message);
 		}
 
-		$this->setRedirect(\Joomla\Component\Kunena\Libraries\Route\KunenaRoute::_($this->baseurl, false));
+		$this->setRedirect(KunenaRoute::_($this->baseurl, false));
 	}
 
 	/**
@@ -988,7 +997,7 @@ class KunenaAdminControllerUsers extends KunenaController
 		if (!Session::checkToken('post'))
 		{
 			$this->app->enqueueMessage(Text::_('COM_KUNENA_ERROR_TOKEN'), 'error');
-			$this->setRedirect(\Joomla\Component\Kunena\Libraries\Route\KunenaRoute::_($this->baseurl, false));
+			$this->setRedirect(KunenaRoute::_($this->baseurl, false));
 
 			return;
 		}
@@ -1001,7 +1010,7 @@ class KunenaAdminControllerUsers extends KunenaController
 		if (empty($cid))
 		{
 			$this->app->enqueueMessage(Text::_('COM_KUNENA_USERS_BATCH_NO_USERS_SELECTED'), 'error');
-			$this->setRedirect(\Joomla\Component\Kunena\Libraries\Route\KunenaRoute::_($this->baseurl, false));
+			$this->setRedirect(KunenaRoute::_($this->baseurl, false));
 
 			return;
 		}
@@ -1009,14 +1018,14 @@ class KunenaAdminControllerUsers extends KunenaController
 		if (empty($catids))
 		{
 			$this->app->enqueueMessage(Text::_('COM_KUNENA_USERS_BATCH_NO_CATEGORIES_SELECTED'), 'error');
-			$this->setRedirect(\Joomla\Component\Kunena\Libraries\Route\KunenaRoute::_($this->baseurl, false));
+			$this->setRedirect(KunenaRoute::_($this->baseurl, false));
 
 			return;
 		}
 
 		// Update moderator rights
-		$categories = \Joomla\Component\Kunena\Libraries\Forum\Category\Helper::getCategories(false, false, 'admin');
-		$users      = \Joomla\Component\Kunena\Libraries\User\Helper::loadUsers($cid);
+		$categories = Helper::getCategories(false, false, 'admin');
+		$users      = \Kunena\Forum\Libraries\User\Helper::loadUsers($cid);
 
 		foreach ($users as $user)
 		{
@@ -1031,12 +1040,12 @@ class KunenaAdminControllerUsers extends KunenaController
 			// Global moderator is a special case
 			if ($this->me->isAdmin() && in_array(0, $catids))
 			{
-				\Joomla\Component\Kunena\Libraries\Access::getInstance()->setModerator(0, $user, true);
+				Access::getInstance()->setModerator(0, $user, true);
 			}
 		}
 
 		$this->app->enqueueMessage(Text::_('COM_KUNENA_USERS_SET_MODERATORS_DONE'));
-		$this->setRedirect(\Joomla\Component\Kunena\Libraries\Route\KunenaRoute::_($this->baseurl, false));
+		$this->setRedirect(KunenaRoute::_($this->baseurl, false));
 	}
 
 	/**
@@ -1051,7 +1060,7 @@ class KunenaAdminControllerUsers extends KunenaController
 	 */
 	public function cancel()
 	{
-		$this->app->redirect(\Joomla\Component\Kunena\Libraries\Route\KunenaRoute::_($this->baseurl, false));
+		$this->app->redirect(KunenaRoute::_($this->baseurl, false));
 	}
 
 	/**
@@ -1069,7 +1078,7 @@ class KunenaAdminControllerUsers extends KunenaController
 		if (!Session::checkToken('post'))
 		{
 			$this->app->enqueueMessage(Text::_('COM_KUNENA_ERROR_TOKEN'), 'error');
-			$this->setRedirect(\Joomla\Component\Kunena\Libraries\Route\KunenaRoute::_($this->baseurl, false));
+			$this->setRedirect(KunenaRoute::_($this->baseurl, false));
 
 			return;
 		}
@@ -1100,7 +1109,7 @@ class KunenaAdminControllerUsers extends KunenaController
 		}
 
 		$this->app->enqueueMessage(Text::_('COM_KUNENA_USERS_REMOVE_CAT_SUBSCRIPTIONS_DONE'));
-		$this->setRedirect(\Joomla\Component\Kunena\Libraries\Route\KunenaRoute::_($this->baseurl, false));
+		$this->setRedirect(KunenaRoute::_($this->baseurl, false));
 	}
 
 	/**
@@ -1118,7 +1127,7 @@ class KunenaAdminControllerUsers extends KunenaController
 		if (!Session::checkToken('post'))
 		{
 			$this->app->enqueueMessage(Text::_('COM_KUNENA_ERROR_TOKEN'), 'error');
-			$this->setRedirect(\Joomla\Component\Kunena\Libraries\Route\KunenaRoute::_($this->baseurl, false));
+			$this->setRedirect(KunenaRoute::_($this->baseurl, false));
 
 			return;
 		}
@@ -1149,7 +1158,7 @@ class KunenaAdminControllerUsers extends KunenaController
 		}
 
 		$this->app->enqueueMessage(Text::_('COM_KUNENA_USERS_REMOVE_TOPIC_SUBSCRIPTIONS_DONE'));
-		$this->setRedirect(\Joomla\Component\Kunena\Libraries\Route\KunenaRoute::_($this->baseurl, false));
+		$this->setRedirect(KunenaRoute::_($this->baseurl, false));
 	}
 
 	/**
@@ -1167,7 +1176,7 @@ class KunenaAdminControllerUsers extends KunenaController
 		if (!Session::checkToken('post'))
 		{
 			$this->app->enqueueMessage(Text::_('COM_KUNENA_ERROR_TOKEN'), 'error');
-			$this->setRedirect(\Joomla\Component\Kunena\Libraries\Route\KunenaRoute::_($this->baseurl, false));
+			$this->setRedirect(KunenaRoute::_($this->baseurl, false));
 
 			return;
 		}
@@ -1180,7 +1189,7 @@ class KunenaAdminControllerUsers extends KunenaController
 		if (empty($userids))
 		{
 			$this->app->enqueueMessage(Text::_('COM_KUNENA_USERS_BATCH_NO_USERS_SELECTED'), 'error');
-			$this->setRedirect(\Joomla\Component\Kunena\Libraries\Route\KunenaRoute::_($this->baseurl, false));
+			$this->setRedirect(KunenaRoute::_($this->baseurl, false));
 
 			return;
 		}
@@ -1188,12 +1197,12 @@ class KunenaAdminControllerUsers extends KunenaController
 		if (empty($catids))
 		{
 			$this->app->enqueueMessage(Text::_('COM_KUNENA_USERS_BATCH_NO_CATEGORIES_SELECTED'), 'error');
-			$this->setRedirect(\Joomla\Component\Kunena\Libraries\Route\KunenaRoute::_($this->baseurl, false));
+			$this->setRedirect(KunenaRoute::_($this->baseurl, false));
 
 			return;
 		}
 
-		$categories = \Joomla\Component\Kunena\Libraries\Forum\Category\Helper::getCategories($catids);
+		$categories = Helper::getCategories($catids);
 
 		foreach ($userids as $userid)
 		{
@@ -1204,6 +1213,6 @@ class KunenaAdminControllerUsers extends KunenaController
 		}
 
 		$this->app->enqueueMessage(Text::_('COM_KUNENA_USERS_ADD_CATEGORIES_SUBSCRIPTIONS_DONE'));
-		$this->setRedirect(\Joomla\Component\Kunena\Libraries\Route\KunenaRoute::_($this->baseurl, false));
+		$this->setRedirect(KunenaRoute::_($this->baseurl, false));
 	}
 }

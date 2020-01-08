@@ -10,16 +10,18 @@
  * @link            https://www.kunena.org
  **/
 
-namespace Joomla\Component\Kunena\Site\Controller\Application\Misc;
+namespace Kunena\Forum\Site\Controller\Application\Misc;
 
 defined('_JEXEC') or die();
 
 use Exception;
+use Joomla\CMS\Component\ComponentHelper;
 use Joomla\CMS\Factory;
 use Joomla\CMS\MVC\Controller\BaseController;
-use Joomla\CMS\Component\ComponentHelper;
-use Joomla\Component\Kunena\Libraries\Controller\Application\Display;
-use Joomla\Component\Kunena\Libraries\Route\KunenaRoute;
+use Kunena\Forum\Libraries\Controller\KunenaControllerDisplay;
+use Kunena\Forum\Libraries\Layout\Layout;
+use Kunena\Forum\Libraries\Layout\Page;
+use Kunena\Forum\Libraries\Route\KunenaRoute;
 use function defined;
 
 /**
@@ -27,7 +29,7 @@ use function defined;
  *
  * @since   Kunena 4.0
  */
-class ComponentKunenaControllerApplicationMiscDefaultDisplay extends Display
+class ComponentKunenaControllerApplicationMiscDefaultDisplay extends KunenaControllerDisplay
 {
 	/**
 	 * @var     string
@@ -44,7 +46,7 @@ class ComponentKunenaControllerApplicationMiscDefaultDisplay extends Display
 	/**
 	 * Return custom display layout.
 	 *
-	 * @return  KunenaLayout
+	 * @return  Layout
 	 *
 	 * @since   Kunena 6.0
 	 *
@@ -113,7 +115,7 @@ class ComponentKunenaControllerApplicationMiscDefaultDisplay extends Display
 		}
 
 		// Display layout with given parameters.
-		$content = KunenaLayoutPage::factory('Misc/Default')
+		$content = Page::factory('Misc/Default')
 			->set('header', $this->header)
 			->set('body', $this->body);
 

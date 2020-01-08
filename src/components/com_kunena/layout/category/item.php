@@ -10,7 +10,7 @@
  * @link            https://www.kunena.org
  **/
 
-namespace Joomla\Component\Kunena\Site\Layout\Category;
+namespace Kunena\Forum\Site\Layout\Category;
 
 defined('_JEXEC') or die;
 
@@ -18,11 +18,14 @@ use Exception;
 use Joomla\CMS\HTML\HTMLHelper;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\Session\Session;
-use Joomla\Component\Kunena\Libraries\Forum\Category\Category;
-use Joomla\Component\Kunena\Libraries\Html\Parser;
-use Joomla\Component\Kunena\Libraries\KunenaFactory;
-use Joomla\Component\Kunena\Libraries\Layout\Layout;
-use Joomla\Component\Kunena\Libraries\Pagination\Pagination;
+use Kunena\Forum\Libraries\Config;
+use Kunena\Forum\Libraries\Forum\Category\Category;
+use Kunena\Forum\Libraries\Html\Parser;
+use Kunena\Forum\Libraries\KunenaFactory;
+use Kunena\Forum\Libraries\Layout\Layout;
+use Kunena\Forum\Libraries\Pagination\Pagination;
+use Kunena\Forum\Libraries\Template\Template;
+use Kunena\Forum\Libraries\User\KunenaUser;
 use function defined;
 
 /**
@@ -57,13 +60,13 @@ class KunenaLayoutCategoryItem extends Layout
 	public $sections;
 
 	/**
-	 * @var     KunenaForumCategory
+	 * @var     Category
 	 * @since   Kunena 6.0
 	 */
 	public $category;
 
 	/**
-	 * @var     KunenaTemplate|void
+	 * @var     Template|void
 	 * @since   Kunena 6.0
 	 *
 	 */
@@ -290,7 +293,7 @@ class KunenaLayoutCategoryItem extends Layout
 	/**
 	 * Method to get the last post link
 	 *
-	 * @see     KunenaLayout::getLastPostLink()
+	 * @see     \Kunena\Forum\Libraries\Layout\Layout::getLastPostLink()
 	 *
 	 * @param   Category  $category   The KunenaCategory object
 	 * @param   string               $content    The content of last topic subject

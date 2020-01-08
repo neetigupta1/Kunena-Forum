@@ -10,11 +10,13 @@
  * @link          http://www.kunena.org
  **/
 
-namespace Joomla\Component\Kunena\Libraries\KunenaPrivate\Message;
+namespace Kunena\Forum\Libraries\KunenaPrivate\Message;
 
 defined('_JEXEC') or die();
 
 use Exception;
+use Kunena\Forum\Libraries\Forum\Message\Message;
+use Kunena\Forum\Libraries\User\KunenaUser;
 use function defined;
 
 /**
@@ -22,7 +24,7 @@ use function defined;
  *
  * @since   Kunena 6.0
  */
-class Finder extends KunenaDatabaseObjectFinder
+class Finder extends \Kunena\Forum\Libraries\Database\Object\Finder
 {
 	/**
 	 * @var     string
@@ -53,13 +55,13 @@ class Finder extends KunenaDatabaseObjectFinder
 	}
 
 	/**
-	 * @param   KunenaForumMessage  $message message object
+	 * @param   Message  $message message object
 	 *
 	 * @return  $this
 	 *
 	 * @since   Kunena 6.0
 	 */
-	public function filterByMessage(KunenaForumMessage $message)
+	public function filterByMessage(Message $message)
 	{
 		if (!$message->id)
 		{
@@ -99,7 +101,7 @@ class Finder extends KunenaDatabaseObjectFinder
 	/**
 	 * Get private messages.
 	 *
-	 * @return  array|KunenaPrivateMessage[]
+	 * @return  array|\Kunena\Forum\Libraries\KunenaPrivate\Message[]
 	 *
 	 * @since   Kunena 6.0
 	 *
@@ -111,7 +113,7 @@ class Finder extends KunenaDatabaseObjectFinder
 	}
 
 	/**
-	 * @return  KunenaPrivateMessage|mixed
+	 * @return  \Kunena\Forum\Libraries\KunenaPrivate\Message|mixed
 	 *
 	 * @since   Kunena 6.0
 	 *
@@ -122,7 +124,7 @@ class Finder extends KunenaDatabaseObjectFinder
 		$results = $this->find();
 		$first   = array_pop($results);
 
-		return $first ? $first : new KunenaPrivateMessage;
+		return $first ? $first : new \Kunena\Forum\Libraries\KunenaPrivate\Message;
 	}
 
 	/**
@@ -150,7 +152,7 @@ class Finder extends KunenaDatabaseObjectFinder
 
 		foreach ($results as $id => $instance)
 		{
-			$pm_instance = new KunenaPrivateMessage;
+			$pm_instance = new \Kunena\Forum\Libraries\KunenaPrivate\Message;
 			$pm_instance->load($id);
 			$pm_instance->id  = $id;
 			$_instances [$id] = $pm_instance;

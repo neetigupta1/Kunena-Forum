@@ -10,16 +10,15 @@
  * @link            https://www.kunena.org
  **/
 
-namespace Joomla\Component\Kunena\Site\Controller\Widget\Whoisonline;
+namespace Kunena\Forum\Site\Controller\Widget\Whoisonline;
 
 defined('_JEXEC') or die();
 
-use Exception;
 use Joomla\CMS\Language\Text;
-use Joomla\Component\Kunena\Libraries\Controller\Display;
-use Joomla\Component\Kunena\Libraries\Exception\Authorise;
-use Joomla\Component\Kunena\Libraries\KunenaFactory;
-use Joomla\Component\Kunena\Libraries\User\Helper;
+use Kunena\Forum\Libraries\Controller\KunenaControllerDisplay;
+use Kunena\Forum\Libraries\Exception\Authorise;
+use Kunena\Forum\Libraries\KunenaFactory;
+use Kunena\Forum\Libraries\User\Helper;
 use function defined;
 
 /**
@@ -27,7 +26,7 @@ use function defined;
  *
  * @since   Kunena 4.0
  */
-class ComponentKunenaControllerWidgetWhoisonlineDisplay extends Display
+class ComponentKunenaControllerWidgetWhoisonlineDisplay extends KunenaControllerDisplay
 {
 	/**
 	 * @var     string
@@ -48,13 +47,13 @@ class ComponentKunenaControllerWidgetWhoisonlineDisplay extends Display
 	 *
 	 * @since   Kunena 6.0
 	 *
-	 * @throws  Exception
+	 * @throws  \Exception
 	 */
 	protected function before()
 	{
 		parent::before();
 
-		$this->config = Config::getInstance();
+		$this->config = \Kunena\Forum\Libraries\Config::getInstance();
 
 		if (!$this->config->get('showwhoisonline'))
 		{
@@ -128,7 +127,7 @@ class ComponentKunenaControllerWidgetWhoisonlineDisplay extends Display
 	 *
 	 * @since   Kunena 6.0
 	 *
-	 * @throws  Exception
+	 * @throws  \Exception
 	 */
 	protected function prepareDocument()
 	{

@@ -10,7 +10,7 @@
  * @link          https://www.kunena.org
  **/
 
-namespace Joomla\Component\Kunena\Libraries\Database;
+namespace Kunena\Forum\Libraries\Database;
 
 defined('_JEXEC') or die();
 
@@ -19,6 +19,7 @@ use Joomla\CMS\Factory;
 use Joomla\CMS\Object\CMSObject;
 use Joomla\CMS\Plugin\PluginHelper;
 use Joomla\CMS\Table\Table;
+use Kunena\Forum\Libraries\Tables\KunenaTable;
 use function defined;
 
 /**

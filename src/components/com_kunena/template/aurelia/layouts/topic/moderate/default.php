@@ -10,7 +10,7 @@
  * @link            https://www.kunena.org
 **/
 
-namespace Joomla\Component\Kunena\Site;
+namespace Kunena\Forum\Site;
 
 defined('_JEXEC') or die();
 
@@ -20,12 +20,12 @@ use Joomla\CMS\Uri\Uri;
 use function defined;
 
 $this->addScriptDeclaration("// <![CDATA[
-kunena_url_ajax= '" . \Joomla\Component\Kunena\Libraries\Route\KunenaRoute::_("index.php?option=com_kunena&view=category&format=raw") . "';
+kunena_url_ajax= '" . \Kunena\Forum\Libraries\Route\KunenaRoute::_("index.php?option=com_kunena&view=category&format=raw") . "';
 // ]]>"
 );
 
 $this->addScript('assets/js/topic.js');
-$this->ktemplate = \Joomla\Component\Kunena\Libraries\KunenaFactory::getTemplate();
+$this->ktemplate = \Kunena\Forum\Libraries\KunenaFactory::getTemplate();
 $topicicontype   = $this->ktemplate->params->get('topicicontype');
 $labels          = $this->ktemplate->params->get('labels');
 ?>
@@ -36,7 +36,7 @@ $labels          = $this->ktemplate->params->get('labels');
 		</h3>
 	</div>
 	<div class="card-body">
-		<form action="<?php echo \Joomla\Component\Kunena\Libraries\Route\KunenaRoute::_('index.php?option=com_kunena&view=topic') ?>" method="post"
+		<form action="<?php echo \Kunena\Forum\Libraries\Route\KunenaRoute::_('index.php?option=com_kunena&view=topic') ?>" method="post"
 			  name="myform" id="myform" class="form-horizontal">
 			<input type="hidden" name="task" value="move"/>
 			<input type="hidden" name="catid" value="<?php echo $this->category->id; ?>"/>
@@ -301,11 +301,11 @@ $labels          = $this->ktemplate->params->get('labels');
 			<div class="control-group center">
 				<button name="submit" type="submit"
 						class="btn btn-outline-success btn-md">
-					<?php echo KunenaIcons::save() . ' ' . Text::_('COM_KUNENA_POST_MODERATION_PROCEED'); ?>
+					<?php echo \Kunena\Forum\Libraries\Icons\Icons::save() . ' ' . Text::_('COM_KUNENA_POST_MODERATION_PROCEED'); ?>
 				</button>
 
 				<a href="javascript:window.history.back();"
-				   class="btn btn-outline-primary border"> <?php echo KunenaIcons::cancel() . ' ' . Text::_('COM_KUNENA_BACK'); ?> </a>
+				   class="btn btn-outline-primary border"> <?php echo \Kunena\Forum\Libraries\Icons\Icons::cancel() . ' ' . Text::_('COM_KUNENA_BACK'); ?> </a>
 			</div>
 		</form>
 	</div>

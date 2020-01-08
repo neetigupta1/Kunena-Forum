@@ -10,16 +10,16 @@
  * @link            https://www.kunena.org
  **/
 
-namespace Joomla\Component\Kunena\Administrator;
+namespace Kunena\Forum\Administrator\Models;
 
 defined('_JEXEC') or die();
 
-use Exception;
 use Joomla\CMS\Date\Date;
-use Joomla\CMS\HTML\HTMLHelper;
 use Joomla\CMS\Factory;
+use Joomla\CMS\HTML\HTMLHelper;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\MVC\Model\ListModel;
+use Kunena\Forum\Libraries\User\Helper;
 use Joomla\Database\QueryInterface;
 use RuntimeException;
 use function defined;
@@ -40,7 +40,7 @@ class KunenaAdminModelUsers extends ListModel
 	 *
 	 * @since   Kunena 6.0
 	 *
-	 * @throws  Exception
+	 * @throws  \Exception
 	 */
 	public function __construct($config = [])
 	{
@@ -60,7 +60,7 @@ class KunenaAdminModelUsers extends ListModel
 			];
 		}
 
-		$this->me = \Joomla\Component\Kunena\Libraries\User\Helper::getMyself();
+		$this->me = Helper::getMyself();
 
 		parent::__construct($config);
 	}
@@ -68,11 +68,11 @@ class KunenaAdminModelUsers extends ListModel
 	/**
 	 * Method to get User objects of data items.
 	 *
-	 * @return  boolean|KunenaUser
+	 * @return  boolean|\Kunena\Forum\Libraries\User\KunenaUser
 	 *
 	 * @since   Kunena 3.0
 	 *
-	 * @throws  Exception
+	 * @throws  \Exception
 	 */
 	public function getItems()
 	{
@@ -106,7 +106,7 @@ class KunenaAdminModelUsers extends ListModel
 			$ids[] = $item->id;
 		}
 
-		$instances = \Joomla\Component\Kunena\Libraries\User\Helper::loadUsers($ids);
+		$instances = Helper::loadUsers($ids);
 
 		// Add the items to the internal cache.
 		$this->cache[$store] = $instances;
@@ -150,7 +150,7 @@ class KunenaAdminModelUsers extends ListModel
 	 *
 	 * @since   Kunena 3.0
 	 *
-	 * @throws  Exception
+	 * @throws  \Exception
 	 */
 	public function getModcatslist()
 	{
@@ -174,7 +174,7 @@ class KunenaAdminModelUsers extends ListModel
 	 *
 	 * @since   Kunena 6.0
 	 *
-	 * @throws  Exception
+	 * @throws  \Exception
 	 */
 	protected function populateState($ordering = null, $direction = null)
 	{

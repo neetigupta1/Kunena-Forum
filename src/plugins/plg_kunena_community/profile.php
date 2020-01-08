@@ -11,15 +11,15 @@
  * @link             https://www.kunena.org
  **/
 
-namespace Joomla\Component\Kunena\Plugin\Kunena\Community;
+namespace Kunena\Forum\Plugin\Kunena\Community;
 
 defined('_JEXEC') or die();
 
 use Exception;
 use Joomla\CMS\Factory;
-use Joomla\Component\Kunena\Libraries\Error;
-use Joomla\Component\Kunena\Libraries\Integration\Profile;
-use Joomla\Component\Kunena\Libraries\KunenaFactory;
+use Kunena\Forum\Libraries\Error;
+use Kunena\Forum\Libraries\Integration\Profile;
+use Kunena\Forum\Libraries\KunenaFactory;
 use RuntimeException;
 use function defined;
 

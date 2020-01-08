@@ -10,24 +10,26 @@
  * @link            https://www.kunena.org
  **/
 
-namespace Joomla\Component\Kunena\Site\Controller\Message\Item\Actions;
+namespace Kunena\Forum\Site\Controller\Message\Item\Actions;
 
 defined('_JEXEC') or die();
 
 use Exception;
 use Joomla\CMS\Factory;
 use Joomla\CMS\Language\Text;
+use Joomla\CMS\Object\CMSObject;
+use Joomla\CMS\Plugin\PluginHelper;
 use Joomla\CMS\Router\Route;
 use Joomla\CMS\Session\Session;
 use Joomla\CMS\Uri\Uri;
-use Joomla\CMS\Object\CMSObject;
-use Joomla\CMS\Plugin\PluginHelper;
-use Joomla\Component\Kunena\Libraries\Controller\Display;
-use Joomla\Component\Kunena\Libraries\Forum\Message\Message;
-use Joomla\Component\Kunena\Libraries\KunenaFactory;
-use Joomla\Component\Kunena\Libraries\Login;
-use Joomla\Component\Kunena\Libraries\Route\KunenaRoute;
-use Joomla\Component\Kunena\Libraries\User\Helper;
+use Kunena\Forum\Libraries\Controller\KunenaControllerDisplay;
+use Kunena\Forum\Libraries\Forum\Message\Message;
+use Kunena\Forum\Libraries\Forum\Topic\Topic;
+use Kunena\Forum\Libraries\KunenaFactory;
+use Kunena\Forum\Libraries\Layout\Layout;
+use Kunena\Forum\Libraries\Login;
+use Kunena\Forum\Libraries\Route\KunenaRoute;
+use Kunena\Forum\Libraries\User\Helper;
 use function defined;
 
 /**
@@ -35,7 +37,7 @@ use function defined;
  *
  * @since   Kunena 4.0
  */
-class ComponentKunenaControllerMessageItemActionsDisplay extends Display
+class ComponentKunenaControllerMessageItemActionsDisplay extends KunenaControllerDisplay
 {
 	/**
 	 * @var     string
@@ -44,7 +46,7 @@ class ComponentKunenaControllerMessageItemActionsDisplay extends Display
 	protected $name = 'Message/Item/Actions';
 
 	/**
-	 * @var     KunenaForumTopic
+	 * @var     Topic
 	 * @since   Kunena 6.0
 	 */
 	public $topic;
@@ -684,7 +686,7 @@ class ComponentKunenaControllerMessageItemActionsDisplay extends Display
 	 *
 	 * @param   string  $icon    icon
 	 *
-	 * @return  KunenaLayout
+	 * @return  Layout
 	 *
 	 * @since   Kunena 6.0
 	 *
@@ -693,7 +695,7 @@ class ComponentKunenaControllerMessageItemActionsDisplay extends Display
 	 */
 	public function getButton($url, $name, $scope, $type, $id = null, $normal = true, $icon = '')
 	{
-		return KunenaLayout::factory('Widget/Button')
+		return Layout::factory('Widget/Button')
 			->setProperties(['url'  => KunenaRoute::_($url), 'name' => $name, 'scope' => $scope,
 							 'type' => $type, 'id' => 'btn_' . $id, 'normal' => $normal, 'icon' => $icon]
 			);

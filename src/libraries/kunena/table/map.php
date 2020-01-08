@@ -10,14 +10,14 @@
  * @link          https://www.kunena.org
  **/
 
-namespace Joomla\Component\Kunena\Libraries\Table;
+namespace Kunena\Forum\Libraries\Table;
 
 defined('_JEXEC') or die();
 
 use InvalidArgumentException;
 use Joomla\CMS\Factory;
-use Joomla\Utilities\ArrayHelper;
 use Joomla\Database\DatabaseDriver;
+use Joomla\Utilities\ArrayHelper;
 use RuntimeException;
 use UnexpectedValueException;
 use function defined;
@@ -27,7 +27,7 @@ use function defined;
  *
  * @since   Kunena 6.0
  */
-class Map
+class KunenaTableMap
 {
 	/**
 	 * Name of the database table to model.

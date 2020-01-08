@@ -10,33 +10,44 @@
  * @link            https://www.kunena.org
  **/
 
-namespace Joomla\Component\Kunena\Libraries\User;
+namespace Kunena\Forum\Libraries\User;
 
 defined('_JEXEC') or die();
 
 use DateTimeZone;
 use Exception;
 use InvalidArgumentException;
+use Joomla\CMS\Access\Access;
 use Joomla\CMS\Component\ComponentHelper;
+use Joomla\CMS\Date\Date;
 use Joomla\CMS\Factory;
 use Joomla\CMS\HTML\HTMLHelper;
+use Joomla\CMS\Image\Image;
 use Joomla\CMS\Language\Text;
+use Joomla\CMS\Object\CMSObject;
 use Joomla\CMS\Plugin\PluginHelper;
 use Joomla\CMS\Session\Session;
-use Joomla\CMS\Object\CMSObject;
-use Joomla\CMS\Image\Image;
-use Joomla\CMS\Date\Date;
-use Joomla\CMS\Access\Access;
 use Joomla\CMS\Table\Table;
 use Joomla\CMS\User\User;
-use Joomla\Database\Exception\ExecutionFailureException;
+use Kunena\Forum\Libraries\Config;
+use Kunena\Forum\Libraries\Error;
+use Kunena\Forum\Libraries\Exception\Authorise;
+use Kunena\Forum\Libraries\Forum\Category\Category;
+use Kunena\Forum\Libraries\Html\Parser;
+use Kunena\Forum\Libraries\Icons\Icons;
+use Kunena\Forum\Libraries\Icons\SvgIcons;
+use Kunena\Forum\Libraries\KunenaDate;
+use Kunena\Forum\Libraries\KunenaFactory;
+use Kunena\Forum\Libraries\Layout\Layout;
+use Kunena\Forum\Libraries\Template\Template;
 use Joomla\Database\DatabaseDriver;
+use Joomla\Database\Exception\ExecutionFailureException;
 use Joomla\Registry\Registry;
 use stdClass;
 use function defined;
 
 /**
- * Class KunenaUser
+ * Class \Kunena\Forum\Libraries\User\KunenaUser
  *
  * @property    int    $id
  * @property    int    $userid
@@ -196,11 +207,11 @@ class KunenaUser extends CMSObject
 
 		$this->_db     = Factory::getDBO();
 		$this->_app    = Factory::getApplication();
-		$this->_config = \Joomla\Component\Kunena\Libraries\KunenaFactory::getConfig();
+		$this->_config = KunenaFactory::getConfig();
 	}
 
 	/**
-	 * Method to load a KunenaUser object by userid.
+	 * Method to load a \Kunena\Forum\Libraries\User\KunenaUser object by userid.
 	 *
 	 * @param   mixed  $id  The user id of the user to load.
 	 *
@@ -239,11 +250,11 @@ class KunenaUser extends CMSObject
 	 * @param   string  $type    The user table name to be used.
 	 * @param   string  $prefix  The user table prefix to be used.
 	 *
-	 * @return  Table|TableKunenaUsers    The user table object.
+	 * @return  Table|Table|KunenaUser    The user table object.
 	 *
 	 * @since   Kunena 6.0
 	 */
-	public function getTable($type = 'KunenaUsers', $prefix = 'Table')
+	public function getTable($type = '\Kunena\Forum\Libraries\User\KunenaUsers', $prefix = 'Table')
 	{
 		static $tabletype = null;
 
@@ -259,7 +270,7 @@ class KunenaUser extends CMSObject
 	}
 
 	/**
-	 * Returns the global KunenaUser object, only creating it if it doesn't already exist.
+	 * Returns the global \Kunena\Forum\Libraries\User\KunenaUser object, only creating it if it doesn't already exist.
 	 *
 	 * @param   null|int  $identifier  The user to load - Can be an integer or string - If string, it is converted to ID
 	 *                                 automatically.
@@ -273,7 +284,7 @@ class KunenaUser extends CMSObject
 	 */
 	public static function getInstance($identifier = null, $reload = false)
 	{
-		return \Joomla\Component\Kunena\Libraries\User\Helper::get($identifier, $reload);
+		return Helper::get($identifier, $reload);
 	}
 
 	/**
@@ -300,7 +311,7 @@ class KunenaUser extends CMSObject
 	 * @param   KunenaUser  $user    user
 	 * @param   bool        $throw   throw
 	 *
-	 * @return  KunenaExceptionAuthorise|boolean
+	 * @return  Authorise|boolean
 	 *
 	 * @since   Kunena 4.0
 	 *
@@ -317,12 +328,12 @@ class KunenaUser extends CMSObject
 		// Load user if not given.
 		if ($user === null)
 		{
-			$user = \Joomla\Component\Kunena\Libraries\User\Helper::getMyself();
+			$user = Helper::getMyself();
 		}
 
 		$input     = $this->_app->input;
 		$method    = $input->getInt('userid');
-		$kuser     = \Joomla\Component\Kunena\Libraries\KunenaFactory::getUser($method);
+		$kuser     = KunenaFactory::getUser($method);
 		$config    = Config::getInstance();
 		$exception = null;
 
@@ -331,22 +342,22 @@ class KunenaUser extends CMSObject
 			case 'read' :
 				if (!isset($this->registerDate) || (!$user->exists() && !$config->pubprofile))
 				{
-					$exception = new \Joomla\Component\Kunena\Libraries\Exception\Authorise(Text::_('COM_KUNENA_PROFILEPAGE_NOT_ALLOWED_FOR_GUESTS'), $user->exists() ? 403 : 404);
+					$exception = new Authorise(Text::_('COM_KUNENA_PROFILEPAGE_NOT_ALLOWED_FOR_GUESTS'), $user->exists() ? 403 : 404);
 				}
 				break;
 			case 'edit' :
 				if (!isset($this->registerDate) || !$this->isMyself() && !$user->isAdmin() && !$user->isModerator())
 				{
-					$exception = new \Joomla\Component\Kunena\Libraries\Exception\Authorise(Text::sprintf('COM_KUNENA_VIEW_USER_EDIT_AUTH_FAILED', $this->getName()), $user->exists() ? 403 : 401);
+					$exception = new Authorise(Text::sprintf('COM_KUNENA_VIEW_USER_EDIT_AUTH_FAILED', $this->getName()), $user->exists() ? 403 : 401);
 				}
 
 				if ($user->isModerator() && $kuser->isAdmin() && !$user->isAdmin())
 				{
-					$exception = new \Joomla\Component\Kunena\Libraries\Exception\Authorise(Text::sprintf('COM_KUNENA_VIEW_USER_EDIT_AUTH_FAILED', $this->getName()), $user->exists() ? 403 : 401);
+					$exception = new Authorise(Text::sprintf('COM_KUNENA_VIEW_USER_EDIT_AUTH_FAILED', $this->getName()), $user->exists() ? 403 : 401);
 				}
 				break;
 			case 'ban' :
-				$banInfo = KunenaUserBan::getInstanceByUserid($this->userid, true);
+				$banInfo = Ban::getInstanceByUserid($this->userid, true);
 
 				try
 				{
@@ -354,7 +365,7 @@ class KunenaUser extends CMSObject
 				}
 				catch (Exception $e)
 				{
-					$exception = new \Joomla\Component\Kunena\Libraries\Exception\Authorise($e->getMessage(), $user->exists() ? 403 : 401);
+					$exception = new Authorise($e->getMessage(), $user->exists() ? 403 : 401);
 				}
 				break;
 			default :
@@ -398,7 +409,7 @@ class KunenaUser extends CMSObject
 	 */
 	public function isMyself()
 	{
-		$result = \Joomla\Component\Kunena\Libraries\User\Helper::getMyself()->userid == $this->userid;
+		$result = Helper::getMyself()->userid == $this->userid;
 
 		return $result;
 	}
@@ -408,7 +419,7 @@ class KunenaUser extends CMSObject
 	 *
 	 * If no category is given or it doesn't exist, check will be done against global administrator permissions.
 	 *
-	 * @param  \Joomla\Component\Kunena\Libraries\Forum\Category\Category  $category  category
+	 * @param  Category  $category  category
 	 *
 	 * @return  boolean
 	 *
@@ -416,9 +427,9 @@ class KunenaUser extends CMSObject
 	 *
 	 * @throws  Exception
 	 */
-	public function isAdmin(KunenaForumCategory $category = null)
+	public function isAdmin(Category $category = null)
 	{
-		return \Joomla\Component\Kunena\Libraries\Access::getInstance()->isAdmin($this, $category && $category->exists() ? $category->id : null);
+		return \Kunena\Forum\Libraries\Access::getInstance()->isAdmin($this, $category && $category->exists() ? $category->id : null);
 	}
 
 	/**
@@ -426,7 +437,7 @@ class KunenaUser extends CMSObject
 	 *
 	 * If no category is given or it doesn't exist, check will be done against global moderator permissions.
 	 *
-	 * @param  \Joomla\Component\Kunena\Libraries\Forum\Category\Category  $category  category
+	 * @param  Category  $category  category
 	 *
 	 * @return  boolean
 	 *
@@ -434,9 +445,9 @@ class KunenaUser extends CMSObject
 	 *
 	 * @throws  Exception
 	 */
-	public function isModerator(KunenaForumCategory $category = null)
+	public function isModerator(Category $category = null)
 	{
-		return \Joomla\Component\Kunena\Libraries\Access::getInstance()->isModerator($this, $category && $category->exists() ? $category->id : null);
+		return \Kunena\Forum\Libraries\Access::getInstance()->isModerator($this, $category && $category->exists() ? $category->id : null);
 	}
 
 	/**
@@ -507,7 +518,7 @@ class KunenaUser extends CMSObject
 	}
 
 	/**
-	 * Method to delete the KunenaUser object from the database.
+	 * Method to delete the \Kunena\Forum\Libraries\User\KunenaUser object from the database.
 	 *
 	 * @return  boolean  True on success.
 	 *
@@ -527,7 +538,7 @@ class KunenaUser extends CMSObject
 			$this->setError($table->getError());
 		}
 
-		$access = \Joomla\Component\Kunena\Libraries\Access::getInstance();
+		$access = \Kunena\Forum\Libraries\Access::getInstance();
 		$access->clearCache();
 
 		return $result;
@@ -543,7 +554,7 @@ class KunenaUser extends CMSObject
 	 */
 	public function getStatus()
 	{
-		return \Joomla\Component\Kunena\Libraries\User\Helper::getStatus($this->userid);
+		return Helper::getStatus($this->userid);
 	}
 
 	/**
@@ -555,7 +566,7 @@ class KunenaUser extends CMSObject
 	 */
 	public function getStatusText()
 	{
-		return \Joomla\Component\Kunena\Libraries\Html\Parser::parseText($this->status_text);
+		return Parser::parseText($this->status_text);
 	}
 
 	/**
@@ -569,7 +580,7 @@ class KunenaUser extends CMSObject
 	{
 		if (!isset($this->_allowed))
 		{
-			$this->_allowed = \Joomla\Component\Kunena\Libraries\Access::getInstance()->getAllowedCategories($this->userid);
+			$this->_allowed = \Kunena\Forum\Libraries\Access::getInstance()->getAllowedCategories($this->userid);
 		}
 
 		return $this->_allowed;
@@ -588,7 +599,7 @@ class KunenaUser extends CMSObject
 
 		if (is_null($default))
 		{
-			$default = \Joomla\Component\Kunena\Libraries\KunenaFactory::getConfig()->get('default_sort') == 'desc' ? 'desc' : 'asc';
+			$default = KunenaFactory::getConfig()->get('default_sort') == 'desc' ? 'desc' : 'asc';
 		}
 
 		if ($this->exists())
@@ -615,14 +626,14 @@ class KunenaUser extends CMSObject
 	 */
 	public function getAvatarImage($class = '', $sizex = 'thumb', $sizey = 90, $online = '')
 	{
-		$avatars = \Joomla\Component\Kunena\Libraries\KunenaFactory::getAvatarIntegration();
+		$avatars = KunenaFactory::getAvatarIntegration();
 
 		if ($avatars)
 		{
-			$ktemplate     = \Joomla\Component\Kunena\Libraries\KunenaFactory::getTemplate();
+			$ktemplate     = KunenaFactory::getTemplate();
 			$topicicontype = $ktemplate->params->get('topicicontype');
 
-			if (\Joomla\Component\Kunena\Libraries\KunenaFactory::getConfig()->avatar_type && $avatars->css)
+			if (KunenaFactory::getConfig()->avatar_type && $avatars->css)
 			{
 				if ($sizex == 20)
 				{
@@ -676,7 +687,7 @@ class KunenaUser extends CMSObject
 
 				if ($topicicontype == 'B4' && $this->avatar == null)
 				{
-					return KunenaSvgIcons::loadsvg('person');
+					return SvgIcons::loadsvg('person');
 				}
 			}
 		}
@@ -696,7 +707,7 @@ class KunenaUser extends CMSObject
 	 */
 	public function getAvatarURL($sizex = 'thumb', $sizey = 90)
 	{
-		$avatars = \Joomla\Component\Kunena\Libraries\KunenaFactory::getAvatarIntegration();
+		$avatars = KunenaFactory::getAvatarIntegration();
 
 		return $avatars->getURL($this, $sizex, $sizey);
 	}
@@ -719,7 +730,7 @@ class KunenaUser extends CMSObject
 	 */
 	public function getLinkNoStyle($name = null, $title = null, $class = null)
 	{
-		$optional_username = \Joomla\Component\Kunena\Libraries\KunenaFactory::getTemplate()->params->get('optional_username');
+		$optional_username = KunenaFactory::getTemplate()->params->get('optional_username');
 
 		if ($optional_username == 0 || !$this->userid)
 		{
@@ -780,15 +791,15 @@ class KunenaUser extends CMSObject
 			return;
 		}
 
-		$config = \Joomla\Component\Kunena\Libraries\KunenaFactory::getConfig();
-		$me     = \Joomla\Component\Kunena\Libraries\User\Helper::getMyself();
+		$config = KunenaFactory::getConfig();
+		$me     = Helper::getMyself();
 
 		if (!$config->pubprofile && !$me->exists())
 		{
 			return false;
 		}
 
-		return \Joomla\Component\Kunena\Libraries\KunenaFactory::getProfile()->getProfileURL($this->userid, $task, $xhtml);
+		return KunenaFactory::getProfile()->getProfileURL($this->userid, $task, $xhtml);
 	}
 
 	/**
@@ -812,7 +823,7 @@ class KunenaUser extends CMSObject
 				$timezone = $user->getParam('timezone', $timezone);
 			}
 
-			$this->_time = new \Joomla\Component\Kunena\Libraries\KunenaDate('now', $timezone);
+			$this->_time = new KunenaDate('now', $timezone);
 
 			try
 			{
@@ -837,7 +848,7 @@ class KunenaUser extends CMSObject
 	 */
 	public function getRegisterDate()
 	{
-		return \Joomla\Component\Kunena\Libraries\KunenaDate::getInstance($this->registerDate);
+		return KunenaDate::getInstance($this->registerDate);
 	}
 
 	/**
@@ -851,11 +862,11 @@ class KunenaUser extends CMSObject
 	{
 		if (!$this->lastvisitDate || $this->lastvisitDate == "1000-01-01 00:00:00")
 		{
-			$date = \Joomla\Component\Kunena\Libraries\KunenaDate::getInstance($this->registerDate);
+			$date = KunenaDate::getInstance($this->registerDate);
 		}
 		else
 		{
-			$date = \Joomla\Component\Kunena\Libraries\KunenaDate::getInstance($this->lastvisitDate);
+			$date = KunenaDate::getInstance($this->lastvisitDate);
 		}
 
 		return $date;
@@ -924,7 +935,7 @@ class KunenaUser extends CMSObject
 	}
 
 	/**
-	 * Method to save the KunenaUser object to the database.
+	 * Method to save the \Kunena\Forum\Libraries\User\KunenaUser object to the database.
 	 *
 	 * @param   boolean  $updateOnly  Save the object only if not a new user.
 	 *
@@ -953,7 +964,7 @@ class KunenaUser extends CMSObject
 		// Are we creating a new user
 		$isnew = !$this->_exists;
 
-		$moderator = \Joomla\Component\Kunena\Libraries\User\Helper::getMyself()->isModerator();
+		$moderator = Helper::getMyself()->isModerator();
 		$my        = Factory::getApplication()->getIdentity();
 
 		if (!$moderator)
@@ -976,10 +987,10 @@ class KunenaUser extends CMSObject
 			$this->setError($table->getError());
 		}
 
-		$access = \Joomla\Component\Kunena\Libraries\Access::getInstance();
+		$access = \Kunena\Forum\Libraries\Access::getInstance();
 		$access->clearCache();
 
-		// Set the id for the KunenaUser object in case we created a new user.
+		// Set the id for the \Kunena\Forum\Libraries\User\KunenaUser object in case we created a new user.
 		if ($result && $isnew)
 		{
 			$this->load($table->get('userid'));
@@ -1001,7 +1012,7 @@ class KunenaUser extends CMSObject
 	 */
 	public function getPrivateMsgURL()
 	{
-		$private = \Joomla\Component\Kunena\Libraries\KunenaFactory::getPrivateMessaging();
+		$private = KunenaFactory::getPrivateMessaging();
 
 		return $private->getInboxURL();
 	}
@@ -1017,7 +1028,7 @@ class KunenaUser extends CMSObject
 	 */
 	public function getPrivateMsgLabel()
 	{
-		$private = \Joomla\Component\Kunena\Libraries\KunenaFactory::getPrivateMessaging();
+		$private = KunenaFactory::getPrivateMessaging();
 
 		if ($this->isMyself())
 		{
@@ -1051,7 +1062,7 @@ class KunenaUser extends CMSObject
 	{
 		if (!isset($this->_pm))
 		{
-			$private = \Joomla\Component\Kunena\Libraries\KunenaFactory::getPrivateMessaging();
+			$private = KunenaFactory::getPrivateMessaging();
 
 			if (!$this->userid)
 			{
@@ -1087,8 +1098,8 @@ class KunenaUser extends CMSObject
 	 */
 	public function getEmail($profile)
 	{
-		$me     = \Joomla\Component\Kunena\Libraries\User\Helper::getMyself();
-		$config = \Joomla\Component\Kunena\Libraries\KunenaFactory::getConfig();
+		$me     = Helper::getMyself();
+		$config = KunenaFactory::getConfig();
 
 		if ($me->isModerator() || $me->isAdmin())
 		{
@@ -1124,8 +1135,8 @@ class KunenaUser extends CMSObject
 	{
 		if (!isset($this->_email))
 		{
-			$config = \Joomla\Component\Kunena\Libraries\KunenaFactory::getConfig();
-			$me     = \Joomla\Component\Kunena\Libraries\User\Helper::getMyself();
+			$config = KunenaFactory::getConfig();
+			$me     = Helper::getMyself();
 
 			$this->_email = '';
 
@@ -1243,7 +1254,7 @@ class KunenaUser extends CMSObject
 	 */
 	public function getSignature()
 	{
-		$config = \Joomla\Component\Kunena\Libraries\KunenaFactory::getConfig();
+		$config = KunenaFactory::getConfig();
 
 		if (!$config->signature)
 		{
@@ -1252,7 +1263,7 @@ class KunenaUser extends CMSObject
 
 		if (!isset($this->_signature))
 		{
-			$this->_signature = \Joomla\Component\Kunena\Libraries\Html\Parser::parseBBCode($this->signature, $this, \Joomla\Component\Kunena\Libraries\KunenaFactory::getConfig()->maxsig);
+			$this->_signature = Parser::parseBBCode($this->signature, $this, KunenaFactory::getConfig()->maxsig);
 		}
 
 		return $this->_signature;
@@ -1271,8 +1282,8 @@ class KunenaUser extends CMSObject
 	{
 		if ($this->userid)
 		{
-			$config = \Joomla\Component\Kunena\Libraries\KunenaFactory::getConfig();
-			$me     = \Joomla\Component\Kunena\Libraries\User\Helper::getMyself();
+			$config = KunenaFactory::getConfig();
+			$me     = Helper::getMyself();
 
 			if ($config->showkarma && $me->userid && $me->userid != $this->userid)
 			{
@@ -1286,7 +1297,7 @@ class KunenaUser extends CMSObject
 	/**
 	 * Render user sidebar.
 	 *
-	 * @param   KunenaLayout  $layout  layout
+	 * @param   Layout  $layout  layout
 	 *
 	 * @return  void|mixed
 	 *
@@ -1296,7 +1307,7 @@ class KunenaUser extends CMSObject
 	 */
 	public function getSideProfile($layout)
 	{
-		$config = \Joomla\Component\Kunena\Libraries\KunenaFactory::getConfig();
+		$config = KunenaFactory::getConfig();
 
 		$view                  = clone $layout;
 		$view->config          = $config;
@@ -1308,7 +1319,7 @@ class KunenaUser extends CMSObject
 
 			if ($view->me->userid && $view->me->userid != $this->userid)
 			{
-				$topicicontype = \Joomla\Component\Kunena\Libraries\KunenaFactory::getTemplate()->params->get('topicicontype');
+				$topicicontype = KunenaFactory::getTemplate()->params->get('topicicontype');
 
 				if ($topicicontype == 'B3')
 				{
@@ -1344,7 +1355,7 @@ class KunenaUser extends CMSObject
 			$view->userranktitle = $this->getRank($layout->category->id, 'title');
 			$view->userposts     = $this->posts;
 			$view->userthankyou  = $this->thankyou;
-			$activityIntegration = \Joomla\Component\Kunena\Libraries\KunenaFactory::getActivityIntegration();
+			$activityIntegration = KunenaFactory::getActivityIntegration();
 			$view->userpoints    = $activityIntegration->getUserPoints($this->userid);
 			$view->usermedals    = $activityIntegration->getUserMedals($this->userid);
 		}
@@ -1369,7 +1380,7 @@ class KunenaUser extends CMSObject
 
 		Factory::getApplication()->triggerEvent('onKunenaSidebar', [$this->userid]);
 
-		return \Joomla\Component\Kunena\Libraries\KunenaFactory::getProfile()->showProfile($view, $params);
+		return KunenaFactory::getProfile()->showProfile($view, $params);
 	}
 
 	/**
@@ -1385,7 +1396,7 @@ class KunenaUser extends CMSObject
 	 */
 	public function getRank($catid = 0, $type = null, $special = null)
 	{
-		$config = \Joomla\Component\Kunena\Libraries\KunenaFactory::getConfig();
+		$config = KunenaFactory::getConfig();
 
 		if (!$config->showranking)
 		{
@@ -1412,7 +1423,7 @@ class KunenaUser extends CMSObject
 			}
 			catch (ExecutionFailureException $e)
 			{
-				\Joomla\Component\Kunena\Libraries\Error::displayDatabaseError($e);
+				Error::displayDatabaseError($e);
 			}
 		}
 
@@ -1560,7 +1571,7 @@ class KunenaUser extends CMSObject
 			}
 			elseif ($config->rankimages == 1)
 			{
-				$url             = \Joomla\Component\Kunena\Libraries\Template\Template::getInstance()->getRankPath($rank->rank_image, true);
+				$url             = Template::getInstance()->getRankPath($rank->rank_image, true);
 				$location        = JPATH_SITE . '/media/kunena/ranks/' . $rank->rank_image;
 				$imageProperties = Image::getImageFileProperties($location);
 
@@ -1572,7 +1583,7 @@ class KunenaUser extends CMSObject
 			}
 			elseif ($config->rankimages == 3)
 			{
-				$url             = \Joomla\Component\Kunena\Libraries\Template\Template::getInstance()->getRankPath($rank->rank_image, true);
+				$url             = Template::getInstance()->getRankPath($rank->rank_image, true);
 				$location        = JPATH_SITE . '/media/kunena/ranks/' . $rank->rank_image;
 				$imageProperties = Image::getImageFileProperties($location);
 
@@ -1613,8 +1624,8 @@ class KunenaUser extends CMSObject
 			'blocked'    => 'COM_KUNENA_VIEW_BLOCKED',
 		];
 
-		$adminCategories     = \Joomla\Component\Kunena\Libraries\Access::getInstance()->getAdminStatus($this);
-		$moderatedCategories = \Joomla\Component\Kunena\Libraries\Access::getInstance()->getModeratorStatus($this);
+		$adminCategories     = \Kunena\Forum\Libraries\Access::getInstance()->getAdminStatus($this);
+		$moderatedCategories = \Kunena\Forum\Libraries\Access::getInstance()->getModeratorStatus($this);
 
 		if ($this->userid == 0)
 		{
@@ -1655,7 +1666,7 @@ class KunenaUser extends CMSObject
 
 		if ($code === 'class')
 		{
-			$userClasses = \Joomla\Component\Kunena\Libraries\KunenaFactory::getTemplate()->getUserClasses();
+			$userClasses = KunenaFactory::getTemplate()->getUserClasses();
 
 			return isset($userClasses[$type]) ? $userClasses[$type] : $userClasses[0] . $type;
 		}
@@ -1750,7 +1761,7 @@ class KunenaUser extends CMSObject
 	 */
 	public function rankCss($rank, $catid)
 	{
-		$ktemplate     = \Joomla\Component\Kunena\Libraries\KunenaFactory::getTemplate();
+		$ktemplate     = KunenaFactory::getTemplate();
 		$topicicontype = $ktemplate->params->get('topicicontype');
 
 		if ($topicicontype == 'fa')
@@ -1846,7 +1857,7 @@ class KunenaUser extends CMSObject
 	 */
 	public function getPersonalText()
 	{
-		$config = \Joomla\Component\Kunena\Libraries\KunenaFactory::getConfig();
+		$config = KunenaFactory::getConfig();
 
 		if (!$config->personal)
 		{
@@ -1855,7 +1866,7 @@ class KunenaUser extends CMSObject
 
 		if (!isset($this->_personalText))
 		{
-			$this->_personalText = \Joomla\Component\Kunena\Libraries\Html\Parser::parseText($this->personalText);
+			$this->_personalText = Parser::parseText($this->personalText);
 		}
 
 		return $this->_personalText;
@@ -1907,7 +1918,7 @@ class KunenaUser extends CMSObject
 			case 'birthdate' :
 				if ($this->birthdate)
 				{
-					$date = new \Joomla\Component\Kunena\Libraries\KunenaDate($this->birthdate);
+					$date = new KunenaDate($this->birthdate);
 
 					if ($date->format('%Y') < 1902)
 					{
@@ -1920,7 +1931,7 @@ class KunenaUser extends CMSObject
 			case 'location' :
 				if ($this->location)
 				{
-					return '<span data-toggle="tooltip" data-placement="right" title="' . $this->escape($this->location) . '">' . KunenaIcons::location() . '</span>';
+					return '<span data-toggle="tooltip" data-placement="right" title="' . $this->escape($this->location) . '">' . Icons::location() . '</span>';
 				}
 				break;
 			case 'website' :
@@ -1942,16 +1953,16 @@ class KunenaUser extends CMSObject
 
 				if ($this->websiteurl)
 				{
-					return '<a href="' . $this->escape($url) . '" target="_blank" rel="noopener noreferrer"><span data-toggle="tooltip" data-placement="right" title="' . $websitename . '">' . KunenaIcons::globe() . '</span></a>';
+					return '<a href="' . $this->escape($url) . '" target="_blank" rel="noopener noreferrer"><span data-toggle="tooltip" data-placement="right" title="' . $websitename . '">' . Icons::globe() . '</span></a>';
 				}
 				break;
 			case 'private' :
-				$pms = \Joomla\Component\Kunena\Libraries\KunenaFactory::getPrivateMessaging();
+				$pms = KunenaFactory::getPrivateMessaging();
 
 				return '<span data-toggle="tooltip" data-placement="right" title="' . Text::_('COM_KUNENA_VIEW_PMS') . '" >' . $pms->showIcon($this->userid) . '</span>';
 				break;
 			case 'email' :
-				return '<span data-toggle="tooltip" data-placement="right" title="' . $this->email . '">' . KunenaIcons::email() . '</span>';
+				return '<span data-toggle="tooltip" data-placement="right" title="' . $this->email . '">' . Icons::email() . '</span>';
 				break;
 			case 'profile' :
 				if (!$this->userid)
@@ -2017,14 +2028,14 @@ class KunenaUser extends CMSObject
 				}
 			}
 
-			if (\Joomla\Component\Kunena\Libraries\Template\Template::getInstance()->tooltips())
+			if (Template::getInstance()->tooltips())
 			{
-				$class = $class . ' ' . \Joomla\Component\Kunena\Libraries\Template\Template::getInstance()->tooltips();
+				$class = $class . ' ' . Template::getInstance()->tooltips();
 			}
 
 			if ($this->userid == Factory::getApplication()->getIdentity()->id && $avatarLink)
 			{
-				$link = \Joomla\Component\Kunena\Libraries\KunenaFactory::getProfile()->getEditProfileURL($this->userid);
+				$link = KunenaFactory::getProfile()->getEditProfileURL($this->userid);
 			}
 			else
 			{
@@ -2099,14 +2110,14 @@ class KunenaUser extends CMSObject
 		{
 			if (!empty($this->$name))
 			{
-				return '<a href="' . $this->escape($url) . '" ' . \Joomla\Component\Kunena\Libraries\Template\Template::getInstance()->tooltips(true) . ' target="_blank" title="' . $title . ': ' . $value . '"><span class="kicon-profile kicon-profile-' . $name . '"></span></a>';
+				return '<a href="' . $this->escape($url) . '" ' . Template::getInstance()->tooltips(true) . ' target="_blank" title="' . $title . ': ' . $value . '"><span class="kicon-profile kicon-profile-' . $name . '"></span></a>';
 			}
 		}
 		else
 		{
 			if (!empty($this->$name))
 			{
-				return '<span class="kicon-profile kicon-profile-' . $name . ' ' . \Joomla\Component\Kunena\Libraries\Template\Template::getInstance()->tooltips() . '" title="' . $title . ': ' . $value . '"></span>';
+				return '<span class="kicon-profile kicon-profile-' . $name . ' ' . Template::getInstance()->tooltips() . '" title="' . $title . ': ' . $value . '"></span>';
 			}
 		}
 
@@ -2194,7 +2205,7 @@ class KunenaUser extends CMSObject
 	 */
 	public function canDoCaptcha()
 	{
-		$config = \Joomla\Component\Kunena\Libraries\KunenaFactory::getConfig();
+		$config = KunenaFactory::getConfig();
 
 		if (!$this->exists() && $config->captcha == 1)
 		{

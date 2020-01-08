@@ -10,7 +10,7 @@
  * @link            https://www.kunena.org
  **/
 
-namespace Joomla\Component\Kunena\Libraries\Forum\Topic\Rate;
+namespace Kunena\Forum\Libraries\Forum\Topic\Rate;
 
 defined('_JEXEC') or die();
 
@@ -32,7 +32,7 @@ abstract class Helper
 	protected static $_instances = [];
 
 	/**
-	 * Returns KunenaForumTopicRate object
+	 * Returns \Kunena\Forum\Libraries\Forum\Topic\TopicRate object
 	 *
 	 * @access  public
 	 *
@@ -41,7 +41,7 @@ abstract class Helper
 	 * @param   null  $identifier  identifier
 	 * @param   bool  $reload      reload
 	 *
-	 * @return  KunenaForumTopicRate The rate object.
+	 * @return  Rate The rate object.
 	 *
 	 * @since   Kunena 5.0
 	 *
@@ -49,7 +49,7 @@ abstract class Helper
 	 */
 	public static function get($identifier = null, $reload = false)
 	{
-		if ($identifier instanceof KunenaForumTopicRate)
+		if ($identifier instanceof Rate)
 		{
 			return $identifier;
 		}
@@ -58,12 +58,12 @@ abstract class Helper
 
 		if ($id < 1)
 		{
-			return new KunenaForumTopicRate;
+			return new Rate;
 		}
 
 		if ($reload || empty(self::$_instances [$id]))
 		{
-			self::$_instances [$id] = new KunenaForumTopicRate($id);
+			self::$_instances [$id] = new Rate($id);
 		}
 
 		return self::$_instances [$id];

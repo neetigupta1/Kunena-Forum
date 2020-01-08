@@ -10,7 +10,7 @@
  * @link          https://www.kunena.org
  **/
 
-namespace Joomla\Component\Kunena\Libraries\Forum\Category;
+namespace Kunena\Forum\Libraries\Forum\Category;
 
 defined('_JEXEC') or die();
 
@@ -21,13 +21,27 @@ use Joomla\CMS\Factory;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\Session\Session;
 use Joomla\CMS\Uri\Uri;
+use Kunena\Forum\Libraries\Access;
+use Kunena\Forum\Libraries\Database\KunenaDatabaseObject;
+use Kunena\Forum\Libraries\Error;
+use Kunena\Forum\Libraries\Exception\Authorise;
+use Kunena\Forum\Libraries\Forum\KunenaForum;
+use Kunena\Forum\Libraries\Forum\Message\Message;
+use Kunena\Forum\Libraries\Forum\Topic\Topic;
+use Kunena\Forum\Libraries\Html\Parser;
+use Kunena\Forum\Libraries\KunenaDate;
+use Kunena\Forum\Libraries\KunenaFactory;
+use Kunena\Forum\Libraries\KunenaProfiler;
+use Kunena\Forum\Libraries\Route\KunenaRoute;
+use Kunena\Forum\Libraries\User\Ban;
+use Kunena\Forum\Libraries\User\KunenaUser;
 use Joomla\Database\Exception\ExecutionFailureException;
 use Joomla\Registry\Registry;
 use Joomla\String\StringHelper;
 use function defined;
 
 /**
- * Class KunenaForumCategory
+ * Class \Kunena\Forum\Libraries\Forum\Category\Category
  *
  * @property int    $id
  * @property int    $parent_id
@@ -146,7 +160,7 @@ class Category extends KunenaDatabaseObject
 	protected $_alias = null;
 
 	/**
-	 * @var     KunenaForumCategory[]
+	 * @var     Category[]
 	 * @since   Kunena 6.0
 	 */
 	protected $_channels = false;
@@ -248,12 +262,12 @@ class Category extends KunenaDatabaseObject
 	}
 
 	/**
-	 * Returns the global KunenaForumCategory object.
+	 * Returns the global \Kunena\Forum\Libraries\Forum\Category\Category object.
 	 *
 	 * @param   null  $identifier  The category id to load.
 	 * @param   bool  $reload      Force reload from the database.
 	 *
-	 * @return  KunenaForumCategory
+	 * @return  Category
 	 *
 	 * @since   Kunena 6.0
 	 *
@@ -261,7 +275,7 @@ class Category extends KunenaDatabaseObject
 	 */
 	public static function getInstance($identifier = null, $reload = false)
 	{
-		return \Joomla\Component\Kunena\Libraries\Forum\Category\Helper::get($identifier, $reload);
+		return Helper::get($identifier, $reload);
 	}
 
 	/**
@@ -269,7 +283,7 @@ class Category extends KunenaDatabaseObject
 	 *
 	 * @param   int  $levels  How many levels to search.
 	 *
-	 * @return  array    List of KunenaForumCategory objects.
+	 * @return  array    List of \Kunena\Forum\Libraries\Forum\Category\Category objects.
 	 *
 	 * @since   Kunena 6.0
 	 *
@@ -277,7 +291,7 @@ class Category extends KunenaDatabaseObject
 	 */
 	public function getChildren($levels = 0)
 	{
-		return \Joomla\Component\Kunena\Libraries\Forum\Category\Helper::getChildren($this->id, $levels);
+		return Helper::getChildren($this->id, $levels);
 	}
 
 	/**
@@ -285,7 +299,7 @@ class Category extends KunenaDatabaseObject
 	 *
 	 * @param   mixed  $user  user
 	 *
-	 * @return  KunenaForumCategoryUser
+	 * @return  \Kunena\Forum\Libraries\Forum\Category\User\Helper
 	 *
 	 * @since   Kunena 6.0
 	 *
@@ -293,7 +307,7 @@ class Category extends KunenaDatabaseObject
 	 */
 	public function getUserInfo($user = null)
 	{
-		return KunenaForumCategoryUserHelper::get($this->id, $user);
+		return \Kunena\Forum\Libraries\Forum\Category\User\Helper::get($this->id, $user);
 	}
 
 	/**
@@ -310,7 +324,7 @@ class Category extends KunenaDatabaseObject
 	 */
 	public function subscribe($value = true, $user = null)
 	{
-		$usercategory             = KunenaForumCategoryUserHelper::get($this->id, $user);
+		$usercategory             = \Kunena\Forum\Libraries\Forum\Category\User\Helper::get($this->id, $user);
 		$usercategory->subscribed = (int) $value;
 
 		if (!$usercategory->params)
@@ -324,7 +338,7 @@ class Category extends KunenaDatabaseObject
 		}
 		catch (Exception $e)
 		{
-			\Joomla\Component\Kunena\Libraries\Error::displayDatabaseError($e);
+			Error::displayDatabaseError($e);
 		}
 
 		return true;
@@ -360,7 +374,7 @@ class Category extends KunenaDatabaseObject
 	 */
 	public function getIcon()
 	{
-		return \Joomla\Component\Kunena\Libraries\KunenaFactory::getTemplate()->getCategoryIcon($this);
+		return KunenaFactory::getTemplate()->getCategoryIcon($this);
 	}
 
 	/**
@@ -375,9 +389,9 @@ class Category extends KunenaDatabaseObject
 	 */
 	public function getUrl($category = null, $xhtml = true)
 	{
-		$category = $category ? \Joomla\Component\Kunena\Libraries\Forum\Category\Helper::get($category) : $this;
+		$category = $category ? Helper::get($category) : $this;
 
-		return \Joomla\Component\Kunena\Libraries\Route\KunenaRoute::getCategoryUrl($category, $xhtml);
+		return KunenaRoute::getCategoryUrl($category, $xhtml);
 	}
 
 	/**
@@ -399,13 +413,13 @@ class Category extends KunenaDatabaseObject
 
 		$catid = $this->id ? "&catid={$this->id}" : '';
 
-		return \Joomla\Component\Kunena\Libraries\Route\KunenaRoute::_("index.php?option=com_kunena&view=topic&layout=create{$catid}", $xhtml);
+		return KunenaRoute::_("index.php?option=com_kunena&view=topic&layout=create{$catid}", $xhtml);
 	}
 
 	/**
 	 * @param   mixed  $user  user
 	 *
-	 * @return  KunenaForumCategory
+	 * @return  Category
 	 *
 	 * @since   Kunena 6.0
 	 *
@@ -421,7 +435,7 @@ class Category extends KunenaDatabaseObject
 			}
 		}
 
-		$categories = \Joomla\Component\Kunena\Libraries\Forum\Category\Helper::getChildren(intval($this->id), -1, ['action' => 'topic.create']);
+		$categories = Helper::getChildren(intval($this->id), -1, ['action' => 'topic.create']);
 
 		if ($categories)
 		{
@@ -434,13 +448,13 @@ class Category extends KunenaDatabaseObject
 			}
 		}
 
-		return new KunenaForumCategory;
+		return new Category;
 	}
 
 	/**
 	 * @param   string  $action  action
 	 *
-	 * @return  KunenaForumCategory|KunenaForumCategory[]
+	 * @return  Category|Category[]
 	 *
 	 * @since   Kunena 6.0
 	 *
@@ -449,7 +463,7 @@ class Category extends KunenaDatabaseObject
 	 */
 	public function getChannels($action = 'read')
 	{
-		KUNENA_PROFILER ? \Joomla\Component\Kunena\Libraries\KunenaProfiler::instance()->start('function ' . __CLASS__ . '::' . __FUNCTION__ . '()') : null;
+		KUNENA_PROFILER ? KunenaProfiler::instance()->start('function ' . __CLASS__ . '::' . __FUNCTION__ . '()') : null;
 
 		if ($this->_channels === false)
 		{
@@ -474,13 +488,13 @@ class Category extends KunenaDatabaseObject
 				if (!empty($ids))
 				{
 					// More category channels
-					$this->_channels['none'] += \Joomla\Component\Kunena\Libraries\Forum\Category\Helper::getCategories(array_keys($ids), null, 'none');
+					$this->_channels['none'] += Helper::getCategories(array_keys($ids), null, 'none');
 				}
 
 				if (isset($ids['CHILDREN']))
 				{
 					// Children category channels
-					$this->_channels['none'] += \Joomla\Component\Kunena\Libraries\Forum\Category\Helper::getChildren($this->id, 1, [$action => 'none']);
+					$this->_channels['none'] += Helper::getChildren($this->id, 1, [$action => 'none']);
 				}
 			}
 		}
@@ -498,7 +512,7 @@ class Category extends KunenaDatabaseObject
 			}
 		}
 
-		KUNENA_PROFILER ? \Joomla\Component\Kunena\Libraries\KunenaProfiler::instance()->stop('function ' . __CLASS__ . '::' . __FUNCTION__ . '()') : null;
+		KUNENA_PROFILER ? KunenaProfiler::instance()->stop('function ' . __CLASS__ . '::' . __FUNCTION__ . '()') : null;
 
 		return $this->_channels[$action];
 	}
@@ -517,7 +531,7 @@ class Category extends KunenaDatabaseObject
 	 */
 	public function isAuthorised($action = 'read', KunenaUser $user = null)
 	{
-		if (\Joomla\Component\Kunena\Libraries\KunenaFactory::getConfig()->read_only)
+		if (KunenaFactory::getConfig()->read_only)
 		{
 			// Special case to ignore authorisation.
 			if ($action != 'read')
@@ -536,7 +550,7 @@ class Category extends KunenaDatabaseObject
 	 * @param   KunenaUser  $user    user
 	 * @param   bool        $throw   throw
 	 *
-	 * @return  KunenaExceptionAuthorise|boolean
+	 * @return  Authorise|boolean
 	 *
 	 * @since   Kunena 4.0
 	 *
@@ -553,7 +567,7 @@ class Category extends KunenaDatabaseObject
 		// Load user if not given.
 		if ($user === null)
 		{
-			$user = \Joomla\Component\Kunena\Libraries\User\Helper::getMyself();
+			$user = \Kunena\Forum\Libraries\User\Helper::getMyself();
 		}
 
 		// Optimise read access check.
@@ -581,7 +595,7 @@ class Category extends KunenaDatabaseObject
 			// Load custom authorisation from the plugins (except for admins and moderators).
 			if (!$user->isModerator($this) && !isset($this->authorised[$user->userid]))
 			{
-				$this->authorised[$user->userid] = \Joomla\Component\Kunena\Libraries\Access::getInstance()->authoriseActions($this, $user->userid);
+				$this->authorised[$user->userid] = Access::getInstance()->authoriseActions($this, $user->userid);
 			}
 
 			if (isset($this->authorised[$user->userid][$action])
@@ -590,7 +604,7 @@ class Category extends KunenaDatabaseObject
 			{
 				// Plugin forces authorisation to fail.
 				// TODO: allow plugin to customise the error.
-				$this->_authcache[$user->userid][$action] = new \Joomla\Component\Kunena\Libraries\Exception\Authorise(Text::_('COM_KUNENA_NO_ACCESS'), $user->userid ? 403 : 401);
+				$this->_authcache[$user->userid][$action] = new Authorise(Text::_('COM_KUNENA_NO_ACCESS'), $user->userid ? 403 : 401);
 			}
 			else
 			{
@@ -630,7 +644,7 @@ class Category extends KunenaDatabaseObject
 	/**
 	 * @param   KunenaUser  $user  user
 	 *
-	 * @return  KunenaExceptionAuthorise|void
+	 * @return  Authorise|void
 	 *
 	 * @since   Kunena 6.0
 	 *
@@ -642,24 +656,24 @@ class Category extends KunenaDatabaseObject
 
 		if ($catids === false)
 		{
-			$catids = \Joomla\Component\Kunena\Libraries\Access::getInstance()->getAllowedCategories($user);
+			$catids = Access::getInstance()->getAllowedCategories($user);
 		}
 
 		// Checks if user can read category
 		if (!$this->exists())
 		{
-			return new \Joomla\Component\Kunena\Libraries\Exception\Authorise(Text::_('COM_KUNENA_NO_ACCESS'), 404);
+			return new Authorise(Text::_('COM_KUNENA_NO_ACCESS'), 404);
 		}
 
 		if (empty($catids[$this->id]))
 		{
 			if ($user->exists())
 			{
-				return new \Joomla\Component\Kunena\Libraries\Exception\Authorise(Text::_('COM_KUNENA_NO_ACCESS'), 403);
+				return new Authorise(Text::_('COM_KUNENA_NO_ACCESS'), 403);
 			}
 			else
 			{
-				return new \Joomla\Component\Kunena\Libraries\Exception\Authorise(Text::_('COM_KUNENA_NO_ACCESS'), 401);
+				return new Authorise(Text::_('COM_KUNENA_NO_ACCESS'), 401);
 			}
 		}
 
@@ -679,7 +693,7 @@ class Category extends KunenaDatabaseObject
 	 */
 	public function getMarkReadUrl($children = false, $xhtml = true)
 	{
-		if (!\Joomla\Component\Kunena\Libraries\User\Helper::getMyself()->exists())
+		if (!\Kunena\Forum\Libraries\User\Helper::getMyself()->exists())
 		{
 			return false;
 		}
@@ -688,7 +702,7 @@ class Category extends KunenaDatabaseObject
 		$catid    = $this->id ? "&catid={$this->id}" : '';
 		$token    = '&' . Session::getFormToken() . '=1';
 
-		return \Joomla\Component\Kunena\Libraries\Route\KunenaRoute::_("index.php?option=com_kunena&view=category&task=markread{$catid}{$children}{$token}", $xhtml);
+		return KunenaRoute::_("index.php?option=com_kunena&view=category&task=markread{$catid}{$children}{$token}", $xhtml);
 	}
 
 	/**
@@ -705,17 +719,17 @@ class Category extends KunenaDatabaseObject
 	 */
 	public function getRSSUrl($xhtml = true)
 	{
-		if (\Joomla\Component\Kunena\Libraries\KunenaFactory::getConfig()->enablerss)
+		if (KunenaFactory::getConfig()->enablerss)
 		{
 			$params = '&catid=' . (int) $this->id;
 
 			if (CMSApplication::getInstance('site')->get('sef_suffix'))
 			{
-				return \Joomla\Component\Kunena\Libraries\Route\KunenaRoute::_("/index.php?option=com_kunena&view=rss{$params}") . '?format=feed&type=rss';
+				return KunenaRoute::_("/index.php?option=com_kunena&view=rss{$params}") . '?format=feed&type=rss';
 			}
 			else
 			{
-				return \Joomla\Component\Kunena\Libraries\Route\KunenaRoute::_("index.php?option=com_kunena&view=rss{$params}?format=feed&type=rss", $xhtml);
+				return KunenaRoute::_("index.php?option=com_kunena&view=rss{$params}?format=feed&type=rss", $xhtml);
 			}
 		}
 
@@ -740,7 +754,7 @@ class Category extends KunenaDatabaseObject
 		}
 		else
 		{
-			$category = \Joomla\Component\Kunena\Libraries\Forum\Category\Helper::get($category);
+			$category = Helper::get($category);
 		}
 
 		$uri = Uri::getInstance("index.php?option=com_kunena&view=category&catid={$category->id}");
@@ -769,15 +783,15 @@ class Category extends KunenaDatabaseObject
 			case 'id':
 				return intval($this->id);
 			case 'name':
-				return \Joomla\Component\Kunena\Libraries\Html\Parser::parseText($this->name, '', 'category_name');
+				return Parser::parseText($this->name, '', 'category_name');
 			case 'icon':
-				return \Joomla\Component\Kunena\Libraries\Html\Parser::parseText($this->name, '', 'category_icon');
+				return Parser::parseText($this->name, '', 'category_icon');
 			case 'description':
-				return \Joomla\Component\Kunena\Libraries\Html\Parser::parseBBCode($this->$field, '', '', '', 'category_description');
+				return Parser::parseBBCode($this->$field, '', '', '', 'category_description');
 			case 'topictemplate':
-				return \Joomla\Component\Kunena\Libraries\Html\Parser::parseBBCode($this->$field, '', '', '', 'category_topictemplate');
+				return Parser::parseBBCode($this->$field, '', '', '', 'category_topictemplate');
 			case 'headerdesc':
-				return \Joomla\Component\Kunena\Libraries\Html\Parser::parseBBCode($this->$field, '', '', '', 'category_headerdesc');
+				return Parser::parseBBCode($this->$field, '', '', '', 'category_headerdesc');
 		}
 
 		return '';
@@ -847,7 +861,7 @@ class Category extends KunenaDatabaseObject
 		}
 		catch (ExecutionFailureException $e)
 		{
-			\Joomla\Component\Kunena\Libraries\Error::displayDatabaseError($e);
+			Error::displayDatabaseError($e);
 		}
 
 		return (bool) $db->getAffectedRows();
@@ -911,7 +925,7 @@ class Category extends KunenaDatabaseObject
 		$categories[$this->id] = $this;
 
 		$categories += $this->getChannels();
-		$categories += \Joomla\Component\Kunena\Libraries\Forum\Category\Helper::getChildren($this->id);
+		$categories += Helper::getChildren($this->id);
 
 		foreach ($categories as $category)
 		{
@@ -928,7 +942,7 @@ class Category extends KunenaDatabaseObject
 	}
 
 	/**
-	 * @return  boolean|KunenaForumCategory
+	 * @return  boolean|Category
 	 *
 	 * @since   Kunena 6.0
 	 *
@@ -970,7 +984,7 @@ class Category extends KunenaDatabaseObject
 	}
 
 	/**
-	 * @return  KunenaForumTopic
+	 * @return  Topic
 	 *
 	 * @since   Kunena 6.0
 	 *
@@ -978,7 +992,7 @@ class Category extends KunenaDatabaseObject
 	 */
 	public function getLastTopic()
 	{
-		return \Joomla\Component\Kunena\Libraries\Forum\Topic\Helper::get($this->getLastCategory()->last_topic_id);
+		return \Kunena\Forum\Libraries\Forum\Topic\Helper::get($this->getLastCategory()->last_topic_id);
 	}
 
 	/**
@@ -995,12 +1009,12 @@ class Category extends KunenaDatabaseObject
 	public function newTopic(array $fields = null, $user = null, array $safefields = null)
 	{
 		$catid           = isset($safefields['category_id']) ? $safefields['category_id'] : $this->getNewTopicCategory($user)->id;
-		$user            = \Joomla\Component\Kunena\Libraries\User\Helper::get($user);
-		$message         = new KunenaForumMessage;
+		$user            = \Kunena\Forum\Libraries\User\Helper::get($user);
+		$message         = new Message;
 		$message->catid  = $catid;
 		$message->name   = $user->getName('');
 		$message->userid = $user->userid;
-		$message->ip     = !empty(\Joomla\Component\Kunena\Libraries\User\Helper::getUserIp()) ? \Joomla\Component\Kunena\Libraries\User\Helper::getUserIp() : '';
+		$message->ip     = !empty(\Kunena\Forum\Libraries\User\Helper::getUserIp()) ? \Kunena\Forum\Libraries\User\Helper::getUserIp() : '';
 		$message->hold   = $this->review ? (int) !$this->isAuthorised('moderate', $user) : 0;
 
 		if ($safefields)
@@ -1013,9 +1027,9 @@ class Category extends KunenaDatabaseObject
 			$message->bind($fields, ['name', 'email', 'subject', 'message'], true);
 		}
 
-		$topic              = new KunenaForumTopic;
+		$topic              = new Topic;
 		$topic->category_id = $catid;
-		$topic->hold        = \Joomla\Component\Kunena\Libraries\Forum\Forum::TOPIC_CREATION;
+		$topic->hold        = KunenaForum::TOPIC_CREATION;
 		$topic->rating      = 0;
 		$topic->params      = '';
 
@@ -1035,7 +1049,7 @@ class Category extends KunenaDatabaseObject
 	}
 
 	/**
-	 * @return  KunenaForumCategory
+	 * @return  Category
 	 *
 	 * @since   Kunena 6.0
 	 *
@@ -1043,7 +1057,7 @@ class Category extends KunenaDatabaseObject
 	 */
 	public function getParent()
 	{
-		return \Joomla\Component\Kunena\Libraries\Forum\Category\Helper::get(intval($this->parent_id));
+		return Helper::get(intval($this->parent_id));
 	}
 
 	/**
@@ -1059,7 +1073,7 @@ class Category extends KunenaDatabaseObject
 	 */
 	public function getAdmins($includeGlobal = true)
 	{
-		$access   = \Joomla\Component\Kunena\Libraries\Access::getInstance();
+		$access   = Access::getInstance();
 		$userlist = [];
 
 		if (!empty($this->catid))
@@ -1089,7 +1103,7 @@ class Category extends KunenaDatabaseObject
 	 */
 	public function getModerators($includeGlobal = true, $objects = true)
 	{
-		$access   = \Joomla\Component\Kunena\Libraries\Access::getInstance();
+		$access   = Access::getInstance();
 		$userlist = [];
 
 		if (!empty($this->id))
@@ -1109,7 +1123,7 @@ class Category extends KunenaDatabaseObject
 
 		$userlist = array_keys($userlist);
 
-		return $objects ? \Joomla\Component\Kunena\Libraries\User\Helper::loadUsers($userlist) : array_combine($userlist, $userlist);
+		return $objects ? \Kunena\Forum\Libraries\User\Helper::loadUsers($userlist) : array_combine($userlist, $userlist);
 	}
 
 	/**
@@ -1144,7 +1158,7 @@ class Category extends KunenaDatabaseObject
 	 */
 	public function setModerator($user = null, $value = false)
 	{
-		return \Joomla\Component\Kunena\Libraries\Access::getInstance()->setModerator($this, $user, $value);
+		return Access::getInstance()->setModerator($this, $user, $value);
 	}
 
 	/**
@@ -1168,7 +1182,7 @@ class Category extends KunenaDatabaseObject
 
 		foreach ($users as $user)
 		{
-			$user_inst = \Joomla\Component\Kunena\Libraries\User\Helper::get($user);
+			$user_inst = \Kunena\Forum\Libraries\User\Helper::get($user);
 			$this->setModerator($user_inst, true);
 		}
 	}
@@ -1261,7 +1275,7 @@ class Category extends KunenaDatabaseObject
 		// Register category if it exists
 		if ($exists)
 		{
-			\Joomla\Component\Kunena\Libraries\Forum\Category\Helper::register($this);
+			Helper::register($this);
 		}
 
 		return $exists;
@@ -1287,7 +1301,7 @@ class Category extends KunenaDatabaseObject
 
 		if ($this->alias != $this->_alias)
 		{
-			$this->alias = \Joomla\Component\Kunena\Libraries\Route\KunenaRoute::stringURLSafe($this->alias);
+			$this->alias = KunenaRoute::stringURLSafe($this->alias);
 
 			try
 			{
@@ -1295,7 +1309,7 @@ class Category extends KunenaDatabaseObject
 			}
 			catch (Exception $e)
 			{
-				\Joomla\Component\Kunena\Libraries\Error::displayDatabaseError($e);
+				Error::displayDatabaseError($e);
 
 				return false;
 			}
@@ -1320,12 +1334,12 @@ class Category extends KunenaDatabaseObject
 		}
 
 		// Check if alias is valid in current configuration.
-		if (\Joomla\Component\Kunena\Libraries\Route\KunenaRoute::stringURLSafe($alias) != $alias)
+		if (KunenaRoute::stringURLSafe($alias) != $alias)
 		{
 			return false;
 		}
 
-		$item = \Joomla\Component\Kunena\Libraries\Route\KunenaRoute::resolveAlias($alias);
+		$item = KunenaRoute::resolveAlias($alias);
 
 		// Is alias free to be used?
 		if (!$item)
@@ -1380,7 +1394,7 @@ class Category extends KunenaDatabaseObject
 		}
 		catch (ExecutionFailureException $e)
 		{
-			\Joomla\Component\Kunena\Libraries\Error::displayDatabaseError($e);
+			Error::displayDatabaseError($e);
 		}
 
 		if (empty($ids))
@@ -1388,11 +1402,11 @@ class Category extends KunenaDatabaseObject
 			return 0;
 		}
 
-		$count = \Joomla\Component\Kunena\Libraries\Forum\Topic\Helper::delete($ids);
+		$count = \Kunena\Forum\Libraries\Forum\Topic\Helper::delete($ids);
 
-		\Joomla\Component\Kunena\Libraries\User\Helper::recount();
-		\Joomla\Component\Kunena\Libraries\Forum\Category\Helper::recount($this->id);
-		\Joomla\Component\Kunena\Libraries\Attachment\Helper::cleanup();
+		\Kunena\Forum\Libraries\User\Helper::recount();
+		Helper::recount($this->id);
+		\Kunena\Forum\Libraries\Attachment\Helper::cleanup();
 
 		return $count;
 	}
@@ -1435,7 +1449,7 @@ class Category extends KunenaDatabaseObject
 		}
 		catch (ExecutionFailureException $e)
 		{
-			\Joomla\Component\Kunena\Libraries\Error::displayDatabaseError($e);
+			Error::displayDatabaseError($e);
 		}
 
 		if (empty($ids))
@@ -1443,10 +1457,10 @@ class Category extends KunenaDatabaseObject
 			return 0;
 		}
 
-		$count = \Joomla\Component\Kunena\Libraries\Forum\Topic\Helper::trash($ids);
+		$count = \Kunena\Forum\Libraries\Forum\Topic\Helper::trash($ids);
 
-		\Joomla\Component\Kunena\Libraries\User\Helper::recount();
-		\Joomla\Component\Kunena\Libraries\Forum\Category\Helper::recount($this->id);
+		\Kunena\Forum\Libraries\User\Helper::recount();
+		Helper::recount($this->id);
 
 		return $count;
 	}
@@ -1472,7 +1486,7 @@ class Category extends KunenaDatabaseObject
 			return false;
 		}
 
-		$access = \Joomla\Component\Kunena\Libraries\Access::getInstance();
+		$access = Access::getInstance();
 		$access->clearCache();
 
 		$db        = Factory::getDBO();
@@ -1516,21 +1530,21 @@ class Category extends KunenaDatabaseObject
 			}
 			catch (ExecutionFailureException $e)
 			{
-				\Joomla\Component\Kunena\Libraries\Error::displayDatabaseError($e);
+				Error::displayDatabaseError($e);
 			}
 		}
 
-		\Joomla\Component\Kunena\Libraries\User\Helper::recount();
-		\Joomla\Component\Kunena\Libraries\Forum\Message\Thankyou\Helper::recount();
+		\Kunena\Forum\Libraries\User\Helper::recount();
+		\Kunena\Forum\Libraries\Forum\Message\Thankyou\Helper::recount();
 
 		$this->id = null;
-		\Joomla\Component\Kunena\Libraries\Forum\Category\Helper::register($this);
+		Helper::register($this);
 
 		return true;
 	}
 
 	/**
-	 * Method to check out the KunenaForumCategory object.
+	 * Method to check out the \Kunena\Forum\Libraries\Forum\Category\Category object.
 	 *
 	 * @param   integer  $who  who
 	 *
@@ -1560,7 +1574,7 @@ class Category extends KunenaDatabaseObject
 	}
 
 	/**
-	 * Method to check in the KunenaForumCategory object.
+	 * Method to check in the \Kunena\Forum\Libraries\Forum\Category\Category object.
 	 *
 	 * @return  boolean  True on success.
 	 *
@@ -1616,7 +1630,7 @@ class Category extends KunenaDatabaseObject
 	}
 
 	/**
-	 * @param   KunenaForumTopic  $topic       topic
+	 * @param   Topic  $topic       topic
 	 * @param   int               $topicdelta  topicdelta
 	 * @param   int               $postdelta   postdelta
 	 *
@@ -1673,7 +1687,7 @@ class Category extends KunenaDatabaseObject
 			}
 			catch (ExecutionFailureException $e)
 			{
-				\Joomla\Component\Kunena\Libraries\Error::displayDatabaseError($e);
+				Error::displayDatabaseError($e);
 			}
 
 			if ($topic)
@@ -1728,7 +1742,7 @@ class Category extends KunenaDatabaseObject
 			return false;
 		}
 
-		$usercategory = KunenaForumCategoryUserHelper::get($this->id, $userid);
+		$usercategory = \Kunena\Forum\Libraries\Forum\Category\User\Helper::get($this->id, $userid);
 
 		return (bool) $usercategory->subscribed;
 	}
@@ -1829,10 +1843,10 @@ class Category extends KunenaDatabaseObject
 		}
 
 		// Clear cache
-		$access = \Joomla\Component\Kunena\Libraries\Access::getInstance();
+		$access = Access::getInstance();
 		$access->clearCache();
 
-		KunenaCacheHelper::clear();
+		\Kunena\Forum\Libraries\Cache\Helper::clear();
 
 		return true;
 	}
@@ -1853,7 +1867,7 @@ class Category extends KunenaDatabaseObject
 			return false;
 		}
 
-		$alias = \Joomla\Component\Kunena\Libraries\Route\KunenaRoute::stringURLSafe($alias);
+		$alias = KunenaRoute::stringURLSafe($alias);
 
 		if (!$alias)
 		{
@@ -1884,7 +1898,7 @@ class Category extends KunenaDatabaseObject
 		}
 		catch (ExecutionFailureException $e)
 		{
-			\Joomla\Component\Kunena\Libraries\Error::displayDatabaseError($e);
+			Error::displayDatabaseError($e);
 
 			return false;
 		}
@@ -1893,7 +1907,7 @@ class Category extends KunenaDatabaseObject
 	/**
 	 * @param   KunenaUser  $user  user
 	 *
-	 * @return  KunenaExceptionAuthorise|void
+	 * @return  Authorise|void
 	 *
 	 * @since   Kunena 6.0
 	 *
@@ -1905,15 +1919,15 @@ class Category extends KunenaDatabaseObject
 
 		if ($banned)
 		{
-			$banned = KunenaUserBan::getInstanceByUserid($user->userid, true);
+			$banned = Ban::getInstanceByUserid($user->userid, true);
 
 			if (!$banned->isLifetime())
 			{
-				return new \Joomla\Component\Kunena\Libraries\Exception\Authorise(Text::sprintf('COM_KUNENA_POST_ERROR_USER_BANNED_NOACCESS_EXPIRY', \Joomla\Component\Kunena\Libraries\KunenaDate::getInstance($banned->expiration)->toKunena()), 403);
+				return new Authorise(Text::sprintf('COM_KUNENA_POST_ERROR_USER_BANNED_NOACCESS_EXPIRY', KunenaDate::getInstance($banned->expiration)->toKunena()), 403);
 			}
 			else
 			{
-				return new \Joomla\Component\Kunena\Libraries\Exception\Authorise(Text::_('COM_KUNENA_POST_ERROR_USER_BANNED_NOACCESS'), 403);
+				return new Authorise(Text::_('COM_KUNENA_POST_ERROR_USER_BANNED_NOACCESS'), 403);
 			}
 		}
 
@@ -1923,7 +1937,7 @@ class Category extends KunenaDatabaseObject
 	/**
 	 * @param   KunenaUser  $user  user
 	 *
-	 * @return  KunenaExceptionAuthorise|void
+	 * @return  Authorise|void
 	 *
 	 * @since   Kunena 6.0
 	 *
@@ -1932,9 +1946,9 @@ class Category extends KunenaDatabaseObject
 	protected function authoriseGuestWrite(KunenaUser $user)
 	{
 		// Check if user is guest and they can create or reply topics
-		if ($user->userid == 0 && !\Joomla\Component\Kunena\Libraries\KunenaFactory::getConfig()->pubwrite)
+		if ($user->userid == 0 && !KunenaFactory::getConfig()->pubwrite)
 		{
-			return new \Joomla\Component\Kunena\Libraries\Exception\Authorise(Text::_('COM_KUNENA_POST_ERROR_ANONYMOUS_FORBITTEN'), 401);
+			return new Authorise(Text::_('COM_KUNENA_POST_ERROR_ANONYMOUS_FORBITTEN'), 401);
 		}
 
 		return;
@@ -1943,7 +1957,7 @@ class Category extends KunenaDatabaseObject
 	/**
 	 * @param   KunenaUser  $user  user
 	 *
-	 * @return  KunenaExceptionAuthorise|void
+	 * @return  Authorise|void
 	 *
 	 * @since   Kunena 6.0
 	 *
@@ -1952,16 +1966,16 @@ class Category extends KunenaDatabaseObject
 	protected function authoriseSubscribe(KunenaUser $user)
 	{
 		// Check if user is guest and they can create or reply topics
-		$config = \Joomla\Component\Kunena\Libraries\KunenaFactory::getConfig();
+		$config = KunenaFactory::getConfig();
 
 		if (!$config->allowsubscriptions || $config->topic_subscriptions == 'disabled')
 		{
-			return new \Joomla\Component\Kunena\Libraries\Exception\Authorise(Text::_('COM_KUNENA_LIB_CATEGORY_AUTHORISE_FAILED_SUBSCRIPTIONS'), 403);
+			return new Authorise(Text::_('COM_KUNENA_LIB_CATEGORY_AUTHORISE_FAILED_SUBSCRIPTIONS'), 403);
 		}
 
 		if ($user->userid == 0)
 		{
-			return new \Joomla\Component\Kunena\Libraries\Exception\Authorise(Text::_('COM_KUNENA_LIB_CATEGORY_AUTHORISE_FAILED_SUBSCRIPTIONS'), 401);
+			return new Authorise(Text::_('COM_KUNENA_LIB_CATEGORY_AUTHORISE_FAILED_SUBSCRIPTIONS'), 401);
 		}
 
 		return;
@@ -1970,7 +1984,7 @@ class Category extends KunenaDatabaseObject
 	/**
 	 * @param   KunenaUser  $user  user
 	 *
-	 * @return  KunenaExceptionAuthorise|void
+	 * @return  Authorise|void
 	 *
 	 * @since   Kunena 6.0
 	 *
@@ -1979,16 +1993,16 @@ class Category extends KunenaDatabaseObject
 	protected function authoriseCatSubscribe(KunenaUser $user)
 	{
 		// Check if user is guest and they can create or reply topics
-		$config = \Joomla\Component\Kunena\Libraries\KunenaFactory::getConfig();
+		$config = KunenaFactory::getConfig();
 
 		if (!$config->allowsubscriptions || $config->category_subscriptions == 'disabled')
 		{
-			return new \Joomla\Component\Kunena\Libraries\Exception\Authorise(Text::_('COM_KUNENA_LIB_CATEGORY_AUTHORISE_FAILED_SUBSCRIPTIONS'), 403);
+			return new Authorise(Text::_('COM_KUNENA_LIB_CATEGORY_AUTHORISE_FAILED_SUBSCRIPTIONS'), 403);
 		}
 
 		if ($user->userid == 0)
 		{
-			return new \Joomla\Component\Kunena\Libraries\Exception\Authorise(Text::_('COM_KUNENA_LIB_CATEGORY_AUTHORISE_FAILED_SUBSCRIPTIONS'), 401);
+			return new Authorise(Text::_('COM_KUNENA_LIB_CATEGORY_AUTHORISE_FAILED_SUBSCRIPTIONS'), 401);
 		}
 
 		return;
@@ -1997,7 +2011,7 @@ class Category extends KunenaDatabaseObject
 	/**
 	 * @param   KunenaUser  $user  user
 	 *
-	 * @return  KunenaExceptionAuthorise|void
+	 * @return  Authorise|void
 	 *
 	 * @since   Kunena 6.0
 	 *
@@ -2006,14 +2020,14 @@ class Category extends KunenaDatabaseObject
 	protected function authoriseFavorite(KunenaUser $user)
 	{
 		// Check if user is guest and they can create or reply topics
-		if (!\Joomla\Component\Kunena\Libraries\KunenaFactory::getConfig()->allowfavorites)
+		if (!KunenaFactory::getConfig()->allowfavorites)
 		{
-			return new \Joomla\Component\Kunena\Libraries\Exception\Authorise(Text::_('COM_KUNENA_LIB_CATEGORY_AUTHORISE_FAILED_FAVORITES'), 403);
+			return new Authorise(Text::_('COM_KUNENA_LIB_CATEGORY_AUTHORISE_FAILED_FAVORITES'), 403);
 		}
 
 		if ($user->userid == 0)
 		{
-			return new \Joomla\Component\Kunena\Libraries\Exception\Authorise(Text::_('COM_KUNENA_LIB_CATEGORY_AUTHORISE_FAILED_FAVORITES'), 401);
+			return new Authorise(Text::_('COM_KUNENA_LIB_CATEGORY_AUTHORISE_FAILED_FAVORITES'), 401);
 		}
 
 		return;
@@ -2022,7 +2036,7 @@ class Category extends KunenaDatabaseObject
 	/**
 	 * @param   KunenaUser  $user  user
 	 *
-	 * @return  KunenaExceptionAuthorise|void
+	 * @return  Authorise|void
 	 *
 	 * @since   Kunena 6.0
 	 *
@@ -2033,7 +2047,7 @@ class Category extends KunenaDatabaseObject
 		// Check if category is not a section
 		if ($this->isSection())
 		{
-			return new \Joomla\Component\Kunena\Libraries\Exception\Authorise(Text::_('COM_KUNENA_POST_ERROR_IS_SECTION'), 403);
+			return new Authorise(Text::_('COM_KUNENA_POST_ERROR_IS_SECTION'), 403);
 		}
 
 		return;
@@ -2056,7 +2070,7 @@ class Category extends KunenaDatabaseObject
 	/**
 	 * @param   KunenaUser  $user  user
 	 *
-	 * @return  KunenaExceptionAuthorise|void
+	 * @return  Authorise|void
 	 *
 	 * @since   Kunena 6.0
 	 *
@@ -2070,7 +2084,7 @@ class Category extends KunenaDatabaseObject
 
 		if (!isset($channels[$this->id]))
 		{
-			return new \Joomla\Component\Kunena\Libraries\Exception\Authorise(Text::_('COM_KUNENA_POST_ERROR_IS_ALIAS'), 403);
+			return new Authorise(Text::_('COM_KUNENA_POST_ERROR_IS_ALIAS'), 403);
 		}
 
 		return;
@@ -2079,7 +2093,7 @@ class Category extends KunenaDatabaseObject
 	/**
 	 * @param   KunenaUser  $user  user
 	 *
-	 * @return  KunenaExceptionAuthorise|void
+	 * @return  Authorise|void
 	 *
 	 * @since   Kunena 6.0
 	 *
@@ -2090,7 +2104,7 @@ class Category extends KunenaDatabaseObject
 		// Check that category is not locked or that user is a moderator
 		if ($this->locked && (!$user->userid || !$user->isModerator($this)))
 		{
-			return new \Joomla\Component\Kunena\Libraries\Exception\Authorise(Text::_('COM_KUNENA_POST_ERROR_CATEGORY_LOCKED'), 403);
+			return new Authorise(Text::_('COM_KUNENA_POST_ERROR_CATEGORY_LOCKED'), 403);
 		}
 
 		return;
@@ -2099,7 +2113,7 @@ class Category extends KunenaDatabaseObject
 	/**
 	 * @param   KunenaUser  $user  user
 	 *
-	 * @return  KunenaExceptionAuthorise|void
+	 * @return  Authorise|void
 	 *
 	 * @since   Kunena 6.0
 	 *
@@ -2110,12 +2124,12 @@ class Category extends KunenaDatabaseObject
 		// Check that user is moderator
 		if (!$user->userid)
 		{
-			return new \Joomla\Component\Kunena\Libraries\Exception\Authorise(Text::_('COM_KUNENA_POST_NOT_MODERATOR'), 401);
+			return new Authorise(Text::_('COM_KUNENA_POST_NOT_MODERATOR'), 401);
 		}
 
 		if (!$user->isModerator($this))
 		{
-			return new \Joomla\Component\Kunena\Libraries\Exception\Authorise(Text::_('COM_KUNENA_POST_NOT_MODERATOR'), 403);
+			return new Authorise(Text::_('COM_KUNENA_POST_NOT_MODERATOR'), 403);
 		}
 
 		return;
@@ -2124,7 +2138,7 @@ class Category extends KunenaDatabaseObject
 	/**
 	 * @param   KunenaUser  $user  user
 	 *
-	 * @return  KunenaExceptionAuthorise|void
+	 * @return  Authorise|void
 	 *
 	 * @since   Kunena 6.0
 	 *
@@ -2135,12 +2149,12 @@ class Category extends KunenaDatabaseObject
 		// Check that user is a global moderator
 		if (!$user->userid)
 		{
-			return new \Joomla\Component\Kunena\Libraries\Exception\Authorise(Text::_('COM_KUNENA_POST_NOT_GLOBAL_MODERATOR'), 401);
+			return new Authorise(Text::_('COM_KUNENA_POST_NOT_GLOBAL_MODERATOR'), 401);
 		}
 
 		if (!$user->isModerator())
 		{
-			return new \Joomla\Component\Kunena\Libraries\Exception\Authorise(Text::_('COM_KUNENA_POST_NOT_GLOBAL_MODERATOR'), 403);
+			return new Authorise(Text::_('COM_KUNENA_POST_NOT_GLOBAL_MODERATOR'), 403);
 		}
 
 		return;
@@ -2149,7 +2163,7 @@ class Category extends KunenaDatabaseObject
 	/**
 	 * @param   KunenaUser  $user  user
 	 *
-	 * @return  KunenaExceptionAuthorise|void
+	 * @return  Authorise|void
 	 *
 	 * @since   Kunena 6.0
 	 *
@@ -2160,12 +2174,12 @@ class Category extends KunenaDatabaseObject
 		// Check that user is admin
 		if (!$user->userid)
 		{
-			return new \Joomla\Component\Kunena\Libraries\Exception\Authorise(Text::_('COM_KUNENA_MODERATION_ERROR_NOT_ADMIN'), 401);
+			return new Authorise(Text::_('COM_KUNENA_MODERATION_ERROR_NOT_ADMIN'), 401);
 		}
 
 		if (!$user->isAdmin($this))
 		{
-			return new \Joomla\Component\Kunena\Libraries\Exception\Authorise(Text::_('COM_KUNENA_MODERATION_ERROR_NOT_ADMIN'), 403);
+			return new Authorise(Text::_('COM_KUNENA_MODERATION_ERROR_NOT_ADMIN'), 403);
 		}
 
 		return;
@@ -2174,7 +2188,7 @@ class Category extends KunenaDatabaseObject
 	/**
 	 * @param   KunenaUser  $user  user
 	 *
-	 * @return  KunenaExceptionAuthorise|void
+	 * @return  Authorise|void
 	 *
 	 * @since   Kunena 6.0
 	 *
@@ -2183,15 +2197,15 @@ class Category extends KunenaDatabaseObject
 	protected function authorisePoll(KunenaUser $user)
 	{
 		// Check if polls are enabled at all
-		if (!\Joomla\Component\Kunena\Libraries\KunenaFactory::getConfig()->pollenabled)
+		if (!KunenaFactory::getConfig()->pollenabled)
 		{
-			return new \Joomla\Component\Kunena\Libraries\Exception\Authorise(Text::_('COM_KUNENA_LIB_CATEGORY_AUTHORISE_FAILED_POLLS_DISABLED'), 403);
+			return new Authorise(Text::_('COM_KUNENA_LIB_CATEGORY_AUTHORISE_FAILED_POLLS_DISABLED'), 403);
 		}
 
 		// Check if polls are not enabled in this category
 		if (!$this->allow_polls)
 		{
-			return new \Joomla\Component\Kunena\Libraries\Exception\Authorise(Text::_('COM_KUNENA_LIB_CATEGORY_AUTHORISE_FAILED_POLLS_NOT_ALLOWED'), 403);
+			return new Authorise(Text::_('COM_KUNENA_LIB_CATEGORY_AUTHORISE_FAILED_POLLS_NOT_ALLOWED'), 403);
 		}
 
 		return;
@@ -2200,7 +2214,7 @@ class Category extends KunenaDatabaseObject
 	/**
 	 * @param   KunenaUser  $user  user
 	 *
-	 * @return  KunenaExceptionAuthorise|void
+	 * @return  Authorise|void
 	 *
 	 * @since   Kunena 6.0
 	 */
@@ -2209,7 +2223,7 @@ class Category extends KunenaDatabaseObject
 		// Check if user is guest
 		if ($user->userid == 0)
 		{
-			return new \Joomla\Component\Kunena\Libraries\Exception\Authorise(Text::_('COM_KUNENA_POLL_NOT_LOGGED'), 401);
+			return new Authorise(Text::_('COM_KUNENA_POLL_NOT_LOGGED'), 401);
 		}
 
 		return;
@@ -2218,7 +2232,7 @@ class Category extends KunenaDatabaseObject
 	/**
 	 * @param   KunenaUser  $user  user
 	 *
-	 * @return  KunenaExceptionAuthorise|void
+	 * @return  Authorise|void
 	 *
 	 * @since   Kunena 6.0
 	 *
@@ -2227,9 +2241,9 @@ class Category extends KunenaDatabaseObject
 	protected function authoriseUpload(KunenaUser $user)
 	{
 		// Check if attachments are allowed
-		if (\Joomla\Component\Kunena\Libraries\Attachment\Helper::getExtensions($this, $user) === false)
+		if (\Kunena\Forum\Libraries\Attachment\Helper::getExtensions($this, $user) === false)
 		{
-			return new \Joomla\Component\Kunena\Libraries\Exception\Authorise(Text::_('COM_KUNENA_LIB_CATEGORY_AUTHORISE_FAILED_UPLOAD_NOT_ALLOWED'), 403);
+			return new Authorise(Text::_('COM_KUNENA_LIB_CATEGORY_AUTHORISE_FAILED_UPLOAD_NOT_ALLOWED'), 403);
 		}
 
 		return;

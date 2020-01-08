@@ -10,16 +10,15 @@
  * @link            https://www.kunena.org
  **/
 
-namespace Joomla\Component\Kunena\Site\Models;
+namespace Kunena\Forum\Site\Models;
 
 defined('_JEXEC') or die();
 
-use Exception;
 use Joomla\CMS\HTML\HTMLHelper;
 use Joomla\CMS\Language\Text;
-use Joomla\Component\Kunena\Libraries\Forum\Topic\Rate\Helper;
-use Joomla\Component\Kunena\Libraries\Forum\Topic\Rate\Rate;
-use Joomla\Component\Kunena\Libraries\Model;
+use Kunena\Forum\Libraries\Forum\Topic\Rate\Helper;
+use Kunena\Forum\Libraries\Forum\Topic\Rate\Rate;
+use Kunena\Forum\Libraries\Model;
 use function defined;
 
 /**
@@ -63,7 +62,7 @@ class KunenaModelRate extends Model
 	 *
 	 * @since   Kunena 6.0
 	 *
-	 * @throws  Exception
+	 * @throws  \Exception
 	 */
 	public function getNewRate()
 	{
@@ -75,7 +74,7 @@ class KunenaModelRate extends Model
 	 *
 	 * @since   Kunena 6.0
 	 *
-	 * @throws  Exception
+	 * @throws  \Exception
 	 */
 	public function getRate()
 	{

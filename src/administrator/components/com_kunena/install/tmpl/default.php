@@ -9,9 +9,6 @@
  * @license         https://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link            https://www.kunena.org
  **/
-
-namespace Joomla\Component\Kunena\Administrator;
-
 defined('_JEXEC') or die();
 
 use Joomla\CMS\Factory;
@@ -19,7 +16,6 @@ use Joomla\CMS\HTML\HTMLHelper;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\Router\Route;
 use Joomla\CMS\Session\Session;
-use function defined;
 
 HTMLHelper::_('bootstrap.framework');
 HTMLHelper::_('jquery.framework');

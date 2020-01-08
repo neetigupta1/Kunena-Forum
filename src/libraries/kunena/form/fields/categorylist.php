@@ -10,7 +10,7 @@
  * @link          https://www.kunena.org
  **/
 
-namespace Joomla\Component\Kunena\Libraries\Form\Fields;
+namespace Kunena\Forum\Libraries\Form\Fields;
 
 defined('_JEXEC') or die();
 
@@ -39,18 +39,18 @@ class CategoryList extends FormField
 	 *
 	 * @since   Kunena 6.0
 	 *
-	 * @throws  Exception
+	 * @throws  \Exception
 	 */
 	protected function getInput()
 	{
-		if (!class_exists('KunenaForum') || !\Joomla\Component\Kunena\Libraries\Forum\Forum::installed())
+		if (!class_exists('KunenaForum') || !\Kunena\Forum\Libraries\Forum\KunenaForum::installed())
 		{
 			echo '<a href="' . Route::_('index.php?option=com_kunena') . '">PLEASE COMPLETE KUNENA INSTALLATION</a>';
 
 			return '';
 		}
 
-		\Joomla\Component\Kunena\Libraries\KunenaFactory::loadLanguage('com_kunena');
+		\Kunena\Forum\Libraries\KunenaFactory::loadLanguage('com_kunena');
 
 		$size  = $this->element['size'];
 		$class = $this->element['class'];

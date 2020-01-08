@@ -10,17 +10,20 @@
  * @link            https://www.kunena.org
  **/
 
-namespace Joomla\Component\Kunena\Plugin\Kunena\Joomla;
+namespace Kunena\Forum\Plugin\Kunena\Joomla;
 
 defined('_JEXEC') or die();
 
 use Joomla\CMS\Access\Access;
-use Joomla\CMS\HTML\HTMLHelper;
 use Joomla\CMS\Factory;
+use Joomla\CMS\HTML\HTMLHelper;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\User\User;
-use Joomla\Utilities\ArrayHelper;
+use Kunena\Forum\Libraries\Database\KunenaDatabaseObject;
+use Kunena\Forum\Libraries\Forum\Category\Category;
+use Kunena\Forum\Libraries\Forum\KunenaForum;
 use Joomla\Registry\Registry;
+use Joomla\Utilities\ArrayHelper;
 use StdClass;
 use function defined;
 
@@ -44,7 +47,7 @@ class AccessJoomla
 	protected $params = null;
 
 	/**
-	 * @param   object  $params params
+	 * @param   object  $params  params
 	 *
 	 * @since   Kunena 6.0
 	 */
@@ -72,13 +75,13 @@ class AccessJoomla
 	/**
 	 * Get access groups for the selected category.
 	 *
-	 * @param  \Joomla\Component\Kunena\Libraries\Forum\Category\Category  $category  Category
+	 * @param   Category  $category  Category
 	 *
 	 * @return  array
 	 *
 	 * @since   Kunena 6.0
 	 */
-	public function getCategoryAccess(KunenaForumCategory $category)
+	public function getCategoryAccess(Category $category)
 	{
 		$list = [];
 
@@ -88,7 +91,7 @@ class AccessJoomla
 			$accessname = Text::sprintf($category->pub_recurse ? 'COM_KUNENA_A_GROUP_X_PLUS' : 'COM_KUNENA_A_GROUP_X_ONLY', $groupname ? Text::_($groupname) : Text::_('COM_KUNENA_NOBODY'));
 
 			$list["joomla.group.{$category->pub_access}"] = ['type'  => 'joomla.group', 'id' => $category->pub_access, 'alias' => $accessname,
-															 'title' => $accessname];
+			                                                 'title' => $accessname];
 
 			$groupname = $this->getGroupName($category->accesstype, $category->admin_access);
 
@@ -96,14 +99,14 @@ class AccessJoomla
 			{
 				$accessname                                     = Text::sprintf($category->admin_recurse ? 'COM_KUNENA_A_GROUP_X_PLUS' : 'COM_KUNENA_A_GROUP_X_ONLY', Text::_($groupname));
 				$list["joomla.group.{$category->admin_access}"] = ['type'  => 'joomla.group', 'id' => $category->admin_access, 'alias' => $accessname,
-																   'title' => $accessname];
+				                                                   'title' => $accessname];
 			}
 		}
 		else
 		{
 			$groupname                                = $this->getGroupName($category->accesstype, $category->access);
 			$list["joomla.level.{$category->access}"] = ['type'  => 'joomla.level', 'id' => $category->access, 'alias' => $groupname,
-														 'title' => $groupname];
+			                                             'title' => $groupname];
 		}
 
 		return $list;
@@ -278,7 +281,7 @@ class AccessJoomla
 			$item              = new StdClass;
 			$item->user_id     = (int) $userid;
 			$item->category_id = 0;
-			$item->role        = \Joomla\Component\Kunena\Libraries\Forum\Forum::ADMINISTRATOR;
+			$item->role        = KunenaForum::ADMINISTRATOR;
 			$list[]            = $item;
 		}
 
@@ -286,8 +289,8 @@ class AccessJoomla
 	}
 
 	/**
-	 * @param   string  $action action
-	 * @param   null    $asset  asset
+	 * @param   string  $action  action
+	 * @param   null    $asset   asset
 	 *
 	 * @return  array
 	 * @since   Kunena 6.0
@@ -406,14 +409,14 @@ class AccessJoomla
 	 *
 	 * Function returns a list of authorised actions. Missing actions are threaded as inherit.
 	 *
-	 * @param  \Joomla\Component\Kunena\Libraries\Forum\Category\Category  $category  category
-	 * @param   int                  $userid    userid
+	 * @param   Category  $category  category
+	 * @param   int       $userid    userid
 	 *
 	 * @return  array
 	 *
 	 * @since   Kunena 6.0
 	 */
-	public function getAuthoriseActions(KunenaForumCategory $category, $userid)
+	public function getAuthoriseActions(Category $category, $userid)
 	{
 		$category->params = new Registry($category->params);
 		$groups           = (array) Access::getGroupsByUser($userid, true);
@@ -428,8 +431,8 @@ class AccessJoomla
 	/**
 	 * Authorise list of categories.
 	 *
-	 * Function accepts array of id indexed KunenaForumCategory objects and removes unauthorised
-	 * categories from the list.
+	 * Function accepts array of id indexed \Kunena\Forum\Libraries\Forum\Category\Category objects and removes
+	 * unauthorised categories from the list.
 	 *
 	 * Results for the current user are saved into session.
 	 *

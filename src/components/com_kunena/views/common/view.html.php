@@ -10,29 +10,28 @@
  * @link            https://www.kunena.org
  **/
 
-namespace Joomla\Component\Kunena\Site\View\Common;
+namespace Kunena\Forum\Site\View\Common;
 
 defined('_JEXEC') or die();
 
-use Exception;
 use Joomla\CMS\Factory;
 use Joomla\CMS\HTML\HTMLHelper;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\Uri\Uri;
-use Joomla\Component\Kunena\Libraries\Access;
-use Joomla\Component\Kunena\Libraries\Exception\Authorise;
-use Joomla\Component\Kunena\Libraries\Forum\Category\Helper;
-use Joomla\Component\Kunena\Libraries\Forum\Statistics;
-use Joomla\Component\Kunena\Libraries\Html\Parser;
-use Joomla\Component\Kunena\Libraries\KunenaDate;
-use Joomla\Component\Kunena\Libraries\KunenaFactory;
-use Joomla\Component\Kunena\Libraries\Login;
-use Joomla\Component\Kunena\Libraries\Route\KunenaRoute;
-use Joomla\Component\Kunena\Libraries\View;
-use Joomla\Component\Kunena\Libraries\Forum\Topic;
-use Joomla\Component\Kunena\Libraries\Forum\Announcement;
-use Joomla\Component\Kunena\Libraries\User;
-use Joomla\Component\Kunena\Libraries\Menu;
+use Kunena\Forum\Libraries\Access;
+use Kunena\Forum\Libraries\Exception\Authorise;
+use Kunena\Forum\Libraries\Forum\Announcement;
+use Kunena\Forum\Libraries\Forum\Category\Helper;
+use Kunena\Forum\Libraries\Forum\Statistics;
+use Kunena\Forum\Libraries\Forum\Topic;
+use Kunena\Forum\Libraries\Html\Parser;
+use Kunena\Forum\Libraries\KunenaDate;
+use Kunena\Forum\Libraries\KunenaFactory;
+use Kunena\Forum\Libraries\Login;
+use Kunena\Forum\Libraries\Menu;
+use Kunena\Forum\Libraries\Route\KunenaRoute;
+use Kunena\Forum\Libraries\User;
+use Kunena\Forum\Libraries\View;
 use Joomla\Registry\Registry;
 use StdClass;
 use function defined;
@@ -64,7 +63,7 @@ class html extends View
 	 *
 	 * @since   Kunena 6.0
 	 *
-	 * @throws  Exception
+	 * @throws  \Exception
 	 */
 	public function display($layout = null, $tpl = null)
 	{
@@ -93,7 +92,7 @@ class html extends View
 	 *
 	 * @since   Kunena 6.0
 	 *
-	 * @throws  Exception
+	 * @throws  \Exception
 	 */
 	public function displayDefault($tpl = null)
 	{
@@ -116,7 +115,7 @@ class html extends View
 	 *
 	 * @since   Kunena 6.0
 	 *
-	 * @throws  Exception
+	 * @throws  \Exception
 	 */
 	public function displayAnnouncement($tpl = null)
 	{
@@ -180,7 +179,7 @@ class html extends View
 	 *
 	 * @since   Kunena 6.0
 	 *
-	 * @throws  Exception
+	 * @throws  \Exception
 	 */
 	public function displayForumJump($tpl = null)
 	{
@@ -217,7 +216,7 @@ class html extends View
 	 * @since   Kunena 6.0
 	 *
 	 * @throws  null
-	 * @throws  Exception
+	 * @throws  \Exception
 	 */
 	public function displayBreadcrumb($tpl = null)
 	{
@@ -327,7 +326,7 @@ class html extends View
 	 *
 	 * @since   Kunena 6.0
 	 *
-	 * @throws  Exception
+	 * @throws  \Exception
 	 */
 	public function displayWhosonline($tpl = null)
 	{
@@ -414,7 +413,7 @@ class html extends View
 	 *
 	 * @since   Kunena 6.0
 	 *
-	 * @throws  Exception
+	 * @throws  \Exception
 	 * @throws  null
 	 */
 	public function displayStatistics($tpl = null)
@@ -455,7 +454,7 @@ class html extends View
 	 *
 	 * @since   Kunena 6.0
 	 *
-	 * @throws  Exception
+	 * @throws  \Exception
 	 * @throws  null
 	 */
 	public function displayFooter($tpl = null)
@@ -503,7 +502,7 @@ class html extends View
 	 *
 	 * @since   Kunena 6.0
 	 *
-	 * @throws  Exception
+	 * @throws  \Exception
 	 * @throws  null
 	 */
 	public function displayMenu($tpl = null)
@@ -527,7 +526,7 @@ class html extends View
 	 *
 	 * @since   Kunena 6.0
 	 *
-	 * @throws  Exception
+	 * @throws  \Exception
 	 */
 	public function getMenu()
 	{
@@ -562,7 +561,7 @@ class html extends View
 	 *
 	 * @since   Kunena 6.0
 	 *
-	 * @throws  Exception
+	 * @throws  \Exception
 	 * @throws  null
 	 */
 	public function displayLoginBox($tpl = null)
@@ -641,7 +640,7 @@ class html extends View
 	 *
 	 * @since   Kunena 6.0
 	 *
-	 * @throws  Exception
+	 * @throws  \Exception
 	 */
 	public function fillLoginBoxInfo($matches)
 	{
@@ -661,7 +660,7 @@ class html extends View
 	 *
 	 * @since   Kunena 6.0
 	 *
-	 * @throws  Exception
+	 * @throws  \Exception
 	 */
 	public function getPrivateMessageLink()
 	{
@@ -683,7 +682,7 @@ class html extends View
 	 *
 	 * @since   Kunena 6.0
 	 *
-	 * @throws  Exception
+	 * @throws  \Exception
 	 */
 	public function getUserlistURL($action = '', $xhtml = true)
 	{
@@ -702,7 +701,7 @@ class html extends View
 	 *
 	 * @since   Kunena 6.0
 	 *
-	 * @throws  Exception
+	 * @throws  \Exception
 	 * @throws  null
 	 */
 	private function getRSSURL($params = '', $xhtml = true)
@@ -741,7 +740,7 @@ class html extends View
 	 *
 	 * @since   Kunena 6.0
 	 *
-	 * @throws  Exception
+	 * @throws  \Exception
 	 * @throws  null
 	 */
 	public function getRSSLink($name, $rel = 'follow', $params = '')
@@ -758,7 +757,7 @@ class html extends View
 	 *
 	 * @since   Kunena 6.0
 	 *
-	 * @throws  Exception
+	 * @throws  \Exception
 	 * @throws  null
 	 */
 	public function getStatsLink($name, $class = '', $rel = 'follow')
@@ -783,7 +782,7 @@ class html extends View
 	 *
 	 * @since   Kunena 6.0
 	 *
-	 * @throws  Exception
+	 * @throws  \Exception
 	 */
 	public function getUserlistLink($action, $name, $rel = 'nofollow', $class = '')
 	{

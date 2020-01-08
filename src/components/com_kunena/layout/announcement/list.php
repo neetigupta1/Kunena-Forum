@@ -10,15 +10,14 @@
  * @link            https://www.kunena.org
  **/
 
-namespace Joomla\Component\Kunena\Site\Layout\Announcement;
+namespace Kunena\Forum\Site\Layout\Announcement;
 
 defined('_JEXEC') or die;
 
-use Exception;
 use Joomla\CMS\HTML\HTMLHelper;
 use Joomla\CMS\Language\Text;
-use Joomla\Component\Kunena\Libraries\Layout\Layout;
-use Joomla\Component\Kunena\Libraries\User\Helper;
+use Kunena\Forum\Libraries\Layout\Layout;
+use Kunena\Forum\Libraries\User\Helper;
 use function defined;
 
 /**
@@ -37,7 +36,7 @@ class KunenaLayoutAnnouncementList extends Layout
 	 *
 	 * @since   Kunena 6.0
 	 *
-	 * @throws  Exception
+	 * @throws  \Exception
 	 */
 	public function getOptions()
 	{

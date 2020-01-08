@@ -10,17 +10,17 @@
  * @link            https://www.kunena.org
  **/
 
-namespace Joomla\Component\Kunena\Administrator;
+namespace Kunena\Forum\Administrator\Models;
 
 defined('_JEXEC') or die();
 
 use Exception;
 use Joomla\CMS\Factory;
 use Joomla\CMS\MVC\Model\ListModel;
-use Joomla\Component\Kunena\Libraries\Forum\Message\Helper;
+use Kunena\Forum\Libraries\Attachment;
+use Kunena\Forum\Libraries\Forum\Message\Helper;
+use Kunena\Forum\Libraries\User;
 use Joomla\Database\QueryInterface;
-use Joomla\Component\Kunena\Libraries\User;
-use Joomla\Component\Kunena\Libraries\Attachment;
 use function defined;
 
 /**
@@ -136,7 +136,7 @@ class KunenaAdminModelAttachments extends ListModel
 	 * @param   int     $limitstart  limitstart
 	 * @param   int     $limit       limit
 	 *
-	 * @return  Attachment
+	 * @return Attachment\Attachment[]
 	 *
 	 * @since   Kunena 6.0
 	 *

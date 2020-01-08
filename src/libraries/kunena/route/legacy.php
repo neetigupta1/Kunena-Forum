@@ -10,15 +10,14 @@
  * @link          https://www.kunena.org
  **/
 
-namespace Joomla\Component\Kunena\Libraries\Route;
+namespace Kunena\Forum\Libraries\Route;
 
 defined('_JEXEC') or die();
 
-use Exception;
 use Joomla\CMS\Factory;
 use Joomla\CMS\Language\Text;
-use Joomla\CMS\Uri\Uri;
 use Joomla\CMS\Log\Log;
+use Joomla\CMS\Uri\Uri;
 use Joomla\Registry\Registry;
 use function defined;
 
@@ -106,7 +105,7 @@ abstract class Legacy
 	 *
 	 * @since   Kunena 6.0
 	 *
-	 * @throws  Exception
+	 * @throws  \Exception
 	 */
 	public static function convertMenuItem($item)
 	{
@@ -134,12 +133,12 @@ abstract class Legacy
 					$params->set('do', null);
 					break;
 				case 'rules' :
-					$params->set('body', '[article=full]' . \Joomla\Component\Kunena\Libraries\KunenaFactory::getConfig()->get('rules_cid', 1) . '[/article]');
+					$params->set('body', '[article=full]' . \Kunena\Forum\Libraries\KunenaFactory::getConfig()->get('rules_cid', 1) . '[/article]');
 					$params->set('body_format', 'bbcode');
 					$params->set('do', null);
 					break;
 				case 'help' :
-					$params->set('body', '[article=full]' . \Joomla\Component\Kunena\Libraries\KunenaFactory::getConfig()->get('help_cid', 1) . '[/article]');
+					$params->set('body', '[article=full]' . \Kunena\Forum\Libraries\KunenaFactory::getConfig()->get('help_cid', 1) . '[/article]');
 					$params->set('body_format', 'bbcode');
 					$params->set('do', null);
 					break;
@@ -159,7 +158,7 @@ abstract class Legacy
 	 *
 	 * @since   Kunena 6.0
 	 *
-	 * @throws  Exception
+	 * @throws  \Exception
 	 */
 	public static function convert($uri, $showstart = 1)
 	{
@@ -174,7 +173,7 @@ abstract class Legacy
 			return;
 		}
 
-		KUNENA_PROFILER ? \Joomla\Component\Kunena\Libraries\KunenaProfiler::instance()->start('function ' . __CLASS__ . '::' . __FUNCTION__ . '()') : null;
+		KUNENA_PROFILER ? \Kunena\Forum\Libraries\KunenaProfiler::instance()->start('function ' . __CLASS__ . '::' . __FUNCTION__ . '()') : null;
 
 		if ($uri->getVar('func'))
 		{
@@ -184,7 +183,7 @@ abstract class Legacy
 
 		if (!isset(self::$functions[$uri->getVar('view')]))
 		{
-			KUNENA_PROFILER ? \Joomla\Component\Kunena\Libraries\KunenaProfiler::instance()->stop('function ' . __CLASS__ . '::' . __FUNCTION__ . '()') : null;
+			KUNENA_PROFILER ? \Kunena\Forum\Libraries\KunenaProfiler::instance()->stop('function ' . __CLASS__ . '::' . __FUNCTION__ . '()') : null;
 
 			return;
 		}
@@ -199,7 +198,7 @@ abstract class Legacy
 		}
 
 		$app     = Factory::getApplication();
-		$config  = \Joomla\Component\Kunena\Libraries\KunenaFactory::getConfig();
+		$config  = \Kunena\Forum\Libraries\KunenaFactory::getConfig();
 		$changed = false;
 
 		switch ($uri->getVar('view'))
@@ -320,7 +319,7 @@ abstract class Legacy
 
 				// Convert URI to have both id and mesid
 				$id      = $uri->getVar('id');
-				$message = \Joomla\Component\Kunena\Libraries\Forum\Message\Helper::get($id);
+				$message = \Kunena\Forum\Libraries\Forum\Message\Helper::get($id);
 				$mesid   = $uri->getVar('mesid');
 
 				if ($message->exists())
@@ -385,7 +384,7 @@ abstract class Legacy
 
 				// Convert URI to have both id and mesid
 				$id      = $uri->getVar('id');
-				$message = \Joomla\Component\Kunena\Libraries\Forum\Message\Helper::get($id);
+				$message = \Kunena\Forum\Libraries\Forum\Message\Helper::get($id);
 				$mesid   = null;
 
 				if ($message->exists())
@@ -473,7 +472,7 @@ abstract class Legacy
 				}
 
 				// Convert URI to have both id and mesid
-				$message = \Joomla\Component\Kunena\Libraries\Forum\Message\Helper::get($id);
+				$message = \Kunena\Forum\Libraries\Forum\Message\Helper::get($id);
 				$mesid   = null;
 
 				if ($message->exists())
@@ -719,7 +718,7 @@ abstract class Legacy
 					$uri->setVar('task', 'thankyou');
 					$uri->delVar('pid');
 
-					$message = \Joomla\Component\Kunena\Libraries\Forum\Message\Helper::get($id);
+					$message = \Kunena\Forum\Libraries\Forum\Message\Helper::get($id);
 
 					if ($message->exists())
 					{
@@ -765,7 +764,7 @@ abstract class Legacy
 			Log::add("Legacy URI {$legacy->toString(['path', 'query'])} was converted to {$uri->toString(['path', 'query'])}", Log::DEBUG, 'kunena');
 		}
 
-		KUNENA_PROFILER ? \Joomla\Component\Kunena\Libraries\KunenaProfiler::instance()->stop('function ' . __CLASS__ . '::' . __FUNCTION__ . '()') : null;
+		KUNENA_PROFILER ? \Kunena\Forum\Libraries\KunenaProfiler::instance()->stop('function ' . __CLASS__ . '::' . __FUNCTION__ . '()') : null;
 
 		return $changed;
 	}

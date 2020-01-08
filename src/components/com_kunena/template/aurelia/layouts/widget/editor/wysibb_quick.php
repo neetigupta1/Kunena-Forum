@@ -10,7 +10,7 @@
  * @link            https://www.kunena.org
  **/
 
-namespace Joomla\Component\Kunena\Site;
+namespace Kunena\Forum\Site;
 
 defined('_JEXEC') or die();
 
@@ -88,7 +88,7 @@ Text::script('COM_KUNENA_WYSIBB_EDITOR_SM7');
 Text::script('COM_KUNENA_WYSIBB_EDITOR_SM8');
 Text::script('COM_KUNENA_WYSIBB_EDITOR_SM9');
 
-$this->ktemplate  = \Joomla\Component\Kunena\Libraries\KunenaFactory::getTemplate();
+$this->ktemplate  = \Kunena\Forum\Libraries\KunenaFactory::getTemplate();
 $templatesettings = $this->ktemplate->params;
 $settings         = $templatesettings->get('wysibb');
 ?>

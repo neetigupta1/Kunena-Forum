@@ -10,11 +10,10 @@
  * @link          https://www.kunena.org
  **/
 
-namespace Joomla\Component\Kunena\Libraries\Log;
+namespace Kunena\Forum\Libraries\Log;
 
 defined('_JEXEC') or die();
 
-use Exception;
 use Joomla\CMS\Date\Date;
 use Joomla\CMS\Factory;
 use function defined;
@@ -36,32 +35,32 @@ class Entry
 	 * @param   mixed                $type       type
 	 * @param   mixed                $operation  operation
 	 * @param   mixed                $data       data
-	 * @param  \Joomla\Component\Kunena\Libraries\Forum\Category\Category  $category   category
-	 * @param   KunenaForumTopic     $topic      topic
-	 * @param   KunenaUser           $user       user
+	 * @param  \Kunena\Forum\Libraries\Forum\Category\Category  $category   category
+	 * @param   \Kunena\Forum\Libraries\Forum\Topic\Topic     $topic      topic
+	 * @param   \Kunena\Forum\Libraries\User\KunenaUser           $user       user
 	 *
 	 * @since   Kunena 5.0
 	 *
-	 * @throws  Exception
+	 * @throws  \Exception
 	 */
 	public function __construct(
 		$type,
 		$operation,
 		$data,
-		KunenaForumCategory $category = null,
-		KunenaForumTopic $topic = null,
-		KunenaUser $user = null
+		\Kunena\Forum\Libraries\Forum\Category\Category $category = null,
+		\Kunena\Forum\Libraries\Forum\Topic\Topic $topic = null,
+		\Kunena\Forum\Libraries\User\KunenaUser $user = null
 	)
 	{
 		$now = new Date;
 
 		$this->data = [
 			'type'        => (int) $type,
-			'user_id'     => \Joomla\Component\Kunena\Libraries\User\Helper::getMyself()->userid,
+			'user_id'     => \Kunena\Forum\Libraries\User\Helper::getMyself()->userid,
 			'category_id' => $category ? $category->id : 0,
 			'topic_id'    => $topic ? $topic->id : 0,
 			'target_user' => $user ? $user->userid : 0,
-			'ip'          => Factory::getApplication()->isClient('site') && \Joomla\Component\Kunena\Libraries\User\Helper::getUserIp() !== null ? \Joomla\Component\Kunena\Libraries\User\Helper::getUserIp() : '',
+			'ip'          => Factory::getApplication()->isClient('site') && \Kunena\Forum\Libraries\User\Helper::getUserIp() !== null ? \Kunena\Forum\Libraries\User\Helper::getUserIp() : '',
 			'time'        => $now->toUnix(),
 			'operation'   => $operation,
 			'data'        => json_encode($data),

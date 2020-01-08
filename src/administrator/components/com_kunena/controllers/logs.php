@@ -10,7 +10,7 @@
  * @link            https://www.kunena.org
  **/
 
-namespace Joomla\Component\Kunena\Administrator;
+namespace Kunena\Forum\Administrator\Controllers;
 
 defined('_JEXEC') or die();
 
@@ -18,8 +18,10 @@ use Exception;
 use Joomla\CMS\Date\Date;
 use Joomla\CMS\Factory;
 use Joomla\CMS\Language\Text;
-use Joomla\CMS\Session\Session;
 use Joomla\CMS\Router\Route;
+use Joomla\CMS\Session\Session;
+use Kunena\Forum\Libraries\Controller;
+use Kunena\Forum\Libraries\Route\KunenaRoute;
 use function defined;
 
 /**
@@ -27,7 +29,7 @@ use function defined;
  *
  * @since   Kunena 5.0
  */
-class KunenaAdminControllerLogs extends KunenaController
+class KunenaAdminControllerLogs extends Controller
 {
 	/**
 	 * @var     null|string
@@ -42,7 +44,7 @@ class KunenaAdminControllerLogs extends KunenaController
 	 *
 	 * @since   Kunena 5.0
 	 *
-	 * @throws  Exception
+	 * @throws  \Exception
 	 */
 	public function __construct($config = [])
 	{
@@ -69,7 +71,7 @@ class KunenaAdminControllerLogs extends KunenaController
 	 *
 	 * @since   Kunena 5.0
 	 *
-	 * @throws  Exception
+	 * @throws  \Exception
 	 * @throws  null
 	 */
 	public function clean()
@@ -77,7 +79,7 @@ class KunenaAdminControllerLogs extends KunenaController
 		if (!Session::checkToken('post'))
 		{
 			$this->app->enqueueMessage(Text::_('COM_KUNENA_ERROR_TOKEN'), 'error');
-			$this->setRedirect(\Joomla\Component\Kunena\Libraries\Route\KunenaRoute::_($this->baseurl, false));
+			$this->setRedirect(KunenaRoute::_($this->baseurl, false));
 
 			return;
 		}
@@ -99,7 +101,7 @@ class KunenaAdminControllerLogs extends KunenaController
 		catch (Exception $e)
 		{
 			$this->app->enqueueMessage($e->getMessage(), 'error');
-			$this->setRedirect(\Joomla\Component\Kunena\Libraries\Route\KunenaRoute::_($this->baseurl, false));
+			$this->setRedirect(KunenaRoute::_($this->baseurl, false));
 
 			return false;
 		}
@@ -109,12 +111,12 @@ class KunenaAdminControllerLogs extends KunenaController
 		if ($num_rows > 0)
 		{
 			$this->app->enqueueMessage(Text::sprintf('COM_KUNENA_LOG_ENTRIES_DELETED', $num_rows));
-			$this->setRedirect(\Joomla\Component\Kunena\Libraries\Route\KunenaRoute::_($this->baseurl, false));
+			$this->setRedirect(KunenaRoute::_($this->baseurl, false));
 		}
 		else
 		{
 			$this->app->enqueueMessage(Text::_('COM_KUNENA_LOG_ENTRIES_DELETED_NOTHING_TO_DELETE'));
-			$this->setRedirect(\Joomla\Component\Kunena\Libraries\Route\KunenaRoute::_($this->baseurl, false));
+			$this->setRedirect(KunenaRoute::_($this->baseurl, false));
 		}
 	}
 
@@ -125,11 +127,11 @@ class KunenaAdminControllerLogs extends KunenaController
 	 *
 	 * @since   Kunena 5.0
 	 *
-	 * @throws  Exception
+	 * @throws  \Exception
 	 * @throws  null
 	 */
 	public function cancel()
 	{
-		$this->app->redirect(\Joomla\Component\Kunena\Libraries\Route\KunenaRoute::_($this->baseurl, false));
+		$this->app->redirect(KunenaRoute::_($this->baseurl, false));
 	}
 }

@@ -10,7 +10,7 @@
  * @link            https://www.kunena.org
 **/
 
-namespace Joomla\Component\Kunena\Site;
+namespace Kunena\Forum\Site;
 
 defined('_JEXEC') or die();
 
@@ -52,7 +52,7 @@ $this->addStyleSheet('rating.css');
 		</div>
 	<?php endif; ?>
 
-	<form action="<?php echo \Joomla\Component\Kunena\Libraries\Route\KunenaRoute::_('index.php?option=com_kunena'); ?>" method="post" id="categoryactions">
+	<form action="<?php echo \Kunena\Forum\Libraries\Route\KunenaRoute::_('index.php?option=com_kunena'); ?>" method="post" id="categoryactions">
 		<input type="hidden" name="view" value="topics"/>
 		<?php echo HTMLHelper::_('form.token'); ?>
 		<div>
@@ -65,13 +65,13 @@ $this->addStyleSheet('rating.css');
 			</ul>
 		</div>
 		<?php if ($this->topics) : ?>
-		<table class="table<?php echo \Joomla\Component\Kunena\Libraries\Template\Template::getInstance()->borderless(); ?>">
+		<table class="table<?php echo \Kunena\Forum\Libraries\Template\Template::getInstance()->borderless(); ?>">
 			<thead>
 			<tr>
 				<th scope="col" class="center hidden-xs-down">
 					<a id="forumtop"> </a>
 					<a href="#forumbottom" rel="nofollow">
-						<?php echo KunenaIcons::arrowdown(); ?>
+						<?php echo \Kunena\Forum\Libraries\Icons\Icons::arrowdown(); ?>
 					</a>
 				</th>
 				<th scope="col" class="hidden-xs-down"><?php echo Text::_('COM_KUNENA_GEN_SUBJECT'); ?></th>
@@ -87,7 +87,7 @@ $this->addStyleSheet('rating.css');
 			</thead>
 			<tbody class="category-item">
 			<?php
-			/** @var KunenaForumTopic $previous */
+			/** @var \Kunena\Forum\Libraries\Forum\Topic\Topic $previous */
 			$previous = null;
 
 			foreach ($this->topics as $position => $topic)
@@ -109,7 +109,7 @@ $this->addStyleSheet('rating.css');
 						<a id="forumbottom"> </a>
 						<a href="#forumtop" rel="nofollow">
 							<span class="dropdown-divider"></span>
-							<?php echo KunenaIcons::arrowup(); ?>
+							<?php echo \Kunena\Forum\Libraries\Icons\Icons::arrowup(); ?>
 						</a>
 					</th>
 					<th scope="col" class="hidden-xs-down">

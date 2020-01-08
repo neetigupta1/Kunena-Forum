@@ -10,11 +10,13 @@
  * @link          https://www.kunena.org
  **/
 
-namespace Joomla\Component\Kunena\Libraries\Attachment;
+namespace Kunena\Forum\Libraries\Attachment;
 
 defined('_JEXEC') or die();
 
 use Exception;
+use Kunena\Forum\Libraries\Collection\Collection;
+use Kunena\Forum\Libraries\Error;
 use RuntimeException;
 use function defined;
 
@@ -23,7 +25,7 @@ use function defined;
  *
  * @since   Kunena 5.0
  */
-class Finder extends KunenaDatabaseObjectFinder
+class Finder extends \Kunena\Forum\Libraries\Database\Object\Finder
 {
 	/**
 	 * @var     string
@@ -34,7 +36,7 @@ class Finder extends KunenaDatabaseObjectFinder
 	/**
 	 * Get log entries.
 	 *
-	 * @return  array|KunenaCollection
+	 * @return  array|Collection
 	 *
 	 * @since   Kunena 6.0
 	 *
@@ -59,7 +61,7 @@ class Finder extends KunenaDatabaseObjectFinder
 		}
 		catch (RuntimeException $e)
 		{
-			\Joomla\Component\Kunena\Libraries\Error::displayDatabaseError($e);
+			Error::displayDatabaseError($e);
 		}
 
 		$instances = [];
@@ -68,11 +70,11 @@ class Finder extends KunenaDatabaseObjectFinder
 		{
 			foreach ($results as $id => $result)
 			{
-				$instances[$id] = \Joomla\Component\Kunena\Libraries\Attachment\Helper::get($id);
+				$instances[$id] = Helper::get($id);
 			}
 		}
 
-		$instances = new KunenaCollection($instances);
+		$instances = new Collection($instances);
 
 		unset($results);
 

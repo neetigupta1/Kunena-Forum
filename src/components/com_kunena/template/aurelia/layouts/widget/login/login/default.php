@@ -10,7 +10,7 @@
  * @link        https://www.kunena.org
 **/
 
-namespace Joomla\Component\Kunena\Site;
+namespace Kunena\Forum\Site;
 
 defined('_JEXEC') or die();
 use function defined;
@@ -22,14 +22,14 @@ use function defined;
 	?>
 	<div class="d-none d-lg-block">
 		<?php
-		if (\Joomla\Component\Kunena\Libraries\KunenaFactory::getTemplate()->params->get('displayDropdownMenu'))
+		if (\Kunena\Forum\Libraries\KunenaFactory::getTemplate()->params->get('displayDropdownMenu'))
 	:
 			?>
 			<?php echo $this->setLayout('desktop'); ?>
 		<?php endif; ?>
 	</div>
 	<div class="d-md-none">
-		<?php if (\Joomla\Component\Kunena\Libraries\KunenaFactory::getTemplate()->params->get('displayDropdownMenu'))
+		<?php if (\Kunena\Forum\Libraries\KunenaFactory::getTemplate()->params->get('displayDropdownMenu'))
 	:
 			?>
 			<?php echo $this->setLayout('mobile'); ?>

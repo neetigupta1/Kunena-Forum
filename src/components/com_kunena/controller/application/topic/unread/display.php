@@ -10,16 +10,14 @@
  * @link            https://www.kunena.org
  **/
 
-namespace Joomla\Component\Kunena\Site\Controller\Application\Topic\Unread;
+namespace Kunena\Forum\Site\Controller\Application\Topic\Unread;
 
 defined('_JEXEC') or die();
 
-use Exception;
 use Joomla\CMS\Factory;
-
-use Joomla\Component\Kunena\Libraries\ControllerApplicationDisplay;
-use Joomla\Component\Kunena\Libraries\Forum\Message\Helper;
-use Joomla\Component\Kunena\Libraries\KunenaFactory;
+use Kunena\Forum\Libraries\Controller\KunenaControllerDisplay;
+use Kunena\Forum\Libraries\Forum\Message\Helper;
+use Kunena\Forum\Libraries\KunenaFactory;
 use function defined;
 
 /**
@@ -27,7 +25,7 @@ use function defined;
  *
  * @since   Kunena 4.0
  */
-class ComponentKunenaControllerApplicationTopicUnreadDisplay extends ControllerApplicationDisplay
+class ComponentKunenaControllerApplicationTopicUnreadDisplay extends KunenaControllerDisplay
 {
 	/**
 	 * Return true if layout exists.
@@ -36,7 +34,7 @@ class ComponentKunenaControllerApplicationTopicUnreadDisplay extends ControllerA
 	 *
 	 * @since   Kunena 6.0
 	 *
-	 * @throws  Exception
+	 * @throws  \Exception
 	 */
 	public function exists()
 	{
@@ -57,13 +55,13 @@ class ComponentKunenaControllerApplicationTopicUnreadDisplay extends ControllerA
 		$catid = $this->input->getInt('catid', 0);
 		$id    = $this->input->getInt('id', 0);
 
-		$category = \Joomla\Component\Kunena\Libraries\Forum\Category\Helper::get($catid);
+		$category = \Kunena\Forum\Libraries\Forum\Category\Helper::get($catid);
 		$category->tryAuthorise();
 
-		$topic = \Joomla\Component\Kunena\Libraries\Forum\Topic\Helper::get($id);
+		$topic = \Kunena\Forum\Libraries\Forum\Topic\Helper::get($id);
 		$topic->tryAuthorise();
 
-		\Joomla\Component\Kunena\Libraries\Forum\Topic\Helper::fetchNewStatus([$topic->id => $topic]);
+		\Kunena\Forum\Libraries\Forum\Topic\Helper::fetchNewStatus([$topic->id => $topic]);
 		$message = Helper::get($topic->lastread ? $topic->lastread : $topic->last_post_id);
 		$message->tryAuthorise();
 
@@ -81,7 +79,7 @@ class ComponentKunenaControllerApplicationTopicUnreadDisplay extends ControllerA
 	 *
 	 * @since   Kunena 6.0
 	 *
-	 * @throws  Exception
+	 * @throws  \Exception
 	 */
 	protected function prepareDocument()
 	{

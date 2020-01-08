@@ -10,7 +10,7 @@
  * @link            https://www.kunena.org
  **/
 
-namespace Joomla\Component\Kunena\Site\Controller\Application\Home;
+namespace Kunena\Forum\Site\Controller\Application\Home;
 
 defined('_JEXEC') or die();
 
@@ -18,11 +18,13 @@ use Exception;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\Layout\BaseLayout;
 use Joomla\CMS\Menu\AbstractMenu;
-use Joomla\Component\Kunena\Libraries\Controller\Application\Display;
-use Joomla\Component\Kunena\Libraries\Error;
-use Joomla\Component\Kunena\Libraries\Exception\Authorise;
-use Joomla\Component\Kunena\Libraries\KunenaFactory;
-use Joomla\Component\Kunena\Libraries\Route\KunenaRoute;
+use Kunena\Forum\Libraries\Controller\KunenaControllerApplication;
+use Kunena\Forum\Libraries\Controller\KunenaControllerDisplay;
+use Kunena\Forum\Libraries\Error;
+use Kunena\Forum\Libraries\Exception\Authorise;
+use Kunena\Forum\Libraries\KunenaFactory;
+use Kunena\Forum\Libraries\Layout\Layout;
+use Kunena\Forum\Libraries\Route\KunenaRoute;
 use function defined;
 
 /**
@@ -30,7 +32,7 @@ use function defined;
  *
  * @since   Kunena 4.0
  */
-class ComponentKunenaControllerApplicationHomeDefaultDisplay extends Display
+class ComponentKunenaControllerApplicationHomeDefaultDisplay extends KunenaControllerDisplay
 {
 	/**
 	 * Return true if layout exists.
@@ -49,7 +51,7 @@ class ComponentKunenaControllerApplicationHomeDefaultDisplay extends Display
 	/**
 	 * Redirect to home page.
 	 *
-	 * @return  BaseLayout|KunenaLayout
+	 * @return  BaseLayout|Layout
 	 *
 	 * @since   Kunena 6.0
 	 *

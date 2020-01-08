@@ -10,7 +10,7 @@
  * @link            https://www.kunena.org
  **/
 
-namespace Joomla\Component\Kunena\Site;
+namespace Kunena\Forum\Site;
 
 defined('_JEXEC') or die();
 
@@ -33,7 +33,7 @@ $size     = $this->size;
 
 		<?php echo Text::_('COM_KUNENA_FILENAME'); ?>
 		<a href="<?php echo $url; ?>" title="<?php echo $this->escape($filename); ?>">
-			<?php echo $this->escape(\Joomla\Component\Kunena\Libraries\Attachment\Helper::shortenFilename($filename)); ?>
+			<?php echo $this->escape(\Kunena\Forum\Libraries\Attachment\Helper::shortenFilename($filename)); ?>
 		</a>
 
 		<br/>

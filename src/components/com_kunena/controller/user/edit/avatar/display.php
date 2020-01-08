@@ -10,19 +10,20 @@
  * @link            https://www.kunena.org
  **/
 
-namespace Joomla\Component\Kunena\Site\Controller\User\Edit\Avatar;
+namespace Kunena\Forum\Site\Controller\User\Edit\Avatar;
 
 defined('_JEXEC') or die();
 
 use Exception;
-use Joomla\Component\Kunena\Libraries\Exception\Authorise;
-use Joomla\Component\Kunena\Libraries\Integration\Avatar;
-use Joomla\Component\Kunena\Libraries\KunenaFactory;
-use Joomla\String\StringHelper;
+use Joomla\CMS\Filesystem\Folder;
 use Joomla\CMS\HTML\HTMLHelper;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\Uri\Uri;
-use Joomla\CMS\Filesystem\Folder;
+use Kunena\Forum\Libraries\Exception\Authorise;
+use Kunena\Forum\Libraries\Integration\Avatar;
+use Kunena\Forum\Libraries\KunenaFactory;
+use Joomla\String\StringHelper;
+use Kunena\Forum\Libraries\Controller\KunenaControllerDisplay;
 use function defined;
 
 /**
@@ -30,7 +31,7 @@ use function defined;
  *
  * @since   Kunena 4.0
  */
-class ComponentKunenaControllerUserEditAvatarDisplay extends ComponentKunenaControllerUserEditDisplay
+class ComponentKunenaControllerUserEditAvatarDisplay extends KunenaControllerDisplay
 {
 	/**
 	 * @var     string

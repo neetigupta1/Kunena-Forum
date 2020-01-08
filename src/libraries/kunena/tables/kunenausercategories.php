@@ -10,13 +10,14 @@
  * @link          https://www.kunena.org
  **/
 
-namespace Joomla\Component\Kunena\Libraries\Tables;
+namespace Kunena\Forum\Libraries\Tables;
 
 defined('_JEXEC') or die();
 
 use Exception;
 use Joomla\CMS\Language\Text;
 use Joomla\Database\DatabaseDriver;
+use Kunena\Forum\Libraries\Forum\Category\Helper;
 use RuntimeException;
 use function defined;
 
@@ -28,7 +29,7 @@ require_once __DIR__ . '/kunena.php';
  *
  * @since   Kunena 6.0
  */
-class TableKunenaUserCategories extends KunenaTable
+class KunenaUserCategories extends KunenaTable
 {
 	/**
 	 * @var     null
@@ -85,14 +86,14 @@ class TableKunenaUserCategories extends KunenaTable
 	 */
 	public function check()
 	{
-		$user = \Joomla\Component\Kunena\Libraries\User\Helper::get($this->user_id);
+		$user = \Kunena\Forum\Libraries\User\Helper::get($this->user_id);
 
 		if (!$user->exists())
 		{
 			throw new RuntimeException(Text::sprintf('COM_KUNENA_LIB_TABLE_USERCATEGORIES_ERROR_USER_INVALID', (int) $user->userid));
 		}
 
-		$category = \Joomla\Component\Kunena\Libraries\Forum\Category\Helper::get($this->category_id);
+		$category = Helper::get($this->category_id);
 
 		if ($this->category_id && !$category->exists())
 		{

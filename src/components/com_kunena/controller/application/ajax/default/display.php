@@ -10,7 +10,7 @@
  * @link            https://www.kunena.org
  **/
 
-namespace Joomla\Component\Kunena\Site\Controller\Application\Ajax;
+namespace Kunena\Forum\Site\Controller\Application\Ajax;
 
 defined('_JEXEC') or die();
 
@@ -18,11 +18,13 @@ use Exception;
 use Joomla\CMS\Factory;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\Session\Session;
-use Joomla\Component\Kunena\Libraries\Controller\Application\Display;
-use Joomla\Component\Kunena\Libraries\Exception\Authorise;
-use Joomla\Component\Kunena\Libraries\KunenaFactory;
-use Joomla\Component\Kunena\Libraries\Request\Request;
-use Joomla\Component\Kunena\Libraries\User\Helper;
+use Kunena\Forum\Libraries\Config;
+use Kunena\Forum\Libraries\Controller\KunenaControllerDisplay;
+use Kunena\Forum\Libraries\Exception\Authorise;
+use Kunena\Forum\Libraries\KunenaFactory;
+use Kunena\Forum\Libraries\Request\Request;
+use Kunena\Forum\Libraries\Response\ResponseJson;
+use Kunena\Forum\Libraries\User\Helper;
 use function defined;
 
 
@@ -31,7 +33,7 @@ use function defined;
  *
  * @since   Kunena 4.0
  */
-class ComponentKunenaControllerApplicationAjaxDefaultDisplay extends Display
+class ComponentKunenaControllerApplicationAjaxDefaultDisplay extends KunenaControllerDisplay
 {
 	/**
 	 * Return true if layout exists.
@@ -171,7 +173,7 @@ class ComponentKunenaControllerApplicationAjaxDefaultDisplay extends Display
 		header('Content-type: application/json', true);
 
 		// Create JSON response.
-		$response = new KunenaResponseJson($content);
+		$response = new ResponseJson($content);
 
 		// In case of an error we want to set HTTP error code.
 		if (!$response->success)

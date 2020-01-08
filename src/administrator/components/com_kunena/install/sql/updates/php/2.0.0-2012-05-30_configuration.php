@@ -9,11 +9,10 @@
  * @link           https://www.kunena.org
  **/
 
-namespace Joomla\Component\Kunena\Administrator;
+namespace Kunena\Forum\Administrator\Updates\Php;
 
 defined('_JEXEC') or die();
 
-use Exception;
 use Joomla\CMS\Language\Text;
 use function defined;
 
@@ -25,11 +24,11 @@ use function defined;
  *
  * @since   Kunena 6.0
  *
- * @throws  Exception
+ * @throws  \Exception
  */
 function kunena_200_2012_05_30_configuration($parent)
 {
-	$config = \Joomla\Component\Kunena\Libraries\KunenaFactory::getConfig();
+	$config = \Kunena\Forum\Libraries\KunenaFactory::getConfig();
 
 	// Unset deprecated configuration options which have been migrated earlier
 	unset($config->board_ofset);

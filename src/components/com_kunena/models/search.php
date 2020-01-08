@@ -10,24 +10,22 @@
  * @link            https://www.kunena.org
  **/
 
-namespace Joomla\Component\Kunena\Site\Models;
+namespace Kunena\Forum\Site\Models;
 
 defined('_JEXEC') or die();
 
 use DateInterval;
 use DateTime;
-use Exception;
 use Joomla\CMS\Factory;
 use Joomla\CMS\Language\Text;
-use Joomla\Component\Kunena\Libraries\Forum\Message\Helper;
-use Joomla\Component\Kunena\Libraries\KunenaFactory;
-use Joomla\Component\Kunena\Libraries\Model;
-use Joomla\Component\Kunena\Libraries\Route\KunenaRoute;
-use Joomla\Component\Kunena\Libraries\Forum\Topic;
-use Joomla\Component\Kunena\Libraries\User;
+use Kunena\Forum\Libraries\Forum\Message\Helper;
+use Kunena\Forum\Libraries\Forum\Topic;
+use Kunena\Forum\Libraries\KunenaFactory;
+use Kunena\Forum\Libraries\Model;
+use Kunena\Forum\Libraries\Route\KunenaRoute;
+use Kunena\Forum\Libraries\User;
 use Joomla\String\StringHelper;
 use Joomla\Utilities\ArrayHelper;
-
 use function defined;
 
 /**
@@ -60,7 +58,7 @@ class KunenaModelSearch extends Model
 	 *
 	 * @since   Kunena 6.0
 	 *
-	 * @throws  Exception
+	 * @throws  \Exception
 	 */
 	protected function populateState()
 	{
@@ -179,7 +177,7 @@ class KunenaModelSearch extends Model
 	 *
 	 * @since   Kunena 6.0
 	 *
-	 * @throws  Exception
+	 * @throws  \Exception
 	 */
 	protected function buildWhere()
 	{
@@ -330,7 +328,7 @@ class KunenaModelSearch extends Model
 	 * @since   Kunena 6.0
 	 *
 	 * @throws  null
-	 * @throws  Exception
+	 * @throws  \Exception
 	 */
 	public function getTotal()
 	{
@@ -389,7 +387,7 @@ class KunenaModelSearch extends Model
 	 * @since   Kunena 6.0
 	 *
 	 * @throws  null
-	 * @throws  Exception
+	 * @throws  \Exception
 	 */
 	public function getResults()
 	{
@@ -524,7 +522,7 @@ class KunenaModelSearch extends Model
 	 *
 	 * @since   Kunena 6.0
 	 *
-	 * @throws  Exception
+	 * @throws  \Exception
 	 * @throws  null
 	 */
 	public function getSearchURL($view, $searchword = '', $limitstart = 0, $limit = 0, $params = '', $xhtml = true)

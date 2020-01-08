@@ -10,14 +10,13 @@
  * @link          https://www.kunena.org
  **/
 
-namespace Joomla\Component\Kunena\Libraries\Forum;
+namespace Kunena\Forum\Libraries\Forum;
 
 defined('_JEXEC') or die();
 
-use Exception;
 use Joomla\CMS\Factory;
-use Joomla\Database\QueryInterface;
 use Joomla\Database\Exception\ExecutionFailureException;
+use Joomla\Database\QueryInterface;
 use function defined;
 
 /**
@@ -75,7 +74,7 @@ abstract class Diagnostics
 	 *
 	 * @since   Kunena 6.0
 	 *
-	 * @throws  Exception
+	 * @throws  \Exception
 	 */
 	public static function count($function)
 	{
@@ -95,7 +94,7 @@ abstract class Diagnostics
 			}
 			catch (ExecutionFailureException $e)
 			{
-				\Joomla\Component\Kunena\Libraries\Error::displayDatabaseError($e);
+				\Kunena\Forum\Libraries\Error::displayDatabaseError($e);
 			}
 		}
 
@@ -109,7 +108,7 @@ abstract class Diagnostics
 	 *
 	 * @since   Kunena 6.0
 	 *
-	 * @throws  Exception
+	 * @throws  \Exception
 	 */
 	public static function getItems($function)
 	{
@@ -135,7 +134,7 @@ abstract class Diagnostics
 			}
 			catch (ExecutionFailureException $e)
 			{
-				\Joomla\Component\Kunena\Libraries\Error::displayDatabaseError($e);
+				\Kunena\Forum\Libraries\Error::displayDatabaseError($e);
 			}
 		}
 
@@ -149,7 +148,7 @@ abstract class Diagnostics
 	 *
 	 * @since   Kunena 6.0
 	 *
-	 * @throws  Exception
+	 * @throws  \Exception
 	 */
 	public static function fix($function)
 	{
@@ -167,7 +166,7 @@ abstract class Diagnostics
 			}
 			catch (ExecutionFailureException $e)
 			{
-				\Joomla\Component\Kunena\Libraries\Error::displayDatabaseError($e);
+				\Kunena\Forum\Libraries\Error::displayDatabaseError($e);
 			}
 		}
 
@@ -221,7 +220,7 @@ abstract class Diagnostics
 	 *
 	 * @since   Kunena 6.0
 	 *
-	 * @throws  Exception
+	 * @throws  \Exception
 	 */
 	public static function delete($function)
 	{
@@ -239,7 +238,7 @@ abstract class Diagnostics
 			}
 			catch (ExecutionFailureException $e)
 			{
-				\Joomla\Component\Kunena\Libraries\Error::displayDatabaseError($e);
+				\Kunena\Forum\Libraries\Error::displayDatabaseError($e);
 			}
 		}
 
@@ -395,7 +394,7 @@ abstract class Diagnostics
 	 *
 	 * @since   Kunena 6.0
 	 *
-	 * @throws  Exception
+	 * @throws  \Exception
 	 */
 	protected static function notice_categoryWrongAlias()
 	{

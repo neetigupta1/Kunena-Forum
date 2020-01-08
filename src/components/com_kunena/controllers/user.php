@@ -10,33 +10,38 @@
  * @link            https://www.kunena.org
  **/
 
-namespace Joomla\Component\Kunena\Site\Controllers;
+namespace Kunena\Forum\Site\Controllers;
 
 defined('_JEXEC') or die();
 
 use Exception;
+use Joomla\CMS\Component\ComponentHelper;
 use Joomla\CMS\Date\Date;
 use Joomla\CMS\Factory;
+use Joomla\CMS\Filesystem\File;
+use Joomla\CMS\Filesystem\Folder;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\MVC\Controller\BaseController;
 use Joomla\CMS\Plugin\PluginHelper;
 use Joomla\CMS\Router\Route;
-use Joomla\CMS\Uri\Uri;
 use Joomla\CMS\Session\Session;
-use Joomla\CMS\User\User;
-use Joomla\Component\Kunena\Libraries\Controller;
-use Joomla\Component\Kunena\Libraries\Exception\Authorise;
-use Joomla\Component\Kunena\Libraries\Forum\Forum;
-use Joomla\Component\Kunena\Libraries\Integration\Profile;
-use Joomla\Component\Kunena\Libraries\KunenaFactory;
-use Joomla\Component\Kunena\Libraries\Login;
-use Joomla\Component\Kunena\Libraries\Route\KunenaRoute;
-use Joomla\Component\Kunena\Libraries\User\Helper;
-use Joomla\Utilities\ArrayHelper;
-use Joomla\CMS\Component\ComponentHelper;
 use Joomla\CMS\Table\Table;
-use Joomla\CMS\Filesystem\File;
-use Joomla\CMS\Filesystem\Folder;
+use Joomla\CMS\Uri\Uri;
+use Joomla\CMS\User\User;
+use Kunena\Forum\Libraries\Config;
+use Kunena\Forum\Libraries\Controller;
+use Kunena\Forum\Libraries\Exception\Authorise;
+use Kunena\Forum\Libraries\Forum\KunenaForum;
+use Kunena\Forum\Libraries\Integration\Profile;
+use Kunena\Forum\Libraries\KunenaFactory;
+use Kunena\Forum\Libraries\Log\Log;
+use Kunena\Forum\Libraries\Login;
+use Kunena\Forum\Libraries\Path\KunenaPath;
+use Kunena\Forum\Libraries\Route\KunenaRoute;
+use Kunena\Forum\Libraries\User\Ban;
+use Kunena\Forum\Libraries\User\Helper;
+use Kunena\Forum\Libraries\User\KunenaUser;
+use Joomla\Utilities\ArrayHelper;
 use RuntimeException;
 use stdClass;
 use function defined;
@@ -391,10 +396,10 @@ class KunenaControllerUser extends Controller
 
 		if ($this->config->log_moderation)
 		{
-			$log = KunenaLog::LOG_USER_EDIT;
+			$log = Log::LOG_USER_EDIT;
 
-			KunenaLog::log(
-				KunenaLog::TYPE_ACTION,
+			Log::log(
+				Log::TYPE_ACTION,
 				$log,
 				[
 					'edited_by_moderator' => $edited_by_moderator,
@@ -717,7 +722,7 @@ class KunenaControllerUser extends Controller
 			return;
 		}
 
-		$ban = KunenaUserBan::getInstanceByUserid($user->userid, true);
+		$ban = Ban::getInstanceByUserid($user->userid, true);
 
 		try
 		{
@@ -775,12 +780,12 @@ class KunenaControllerUser extends Controller
 			{
 				$this->app->logout($user->userid);
 				$message = Text::_('COM_KUNENA_USER_BLOCKED_DONE');
-				$log     = KunenaLog::LOG_USER_BLOCK;
+				$log     = Log::LOG_USER_BLOCK;
 			}
 			else
 			{
 				$message = Text::_('COM_KUNENA_USER_UNBLOCKED_DONE');
-				$log     = KunenaLog::LOG_USER_UNBLOCK;
+				$log     = Log::LOG_USER_UNBLOCK;
 			}
 		}
 		else
@@ -788,12 +793,12 @@ class KunenaControllerUser extends Controller
 			if ($ban->isEnabled())
 			{
 				$message = Text::_('COM_KUNENA_USER_BANNED_DONE');
-				$log     = KunenaLog::LOG_USER_BAN;
+				$log     = Log::LOG_USER_BAN;
 			}
 			else
 			{
 				$message = Text::_('COM_KUNENA_USER_UNBANNED_DONE');
-				$log     = KunenaLog::LOG_USER_UNBAN;
+				$log     = Log::LOG_USER_UNBAN;
 			}
 		}
 
@@ -810,8 +815,8 @@ class KunenaControllerUser extends Controller
 		{
 			if ($this->config->log_moderation)
 			{
-				KunenaLog::log(
-					KunenaLog::TYPE_MODERATION,
+				Log::log(
+					Log::TYPE_MODERATION,
 					$log,
 					[
 						'expiration'     => $delban ? 'NOW' : $expiration,
@@ -884,17 +889,17 @@ class KunenaControllerUser extends Controller
 		{
 			$params = ['starttime' => '-1', 'nolimit' => -1, 'user' => $user->userid, 'mode' => 'unapproved'];
 
-			list($total, $messages) = \Joomla\Component\Kunena\Libraries\Forum\Message\Helper::getLatestMessages(false, 0, 0, $params);
+			list($total, $messages) = \Kunena\Forum\Libraries\Forum\Message\Helper::getLatestMessages(false, 0, 0, $params);
 
 			$parmas_recent = ['starttime' => '-1', 'nolimit' => -1, 'user' => $user->userid];
 
-			list($total, $messages_recent) = \Joomla\Component\Kunena\Libraries\Forum\Message\Helper::getLatestMessages(false, 0, 0, $parmas_recent);
+			list($total, $messages_recent) = \Kunena\Forum\Libraries\Forum\Message\Helper::getLatestMessages(false, 0, 0, $parmas_recent);
 
 			$messages = array_merge($messages_recent, $messages);
 
 			foreach ($messages as $mes)
 			{
-				$mes->publish(Forum::DELETED);
+				$mes->publish(KunenaForum::DELETED);
 			}
 
 			$this->app->enqueueMessage(Text::_('COM_KUNENA_MODERATE_DELETED_BAD_MESSAGES'));
@@ -904,11 +909,11 @@ class KunenaControllerUser extends Controller
 		{
 			$params = ['starttime' => '-1', 'nolimit' => -1, 'user' => $user->userid, 'mode' => 'unapproved'];
 
-			list($total, $messages) = \Joomla\Component\Kunena\Libraries\Forum\Message\Helper::getLatestMessages(false, 0, 0, $params);
+			list($total, $messages) = \Kunena\Forum\Libraries\Forum\Message\Helper::getLatestMessages(false, 0, 0, $params);
 
 			$parmas_recent = ['starttime' => '-1', 'nolimit' => -1, 'user' => $user->userid];
 
-			list($total, $messages_recent) = \Joomla\Component\Kunena\Libraries\Forum\Message\Helper::getLatestMessages(false, 0, 0, $parmas_recent);
+			list($total, $messages_recent) = \Kunena\Forum\Libraries\Forum\Message\Helper::getLatestMessages(false, 0, 0, $parmas_recent);
 
 			$messages = array_merge($messages_recent, $messages);
 
@@ -1119,7 +1124,7 @@ class KunenaControllerUser extends Controller
 			throw new RuntimeException(Text::_('Bad Request'), 400);
 		}
 
-		$upload = KunenaUpload::getInstance();
+		$upload = \Kunena\Forum\Libraries\Upload\Upload::getInstance();
 		$user   = KunenaFactory::getUser($this->app->input->getInt('userid', 0));
 
 		// We are converting all exceptions into JSON.
@@ -1153,7 +1158,7 @@ class KunenaControllerUser extends Controller
 
 				KunenaPath::setPermissions(KPATH_MEDIA . '/avatars/users/avatar' . $user->userid . '.' . $extension);
 
-				// Save in the table KunenaUser
+				// Save in the table \Kunena\Forum\Libraries\User\KunenaUser
 				$kuser            = $user;
 				$kuser->avatar    = 'users/avatar' . $user->userid . '.' . $extension;
 				$kuser->timestamp = round(microtime(true));
@@ -1248,7 +1253,7 @@ class KunenaControllerUser extends Controller
 		{
 			$this->deleteOldAvatars();
 
-			// Save in the table KunenaUser
+			// Save in the table \Kunena\Forum\Libraries\User\KunenaUser
 			$kuser->avatar = '';
 			$success       = $kuser->save();
 		}
@@ -1355,7 +1360,7 @@ class KunenaControllerUser extends Controller
 
 			foreach ($cid as $id)
 			{
-				$attachment  = \Joomla\Component\Kunena\Libraries\Attachment\Helper::get($id);
+				$attachment  = \Kunena\Forum\Libraries\Attachment\Helper::get($id);
 				$message     = $attachment->getMessage();
 				$attachments = [$attachment->id, 1];
 				$attach      = [];

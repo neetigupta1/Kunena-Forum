@@ -10,7 +10,7 @@
  * @link            https://www.kunena.org
 **/
 
-namespace Joomla\Component\Kunena\Site;
+namespace Kunena\Forum\Site;
 
 defined('_JEXEC') or die();
 
@@ -25,7 +25,7 @@ $this->addBreadcrumb(
 );
 $this->addBreadcrumb(
 	Text::_('COM_KUNENA_EDIT'),
-	\Joomla\Component\Kunena\Libraries\Route\KunenaRoute::normalize()
+	\Kunena\Forum\Libraries\Route\KunenaRoute::normalize()
 );
 
 echo $content;

@@ -10,7 +10,7 @@
  * @link            https://www.kunena.org
 **/
 
-namespace Joomla\Component\Kunena\Site;
+namespace Kunena\Forum\Site;
 
 defined('_JEXEC') or die();
 
@@ -26,7 +26,7 @@ $attachments = $this->attachments;
 	<?php echo $this->headerText; ?>
 </h3>
 
-<form action="<?php echo \Joomla\Component\Kunena\Libraries\Route\KunenaRoute::_('index.php?option=com_kunena&view=user'); ?>" method="post" id="adminForm"
+<form action="<?php echo \Kunena\Forum\Libraries\Route\KunenaRoute::_('index.php?option=com_kunena&view=user'); ?>" method="post" id="adminForm"
 	  name="adminForm">
 	<input type="hidden" name="task" value="delfile"/>
 	<input type="hidden" name="boxchecked" value="0"/>
@@ -38,7 +38,7 @@ $attachments = $this->attachments;
 			<th class="col-md-1 center">
 				#
 			</th>
-			<?php if ($this->me->userid == $this->profile->userid || \Joomla\Component\Kunena\Libraries\User\Helper::getMyself()->isModerator())
+			<?php if ($this->me->userid == $this->profile->userid || \Kunena\Forum\Libraries\User\Helper::getMyself()->isModerator())
 :
 				?>
 				<th class="col-md-1 center">
@@ -63,7 +63,7 @@ $attachments = $this->attachments;
 			<th class="col-md-1 center">
 				<?php echo Text::_('COM_KUNENA_PREVIEW'); ?>
 			</th>
-			<?php if ($this->me->userid == $this->profile->userid || \Joomla\Component\Kunena\Libraries\User\Helper::getMyself()->isModerator())
+			<?php if ($this->me->userid == $this->profile->userid || \Kunena\Forum\Libraries\User\Helper::getMyself()->isModerator())
 :
 				?>
 				<th class="col-md-1 center">
@@ -104,7 +104,7 @@ $attachments = $this->attachments;
 							</td>
 						<?php endif; ?>
 						<td class="center">
-							<?php echo $attachment->isImage() ? KunenaIcons::picture() : KunenaIcons::file(); ?>
+							<?php echo $attachment->isImage() ? \Kunena\Forum\Libraries\Icons\Icons::picture() : \Kunena\Forum\Libraries\Icons\Icons::file(); ?>
 						</td>
 						<td>
 							<?php echo $attachment->getShortName(10, 5); ?>
@@ -123,7 +123,7 @@ $attachments = $this->attachments;
 							?>
 							<td class="center">
 								<a href="#modaldelete<?php echo $i ?>" role="button" class="btn center"
-								   data-toggle="modal"><?php echo KunenaIcons::delete(); ?></a>
+								   data-toggle="modal"><?php echo \Kunena\Forum\Libraries\Icons\Icons::delete(); ?></a>
 
 								<div class="modal fade" id="modaldelete<?php echo $i ?>" tabindex="-1" role="dialog"
 									 aria-labelledby="modaldelete<?php echo $i ?>Label">
@@ -162,7 +162,7 @@ $attachments = $this->attachments;
 		->set('pagination', $this->pagination->setDisplayedPages(4))
 		->set('display', true); ?>
 	</div>
-	<?php if ($attachments && $this->me->userid == $this->profile->userid || $attachments && \Joomla\Component\Kunena\Libraries\User\Helper::getMyself()->isModerator())
+	<?php if ($attachments && $this->me->userid == $this->profile->userid || $attachments && \Kunena\Forum\Libraries\User\Helper::getMyself()->isModerator())
 	:
 		?>
 		<a href="#modaldeleteall" class="btn btn-outline-primary border float-right"

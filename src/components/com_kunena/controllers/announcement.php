@@ -10,7 +10,7 @@
  * @link            https://www.kunena.org
  **/
 
-namespace Joomla\Component\Kunena\Site\Controllers;
+namespace Kunena\Forum\Site\Controllers;
 
 defined('_JEXEC') or die();
 
@@ -19,8 +19,8 @@ use Joomla\CMS\Date\Date;
 use Joomla\CMS\Factory;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\Session\Session;
-use Joomla\Component\Kunena\Libraries\Controller;
-use Joomla\Component\Kunena\Libraries\Forum\Announcement\Helper;
+use Kunena\Forum\Libraries\Controller;
+use Kunena\Forum\Libraries\Forum\Announcement\Helper;
 use Joomla\Utilities\ArrayHelper;
 use function defined;
 
@@ -36,7 +36,7 @@ class KunenaControllerAnnouncement extends Controller
 	 *
 	 * @since   Kunena 6.0
 	 *
-	 * @throws  Exception
+	 * @throws  \Exception
 	 * @throws  null
 	 */
 	public function none()
@@ -50,7 +50,7 @@ class KunenaControllerAnnouncement extends Controller
 	 *
 	 * @since   Kunena 6.0
 	 *
-	 * @throws  Exception
+	 * @throws  \Exception
 	 * @throws  null
 	 */
 	public function publish()
@@ -103,7 +103,7 @@ class KunenaControllerAnnouncement extends Controller
 			{
 				if ($this->config->log_moderation)
 				{
-					KunenaLog::log(KunenaLog::TYPE_MODERATION, KunenaLog::LOG_ANNOUNCEMENT_PUBLISH, ['id' => $announcement->id]);
+					\Kunena\Forum\Libraries\Log\Log::log(\Kunena\Forum\Libraries\Log\Log::TYPE_MODERATION, \Kunena\Forum\Libraries\Log\Log::LOG_ANNOUNCEMENT_PUBLISH, ['id' => $announcement->id]);
 				}
 
 				$this->app->enqueueMessage(Text::sprintf('COM_KUNENA_ANN_SUCCESS_PUBLISH', $this->escape($announcement->title)));
@@ -118,7 +118,7 @@ class KunenaControllerAnnouncement extends Controller
 	 *
 	 * @since   Kunena 6.0
 	 *
-	 * @throws  Exception
+	 * @throws  \Exception
 	 * @throws  null
 	 */
 	public function unpublish()
@@ -171,7 +171,7 @@ class KunenaControllerAnnouncement extends Controller
 			{
 				if ($this->config->log_moderation)
 				{
-					KunenaLog::log(KunenaLog::TYPE_MODERATION, KunenaLog::LOG_ANNOUNCEMENT_UNPUBLISH, ['id' => $announcement->id]);
+					\Kunena\Forum\Libraries\Log\Log::log(\Kunena\Forum\Libraries\Log\Log::TYPE_MODERATION, \Kunena\Forum\Libraries\Log\Log::LOG_ANNOUNCEMENT_UNPUBLISH, ['id' => $announcement->id]);
 				}
 
 				$this->app->enqueueMessage(Text::sprintf('COM_KUNENA_ANN_SUCCESS_UNPUBLISH', $this->escape($announcement->title)));
@@ -186,7 +186,7 @@ class KunenaControllerAnnouncement extends Controller
 	 *
 	 * @since   Kunena 6.0
 	 *
-	 * @throws  Exception
+	 * @throws  \Exception
 	 * @throws  null
 	 */
 	public function edit()
@@ -204,7 +204,7 @@ class KunenaControllerAnnouncement extends Controller
 	 *
 	 * @since   Kunena 6.0
 	 *
-	 * @throws  Exception
+	 * @throws  \Exception
 	 * @throws  null
 	 */
 	public function delete()
@@ -249,7 +249,7 @@ class KunenaControllerAnnouncement extends Controller
 			{
 				if ($this->config->log_moderation)
 				{
-					KunenaLog::log(KunenaLog::TYPE_MODERATION, KunenaLog::LOG_ANNOUNCEMENT_DELETE, ['id' => $announcement->id]);
+					\Kunena\Forum\Libraries\Log\Log::log(\Kunena\Forum\Libraries\Log\Log::TYPE_MODERATION, \Kunena\Forum\Libraries\Log\Log::LOG_ANNOUNCEMENT_DELETE, ['id' => $announcement->id]);
 				}
 
 				$this->app->enqueueMessage(Text::_('COM_KUNENA_ANN_DELETED'));
@@ -264,7 +264,7 @@ class KunenaControllerAnnouncement extends Controller
 	 *
 	 * @since   Kunena 6.0
 	 *
-	 * @throws  Exception
+	 * @throws  \Exception
 	 * @throws  null
 	 */
 	public function save()
@@ -334,7 +334,7 @@ class KunenaControllerAnnouncement extends Controller
 
 		if ($this->config->log_moderation)
 		{
-			KunenaLog::log(KunenaLog::TYPE_MODERATION, $id ? KunenaLog::LOG_ANNOUNCEMENT_EDIT : KunenaLog::LOG_ANNOUNCEMENT_CREATE, ['id' => $announcement->id]);
+			\Kunena\Forum\Libraries\Log\Log::log(\Kunena\Forum\Libraries\Log\Log::TYPE_MODERATION, $id ? \Kunena\Forum\Libraries\Log\Log::LOG_ANNOUNCEMENT_EDIT : \Kunena\Forum\Libraries\Log\Log::LOG_ANNOUNCEMENT_CREATE, ['id' => $announcement->id]);
 		}
 
 		$this->app->enqueueMessage(Text::_($id ? 'COM_KUNENA_ANN_SUCCESS_EDIT' : 'COM_KUNENA_ANN_SUCCESS_ADD'));

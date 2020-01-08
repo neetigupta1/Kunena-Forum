@@ -10,11 +10,10 @@
  * @link          https://www.kunena.org
  **/
 
-namespace Joomla\Component\Kunena\Libraries\Module;
+namespace Kunena\Forum\Libraries\Module;
 
 defined('_JEXEC') or die();
 
-use Exception;
 use Joomla\CMS\Factory;
 use Joomla\CMS\Uri\Uri;
 use Joomla\Registry\Registry;
@@ -54,7 +53,7 @@ abstract class Module
 	 *
 	 * @since   Kunena 6.0
 	 *
-	 * @throws  Exception
+	 * @throws  \Exception
 	 */
 	public function __construct($module, $params)
 	{
@@ -70,7 +69,7 @@ abstract class Module
 	 *
 	 * @since   Kunena 6.0
 	 *
-	 * @throws  Exception
+	 * @throws  \Exception
 	 */
 	final public function display()
 	{
@@ -99,7 +98,7 @@ abstract class Module
 		}
 
 		// Initialize Kunena.
-		\Joomla\Component\Kunena\Libraries\Forum\Forum::setup();
+		\Kunena\Forum\Libraries\Forum\KunenaForum::setup();
 
 		// Display module.
 		$this->_display();

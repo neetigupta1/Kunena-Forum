@@ -9,11 +9,10 @@
  * @link           https://www.kunena.org
  **/
 
-namespace Joomla\Component\Kunena\Administrator;
+namespace Kunena\Forum\Administrator\Updates\Php;
 
 defined('_JEXEC') or die();
 
-use Exception;
 use Joomla\CMS\Factory;
 use Joomla\CMS\Language\Text;
 use function defined;
@@ -26,13 +25,13 @@ use function defined;
  *
  * @since   Kunena 6.0
  *
- * @throws  Exception
+ * @throws  \Exception
  */
 function kunena_200_2012_04_13_menu($parent)
 {
 	$app    = Factory::getApplication();
-	$legacy = KunenaMenuFix::getLegacy();
-	$errors = KunenaMenuFix::fixLegacy();
+	$legacy = \Kunena\Forum\Libraries\Menu\Fix::getLegacy();
+	$errors = \Kunena\Forum\Libraries\Menu\Fix::fixLegacy();
 
 	if ($errors)
 	{

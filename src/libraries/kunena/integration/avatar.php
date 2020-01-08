@@ -10,11 +10,10 @@
  * @link          https://www.kunena.org
  **/
 
-namespace Joomla\Component\Kunena\Libraries\Integration;
+namespace Kunena\Forum\Libraries\Integration;
 
 defined('_JEXEC') or die();
 
-use Exception;
 use Joomla\CMS\Factory;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\Plugin\PluginHelper;
@@ -23,7 +22,7 @@ use StdClass;
 use function defined;
 
 /**
- * Class \Joomla\Component\Kunena\Libraries\Integration\Avatar
+ * Class \Kunena\Forum\Libraries\Integration\Avatar
  *
  * @since   Kunena 6.0
  */
@@ -56,11 +55,11 @@ class Avatar
 	/**
 	 * @param   null  $integration  integration
 	 *
-	 * @return  boolean|\Joomla\Component\Kunena\Libraries\Integration\Avatar
+	 * @return  boolean|\Kunena\Forum\Libraries\Integration\Avatar
 	 *
 	 * @since   Kunena 6.0
 	 *
-	 * @throws  Exception
+	 * @throws  \Exception
 	 */
 	public static function getInstance($integration = null)
 	{
@@ -83,7 +82,7 @@ class Avatar
 
 			if (!self::$instance)
 			{
-				self::$instance = new \Joomla\Component\Kunena\Libraries\Integration\Avatar;
+				self::$instance = new \Kunena\Forum\Libraries\Integration\Avatar;
 			}
 		}
 
@@ -121,7 +120,7 @@ class Avatar
 	 *
 	 * @since   Kunena 6.0
 	 *
-	 * @throws  Exception
+	 * @throws  \Exception
 	 */
 	public function getLink($user, $class = 'kavatar', $sizex = 90, $sizey = 90)
 	{
@@ -142,14 +141,14 @@ class Avatar
 			$class = ' class="' . $class . '"';
 		}
 
-		$ktemplate = \Joomla\Component\Kunena\Libraries\KunenaFactory::getTemplate();
+		$ktemplate = \Kunena\Forum\Libraries\KunenaFactory::getTemplate();
 		$topicicontype = $ktemplate->params->get('topicicontype');
 
 		if ($topicicontype == 'B4')
 		{
 			if ($avatar == Uri::root() . 'media/kunena/core/svg/person.svg')
 			{
-				$link = '<span ' . $class . ' alt="' . Text::sprintf('COM_KUNENA_LIB_AVATAR_TITLE', $user->getName()) . '">' . KunenaSvgIcons::loadsvg('person') . '</span>';
+				$link = '<span ' . $class . ' alt="' . Text::sprintf('COM_KUNENA_LIB_AVATAR_TITLE', $user->getName()) . '">' . \Kunena\Forum\Libraries\Icons\SvgIcons::loadsvg('person') . '</span>';
 			}
 			else
 			{
@@ -172,7 +171,7 @@ class Avatar
 	 *
 	 * @since   Kunena 6.0
 	 *
-	 * @throws  Exception
+	 * @throws  \Exception
 	 */
 	public function getSize($sizex = 90, $sizey = 90)
 	{
@@ -182,7 +181,7 @@ class Avatar
 
 		if (!intval($sizex))
 		{
-			$template = \Joomla\Component\Kunena\Libraries\KunenaFactory::getTemplate();
+			$template = \Kunena\Forum\Libraries\KunenaFactory::getTemplate();
 			$name     = ucfirst(strtolower($sizex));
 			$size->x  = intval($template->params->get('avatarSizeX' . $name, 90));
 			$size->y  = intval($template->params->get('avatarSizeY' . $name, 90));
@@ -200,11 +199,11 @@ class Avatar
 	 *
 	 * @since   Kunena 6.0
 	 *
-	 * @throws  Exception
+	 * @throws  \Exception
 	 */
 	public function getURL($user, $sizex = 90, $sizey = 90)
 	{
-		KUNENA_PROFILER ? \Joomla\Component\Kunena\Libraries\KunenaProfiler::instance()->start('function ' . __CLASS__ . '::' . __FUNCTION__ . '()') : null;
+		KUNENA_PROFILER ? \Kunena\Forum\Libraries\KunenaProfiler::instance()->start('function ' . __CLASS__ . '::' . __FUNCTION__ . '()') : null;
 		$size = $this->getSize($sizex, $sizey);
 
 		if (!$size->x || !$size->y)
@@ -213,7 +212,7 @@ class Avatar
 		}
 
 		$result = $this->_getURL($user, $size->x, $size->y);
-		KUNENA_PROFILER ? \Joomla\Component\Kunena\Libraries\KunenaProfiler::instance()->stop('function ' . __CLASS__ . '::' . __FUNCTION__ . '()') : null;
+		KUNENA_PROFILER ? \Kunena\Forum\Libraries\KunenaProfiler::instance()->stop('function ' . __CLASS__ . '::' . __FUNCTION__ . '()') : null;
 
 		return $result;
 	}

@@ -10,17 +10,17 @@
  * @link            https://www.kunena.org
  **/
 
-namespace Joomla\Component\Kunena\Site\Controller\Announement\Kunenalist;
+namespace Kunena\Forum\Site\Controller\Announement\Kunenalist;
 
 defined('_JEXEC') or die();
 
 use Exception;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\MVC\Controller\BaseController;
-use Joomla\Component\Kunena\Libraries\Controller\Display;
-use Joomla\Component\Kunena\Libraries\Forum\Announcement\Helper;
-use Joomla\Component\Kunena\Libraries\Pagination\Pagination;
-use Joomla\Component\Kunena\Libraries\Route\KunenaRoute;
+use Kunena\Forum\Libraries\Controller\KunenaControllerDisplay;
+use Kunena\Forum\Libraries\Forum\Announcement\Helper;
+use Kunena\Forum\Libraries\Pagination\Pagination;
+use Kunena\Forum\Libraries\Route\KunenaRoute;
 use function defined;
 
 /**
@@ -28,7 +28,7 @@ use function defined;
  *
  * @since   Kunena 4.0
  */
-class ComponentKunenaControllerAnnouncementListDisplay extends Display
+class ComponentKunenaControllerAnnouncementListDisplay extends KunenaControllerDisplay
 {
 	/**
 	 * @var     string
@@ -86,7 +86,7 @@ class ComponentKunenaControllerAnnouncementListDisplay extends Display
 			$limitstart = 0;
 		}
 
-		$moderator           = \Joomla\Component\Kunena\Libraries\User\Helper::getMyself()->isModerator();
+		$moderator           = \Kunena\Forum\Libraries\User\Helper::getMyself()->isModerator();
 		$this->pagination    = new Pagination(Helper::getCount(!$moderator), $limitstart, $limit);
 		$this->announcements = Helper::getAnnouncements(
 			$this->pagination->limitstart,

@@ -10,12 +10,12 @@
  * @link            https://www.kunena.org
  **/
 
-namespace Joomla\Component\Kunena\Site\Layout\Category;
+namespace Kunena\Forum\Site\Layout\Category;
 
 defined('_JEXEC') or die;
 
-use Joomla\Component\Kunena\Libraries\Layout\Layout;
-use Joomla\Component\Kunena\Libraries\Pagination\Pagination;
+use Kunena\Forum\Libraries\Layout\Layout;
+use Kunena\Forum\Libraries\Pagination\Pagination;
 use function defined;
 
 /**
@@ -42,7 +42,7 @@ class KunenaLayoutCategoryManage extends Layout
 	 *
 	 * @param   integer  $maxpages  Maximum that are allowed for pagination
 	 *
-	 * @return  KunenaPagination
+	 * @return  Pagination
 	 *
 	 * @since   Kunena 5.1
 	 */

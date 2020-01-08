@@ -10,18 +10,18 @@
  * @link            https://www.kunena.org
  **/
 
-namespace Joomla\Component\Kunena\Plugin\Quickicon\Kunena;
+namespace Kunena\Forum\Plugin\Quickicon\Kunena;
 
 defined('_JEXEC') or die();
 
 use Exception;
 use Joomla\CMS\Application\CMSApplication;
-use Joomla\CMS\Language\Text;
 use Joomla\CMS\Factory;
+use Joomla\CMS\Language\Text;
 use Joomla\CMS\Plugin\CMSPlugin;
 use Joomla\CMS\Router\Route;
-use Joomla\Component\Kunena\Libraries\Forum\Forum;
-use Joomla\Component\Kunena\Libraries\KunenaFactory;
+use Kunena\Forum\Libraries\Forum\KunenaForum;
+use Kunena\Forum\Libraries\KunenaFactory;
 use stdClass;
 use function defined;
 
@@ -30,7 +30,7 @@ use function defined;
  *
  * @since  Kunena 6.0
  */
-class Kunena extends CMSPlugin
+class plgQuickiconKunena extends CMSPlugin
 {
 	/**
 	 * Application object.
@@ -67,7 +67,7 @@ class Kunena extends CMSPlugin
 
 		$updateInfo = null;
 
-		if (Forum::installed() && Factory::getUser()->authorise('core.manage', 'com_installer'))
+		if (KunenaForum::installed() && Factory::getUser()->authorise('core.manage', 'com_installer'))
 		{
 			$updateSite = 'https://update.kunena.org/%';
 			$db         = Factory::getDbo();
@@ -114,7 +114,7 @@ class Kunena extends CMSPlugin
 
 		$useIcons = version_compare(JVERSION, '3.0', '>');
 
-		if (!Forum::installed())
+		if (!KunenaForum::installed())
 		{
 			$icon = 'fa fa-warning';
 
@@ -141,7 +141,7 @@ class Kunena extends CMSPlugin
 			$icon = 'kunena/icons/icon-48-kupdate-alert-white.png';
 			$text = Text::_('COM_KUNENA') . '<br />' . Text::_('PLG_QUICKICON_KUNENA_UPDATE_DISABLED');
 		}
-		elseif (!empty($updateInfo->version) && version_compare(Forum::version(), $updateInfo->version, '<'))
+		elseif (!empty($updateInfo->version) && version_compare(KunenaForum::version(), $updateInfo->version, '<'))
 		{
 			// Has updates
 			$icon = 'fa fa-download';

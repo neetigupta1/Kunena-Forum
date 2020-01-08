@@ -10,18 +10,17 @@
  * @link            https://www.kunena.org
  **/
 
-namespace Joomla\Component\Kunena\Site\Controller\Widget\Login;
+namespace Kunena\Forum\Site\Controller\Widget\Login;
 
 defined('_JEXEC') or die();
 
-use Exception;
 use Joomla\CMS\Factory;
 use Joomla\CMS\Language\Text;
-use Joomla\Component\Kunena\Libraries\Controller\Display;
-use Joomla\Component\Kunena\Libraries\Forum\Announcement\Helper;
-use Joomla\Component\Kunena\Libraries\KunenaDate;
-use Joomla\Component\Kunena\Libraries\KunenaFactory;
-use Joomla\Component\Kunena\Libraries\Login;
+use Kunena\Forum\Libraries\Controller\KunenaControllerDisplay;
+use Kunena\Forum\Libraries\Forum\Announcement\Helper;
+use Kunena\Forum\Libraries\KunenaDate;
+use Kunena\Forum\Libraries\KunenaFactory;
+use Kunena\Forum\Libraries\Login;
 use Joomla\Registry\Registry;
 use function defined;
 
@@ -30,7 +29,7 @@ use function defined;
  *
  * @since   Kunena 4.0
  */
-class ComponentKunenaControllerWidgetLoginDisplay extends Display
+class ComponentKunenaControllerWidgetLoginDisplay extends KunenaControllerDisplay
 {
 	/**
 	 * @var     string
@@ -123,7 +122,7 @@ class ComponentKunenaControllerWidgetLoginDisplay extends Display
 	 *
 	 * @since   Kunena 6.0
 	 *
-	 * @throws  Exception
+	 * @throws  \Exception
 	 * @throws  null
 	 */
 	protected function before()
@@ -140,7 +139,7 @@ class ComponentKunenaControllerWidgetLoginDisplay extends Display
 			return false;
 		}
 
-		$this->me   = \Joomla\Component\Kunena\Libraries\User\Helper::getMyself();
+		$this->me   = \Kunena\Forum\Libraries\User\Helper::getMyself();
 		$this->name = ($this->me->exists() ? 'Widget/Login/Logout' : 'Widget/Login/Login');
 
 		$this->my = Factory::getApplication()->getIdentity();

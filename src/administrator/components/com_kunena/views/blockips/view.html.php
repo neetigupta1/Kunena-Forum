@@ -10,15 +10,15 @@
  * @link          https://www.kunena.org
  **/
 
-namespace Joomla\Component\Kunena\Administrator;
+namespace Kunena\Forum\Administrator\Views;
 
 defined('_JEXEC') or die();
 
-use Exception;
 use Joomla\CMS\Factory;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\Toolbar\Toolbar;
 use Joomla\CMS\Toolbar\ToolbarHelper;
+use Kunena\Forum\Libraries\View;
 use function defined;
 
 /**
@@ -26,7 +26,7 @@ use function defined;
  *
  * @since 5.1
  */
-class KunenaAdminViewBlockips extends \Joomla\Component\Kunena\Libraries\View
+class KunenaAdminViewBlockips extends View
 {
 	/**
 	 * @param   null  $tpl  tpl
@@ -35,7 +35,7 @@ class KunenaAdminViewBlockips extends \Joomla\Component\Kunena\Libraries\View
 	 *
 	 * @since   Kunena 6.0
 	 *
-	 * @throws  Exception
+	 * @throws  \Exception
 	 */
 	public function displayDefault($tpl = null)
 	{

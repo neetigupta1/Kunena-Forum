@@ -10,7 +10,7 @@
  * @link            https://www.kunena.org
 **/
 
-namespace Joomla\Component\Kunena\Site;
+namespace Kunena\Forum\Site;
 
 defined('_JEXEC') or die();
 
@@ -18,15 +18,15 @@ use Joomla\CMS\Language\Text;
 use function defined;
 
 $user            = $this->user;
-$this->ktemplate = \Joomla\Component\Kunena\Libraries\KunenaFactory::getTemplate();
+$this->ktemplate = \Kunena\Forum\Libraries\KunenaFactory::getTemplate();
 $avatar          = $user->getAvatarImage($this->ktemplate->params->get('avatarType'), 'post');
-$config          = Config::getInstance();
+$config          = \Kunena\Forum\Libraries\Config::getInstance();
 $show            = $config->showuserstats;
 
-$activityIntegration = \Joomla\Component\Kunena\Libraries\KunenaFactory::getActivityIntegration();
+$activityIntegration = \Kunena\Forum\Libraries\KunenaFactory::getActivityIntegration();
 $points              = $activityIntegration->getUserPoints($user->userid);
 $medals              = $activityIntegration->getUserMedals($user->userid);
-$optional_username   = \Joomla\Component\Kunena\Libraries\KunenaFactory::getTemplate()->params->get('optional_username');
+$optional_username   = \Kunena\Forum\Libraries\KunenaFactory::getTemplate()->params->get('optional_username');
 
 if ($show)
 {
@@ -112,8 +112,8 @@ if ($user->userid > 1)
 	?>
 	<div class="profile-expand center">
 		<span class="heading btn btn-outline-primary border btn-xs heading-less"
-			  style="display:none;"><?php echo KunenaIcons::arrowup(); ?><?php echo Text::_('COM_KUNENA_USER_PROFILE_BUTTON_LABEL_LESS') ?></span>
-		<span class="heading btn btn-outline-primary border btn-xs"><?php echo KunenaIcons::arrowdown(); ?><?php echo Text::_('COM_KUNENA_USER_PROFILE_BUTTON_LABEL_MORE') ?></span>
+			  style="display:none;"><?php echo \Kunena\Forum\Libraries\Icons\Icons::arrowup(); ?><?php echo Text::_('COM_KUNENA_USER_PROFILE_BUTTON_LABEL_LESS') ?></span>
+		<span class="heading btn btn-outline-primary border btn-xs"><?php echo \Kunena\Forum\Libraries\Icons\Icons::arrowdown(); ?><?php echo Text::_('COM_KUNENA_USER_PROFILE_BUTTON_LABEL_MORE') ?></span>
 		<div class="content" style="display:none;">
 			<ul>
 				<?php if ($user->posts >= 1)
@@ -188,7 +188,7 @@ if ($user->userid > 1)
 					</li>
 				<?php endif; ?>
 
-				<?php if (\Joomla\Component\Kunena\Libraries\KunenaFactory::getPrivateMessaging())
+				<?php if (\Kunena\Forum\Libraries\KunenaFactory::getPrivateMessaging())
 				:
 					?>
 					<li>

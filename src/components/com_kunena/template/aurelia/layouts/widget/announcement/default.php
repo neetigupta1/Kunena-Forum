@@ -10,7 +10,7 @@
  * @link            https://www.kunena.org
 **/
 
-namespace Joomla\Component\Kunena\Site;
+namespace Kunena\Forum\Site;
 
 defined('_JEXEC') or die();
 
@@ -26,7 +26,7 @@ use function defined;
 		</div>
 		<h5>
 			<a class="btn-link"
-			   href="<?php echo \Joomla\Component\Kunena\Libraries\Route\KunenaRoute::_('index.php?option=com_kunena&view=announcement&layout=list'); ?>"
+			   href="<?php echo \Kunena\Forum\Libraries\Route\KunenaRoute::_('index.php?option=com_kunena&view=announcement&layout=list'); ?>"
 			   title="<?php echo Text::_('COM_KUNENA_VIEW_COMMON_ANNOUNCE_LIST') ?>">
 				<?php echo $this->announcement->displayField('title'); ?>
 			</a>
@@ -46,7 +46,7 @@ use function defined;
 			?>
 			<div>
 				<a class="btn-link"
-				   href="<?php echo \Joomla\Component\Kunena\Libraries\Route\KunenaRoute::_('index.php?option=com_kunena&view=announcement&layout=default&id=' . $this->announcement->id); ?>"
+				   href="<?php echo \Kunena\Forum\Libraries\Route\KunenaRoute::_('index.php?option=com_kunena&view=announcement&layout=default&id=' . $this->announcement->id); ?>"
 				   title="<?php echo $this->announcement->displayField('title') ?>">
 					<?php echo Text::_('COM_KUNENA_ANN_READMORE'); ?>
 				</a>

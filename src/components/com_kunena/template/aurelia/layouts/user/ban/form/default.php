@@ -10,7 +10,7 @@
  * @link            https://www.kunena.org
 **/
 
-namespace Joomla\Component\Kunena\Site;
+namespace Kunena\Forum\Site;
 
 defined('_JEXEC') or die();
 
@@ -23,7 +23,7 @@ use function defined;
 	<?php echo $this->headerText; ?>
 </h3>
 
-<form action="<?php echo \Joomla\Component\Kunena\Libraries\Route\KunenaRoute::_('index.php?option=com_kunena&view=user'); ?>"
+<form action="<?php echo \Kunena\Forum\Libraries\Route\KunenaRoute::_('index.php?option=com_kunena&view=user'); ?>"
 	  id="kform-ban" name="kformban" method="post">
 	<input type="hidden" name="task" value="ban"/>
 	<input type="hidden" name="userid" value="<?php echo (int) $this->profile->userid; ?>"/>

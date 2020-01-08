@@ -10,11 +10,11 @@
  * @link            https://www.kunena.org
  **/
 
-namespace Joomla\Component\Kunena\Administrator;
+namespace Kunena\Forum\Administrator\Controllers;
 
 defined('_JEXEC') or die();
 
-use Exception;
+use Kunena\Forum\Libraries\Controller;
 use function defined;
 
 /**
@@ -22,7 +22,7 @@ use function defined;
  *
  * @since   Kunena 5.1
  */
-class KunenaAdminControllerIcons extends KunenaController
+class KunenaAdminControllerIcons extends Controller
 {
 	/**
 	 * @var     null|string
@@ -38,7 +38,7 @@ class KunenaAdminControllerIcons extends KunenaController
 	 *
 	 * @since   Kunena 5.1
 	 *
-	 * @throws  Exception
+	 * @throws  \Exception
 	 */
 	public function __construct($config = [])
 	{

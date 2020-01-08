@@ -10,13 +10,16 @@
  * @link            https://www.kunena.org
  **/
 
-namespace Joomla\Component\Kunena\Administrator;
+namespace Kunena\Forum\Administrator;
 
 defined('_JEXEC') or die();
 
 use Joomla\CMS\HTML\HTMLHelper;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\Session\Session;
+use Kunena\Forum\Administrator\Install\KunenaVersion;
+use Kunena\Forum\Libraries\Forum\Diagnostics;
+use Kunena\Forum\Libraries\Route\KunenaRoute;
 
 ?>
 
@@ -25,7 +28,7 @@ use Joomla\CMS\Session\Session;
 		<div id="j-main-container" class="col-md-12" role="main">
 			<div class="card card-block bg-faded p-2">
 
-				<form action="<?php echo \Joomla\Component\Kunena\Libraries\Route\KunenaRoute::_('administrator/index.php?option=com_kunena&view=tools') ?>"
+				<form action="<?php echo KunenaRoute::_('administrator/index.php?option=com_kunena&view=tools') ?>"
 					  method="post" id="adminForm"
 					  name="adminForm">
 					<input type="hidden" name="task" value="diagnostics"/>
@@ -36,8 +39,8 @@ use Joomla\CMS\Session\Session;
 				<?php
 				if (!empty($task))
 				:
-					$rows = KunenaForumDiagnostics::getItems($task);
-					$info = KunenaForumDiagnostics::getFieldInfo($task);
+					$rows = Diagnostics::getItems($task);
+					$info = Diagnostics::getFieldInfo($task);
 					$fields = array_keys((array) reset($rows));
 					?>
 
@@ -57,7 +60,7 @@ use Joomla\CMS\Session\Session;
 									<th><?php echo $this->escape($field) ?></th>
 								<?php endforeach ?>
 							</tr>
-							<?php foreach (KunenaForumDiagnostics::getItems($task) as $row)
+							<?php foreach (Diagnostics::getItems($task) as $row)
 							:
 								?>
 								<tr>
@@ -98,10 +101,10 @@ use Joomla\CMS\Session\Session;
 							<th><?php echo Text::_('COM_KUNENA_DIAGNOSTICS_LABEL_DIAGNOSTICS'); ?></th>
 						</tr>
 						</thead>
-						<?php foreach (KunenaForumDiagnostics::getList() as $item)
+						<?php foreach (Diagnostics::getList() as $item)
 						:
 							?>
-							<?php $count = KunenaForumDiagnostics::count($item) ?>
+							<?php $count = Diagnostics::count($item) ?>
 							<tr>
 								<td><?php echo $item ?></td>
 								<?php if ($count)
@@ -110,9 +113,9 @@ use Joomla\CMS\Session\Session;
 									<td style="color:red;"><?php echo Text::_('COM_KUNENA_DIAGNOSTICS_LABEL_TEST_FAILED') ?></td>
 									<td><?php echo Text::sprintf('COM_KUNENA_DIAGNOSTICS_LABEL_NUMBER_OF_ISSUES', "<b>{$count}</b>") ?></td>
 									<td>
-										<?php echo KunenaForumDiagnostics::canFix($item) ? '<a href="' . \Joomla\Component\Kunena\Libraries\Route\KunenaRoute::_("administrator/index.php?option=com_kunena&view=tools&task=diagnostics&fix={$item}&" . Session::getFormToken() . '=1') . '">' . Text::_('COM_KUNENA_DIAGNOSTICS_LABEL_FIX_ISSUES') . '</a>' : '' ?>
-										<?php echo KunenaForumDiagnostics::canDelete($item) ? '<a href="' . \Joomla\Component\Kunena\Libraries\Route\KunenaRoute::_("administrator/index.php?option=com_kunena&view=tools&task=diagnostics&delete={$item}&" . Session::getFormToken() . '=1') . '">' . Text::_('COM_KUNENA_DIAGNOSTICS_LABEL_DELETE_BROKEN_ITEMS') . '</a>' : '' ?>
-										<?php echo KunenaForumDiagnostics::canNotice($item) ? KunenaForumDiagnostics::canNotice($item) : '' ?></td>
+										<?php echo Diagnostics::canFix($item) ? '<a href="' . KunenaRoute::_("administrator/index.php?option=com_kunena&view=tools&task=diagnostics&fix={$item}&" . Session::getFormToken() . '=1') . '">' . Text::_('COM_KUNENA_DIAGNOSTICS_LABEL_FIX_ISSUES') . '</a>' : '' ?>
+										<?php echo Diagnostics::canDelete($item) ? '<a href="' . KunenaRoute::_("administrator/index.php?option=com_kunena&view=tools&task=diagnostics&delete={$item}&" . Session::getFormToken() . '=1') . '">' . Text::_('COM_KUNENA_DIAGNOSTICS_LABEL_DELETE_BROKEN_ITEMS') . '</a>' : '' ?>
+										<?php echo Diagnostics::canNotice($item) ? Diagnostics::canNotice($item) : '' ?></td>
 								<?php else
 
 								:

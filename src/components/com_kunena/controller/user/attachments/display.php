@@ -10,19 +10,21 @@
  * @link            https://www.kunena.org
  **/
 
-namespace Joomla\Component\Kunena\Site\Controller\User\Attachments;
+namespace Kunena\Forum\Site\Controller\User\Attachments;
 
 defined('_JEXEC') or die();
 
 use Exception;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\Uri\Uri;
-use Joomla\Component\Kunena\Libraries\Controller\Display;
-use Joomla\Component\Kunena\Libraries\Exception\Authorise;
-use Joomla\Component\Kunena\Libraries\Forum\Topic\Helper;
-use Joomla\Component\Kunena\Libraries\KunenaFactory;
-use Joomla\Component\Kunena\Libraries\Pagination\Pagination;
-use Joomla\Component\Kunena\Libraries\Route\KunenaRoute;
+use Kunena\Forum\Libraries\Attachment\Finder;
+use Kunena\Forum\Libraries\Controller\KunenaControllerDisplay;
+use Kunena\Forum\Libraries\Exception\Authorise;
+use Kunena\Forum\Libraries\Forum\Topic\Helper;
+use Kunena\Forum\Libraries\KunenaFactory;
+use Kunena\Forum\Libraries\Pagination\Pagination;
+use Kunena\Forum\Libraries\Route\KunenaRoute;
+use Kunena\Forum\Libraries\User\KunenaUser;
 use function defined;
 
 /**
@@ -30,7 +32,7 @@ use function defined;
  *
  * @since   Kunena 4.0
  */
-class ComponentKunenaControllerUserAttachmentsDisplay extends Display
+class ComponentKunenaControllerUserAttachmentsDisplay extends KunenaControllerDisplay
 {
 	/**
 	 * @var     string
@@ -65,7 +67,7 @@ class ComponentKunenaControllerUserAttachmentsDisplay extends Display
 	/**
 	 * Prepare user attachments list.
 	 *
-	 * @return  KunenaExceptionAuthorise|void
+	 * @return  Authorise|void
 	 *
 	 * @since   Kunena 6.0
 	 *
@@ -80,8 +82,8 @@ class ComponentKunenaControllerUserAttachmentsDisplay extends Display
 		$limit  = $this->input->getInt('limit', 30);
 
 		$this->template = KunenaFactory::getTemplate();
-		$this->me       = \Joomla\Component\Kunena\Libraries\User\Helper::getMyself();
-		$this->profile  = \Joomla\Component\Kunena\Libraries\User\Helper::get($userid);
+		$this->me       = \Kunena\Forum\Libraries\User\Helper::getMyself();
+		$this->profile  = \Kunena\Forum\Libraries\User\Helper::get($userid);
 		$this->moreUri  = null;
 
 		$this->embedded = $this->getOptions()->get('embedded', false);
@@ -92,7 +94,7 @@ class ComponentKunenaControllerUserAttachmentsDisplay extends Display
 			$this->moreUri->setVar('Itemid', KunenaRoute::getItemID($this->moreUri));
 		}
 
-		$finder = new KunenaAttachmentFinder;
+		$finder = new Finder;
 		$finder->where('userid', '=', $userid);
 
 		$this->total      = $finder->count();
@@ -122,7 +124,7 @@ class ComponentKunenaControllerUserAttachmentsDisplay extends Display
 			$messageIds[] = (int) $attachment->mesid;
 		}
 
-		$messages = \Joomla\Component\Kunena\Libraries\Forum\Message\Helper::getMessages($messageIds, 'none');
+		$messages = \Kunena\Forum\Libraries\Forum\Message\Helper::getMessages($messageIds, 'none');
 
 		// Pre-load topics.
 		$topicIds = [];

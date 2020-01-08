@@ -10,14 +10,16 @@
  * @link            https://www.kunena.org
  **/
 
-namespace Joomla\Component\Kunena\Administrator;
+namespace Kunena\Forum\Administrator\Models;
 
 defined('_JEXEC') or die();
 
-use Exception;
-use Joomla\CMS\HTML\HTMLHelper;
 use Joomla\CMS\Factory;
+use Joomla\CMS\HTML\HTMLHelper;
 use Joomla\CMS\Language\Text;
+use Kunena\Forum\Libraries\Access;
+use Kunena\Forum\Libraries\Model;
+use Kunena\Forum\Libraries\User\Helper;
 use RuntimeException;
 use function defined;
 
@@ -26,15 +28,15 @@ use function defined;
  *
  * @since  3.0
  */
-class KunenaAdminModelUser extends \Joomla\Component\Kunena\Libraries\Model
+class KunenaAdminModelUser extends Model
 {
 	/**
-	 * @return  array|KunenaForumTopic[]|void
+	 * @return  array|\Kunena\Forum\Libraries\Forum\Topic\Topic[]|void
 	 *
 	 * @since   Kunena 6.0
 	 *
 	 * @throws  null
-	 * @throws  Exception
+	 * @throws  \Exception
 	 */
 	public function getSubscriptions()
 	{
@@ -67,24 +69,24 @@ class KunenaAdminModelUser extends \Joomla\Component\Kunena\Libraries\Model
 				$topic_list[] = $sub->thread;
 			}
 
-			$topic_list = \Joomla\Component\Kunena\Libraries\Forum\Topic\Helper::getTopics($topic_list);
+			$topic_list = \Kunena\Forum\Libraries\Forum\Topic\Helper::getTopics($topic_list);
 		}
 
 		return $topic_list;
 	}
 
 	/**
-	 * @return  KunenaForumCategory[]
+	 * @return  \Kunena\Forum\Libraries\Forum\Category\Category[]
 	 *
 	 * @since   Kunena 6.0
 	 *
-	 * @throws  Exception
+	 * @throws  \Exception
 	 */
 	public function getCatsubcriptions()
 	{
 		$userid = $this->getState($this->getName() . '.id');
 
-		$subscatslist = \Joomla\Component\Kunena\Libraries\Forum\Category\Helper::getSubscriptions($userid);
+		$subscatslist = \Kunena\Forum\Libraries\Forum\Category\Helper::getSubscriptions($userid);
 
 		return $subscatslist;
 	}
@@ -94,7 +96,7 @@ class KunenaAdminModelUser extends \Joomla\Component\Kunena\Libraries\Model
 	 *
 	 * @since   Kunena 6.0
 	 *
-	 * @throws  Exception
+	 * @throws  \Exception
 	 */
 	public function getIPlist()
 	{
@@ -159,13 +161,13 @@ class KunenaAdminModelUser extends \Joomla\Component\Kunena\Libraries\Model
 	 *
 	 * @since   Kunena 6.0
 	 *
-	 * @throws  Exception
+	 * @throws  \Exception
 	 */
 	public function getListmodcats()
 	{
 		$user = $this->getUser();
 
-		$modCatList = array_keys(\Joomla\Component\Kunena\Libraries\Access::getInstance()->getModeratorStatus($user));
+		$modCatList = array_keys(Access::getInstance()->getModeratorStatus($user));
 
 		if (empty($modCatList))
 		{
@@ -188,17 +190,17 @@ class KunenaAdminModelUser extends \Joomla\Component\Kunena\Libraries\Model
 	}
 
 	/**
-	 * @return  KunenaUser
+	 * @return  \Kunena\Forum\Libraries\User\KunenaUser
 	 *
 	 * @since   Kunena 6.0
 	 *
-	 * @throws  Exception
+	 * @throws  \Exception
 	 */
 	public function getUser()
 	{
 		$userid = $this->getState($this->getName() . '.id');
 
-		$user = \Joomla\Component\Kunena\Libraries\User\Helper::get($userid);
+		$user = Helper::get($userid);
 
 		return $user;
 	}
@@ -208,7 +210,7 @@ class KunenaAdminModelUser extends \Joomla\Component\Kunena\Libraries\Model
 	 *
 	 * @since   Kunena 6.0
 	 *
-	 * @throws  Exception
+	 * @throws  \Exception
 	 */
 	public function getListuserranks()
 	{
@@ -261,7 +263,7 @@ class KunenaAdminModelUser extends \Joomla\Component\Kunena\Libraries\Model
 	 *
 	 * @since   Kunena 6.0
 	 *
-	 * @throws  Exception
+	 * @throws  \Exception
 	 */
 	public function getMoveuser()
 	{
@@ -302,7 +304,7 @@ class KunenaAdminModelUser extends \Joomla\Component\Kunena\Libraries\Model
 	 *
 	 * @since   Kunena 6.0
 	 *
-	 * @throws  Exception
+	 * @throws  \Exception
 	 */
 	protected function populateState()
 	{

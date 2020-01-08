@@ -10,7 +10,7 @@
  * @link            https://www.kunena.org
  **/
 
-namespace Joomla\Component\Kunena\Site;
+namespace Kunena\Forum\Site;
 
 defined('_JEXEC') or die();
 
@@ -26,7 +26,7 @@ $canLink = isset($this->canLink) ? $this->canLink : true;
 
 echo $this->subLayout('Widget/Lightbox');
 
-$config = Config::getInstance();
+$config = \Kunena\Forum\Libraries\Config::getInstance();
 
 $attributesLink = $config->lightbox ? ' data-fancybox="gallery"' : '';
 $width          = $size ? (int) $size . "px;" : 'auto ';

@@ -10,14 +10,15 @@
  * @link          https://www.kunena.org
  **/
 
-namespace Joomla\Component\Kunena\Administrator;
+namespace Kunena\Forum\Administrator\Views;
 
 defined('_JEXEC') or die();
 
-use Joomla\CMS\HTML\HTMLHelper;
 use Joomla\CMS\Factory;
+use Joomla\CMS\HTML\HTMLHelper;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\Toolbar\ToolbarHelper;
+use Kunena\Forum\Libraries\View;
 use ReflectionClass;
 use ReflectionException;
 use function defined;
@@ -27,7 +28,7 @@ use function defined;
  *
  * @since   Kunena 6.0
  */
-class KunenaAdminViewStatistics extends \Joomla\Component\Kunena\Libraries\View
+class KunenaAdminViewStatistics extends View
 {
 	/**
 	 * @param   null  $tpl  tpl

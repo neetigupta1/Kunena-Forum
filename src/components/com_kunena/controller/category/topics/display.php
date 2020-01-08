@@ -10,21 +10,25 @@
  * @link            https://www.kunena.org
  **/
 
-namespace Joomla\Component\Kunena\Site\Controller\Category\Topics;
+namespace Kunena\Forum\Site\Controller\Category\Topics;
 
 defined('_JEXEC') or die();
 
 use Exception;
 use Joomla\CMS\Factory;
-use Joomla\CMS\Language\Text;
-use Joomla\CMS\Uri\Uri;
-use Joomla\CMS\MVC\Controller\BaseController;
 use Joomla\CMS\Filesystem\File;
-use Joomla\Component\Kunena\Libraries\Access;
-use Joomla\Component\Kunena\Libraries\Controller\Display;
-use Joomla\Component\Kunena\Libraries\Forum\Message\Helper;
-use Joomla\Component\Kunena\Libraries\Pagination\Pagination;
-use Joomla\Component\Kunena\Libraries\Route\KunenaRoute;
+use Joomla\CMS\Language\Text;
+use Joomla\CMS\MVC\Controller\BaseController;
+use Joomla\CMS\Uri\Uri;
+use Kunena\Forum\Libraries\Access;
+use Kunena\Forum\Libraries\Controller\KunenaControllerDisplay;
+use Kunena\Forum\Libraries\Forum\Category\Category;
+use Kunena\Forum\Libraries\Forum\Message\Helper;
+use Kunena\Forum\Libraries\Forum\Topic\Topic;
+use Kunena\Forum\Libraries\Pagination\Pagination;
+use Kunena\Forum\Libraries\Route\KunenaRoute;
+use Kunena\Forum\Libraries\User\KunenaUser;
+use Kunena\Forum\Site\Models\KunenaModelCategory;
 use function defined;
 
 /**
@@ -32,7 +36,7 @@ use function defined;
  *
  * @since   Kunena 4.0
  */
-class ComponentKunenaControllerCategoryTopicsDisplay extends Display
+class ComponentKunenaControllerCategoryTopicsDisplay extends KunenaControllerDisplay
 {
 	/**
 	 * @var     string
@@ -47,7 +51,7 @@ class ComponentKunenaControllerCategoryTopicsDisplay extends Display
 	public $headerText;
 
 	/**
-	 * @var     KunenaForumCategory
+	 * @var     Category
 	 * @since   Kunena 6.0
 	 */
 	public $category;
@@ -59,13 +63,13 @@ class ComponentKunenaControllerCategoryTopicsDisplay extends Display
 	public $total;
 
 	/**
-	 * @var     KunenaForumTopic
+	 * @var     Topic
 	 * @since   Kunena 6.0
 	 */
 	public $topics;
 
 	/**
-	 * @var     KunenaPagination
+	 * @var     Pagination
 	 * @since   Kunena 6.0
 	 */
 	public $pagination;
@@ -92,7 +96,7 @@ class ComponentKunenaControllerCategoryTopicsDisplay extends Display
 		require_once KPATH_SITE . '/models/category.php';
 		$this->model = new KunenaModelCategory;
 
-		$this->me = \Joomla\Component\Kunena\Libraries\User\Helper::getMyself();
+		$this->me = \Kunena\Forum\Libraries\User\Helper::getMyself();
 
 		$catid      = $this->input->getInt('catid');
 		$limitstart = $this->input->getInt('limitstart', 0);
@@ -116,7 +120,7 @@ class ComponentKunenaControllerCategoryTopicsDisplay extends Display
 		// TODO:
 		$direction = 'DESC';
 
-		$this->category = \Joomla\Component\Kunena\Libraries\Forum\Category\Helper::get($catid);
+		$this->category = \Kunena\Forum\Libraries\Forum\Category\Helper::get($catid);
 		$this->category->tryAuthorise();
 
 		$this->headerText = $this->category->name;
@@ -150,7 +154,7 @@ class ComponentKunenaControllerCategoryTopicsDisplay extends Display
 				$params['orderby'] = 'tt.ordering DESC, tt.last_post_time ' . $direction;
 		}
 
-		list($this->total, $this->topics) = \Joomla\Component\Kunena\Libraries\Forum\Topic\Helper::getLatestTopics($catid, $limitstart, $limit, $params);
+		list($this->total, $this->topics) = \Kunena\Forum\Libraries\Forum\Topic\Helper::getLatestTopics($catid, $limitstart, $limit, $params);
 
 		if ($limitstart > 1 && !$this->topics)
 		{
@@ -175,11 +179,11 @@ class ComponentKunenaControllerCategoryTopicsDisplay extends Display
 			// Prefetch all users/avatars to avoid user by user queries during template iterations.
 			if (!empty($userlist))
 			{
-				\Joomla\Component\Kunena\Libraries\User\Helper::loadUsers($userlist);
+				\Kunena\Forum\Libraries\User\Helper::loadUsers($userlist);
 			}
 
-			\Joomla\Component\Kunena\Libraries\Forum\Topic\Helper::getUserTopics(array_keys($this->topics));
-			$lastreadlist = \Joomla\Component\Kunena\Libraries\Forum\Topic\Helper::fetchNewStatus($this->topics);
+			\Kunena\Forum\Libraries\Forum\Topic\Helper::getUserTopics(array_keys($this->topics));
+			$lastreadlist = \Kunena\Forum\Libraries\Forum\Topic\Helper::fetchNewStatus($this->topics);
 
 			// Fetch last / new post positions when user can see unapproved or deleted posts.
 			if ($lastreadlist || $this->me->isAdmin() || Access::getInstance()->getModeratorStatus())

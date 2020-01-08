@@ -10,13 +10,14 @@
  * @link            https://www.kunena.org
  **/
 
-namespace Joomla\Component\Kunena\Administrator;
+namespace Kunena\Forum\Administrator;
 
 defined('_JEXEC') or die();
 
 use Joomla\CMS\HTML\HTMLHelper;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\Router\Route;
+use Kunena\Forum\Administrator\Install\KunenaVersion;
 
 HTMLHelper::_('behavior.multiselect');
 HTMLHelper::_('dropdown.init');
@@ -52,7 +53,7 @@ $filterItem = $this->escape($this->state->get('item.id'));
 					<?php echo Text::_('COM_KUNENA_CPANEL_LABEL_CATEGORIES') ?>
 				</div>
 				<hr class="hr-condensed">
-				<form action="<?php echo \Joomla\Component\Kunena\Libraries\Route\KunenaRoute::_('administrator/index.php?option=com_kunena&view=categories'); ?>"
+				<form action="<?php echo \Kunena\Forum\Libraries\Route\KunenaRoute::_('administrator/index.php?option=com_kunena&view=categories'); ?>"
 				      method="post" name="adminForm"
 				      id="adminForm">
 					<input type="hidden" name="task" value=""/>
@@ -85,7 +86,7 @@ $filterItem = $this->escape($this->state->get('item.id'));
 						<div class="btn-group pull-right hidden-phone">
 							<label for="limit"
 							       class="element-invisible"><?php echo Text::_('JFIELD_PLG_SEARCH_SEARCHLIMIT_DESC'); ?></label>
-							<?php echo KunenaLayout::factory('pagination/limitbox')->set('pagination', $this->pagination); ?>
+							<?php echo \Kunena\Forum\Libraries\Layout\Layout::factory('pagination/limitbox')->set('pagination', $this->pagination); ?>
 						</div>
 						<div class="btn-group pull-right hidden-phone">
 							<label for="directionTable"
@@ -238,7 +239,7 @@ $filterItem = $this->escape($this->state->get('item.id'));
 						<tfoot>
 						<tr>
 							<td colspan="10">
-								<?php echo KunenaLayout::factory('pagination/footer')->set('pagination', $this->pagination);
+								<?php echo \Kunena\Forum\Libraries\Layout\Layout::factory('pagination/footer')->set('pagination', $this->pagination);
 								?>
 								<?php // Load the batch processing form. ?>
 								<?php echo $this->loadTemplate('batch'); ?>
@@ -349,7 +350,7 @@ $filterItem = $this->escape($this->state->get('item.id'));
 										if ($item->checked_out)
 										{
 											$canCheckin = $item->checked_out == 0 || $item->checked_out == $this->user->id || $this->user->authorise('core.admin', 'com_checkin');
-											$editor     = \Joomla\Component\Kunena\Libraries\KunenaFactory::getUser($item->editor)->getName();
+											$editor     = \Kunena\Forum\Libraries\KunenaFactory::getUser($item->editor)->getName();
 											echo HTMLHelper::_('jgrid.checkedout', $i, $editor, $item->checked_out_time, 'categories.', $canCheckin);
 										}
 										?>

@@ -9,20 +9,19 @@
  * @link           https://www.kunena.org
  **/
 
-namespace Joomla\Component\Kunena\Administrator\Install\Controller;
+namespace Kunena\Forum\Administrator\Install;
 
 defined('_JEXEC') or die();
 
-use Exception;
+use Joomla\CMS\Component\ComponentHelper;
 use Joomla\CMS\Factory;
+use Joomla\CMS\Filesystem\File;
+use Joomla\CMS\Filesystem\Folder;
 use Joomla\CMS\Installer\Installer;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\MVC\Controller\BaseController;
 use Joomla\CMS\MVC\Model\BaseDatabaseModel;
 use Joomla\CMS\Session\Session;
-use Joomla\CMS\Filesystem\File;
-use Joomla\CMS\Filesystem\Folder;
-use Joomla\CMS\Component\ComponentHelper;
 use function defined;
 
 /**
@@ -60,6 +59,7 @@ class KunenaControllerInstall extends BaseController
 
 		parent::__construct();
 		require_once __DIR__ . '/model.php';
+
 		$this->model = $this->getModel('Install');
 		$this->step  = $this->model->getStep();
 		$this->steps = $this->model->getSteps();
@@ -128,7 +128,7 @@ class KunenaControllerInstall extends BaseController
 	 *
 	 * @since   Kunena 6.0
 	 *
-	 * @throws  Exception
+	 * @throws  \Exception
 	 */
 	public function display($cachable = false, $urlparams = false)
 	{
@@ -156,7 +156,7 @@ class KunenaControllerInstall extends BaseController
 	 *
 	 * @since   Kunena 6.0
 	 *
-	 * @throws  Exception
+	 * @throws  \Exception
 	 */
 	public function run()
 	{
@@ -276,7 +276,7 @@ class KunenaControllerInstall extends BaseController
 	 *
 	 * @since   Kunena 6.0
 	 *
-	 * @throws  Exception
+	 * @throws  \Exception
 	 */
 	public function uninstall()
 	{
@@ -292,7 +292,7 @@ class KunenaControllerInstall extends BaseController
 		$app = Factory::getApplication();
 		$app->enqueueMessage(Text::_('COM_KUNENA_INSTALL_REMOVED'));
 
-		if (class_exists('KunenaForum') && !\Joomla\Component\Kunena\Libraries\Forum\Forum::isDev())
+		if (class_exists('KunenaForum') && !\Kunena\Forum\Libraries\Forum\KunenaForum::isDev())
 		{
 			$installer = new Installer;
 			$component = ComponentHelper::getComponent('com_kunena');

@@ -10,17 +10,17 @@
  * @link            https://www.kunena.org
  **/
 
-namespace Joomla\Component\Kunena\Site\Controller\User\Edit\User;
+namespace Kunena\Forum\Site\Controller\User\Edit\User;
 
 defined('_JEXEC') or die();
 
-use Exception;
+use Joomla\CMS\Component\ComponentHelper;
 use Joomla\CMS\Factory;
 use Joomla\CMS\Form\Form;
 use Joomla\CMS\Language\Text;
-use Joomla\CMS\Component\ComponentHelper;
 use Joomla\CMS\Plugin\PluginHelper;
 use Joomla\Registry\Registry;
+use Kunena\Forum\Libraries\Controller\KunenaControllerDisplay;
 use StdClass;
 use function defined;
 
@@ -29,7 +29,7 @@ use function defined;
  *
  * @since   Kunena 4.0
  */
-class ComponentKunenaControllerUserEditUserDisplay extends ComponentKunenaControllerUserEditDisplay
+class ComponentKunenaControllerUserEditUserDisplay extends KunenaControllerDisplay
 {
 	/**
 	 * @var     string
@@ -96,7 +96,7 @@ class ComponentKunenaControllerUserEditUserDisplay extends ComponentKunenaContro
 	 *
 	 * @since   Kunena 6.0
 	 *
-	 * @throws  Exception
+	 * @throws  \Exception
 	 */
 	protected function prepareDocument()
 	{

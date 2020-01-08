@@ -10,24 +10,27 @@
  * @link          https://www.kunena.org
  **/
 
-namespace Joomla\Component\Kunena\Libraries\User;
+namespace Kunena\Forum\Libraries\User;
 
 defined('_JEXEC') or die();
 
 use Exception;
+use Joomla\CMS\Date\Date;
 use Joomla\CMS\Factory;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\Object\CMSObject;
-use Joomla\CMS\Date\Date;
 use Joomla\CMS\Table\Table;
 use Joomla\CMS\User\User;
-use Joomla\Database\Exception\ExecutionFailureException;
+use Kunena\Forum\Libraries\Error;
+use Kunena\Forum\Libraries\KunenaDate;
+use Kunena\Forum\Libraries\KunenaFactory;
 use Joomla\Database\DatabaseDriver;
+use Joomla\Database\Exception\ExecutionFailureException;
 use stdClass;
 use function defined;
 
 /**
- * Class KunenaUserBan
+ * Class \Kunena\Forum\Libraries\User\Ban
  *
  * @property    integer $created_time
  * @property    integer $created_by
@@ -62,7 +65,7 @@ class Ban extends CMSObject
 	const ACTIVE = 1;
 
 	/**
-	 * @var     array|KunenaUserBan[]
+	 * @var     array|Ban[]
 	 * @since   Kunena 6.0
 	 */
 	protected static $_instances = [];
@@ -138,7 +141,7 @@ class Ban extends CMSObject
 	}
 
 	/**
-	 * Method to load a KunenaUserBan object by ban id
+	 * Method to load a \Kunena\Forum\Libraries\User\Ban object by ban id
 	 *
 	 * @access  public
 	 *
@@ -178,7 +181,7 @@ class Ban extends CMSObject
 	 *
 	 * @since     Kunena 1.6
 	 */
-	public function getTable($type = 'KunenaUserBans', $prefix = 'Table')
+	public function getTable($type = '\Kunena\Forum\Libraries\User\KunenaUserBans', $prefix = 'Table')
 	{
 		static $tabletype = null;
 
@@ -208,13 +211,13 @@ class Ban extends CMSObject
 	}
 
 	/**
-	 * Returns the global KunenaUserBan object, only creating it if it doesn't already exist.
+	 * Returns the global \Kunena\Forum\Libraries\User\Ban object, only creating it if it doesn't already exist.
 	 *
 	 * @access  public
 	 *
 	 * @param   int  $identifier  The ban object to be loaded
 	 *
-	 * @return  KunenaUserBan  The ban object.
+	 * @return  Ban  The ban object.
 	 *
 	 * @since   Kunena 1.6
 	 */
@@ -237,7 +240,7 @@ class Ban extends CMSObject
 	}
 
 	/**
-	 * @param   KunenaUserBan  $instance  instance
+	 * @param   Ban  $instance  instance
 	 *
 	 * @return  void
 	 *
@@ -321,14 +324,14 @@ class Ban extends CMSObject
 	}
 
 	/**
-	 * Returns the global KunenaUserBan object, only creating it if it doesn't already exist.
+	 * Returns the global \Kunena\Forum\Libraries\User\Ban object, only creating it if it doesn't already exist.
 	 *
 	 * @access  public
 	 *
 	 * @param   int   $identifier  The ban object to be loaded
 	 * @param   bool  $create      create
 	 *
-	 * @return  KunenaUserBan  The ban object.
+	 * @return  Ban  The ban object.
 	 *
 	 * @since   Kunena 1.6
 	 */
@@ -352,14 +355,14 @@ class Ban extends CMSObject
 	}
 
 	/**
-	 * Returns the global KunenaUserBan object, only creating it if it doesn't already exist.
+	 * Returns the global \Kunena\Forum\Libraries\User\Ban object, only creating it if it doesn't already exist.
 	 *
 	 * @access  public
 	 *
 	 * @param   int   $identifier  The ban object to be loaded
 	 * @param   bool  $create      create
 	 *
-	 * @return  KunenaUserBan The ban object.
+	 * @return  Ban The ban object.
 	 *
 	 * @since   Kunena 1.6
 	 */
@@ -415,7 +418,7 @@ class Ban extends CMSObject
 		}
 		catch (ExecutionFailureException $e)
 		{
-			\Joomla\Component\Kunena\Libraries\Error::displayDatabaseError($e);
+			Error::displayDatabaseError($e);
 		}
 
 		$list = [];
@@ -464,7 +467,7 @@ class Ban extends CMSObject
 		}
 		catch (ExecutionFailureException $e)
 		{
-			\Joomla\Component\Kunena\Libraries\Error::displayDatabaseError($e);
+			Error::displayDatabaseError($e);
 		}
 
 		$list = [];
@@ -490,7 +493,7 @@ class Ban extends CMSObject
 	 */
 	public function getUser()
 	{
-		return \Joomla\Component\Kunena\Libraries\User\Helper::get((int) $this->userid);
+		return Helper::get((int) $this->userid);
 	}
 
 	/**
@@ -502,7 +505,7 @@ class Ban extends CMSObject
 	 */
 	public function getCreator()
 	{
-		return \Joomla\Component\Kunena\Libraries\User\Helper::get((int) $this->created_by);
+		return Helper::get((int) $this->created_by);
 	}
 
 	/**
@@ -514,7 +517,7 @@ class Ban extends CMSObject
 	 */
 	public function getModifier()
 	{
-		return \Joomla\Component\Kunena\Libraries\User\Helper::get((int) $this->modified_by);
+		return Helper::get((int) $this->modified_by);
 	}
 
 	/**
@@ -526,7 +529,7 @@ class Ban extends CMSObject
 	 */
 	public function getCreationDate()
 	{
-		return \Joomla\Component\Kunena\Libraries\KunenaDate::getInstance($this->created_time);
+		return KunenaDate::getInstance($this->created_time);
 	}
 
 	/**
@@ -538,7 +541,7 @@ class Ban extends CMSObject
 	 */
 	public function getExpirationDate()
 	{
-		return \Joomla\Component\Kunena\Libraries\KunenaDate::getInstance($this->expiration);
+		return KunenaDate::getInstance($this->expiration);
 	}
 
 	/**
@@ -550,7 +553,7 @@ class Ban extends CMSObject
 	 */
 	public function getModificationDate()
 	{
-		return \Joomla\Component\Kunena\Libraries\KunenaDate::getInstance($this->modified_time);
+		return KunenaDate::getInstance($this->modified_time);
 	}
 
 	/**
@@ -564,12 +567,12 @@ class Ban extends CMSObject
 	}
 
 	/**
-	 * Method to load a KunenaUserBan object by user id
+	 * Method to load a \Kunena\Forum\Libraries\User\Ban object by user id
 	 *
 	 * @access  public
 	 *
 	 * @param   int  $userid  The user id of the user to load
-	 * @param   int  $mode    KunenaUserBan::ANY or KunenaUserBan::ACTIVE
+	 * @param   int  $mode    \Kunena\Forum\Libraries\User\Ban::ANY or \Kunena\Forum\Libraries\User\Ban::ACTIVE
 	 *
 	 * @return  boolean            True on success
 	 *
@@ -589,12 +592,12 @@ class Ban extends CMSObject
 	}
 
 	/**
-	 * Method to load a KunenaUserBan object by user id
+	 * Method to load a \Kunena\Forum\Libraries\User\Ban object by user id
 	 *
 	 * @access  public
 	 *
 	 * @param   string  $ip    ip
-	 * @param   int     $mode  KunenaUserBan::ANY or KunenaUserBan::ACTIVE
+	 * @param   int     $mode  \Kunena\Forum\Libraries\User\Ban::ANY or \Kunena\Forum\Libraries\User\Ban::ACTIVE
 	 *
 	 * @return  boolean  True on success
 	 *
@@ -744,7 +747,7 @@ class Ban extends CMSObject
 	}
 
 	/**
-	 * Method to save the KunenaUserBan object to the database
+	 * Method to save the \Kunena\Forum\Libraries\User\Ban object to the database
 	 *
 	 * @access  public
 	 *
@@ -832,7 +835,7 @@ class Ban extends CMSObject
 			}
 
 			// Change user state also in #__kunena_users
-			$profile         = \Joomla\Component\Kunena\Libraries\KunenaFactory::getUser($this->userid);
+			$profile         = KunenaFactory::getUser($this->userid);
 			$profile->banned = $this->expiration;
 			$profile->save(true);
 		}
@@ -845,7 +848,7 @@ class Ban extends CMSObject
 			$this->setError($table->getError());
 		}
 
-		// Set the id for the KunenaUserBan object in case we created a new ban.
+		// Set the id for the \Kunena\Forum\Libraries\User\Ban object in case we created a new ban.
 		if ($result && $isnew)
 		{
 			$this->load($table->get('id'));
@@ -865,8 +868,8 @@ class Ban extends CMSObject
 	public function canBan()
 	{
 		$userid = $this->userid;
-		$me     = \Joomla\Component\Kunena\Libraries\User\Helper::getMyself();
-		$user   = \Joomla\Component\Kunena\Libraries\User\Helper::get($userid);
+		$me     = Helper::getMyself();
+		$user   = Helper::get($userid);
 
 		if (!$me->isModerator())
 		{
@@ -897,7 +900,7 @@ class Ban extends CMSObject
 	}
 
 	/**
-	 * Method to delete the KunenaUserBan object from the database
+	 * Method to delete the \Kunena\Forum\Libraries\User\Ban object from the database
 	 *
 	 * @access  public
 	 *

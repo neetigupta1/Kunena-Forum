@@ -10,7 +10,7 @@
  * @link            https://www.kunena.org
  **/
 
-namespace Joomla\Component\Kunena\Site\Controller\Topic\Item\Message;
+namespace Kunena\Forum\Site\Controller\Topic\Item\Message;
 
 defined('_JEXEC') or die();
 
@@ -18,11 +18,14 @@ use Exception;
 use Joomla\CMS\HTML\HTMLHelper;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\Session\Session;
-use Joomla\Component\Kunena\Libraries\Controller\Display;
-use Joomla\Component\Kunena\Libraries\KunenaFactory;
-use Joomla\Component\Kunena\Libraries\Route\KunenaRoute;
-use Joomla\Component\Kunena\Libraries\Template\Template;
-use Joomla\Component\Kunena\Libraries\User\Helper;
+use Kunena\Forum\Libraries\Controller\KunenaControllerDisplay;
+use Kunena\Forum\Libraries\Forum\Category\Category;
+use Kunena\Forum\Libraries\Forum\Topic\Topic;
+use Kunena\Forum\Libraries\KunenaFactory;
+use Kunena\Forum\Libraries\Route\KunenaRoute;
+use Kunena\Forum\Libraries\Template\Template;
+use Kunena\Forum\Libraries\User\Helper;
+use Kunena\Forum\Libraries\User\KunenaUser;
 use function defined;
 
 /**
@@ -30,7 +33,7 @@ use function defined;
  *
  * @since   Kunena 4.0
  */
-class ComponentKunenaControllerTopicItemMessageDisplay extends Display
+class ComponentKunenaControllerTopicItemMessageDisplay extends KunenaControllerDisplay
 {
 	/**
 	 * @var     string
@@ -51,13 +54,13 @@ class ComponentKunenaControllerTopicItemMessageDisplay extends Display
 	public $message;
 
 	/**
-	 * @var     KunenaForumTopic
+	 * @var     Topic
 	 * @since   Kunena 6.0
 	 */
 	public $topic;
 
 	/**
-	 * @var     KunenaForumCategory
+	 * @var     Category
 	 * @since   Kunena 6.0
 	 */
 	public $category;
@@ -99,7 +102,7 @@ class ComponentKunenaControllerTopicItemMessageDisplay extends Display
 		$this->me       = Helper::getMyself();
 		$this->location = $this->input->getInt('location', 0);
 		$this->detail   = $this->input->get('detail', false);
-		$this->message  = \Joomla\Component\Kunena\Libraries\Forum\Message\Helper::get($mesid);
+		$this->message  = \Kunena\Forum\Libraries\Forum\Message\Helper::get($mesid);
 		$this->message->tryAuthorise();
 
 		$this->topic     = $this->message->getTopic();

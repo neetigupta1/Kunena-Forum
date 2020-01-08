@@ -10,20 +10,21 @@
  * @link            https://www.kunena.org
  **/
 
-namespace Joomla\Component\Kunena\Libraries\User;
+namespace Kunena\Forum\Libraries\User;
 
 defined('_JEXEC') or die();
 
 use Exception;
 use Joomla\CMS\Date\Date;
+use Kunena\Forum\Libraries\Config;
 use function defined;
 
 /**
- * Class KunenaUserFinder
+ * Class \Kunena\Forum\Libraries\User\KunenaUserFinder
  *
  * @since   Kunena 6.0
  */
-class Finder extends KunenaDatabaseObjectFinder
+class Finder extends \Kunena\Forum\Libraries\Database\Object\Finder
 {
 	/**
 	 * @var     string
@@ -155,6 +156,6 @@ class Finder extends KunenaDatabaseObjectFinder
 	{
 		$results = parent::find();
 
-		return \Joomla\Component\Kunena\Libraries\User\Helper::loadUsers($results);
+		return Helper::loadUsers($results);
 	}
 }

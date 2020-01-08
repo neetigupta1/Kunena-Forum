@@ -10,7 +10,7 @@
  * @link            https://www.kunena.org
  **/
 
-namespace Joomla\Component\Kunena\Libraries\Forum\Topic\Rate;
+namespace Kunena\Forum\Libraries\Forum\Topic\Rate;
 
 defined('_JEXEC') or die();
 
@@ -19,8 +19,13 @@ use Joomla\CMS\Factory;
 use Joomla\CMS\Object\CMSObject;
 use Joomla\CMS\Response\JsonResponse;
 use Joomla\CMS\Table\Table;
-use Joomla\Database\Exception\ExecutionFailureException;
 use Joomla\Database\DatabaseDriver;
+use Joomla\Database\Exception\ExecutionFailureException;
+use Kunena\Forum\Libraries\Error;
+use Kunena\Forum\Libraries\Forum\Message\Message;
+use Kunena\Forum\Libraries\KunenaFactory;
+use Kunena\Forum\Libraries\Tables\KunenaTable;
+use Kunena\Forum\Libraries\Tables\TableKunenaRate;
 use RuntimeException;
 use function defined;
 
@@ -94,7 +99,7 @@ class Rate extends CMSObject
 	}
 
 	/**
-	 * Method to load a KunenaForumTopicPoll object by id.
+	 * Method to load a \Kunena\Forum\Libraries\Forum\Topic\TopicPoll object by id.
 	 *
 	 * @param   int  $id  The poll id to be loaded.
 	 *
@@ -144,14 +149,14 @@ class Rate extends CMSObject
 	}
 
 	/**
-	 * Returns KunenaForumMessage object
+	 * Returns \Kunena\Forum\Libraries\Forum\Message\Message object
 	 *
 	 * @access  public
 	 *
 	 * @param   int   $identifier  The message to load - Can be only an integer.
 	 * @param   bool  $reload      reload
 	 *
-	 * @return  KunenaForumMessage|KunenaForumTopicRate
+	 * @return  Message|Rate
 	 *
 	 * @since   Kunena 6.0
 	 *
@@ -159,7 +164,7 @@ class Rate extends CMSObject
 	 */
 	public static function getInstance($identifier = null, $reload = false)
 	{
-		return \Joomla\Component\Kunena\Libraries\Forum\Topic\Rate\Helper::get($identifier, $reload);
+		return Helper::get($identifier, $reload);
 	}
 
 	/**
@@ -177,8 +182,8 @@ class Rate extends CMSObject
 	 */
 	public function save($user)
 	{
-		$user  = \Joomla\Component\Kunena\Libraries\KunenaFactory::getUser($user);
-		$topic = \Joomla\Component\Kunena\Libraries\Forum\Topic\Helper::get($this->topic_id);
+		$user  = KunenaFactory::getUser($user);
+		$topic = \Kunena\Forum\Libraries\Forum\Topic\Helper::get($this->topic_id);
 
 		$this->getUsers();
 
@@ -222,9 +227,9 @@ class Rate extends CMSObject
 		try
 		{
 			$this->_db->execute();
-			$activityIntegration = \Joomla\Component\Kunena\Libraries\KunenaFactory::getActivityIntegration();
+			$activityIntegration = KunenaFactory::getActivityIntegration();
 
-			$topic = \Joomla\Component\Kunena\Libraries\Forum\Topic\Helper::get($this->topic_id);
+			$topic = \Kunena\Forum\Libraries\Forum\Topic\Helper::get($this->topic_id);
 			$activityIntegration->onAfterRate($user->userid, $topic);
 
 			$response = new JsonResponse(null, 'COM_KUNENA_RATE_SUCCESSFULLY_SAVED');
@@ -264,7 +269,7 @@ class Rate extends CMSObject
 		}
 		catch (ExecutionFailureException $e)
 		{
-			\Joomla\Component\Kunena\Libraries\Error::displayDatabaseError($e);
+			Error::displayDatabaseError($e);
 		}
 
 		foreach ($users as $user)
@@ -311,7 +316,7 @@ class Rate extends CMSObject
 	 */
 	public function getTopicUserRate()
 	{
-		$me = \Joomla\Component\Kunena\Libraries\KunenaFactory::getUser();
+		$me = KunenaFactory::getUser();
 
 		if ($this->userid == $me->userid)
 		{

@@ -10,7 +10,7 @@
  * @link            https://www.kunena.org
  **/
 
-namespace Joomla\Component\Kunena\Site\Controller\Topic\Form\Create;
+namespace Kunena\Forum\Site\Controller\Topic\Form\Create;
 
 defined('_JEXEC') or die();
 
@@ -19,12 +19,13 @@ use Joomla\CMS\Factory;
 use Joomla\CMS\HTML\HTMLHelper;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\MVC\Controller\BaseController;
-use Joomla\Component\Kunena\Libraries\Attachment\Helper;
-use Joomla\Component\Kunena\Libraries\Controller\Display;
-use Joomla\Component\Kunena\Libraries\Exception\Authorise;
-use Joomla\Component\Kunena\Libraries\KunenaFactory;
-use Joomla\Component\Kunena\Libraries\Route\KunenaRoute;
-use Joomla\Component\Kunena\Libraries\Template\Template;
+use Kunena\Forum\Libraries\Attachment\Helper;
+use Kunena\Forum\Libraries\Controller\KunenaControllerDisplay;
+use Kunena\Forum\Libraries\Exception\Authorise;
+use Kunena\Forum\Libraries\KunenaFactory;
+use Kunena\Forum\Libraries\KunenaPrivate\Message;
+use Kunena\Forum\Libraries\Route\KunenaRoute;
+use Kunena\Forum\Libraries\Template\Template;
 use function defined;
 
 /**
@@ -32,7 +33,7 @@ use function defined;
  *
  * @since   Kunena 4.0
  */
-class ComponentKunenaControllerTopicFormCreateDisplay extends Display
+class ComponentKunenaControllerTopicFormCreateDisplay extends KunenaControllerDisplay
 {
 	/**
 	 * @var     string
@@ -98,10 +99,10 @@ class ComponentKunenaControllerTopicFormCreateDisplay extends Display
 			$controller->redirect();
 		}
 
-		$this->me       = \Joomla\Component\Kunena\Libraries\User\Helper::getMyself();
+		$this->me       = \Kunena\Forum\Libraries\User\Helper::getMyself();
 		$this->template = KunenaFactory::getTemplate();
 
-		$categories        = \Joomla\Component\Kunena\Libraries\Forum\Category\Helper::getCategories();
+		$categories        = \Kunena\Forum\Libraries\Forum\Category\Helper::getCategories();
 		$arrayanynomousbox = [];
 		$arraypollcatid    = [];
 
@@ -130,7 +131,7 @@ class ComponentKunenaControllerTopicFormCreateDisplay extends Display
 		Template::getInstance()->addScriptOptions('com_kunena.arrayanynomousbox', json_encode($arrayanynomousbox));
 		Template::getInstance()->addScriptOptions('com_kunena.pollcategoriesid', json_encode($arraypollcatid));
 
-		$this->category = \Joomla\Component\Kunena\Libraries\Forum\Category\Helper::get($catid);
+		$this->category = \Kunena\Forum\Libraries\Forum\Category\Helper::get($catid);
 		list($this->topic, $this->message) = $this->category->newTopic($saved);
 
 		$this->template->setCategoryIconset($this->topic->getCategory()->iconset);
@@ -193,7 +194,7 @@ class ComponentKunenaControllerTopicFormCreateDisplay extends Display
 			$this->poll = $this->topic->getPoll();
 		}
 
-		$this->privateMessage       = new KunenaPrivateMessage;
+		$this->privateMessage       = new Message;
 		$this->privateMessage->body = $saved ? $saved['private'] : $this->privateMessage->body;
 
 		$this->post_anonymous       = $saved ? $saved['anonymous'] : !empty($this->category->post_anonymous);

@@ -10,17 +10,16 @@
  * @link            https://www.kunena.org
  **/
 
-namespace Joomla\Component\Kunena\Site\Models;
+namespace Kunena\Forum\Site\Models;
 
 defined('_JEXEC') or die();
 
-use Exception;
 use Joomla\CMS\Factory;
 use Joomla\CMS\Language\Text;
-use Joomla\Component\Kunena\Libraries\Error;
-use Joomla\Component\Kunena\Libraries\KunenaFactory;
-use Joomla\Component\Kunena\Libraries\Model;
-use Joomla\Component\Kunena\Libraries\User\Helper;
+use Kunena\Forum\Libraries\Error;
+use Kunena\Forum\Libraries\KunenaFactory;
+use Kunena\Forum\Libraries\Model;
+use Kunena\Forum\Libraries\User\Helper;
 use Joomla\Database\Exception\ExecutionFailureException;
 use function defined;
 
@@ -36,7 +35,7 @@ class KunenaModelUser extends Model
 	 *
 	 * @since   Kunena 6.0
 	 *
-	 * @throws  Exception
+	 * @throws  \Exception
 	 */
 	protected function populateState()
 	{
@@ -95,7 +94,7 @@ class KunenaModelUser extends Model
 	 *
 	 * @since   Kunena 6.0
 	 *
-	 * @throws  Exception
+	 * @throws  \Exception
 	 */
 	public function getQueryWhere()
 	{
@@ -179,7 +178,7 @@ class KunenaModelUser extends Model
 	 *
 	 * @since   Kunena 6.0
 	 *
-	 * @throws  Exception
+	 * @throws  \Exception
 	 */
 	public function getTotal()
 	{
@@ -210,7 +209,7 @@ class KunenaModelUser extends Model
 	 *
 	 * @since   Kunena 6.0
 	 *
-	 * @throws  Exception
+	 * @throws  \Exception
 	 */
 	public function getCount()
 	{
@@ -247,7 +246,7 @@ class KunenaModelUser extends Model
 	 *
 	 * @since   Kunena 6.0
 	 *
-	 * @throws  Exception
+	 * @throws  \Exception
 	 */
 	public function getItems()
 	{

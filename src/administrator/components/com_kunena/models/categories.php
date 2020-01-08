@@ -10,18 +10,22 @@
  * @link            https://www.kunena.org
  **/
 
-namespace Joomla\Component\Kunena\Administrator\Models;
+namespace Kunena\Forum\Administrator\Models;
 
 defined('_JEXEC') or die();
 
-use Exception;
-use Joomla\CMS\HTML\HTMLHelper;
 use Joomla\CMS\Factory;
+use Joomla\CMS\Filesystem\Folder;
+use Joomla\CMS\HTML\HTMLHelper;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\Pagination\Pagination;
 use Joomla\CMS\Table\Table;
+use Kunena\Forum\Libraries\Access;
+use Kunena\Forum\Libraries\Forum\Category\Helper;
+use Kunena\Forum\Libraries\KunenaFactory;
+use Kunena\Forum\Libraries\Model;
+use Kunena\Forum\Libraries\Template\Template;
 use Joomla\Registry\Registry;
-use Joomla\CMS\Filesystem\Folder;
 use RuntimeException;
 use function defined;
 
@@ -30,7 +34,7 @@ use function defined;
  *
  * @since 2.0
  */
-class KunenaAdminModelCategories extends \Joomla\Component\Kunena\Libraries\Model
+class KunenaAdminModelCategories extends Model
 {
 	/**
 	 * @var     string
@@ -39,13 +43,13 @@ class KunenaAdminModelCategories extends \Joomla\Component\Kunena\Libraries\Mode
 	public $context;
 
 	/**
-	 * @var     KunenaForumCategory[]
+	 * @var     \Kunena\Forum\Libraries\Forum\Category\Category[]
 	 * @since   Kunena 6.0
 	 */
 	protected $_admincategories = false;
 
 	/**
-	 * @var     KunenaForumCategory
+	 * @var     \Kunena\Forum\Libraries\Forum\Category\Category
 	 * @since   Kunena 6.0
 	 */
 	protected $_admincategory = false;
@@ -66,7 +70,7 @@ class KunenaAdminModelCategories extends \Joomla\Component\Kunena\Libraries\Mode
 	 *
 	 * @since   Kunena 6.0
 	 *
-	 * @throws  Exception
+	 * @throws  \Exception
 	 */
 	public function getAdminOptions()
 	{
@@ -127,8 +131,8 @@ class KunenaAdminModelCategories extends \Joomla\Component\Kunena\Libraries\Mode
 		$aliases = array_keys($category->getAliases());
 
 		$lists                     = [];
-		$lists ['accesstypes']     = \Joomla\Component\Kunena\Libraries\Access::getInstance()->getAccessTypesList($category);
-		$lists ['accesslists']     = \Joomla\Component\Kunena\Libraries\Access::getInstance()->getAccessOptions($category);
+		$lists ['accesstypes']     = Access::getInstance()->getAccessTypesList($category);
+		$lists ['accesslists']     = Access::getInstance()->getAccessOptions($category);
 		$lists ['categories']      = HTMLHelper::_('kunenaforum.categorylist', 'parent_id', 0, null, $cat_params, 'class="inputbox form-control"', 'value', 'text', $category->parent_id);
 		$lists ['channels']        = HTMLHelper::_('kunenaforum.categorylist', 'channels[]', 0, $channels_options, $channels_params, 'class="inputbox form-control" multiple="multiple"', 'value', 'text', explode(',', $category->channels));
 		$lists ['aliases']         = $aliases ? HTMLHelper::_('kunenaforum.checklist', 'aliases', $aliases, true, 'category_aliases') : null;
@@ -162,7 +166,7 @@ class KunenaAdminModelCategories extends \Joomla\Component\Kunena\Libraries\Mode
 
 		if (empty($category->iconset))
 		{
-			$value = \Joomla\Component\Kunena\Libraries\Template\Template::getInstance()->params->get('DefaultIconset');
+			$value = Template::getInstance()->params->get('DefaultIconset');
 		}
 		else
 		{
@@ -175,15 +179,15 @@ class KunenaAdminModelCategories extends \Joomla\Component\Kunena\Libraries\Mode
 	}
 
 	/**
-	 * @return  boolean|KunenaForumCategory|void
+	 * @return  boolean|\Kunena\Forum\Libraries\Forum\Category\Category|void
 	 *
 	 * @since   Kunena 6.0
 	 *
-	 * @throws  Exception
+	 * @throws  \Exception
 	 */
 	public function getAdminCategory()
 	{
-		$category = \Joomla\Component\Kunena\Libraries\Forum\Category\Helper::get($this->getState('item.id'));
+		$category = Helper::get($this->getState('item.id'));
 
 		if (!$this->me->isAdmin($category))
 		{
@@ -246,7 +250,7 @@ class KunenaAdminModelCategories extends \Joomla\Component\Kunena\Libraries\Mode
 	 *
 	 * @since   Kunena 6.0
 	 *
-	 * @throws  Exception
+	 * @throws  \Exception
 	 */
 	public function getAdminModerators()
 	{
@@ -270,7 +274,7 @@ class KunenaAdminModelCategories extends \Joomla\Component\Kunena\Libraries\Mode
 	 *
 	 * @since   Kunena 6.0
 	 *
-	 * @throws  Exception
+	 * @throws  \Exception
 	 */
 	public function saveorder($pks = null, $order = null)
 	{
@@ -354,7 +358,7 @@ class KunenaAdminModelCategories extends \Joomla\Component\Kunena\Libraries\Mode
 	 *
 	 * @since   Kunena 5.1
 	 *
-	 * @throws  Exception
+	 * @throws  \Exception
 	 * @throws  null
 	 */
 	public function getBatchCategories()
@@ -374,12 +378,12 @@ class KunenaAdminModelCategories extends \Joomla\Component\Kunena\Libraries\Mode
 	}
 
 	/**
-	 * @return  array|KunenaForumCategory[]
+	 * @return  array|\Kunena\Forum\Libraries\Forum\Category\Category[]
 	 *
 	 * @since   Kunena 6.0
 	 *
 	 * @throws  null
-	 * @throws  Exception
+	 * @throws  \Exception
 	 */
 	public function getAdminCategories()
 	{
@@ -406,18 +410,18 @@ class KunenaAdminModelCategories extends \Joomla\Component\Kunena\Libraries\Mode
 
 			if ($catid)
 			{
-				$categories   = \Joomla\Component\Kunena\Libraries\Forum\Category\Helper::getParents($catid, $this->getState('filter.levels') - 1, ['unpublished' => 1, 'action' => 'none']);
-				$categories[] = \Joomla\Component\Kunena\Libraries\Forum\Category\Helper::get($catid);
+				$categories   = Helper::getParents($catid, $this->getState('filter.levels') - 1, ['unpublished' => 1, 'action' => 'none']);
+				$categories[] = Helper::get($catid);
 			}
 			else
 			{
-				$orphans = \Joomla\Component\Kunena\Libraries\Forum\Category\Helper::getOrphaned($this->getState('filter.levels') - 1, $params);
+				$orphans = Helper::getOrphaned($this->getState('filter.levels') - 1, $params);
 			}
 
-			$categories = array_merge($categories, \Joomla\Component\Kunena\Libraries\Forum\Category\Helper::getChildren($catid, $this->getState('filter.levels') - 1, $params));
+			$categories = array_merge($categories, Helper::getChildren($catid, $this->getState('filter.levels') - 1, $params));
 			$categories = array_merge($orphans, $categories);
 
-			$categories = \Joomla\Component\Kunena\Libraries\Forum\Category\Helper::getIndentation($categories);
+			$categories = Helper::getIndentation($categories);
 			$this->setState('list.total', count($categories));
 
 			if ($this->getState('list.limit'))
@@ -430,13 +434,13 @@ class KunenaAdminModelCategories extends \Joomla\Component\Kunena\Libraries\Mode
 			}
 
 			$admin = 0;
-			$acl   = \Joomla\Component\Kunena\Libraries\Access::getInstance();
+			$acl   = Access::getInstance();
 
 			foreach ($this->_admincategories as $category)
 			{
 				// TODO: Following is needed for J!2.5 only:
 				$parent   = $category->getParent();
-				$siblings = array_keys(\Joomla\Component\Kunena\Libraries\Forum\Category\Helper::getCategoryTree($category->parent_id));
+				$siblings = array_keys(Helper::getCategoryTree($category->parent_id));
 
 				if ($parent)
 				{
@@ -472,7 +476,7 @@ class KunenaAdminModelCategories extends \Joomla\Component\Kunena\Libraries\Mode
 				// Checkout?
 				if ($this->me->isAdmin($category) && $category->isCheckedOut(0))
 				{
-					$category->editor = \Joomla\Component\Kunena\Libraries\KunenaFactory::getUser($category->checked_out)->getName();
+					$category->editor = KunenaFactory::getUser($category->checked_out)->getName();
 				}
 				else
 				{
@@ -501,7 +505,7 @@ class KunenaAdminModelCategories extends \Joomla\Component\Kunena\Libraries\Mode
 	 *
 	 * @since   Kunena 6.0
 	 *
-	 * @throws  Exception
+	 * @throws  \Exception
 	 */
 	protected function populateState()
 	{

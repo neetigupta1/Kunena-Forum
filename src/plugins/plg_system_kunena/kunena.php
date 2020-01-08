@@ -10,7 +10,7 @@
  * @link            https://www.kunena.org
  **/
 
-namespace Joomla\Component\Kunena\Plugin\System\Kunena;
+namespace Kunena\Forum\Plugin\System\Kunena;
 
 defined('_JEXEC') or die();
 
@@ -21,11 +21,11 @@ use Joomla\CMS\Filter\InputFilter;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\Plugin\CMSPlugin;
 use Joomla\CMS\Plugin\PluginHelper;
-use Joomla\Component\Kunena\Libraries\Controller\Application\Display;
-use Joomla\Component\Kunena\Libraries\Forum\Forum;
-use Joomla\Component\Kunena\Libraries\Installer;
-use Joomla\Component\Kunena\Libraries\KunenaFactory;
-use Joomla\Component\Kunena\Libraries\Template\Template;
+use Kunena\Forum\Libraries\Controller\KunenaControllerDisplay;
+use Kunena\Forum\Libraries\Forum\KunenaForum;
+use Kunena\Forum\Libraries\Installer;
+use Kunena\Forum\Libraries\KunenaFactory;
+use Kunena\Forum\Libraries\Template\Template;
 use stdClass;
 use function defined;
 
@@ -34,7 +34,7 @@ use function defined;
  *
  * @since   Kunena 6.0
  */
-class Kunena extends CMSPlugin
+class plgSystemKunena extends CMSPlugin
 {
 	/**
 	 * @param   object  $subject  Subject
@@ -64,7 +64,7 @@ class Kunena extends CMSPlugin
 		require_once $api;
 
 		// Do not load if Kunena version is not supported or Kunena is not installed
-		if (!(class_exists('KunenaForum') && Forum::isCompatible('4.0') && Forum::installed()))
+		if (!(class_exists('KunenaForum') && KunenaForum::isCompatible('4.0') && KunenaForum::installed()))
 		{
 			return;
 		}
@@ -89,7 +89,7 @@ EOF;
 				}
 			}
 
-			if (!method_exists(Display::class, 'poweredBy'))
+			if (!method_exists( KunenaControllerDisplay::class, 'poweredBy'))
 			{
 				Factory::getApplication()->enqueueMessage('Please Buy Official powered by remover plugin on: https://www.kunena.org/downloads',
 					'notice');
@@ -212,7 +212,7 @@ EOF;
 		// Old version detected: emulate failed installation
 		$app = Factory::getApplication();
 		$app->enqueueMessage(sprintf('Sorry, it is not possible to downgrade Kunena %s to version %s.',
-			Forum::version(), $manifest->version), 'warning');
+			KunenaForum::version(), $manifest->version), 'warning');
 		$app->enqueueMessage(Text::_('JLIB_INSTALLER_ABORT_COMP_INSTALL_CUSTOM_INSTALL_FAILURE'), 'error');
 		$app->enqueueMessage(Text::sprintf('COM_INSTALLER_MSG_UPDATE_ERROR', Text::_('COM_INSTALLER_TYPE_TYPE_' . strtoupper($type))));
 		$app->redirect('index.php?option=com_installer');
@@ -247,7 +247,7 @@ EOF;
 	}
 
 	/**
-	 * Runs all Joomla content plugins on a single KunenaForumMessage
+	 * Runs all Joomla content plugins on a single \Kunena\Forum\Libraries\Forum\Message\Message
 	 *
 	 * @access protected
 	 * @see    self::onKunenaPrepare()

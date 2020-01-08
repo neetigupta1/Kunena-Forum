@@ -10,14 +10,14 @@
  * @link            https://www.kunena.org
  **/
 
-namespace Joomla\Component\Kunena\Plugin\Kunena\Gravatar;
+namespace Kunena\Forum\Plugin\Kunena\Gravatar;
 
 defined('_JEXEC') or die();
 
 use Exception;
-use Joomla\Component\Kunena\Libraries\Integration\Avatar;
-use Joomla\Component\Kunena\Libraries\KunenaFactory;
-use Joomla\Component\Kunena\Libraries\Route\KunenaRoute;
+use Kunena\Forum\Libraries\Integration\Avatar;
+use Kunena\Forum\Libraries\KunenaFactory;
+use Kunena\Forum\Libraries\Route\KunenaRoute;
 use function defined;
 
 /**

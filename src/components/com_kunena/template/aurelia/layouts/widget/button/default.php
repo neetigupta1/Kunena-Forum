@@ -10,7 +10,7 @@
  * @link            https://www.kunena.org
 **/
 
-namespace Joomla\Component\Kunena\Site;
+namespace Kunena\Forum\Site;
 
 defined('_JEXEC') or die();
 
@@ -33,7 +33,7 @@ $success = !empty($this->success) ? ' btn-outline-success' : '';
 $primary = !empty($this->primary) ? ' btn-outline-primary' : '';
 $normal  = !empty($this->normal) ? 'btn-small dropdown-item' : 'btn btn-outline-primary border';
 $icon    = $this->icon;
-$ktemplate     = \Joomla\Component\Kunena\Libraries\KunenaFactory::getTemplate();
+$ktemplate     = \Kunena\Forum\Libraries\KunenaFactory::getTemplate();
 $topicicontype = $ktemplate->params->get('topicicontype');
 ?>
 

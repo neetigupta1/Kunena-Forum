@@ -10,14 +10,15 @@
  * @link            https://www.kunena.org
  **/
 
-namespace Joomla\Component\Kunena\Administrator;
+namespace Kunena\Forum\Administrator\Views;
 
 defined('_JEXEC') or die();
 
-use Exception;
 use Joomla\CMS\Factory;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\Toolbar\ToolbarHelper;
+use Kunena\Forum\Libraries\Forum\Statistics;
+use Kunena\Forum\Libraries\View;
 use function defined;
 
 /**
@@ -25,7 +26,7 @@ use function defined;
  *
  * @since   Kunena 1.X
  */
-class KunenaAdminViewStats extends \Joomla\Component\Kunena\Libraries\View
+class KunenaAdminViewStats extends View
 {
 	/**
 	 * @internal param null $tpl
@@ -34,7 +35,7 @@ class KunenaAdminViewStats extends \Joomla\Component\Kunena\Libraries\View
 	 *
 	 * @since   Kunena 6.0
 	 *
-	 * @throws  Exception
+	 * @throws  \Exception
 	 * @throws  null
 	 */
 	public function displayDefault()
@@ -44,7 +45,7 @@ class KunenaAdminViewStats extends \Joomla\Component\Kunena\Libraries\View
 		$document = Factory::getApplication()->getDocument();
 		$document->setTitle(Text::_('COM_KUNENA_STAT_FORUMSTATS') . ' - ' . $this->config->board_title);
 
-		$kunena_stats = \Joomla\Component\Kunena\Libraries\Forum\Statistics::getInstance();
+		$kunena_stats = Statistics::getInstance();
 		$kunena_stats->loadAll(true);
 		$this->kunena_stats = $kunena_stats;
 

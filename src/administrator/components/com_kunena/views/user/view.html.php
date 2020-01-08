@@ -10,15 +10,17 @@
  * @link            https://www.kunena.org
  **/
 
-namespace Joomla\Component\Kunena\Administrator;
+namespace Kunena\Forum\Administrator\Views;
 
 defined('_JEXEC') or die();
 
-use Exception;
 use Joomla\CMS\HTML\HTMLHelper;
 use Joomla\CMS\Language\Text;
-use Joomla\Utilities\ArrayHelper;
 use Joomla\CMS\Toolbar\ToolbarHelper;
+use Kunena\Forum\Libraries\Integration\Avatar;
+use Kunena\Forum\Libraries\KunenaFactory;
+use Kunena\Forum\Libraries\View;
+use Joomla\Utilities\ArrayHelper;
 use StdClass;
 use function defined;
 
@@ -27,14 +29,14 @@ use function defined;
  *
  * @since  K1.0
  */
-class KunenaAdminViewUser extends \Joomla\Component\Kunena\Libraries\View
+class KunenaAdminViewUser extends View
 {
 	/**
 	 * @return  void
 	 *
 	 * @since   Kunena 6.0
 	 *
-	 * @throws  Exception
+	 * @throws  \Exception
 	 */
 	public function displayEdit()
 	{
@@ -44,9 +46,9 @@ class KunenaAdminViewUser extends \Joomla\Component\Kunena\Libraries\View
 		$this->subscatslist = $this->get('catsubcriptions');
 		$this->ipslist      = $this->get('IPlist');
 
-		$avatarint        = \Joomla\Component\Kunena\Libraries\KunenaFactory::getAvatarIntegration();
-		$this->editavatar = ($avatarint instanceof \Joomla\Component\Kunena\Libraries\Integration\Avatar) && $this->user->avatar ? true : false;
-		$this->avatar     = $this->user->getAvatarImage(\Joomla\Component\Kunena\Libraries\KunenaFactory::getTemplate()->params->get('avatarType'), 'thumb');
+		$avatarint        = KunenaFactory::getAvatarIntegration();
+		$this->editavatar = ($avatarint instanceof Avatar) && $this->user->avatar ? true : false;
+		$this->avatar     = $this->user->getAvatarImage(KunenaFactory::getTemplate()->params->get('avatarType'), 'thumb');
 
 		// Make the select list for the moderator flag
 		$yesnoMod [] = HTMLHelper::_('select.option', '1', Text::_('COM_KUNENA_YES'));
@@ -115,7 +117,7 @@ class KunenaAdminViewUser extends \Joomla\Component\Kunena\Libraries\View
 		);
 		$this->settings[] = $item;
 
-		$this->ktemplate = \Joomla\Component\Kunena\Libraries\KunenaFactory::getTemplate();
+		$this->ktemplate = KunenaFactory::getTemplate();
 		$social          = $this->ktemplate->params->get('socialshare');
 
 		if ($social != 0)
@@ -165,7 +167,7 @@ class KunenaAdminViewUser extends \Joomla\Component\Kunena\Libraries\View
 	 *
 	 * @since   Kunena 6.0
 	 *
-	 * @throws  Exception
+	 * @throws  \Exception
 	 */
 	public function displayMove()
 	{

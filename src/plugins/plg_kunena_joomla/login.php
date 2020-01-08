@@ -10,15 +10,15 @@
  * @link            https://www.kunena.org
  **/
 
-namespace Joomla\Component\Kunena\Plugin\Kunena\Joomla;
+namespace Kunena\Forum\Plugin\Kunena\Joomla;
 
 defined('_JEXEC') or die();
 
 use Exception;
-use Joomla\CMS\Factory;
-use Joomla\CMS\Router\Route;
 use Joomla\CMS\Component\ComponentHelper;
+use Joomla\CMS\Factory;
 use Joomla\CMS\Plugin\PluginHelper;
+use Joomla\CMS\Router\Route;
 
 /**
  * Class KunenaLoginJoomla

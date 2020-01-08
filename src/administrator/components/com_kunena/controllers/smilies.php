@@ -10,7 +10,7 @@
  * @link            https://www.kunena.org
  **/
 
-namespace Joomla\Component\Kunena\Administrator;
+namespace Kunena\Forum\Administrator\Controllers;
 
 defined('_JEXEC') or die();
 
@@ -19,7 +19,11 @@ use Joomla\CMS\Factory;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\Router\Route;
 use Joomla\CMS\Session\Session;
+use Kunena\Forum\Libraries\Controller;
+use Kunena\Forum\Libraries\KunenaFactory;
+use Kunena\Forum\Libraries\Route\KunenaRoute;
 use Joomla\Utilities\ArrayHelper;
+use Kunena\Forum\Libraries\Upload\Helper;
 use RuntimeException;
 use function defined;
 
@@ -28,7 +32,7 @@ use function defined;
  *
  * @since   Kunena 2.0
  */
-class KunenaAdminControllerSmilies extends KunenaController
+class KunenaAdminControllerSmilies extends Controller
 {
 	/**
 	 * @var     null|string
@@ -66,7 +70,7 @@ class KunenaAdminControllerSmilies extends KunenaController
 		if (!Session::checkToken('post'))
 		{
 			$this->app->enqueueMessage(Text::_('COM_KUNENA_ERROR_TOKEN'), 'error');
-			$this->setRedirect(\Joomla\Component\Kunena\Libraries\Route\KunenaRoute::_($this->baseurl, false));
+			$this->setRedirect(KunenaRoute::_($this->baseurl, false));
 
 			return;
 		}
@@ -89,7 +93,7 @@ class KunenaAdminControllerSmilies extends KunenaController
 		if (!Session::checkToken('post'))
 		{
 			$this->app->enqueueMessage(Text::_('COM_KUNENA_ERROR_TOKEN'), 'error');
-			$this->setRedirect(\Joomla\Component\Kunena\Libraries\Route\KunenaRoute::_($this->baseurl, false));
+			$this->setRedirect(KunenaRoute::_($this->baseurl, false));
 
 			return;
 		}
@@ -102,7 +106,7 @@ class KunenaAdminControllerSmilies extends KunenaController
 		if (!$id)
 		{
 			$this->app->enqueueMessage(Text::_('COM_KUNENA_A_NO_SMILEYS_SELECTED'), 'notice');
-			$this->setRedirect(\Joomla\Component\Kunena\Libraries\Route\KunenaRoute::_($this->baseurl, false));
+			$this->setRedirect(KunenaRoute::_($this->baseurl, false));
 
 			return;
 		}
@@ -127,7 +131,7 @@ class KunenaAdminControllerSmilies extends KunenaController
 		if (!Session::checkToken('post'))
 		{
 			$this->app->enqueueMessage(Text::_('COM_KUNENA_ERROR_TOKEN'), 'error');
-			$this->setRedirect(\Joomla\Component\Kunena\Libraries\Route\KunenaRoute::_($this->baseurl, false));
+			$this->setRedirect(KunenaRoute::_($this->baseurl, false));
 
 			return;
 		}
@@ -176,7 +180,7 @@ class KunenaAdminControllerSmilies extends KunenaController
 		}
 
 		$this->app->enqueueMessage(Text::_('COM_KUNENA_SMILEY_SAVED'));
-		$this->setRedirect(\Joomla\Component\Kunena\Libraries\Route\KunenaRoute::_($this->baseurl, false));
+		$this->setRedirect(KunenaRoute::_($this->baseurl, false));
 	}
 
 	/**
@@ -194,15 +198,15 @@ class KunenaAdminControllerSmilies extends KunenaController
 		if (!Session::checkToken('post'))
 		{
 			$this->app->enqueueMessage(Text::_('COM_KUNENA_ERROR_TOKEN'), 'error');
-			$this->setRedirect(\Joomla\Component\Kunena\Libraries\Route\KunenaRoute::_($this->baseurl, false));
+			$this->setRedirect(KunenaRoute::_($this->baseurl, false));
 
 			return;
 		}
 
 		$file = $this->app->input->files->get('Filedata');
 
-		// TODO : change this part to use other method than KunenaUploadHelper::upload()
-		$upload = KunenaUploadHelper::upload($file, JPATH_ROOT . '/' . \Joomla\Component\Kunena\Libraries\KunenaFactory::getTemplate()->getSmileyPath(), 'html');
+		// TODO : change this part to use other method than \Kunena\Forum\Libraries\Upload\UploadHelper::upload()
+		$upload = Helper::upload($file, JPATH_ROOT . '/' . KunenaFactory::getTemplate()->getSmileyPath(), 'html');
 
 		if ($upload)
 		{
@@ -213,7 +217,7 @@ class KunenaAdminControllerSmilies extends KunenaController
 			$this->app->enqueueMessage(Text::_('COM_KUNENA_A_EMOTICONS_UPLOAD_ERROR_UNABLE'), 'error');
 		}
 
-		$this->setRedirect(\Joomla\Component\Kunena\Libraries\Route\KunenaRoute::_($this->baseurl, false));
+		$this->setRedirect(KunenaRoute::_($this->baseurl, false));
 	}
 
 	/**
@@ -233,7 +237,7 @@ class KunenaAdminControllerSmilies extends KunenaController
 		if (!Session::checkToken('post'))
 		{
 			$this->app->enqueueMessage(Text::_('COM_KUNENA_ERROR_TOKEN'), 'error');
-			$this->setRedirect(\Joomla\Component\Kunena\Libraries\Route\KunenaRoute::_($this->baseurl, false));
+			$this->setRedirect(KunenaRoute::_($this->baseurl, false));
 
 			return;
 		}
@@ -263,7 +267,7 @@ class KunenaAdminControllerSmilies extends KunenaController
 		}
 
 		$this->app->enqueueMessage(Text::_('COM_KUNENA_SMILEY_DELETED'));
-		$this->setRedirect(\Joomla\Component\Kunena\Libraries\Route\KunenaRoute::_($this->baseurl, false));
+		$this->setRedirect(KunenaRoute::_($this->baseurl, false));
 	}
 
 	/**
@@ -278,6 +282,6 @@ class KunenaAdminControllerSmilies extends KunenaController
 	 */
 	public function cancel()
 	{
-		$this->app->redirect(\Joomla\Component\Kunena\Libraries\Route\KunenaRoute::_($this->baseurl, false));
+		$this->app->redirect(KunenaRoute::_($this->baseurl, false));
 	}
 }

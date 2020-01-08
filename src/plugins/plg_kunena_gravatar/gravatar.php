@@ -10,12 +10,12 @@
  * @link           https://www.kunena.org
  **/
 
-namespace Joomla\Component\Kunena\Plugin\Kunena\Gravatar;
+namespace Kunena\Forum\Plugin\Kunena\Gravatar;
 
 defined('_JEXEC') or die();
 
 use Joomla\CMS\Plugin\CMSPlugin;
-use Joomla\Component\Kunena\Libraries\Forum\Forum;
+use Kunena\Forum\Libraries\Forum\KunenaForum;
 use function defined;
 
 /**
@@ -36,7 +36,7 @@ class plgKunenaGravatar extends CMSPlugin
 	public function __construct(&$subject, $config)
 	{
 		// Do not load if Kunena version is not supported or Kunena is offline
-		if (!(class_exists('KunenaForum') && Forum::isCompatible('4.0') && Forum::installed()))
+		if (!(class_exists('KunenaForum') && KunenaForum::isCompatible('4.0') && KunenaForum::installed()))
 		{
 			return;
 		}

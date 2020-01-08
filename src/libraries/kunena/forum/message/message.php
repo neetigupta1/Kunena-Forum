@@ -10,28 +10,44 @@
  * @link          https://www.kunena.org
  **/
 
-namespace Joomla\Component\Kunena\Libraries\Forum\Message;
+namespace Kunena\Forum\Libraries\Forum\Message;
 
 defined('_JEXEC') or die();
 
 use Exception;
 use InvalidArgumentException;
 use Joomla\CMS\Factory;
+use Joomla\CMS\Filesystem\File;
 use Joomla\CMS\Language\Text;
+use Joomla\CMS\Log\Log;
 use Joomla\CMS\Mail\Mail;
 use Joomla\CMS\Mail\MailHelper;
-use Joomla\CMS\Uri\Uri;
-use Joomla\CMS\Filesystem\File;
 use Joomla\CMS\Mail\MailTemplate;
+use Joomla\CMS\Uri\Uri;
 use Joomla\CMS\User\UserHelper;
-use Joomla\Database\Exception\ExecutionFailureException;
-use Joomla\CMS\Log\Log;
 use Joomla\Database\DatabaseDriver;
+use Joomla\Database\Exception\ExecutionFailureException;
+use Kunena\Forum\Libraries\Access;
+use Kunena\Forum\Libraries\Attachment\Attachment;
+use Kunena\Forum\Libraries\Config;
+use Kunena\Forum\Libraries\Database\KunenaDatabaseObject;
+use Kunena\Forum\Libraries\Email\Email;
+use Kunena\Forum\Libraries\Error;
+use Kunena\Forum\Libraries\Exception\Authorise;
+use Kunena\Forum\Libraries\Forum\Category\Category;
+use Kunena\Forum\Libraries\Forum\KunenaForum;
+use Kunena\Forum\Libraries\Forum\Topic\Topic;
+use Kunena\Forum\Libraries\Html\Parser;
+use Kunena\Forum\Libraries\KunenaDate;
+use Kunena\Forum\Libraries\KunenaFactory;
+use Kunena\Forum\Libraries\Layout\Layout;
+use Kunena\Forum\Libraries\Route\KunenaRoute;
+use Kunena\Forum\Libraries\User\KunenaUser;
 use StdClass;
 use function defined;
 
 /**
- * Class KunenaForumMessage
+ * Class \Kunena\Forum\Libraries\Forum\Message\Message
  *
  * @property int    $parent
  * @property int    $thread
@@ -99,13 +115,13 @@ class Message extends KunenaDatabaseObject
 	protected $_db = null;
 
 	/**
-	 * @var     KunenaAttachment[]
+	 * @var     Attachment[]
 	 * @since   Kunena 6.0
 	 */
 	protected $_attachments_add = [];
 
 	/**
-	 * @var     KunenaAttachment[]
+	 * @var     Attachment[]
 	 * @since   Kunena 6.0
 	 */
 	protected $_attachments_del = [];
@@ -162,12 +178,12 @@ class Message extends KunenaDatabaseObject
 	}
 
 	/**
-	 * Returns KunenaForumMessage object.
+	 * Returns \Kunena\Forum\Libraries\Forum\Message\Message object.
 	 *
 	 * @param   int   $identifier  The message to load - Can be only an integer.
 	 * @param   bool  $reload      reload
 	 *
-	 * @return  KunenaForumMessage
+	 * @return  Message
 	 *
 	 * @since   Kunena 6.0
 	 *
@@ -175,7 +191,7 @@ class Message extends KunenaDatabaseObject
 	 */
 	public static function getInstance($identifier = null, $reload = false)
 	{
-		return \Joomla\Component\Kunena\Libraries\Forum\Message\Helper::get($identifier, $reload);
+		return Helper::get($identifier, $reload);
 	}
 
 	/**
@@ -200,28 +216,28 @@ class Message extends KunenaDatabaseObject
 	 */
 	public function isNew($user = null)
 	{
-		$user = \Joomla\Component\Kunena\Libraries\User\Helper::get($user);
+		$user = \Kunena\Forum\Libraries\User\Helper::get($user);
 
-		if (!\Joomla\Component\Kunena\Libraries\KunenaFactory::getConfig()->shownew || !$user->exists())
+		if (!KunenaFactory::getConfig()->shownew || !$user->exists())
 		{
 			return false;
 		}
 
-		$session = \Joomla\Component\Kunena\Libraries\KunenaFactory::getSession();
+		$session = KunenaFactory::getSession();
 
 		if ($this->time < $session->getAllReadTime())
 		{
 			return false;
 		}
 
-		$allreadtime = KunenaForumCategoryUserHelper::get($this->getCategory(), $user)->allreadtime;
+		$allreadtime = \Kunena\Forum\Libraries\Forum\Category\User\Helper::get($this->getCategory(), $user)->allreadtime;
 
 		if ($allreadtime && $this->time < $allreadtime)
 		{
 			return false;
 		}
 
-		$read = KunenaForumTopicUserReadHelper::get($this->getTopic(), $user);
+		$read = \Kunena\Forum\Libraries\Forum\Topic\User\Read\Helper::get($this->getTopic(), $user);
 
 		if ($this->id == $read->message_id || $this->time < $read->time)
 		{
@@ -232,7 +248,7 @@ class Message extends KunenaDatabaseObject
 	}
 
 	/**
-	 * @return  KunenaForumCategory
+	 * @return  Category
 	 *
 	 * @since   Kunena 6.0
 	 *
@@ -240,11 +256,11 @@ class Message extends KunenaDatabaseObject
 	 */
 	public function getCategory()
 	{
-		return \Joomla\Component\Kunena\Libraries\Forum\Category\Helper::get($this->catid);
+		return \Kunena\Forum\Libraries\Forum\Category\Helper::get($this->catid);
 	}
 
 	/**
-	 * @return  KunenaForumTopic
+	 * @return  Topic
 	 *
 	 * @since   Kunena 6.0
 	 *
@@ -254,20 +270,20 @@ class Message extends KunenaDatabaseObject
 	{
 		if (!$this->_topic)
 		{
-			$this->_topic = \Joomla\Component\Kunena\Libraries\Forum\Topic\Helper::get($this->thread);
+			$this->_topic = \Kunena\Forum\Libraries\Forum\Topic\Helper::get($this->thread);
 		}
 
 		return $this->_topic;
 	}
 
 	/**
-	 * @param   KunenaForumTopic  $topic  topic
+	 * @param   Topic  $topic  topic
 	 *
 	 * @return  void
 	 *
 	 * @since   Kunena 6.0
 	 */
-	public function setTopic(KunenaForumTopic $topic)
+	public function setTopic(Topic $topic)
 	{
 		$this->_topic = $topic;
 
@@ -301,8 +317,8 @@ class Message extends KunenaDatabaseObject
 	}
 
 	/**
-	 * @param   null|KunenaForumCategory  $category  Fake category if needed. Used for aliases.
-	 * @param   bool                      $xhtml     xhtml
+	 * @param   null|Category  $category  Fake category if needed. Used for aliases.
+	 * @param   bool           $xhtml     xhtml
 	 *
 	 * @return  boolean
 	 *
@@ -317,7 +333,7 @@ class Message extends KunenaDatabaseObject
 	}
 
 	/**
-	 * @param   null|KunenaForumCategory  $category  Fake category if needed. Used for aliases.
+	 * @param   null|Category  $category  Fake category if needed. Used for aliases.
 	 *
 	 * @return  Uri
 	 *
@@ -344,11 +360,11 @@ class Message extends KunenaDatabaseObject
 	 */
 	public function newReply($fields = [], $user = null, $safefields = null)
 	{
-		$user     = \Joomla\Component\Kunena\Libraries\User\Helper::get($user);
+		$user     = \Kunena\Forum\Libraries\User\Helper::get($user);
 		$topic    = $this->getTopic();
 		$category = $this->getCategory();
 
-		$message = new KunenaForumMessage;
+		$message = new Message;
 		$message->setTopic($topic);
 		$message->parent  = $this->id;
 		$message->thread  = $topic->id;
@@ -356,18 +372,18 @@ class Message extends KunenaDatabaseObject
 		$message->name    = $user->getName('');
 		$message->userid  = $user->userid;
 		$message->subject = $this->subject;
-		$message->ip      = \Joomla\Component\Kunena\Libraries\User\Helper::getUserIp();
+		$message->ip      = \Kunena\Forum\Libraries\User\Helper::getUserIp();
 
 		// Add IP to user.
 		if (Config::getInstance()->iptracking)
 		{
 			if (empty($user->ip))
 			{
-				$user->ip = \Joomla\Component\Kunena\Libraries\User\Helper::getUserIp();
+				$user->ip = \Kunena\Forum\Libraries\User\Helper::getUserIp();
 			}
 		}
 
-		if (Config::getInstance()->allow_change_subject && $topic->first_post_userid == $message->userid || \Joomla\Component\Kunena\Libraries\User\Helper::getMyself()->isModerator())
+		if (Config::getInstance()->allow_change_subject && $topic->first_post_userid == $message->userid || \Kunena\Forum\Libraries\User\Helper::getMyself()->isModerator())
 		{
 			if (isset($fields['subject']))
 			{
@@ -388,7 +404,7 @@ class Message extends KunenaDatabaseObject
 
 		if ($fields['quote'] === true)
 		{
-			$user             = \Joomla\Component\Kunena\Libraries\KunenaFactory::getUser($this->userid);
+			$user             = KunenaFactory::getUser($this->userid);
 			$find             = ['/\[hide\](.*?)\[\/hide\]/su', '/\[confidential\](.*?)\[\/confidential\]/su', '/\[PRIVATE=(.*?)\]/su'];
 			$replace          = '';
 			$text             = preg_replace($find, $replace, $this->message);
@@ -429,7 +445,7 @@ class Message extends KunenaDatabaseObject
 			return false;
 		}
 
-		$config = \Joomla\Component\Kunena\Libraries\KunenaFactory::getConfig();
+		$config = KunenaFactory::getConfig();
 
 		if (!$config->get('send_emails'))
 		{
@@ -466,7 +482,7 @@ class Message extends KunenaDatabaseObject
 	{
 		// Restore app input context
 		Factory::getApplication()->input->set('message', $this);
-		$config = \Joomla\Component\Kunena\Libraries\KunenaFactory::getConfig();
+		$config = KunenaFactory::getConfig();
 
 		$url = $this->urlNotification;
 
@@ -494,21 +510,21 @@ class Message extends KunenaDatabaseObject
 			if (!$this->parent)
 			{
 				// New topic: Send email only to category subscribers
-				$mailsubs = $config->category_subscriptions != 'disabled' ? \Joomla\Component\Kunena\Libraries\Access::CATEGORY_SUBSCRIPTION : 0;
+				$mailsubs = $config->category_subscriptions != 'disabled' ? Access::CATEGORY_SUBSCRIPTION : 0;
 				$once     = $config->category_subscriptions == 'topic';
 			}
 			elseif ($config->category_subscriptions != 'post')
 			{
 				// Existing topic: Send email only to topic subscribers
-				$mailsubs = $config->topic_subscriptions != 'disabled' ? \Joomla\Component\Kunena\Libraries\Access::TOPIC_SUBSCRIPTION : 0;
+				$mailsubs = $config->topic_subscriptions != 'disabled' ? Access::TOPIC_SUBSCRIPTION : 0;
 				$once     = $config->topic_subscriptions == 'first';
 			}
 			else
 			{
 				// Existing topic: Send email to both category and topic subscribers
 				$mailsubs = $config->topic_subscriptions == 'disabled'
-					? \Joomla\Component\Kunena\Libraries\Access::CATEGORY_SUBSCRIPTION
-					: \Joomla\Component\Kunena\Libraries\Access::CATEGORY_SUBSCRIPTION | \Joomla\Component\Kunena\Libraries\Access::TOPIC_SUBSCRIPTION;
+					? Access::CATEGORY_SUBSCRIPTION
+					: Access::CATEGORY_SUBSCRIPTION | Access::TOPIC_SUBSCRIPTION;
 
 				// FIXME: category subscription can override topic
 				$once = $config->topic_subscriptions == 'first';
@@ -521,7 +537,7 @@ class Message extends KunenaDatabaseObject
 		}
 
 		// Get all subscribers, moderators and admins who should get the email.
-		$emailToList = \Joomla\Component\Kunena\Libraries\Access::getInstance()->getSubscribers(
+		$emailToList = Access::getInstance()->getSubscribers(
 			$this->catid,
 			$this->thread,
 			$mailsubs,
@@ -538,13 +554,13 @@ class Message extends KunenaDatabaseObject
 		{
 			if (!$config->getEmail())
 			{
-				\Joomla\Component\Kunena\Libraries\Error::warning(Text::_('COM_KUNENA_EMAIL_DISABLED'));
+				Error::warning(Text::_('COM_KUNENA_EMAIL_DISABLED'));
 
 				return false;
 			}
 			elseif (!MailHelper::isEmailAddress($config->getEmail()))
 			{
-				\Joomla\Component\Kunena\Libraries\Error::warning(Text::_('COM_KUNENA_EMAIL_INVALID'));
+				Error::warning(Text::_('COM_KUNENA_EMAIL_INVALID'));
 
 				return false;
 			}
@@ -600,7 +616,7 @@ class Message extends KunenaDatabaseObject
 					]
 				);
 
-				$ok = KunenaEmail::send($mailer, $receivers[1]);
+				$ok = Email::send($mailer, $receivers[1]);
 			}
 
 			// Send email to all moderators.
@@ -617,7 +633,7 @@ class Message extends KunenaDatabaseObject
 					]
 				);
 
-				if (!KunenaEmail::send($mailer, $receivers[0]))
+				if (!Email::send($mailer, $receivers[0]))
 				{
 					$ok = false;
 				}
@@ -630,12 +646,12 @@ class Message extends KunenaDatabaseObject
 			$recv_amount = count($receivers[1]) + count($receivers[0]);
 
 			Log::add("$recv_amount subscriptions for msg $mid sent for {$time_secs} [ms]", Log::DEBUG, 'kunena');
-			KunenaLog::log(($ok) ? KunenaLog::TYPE_REPORT : KunenaLog::TYPE_ERROR,
-				KunenaLog::LOG_TOPIC_NOTIFY,
+			\Kunena\Forum\Libraries\Log\Log::log(($ok) ? \Kunena\Forum\Libraries\Log\Log::TYPE_REPORT : \Kunena\Forum\Libraries\Log\Log::TYPE_ERROR,
+				\Kunena\Forum\Libraries\Log\Log::LOG_TOPIC_NOTIFY,
 				"$recv_amount subscriptions sent for $time_secs sec",
 				$this->getCategory(),
 				$this->getTopic(),
-				\Joomla\Component\Kunena\Libraries\KunenaFactory::getUser($this->userid)
+				KunenaFactory::getUser($this->userid)
 			);
 
 			// Update subscriptions.
@@ -657,7 +673,7 @@ class Message extends KunenaDatabaseObject
 				}
 				catch (ExecutionFailureException $e)
 				{
-					\Joomla\Component\Kunena\Libraries\Error::displayDatabaseError($e);
+					Error::displayDatabaseError($e);
 				}
 			}
 		}
@@ -671,8 +687,8 @@ class Message extends KunenaDatabaseObject
 	 * If you want to add domain (for email etc), you can prepend the output with this:
 	 * Uri::getInstance()->toString(array('scheme', 'host', 'port'))
 	 *
-	 * @param   null|KunenaForumCategory  $category  Fake category if needed. Used for aliases.
-	 * @param   bool                      $xhtml     xhtml
+	 * @param   null|Category  $category  Fake category if needed. Used for aliases.
+	 * @param   bool           $xhtml     xhtml
 	 *
 	 * @return  boolean
 	 *
@@ -685,11 +701,11 @@ class Message extends KunenaDatabaseObject
 	{
 		$uri = $this->getPermaUri($category);
 
-		return \Joomla\Component\Kunena\Libraries\Route\KunenaRoute::_($uri, $xhtml);
+		return KunenaRoute::_($uri, $xhtml);
 	}
 
 	/**
-	 * @param   null|KunenaForumCategory  $category  category
+	 * @param   null|Category  $category  category
 	 *
 	 * @return  Uri|boolean
 	 *
@@ -699,7 +715,7 @@ class Message extends KunenaDatabaseObject
 	 */
 	public function getPermaUri($category = null)
 	{
-		$category = $category ? \Joomla\Component\Kunena\Libraries\Forum\Category\Helper::get($category) : $this->getCategory();
+		$category = $category ? \Kunena\Forum\Libraries\Forum\Category\Helper::get($category) : $this->getCategory();
 
 		if (!$this->exists() || !$category->exists())
 		{
@@ -727,7 +743,7 @@ class Message extends KunenaDatabaseObject
 	 */
 	protected function attachEmailBody($mail, $subscription, $subject, $url, $once)
 	{
-		$layout = KunenaLayout::factory('Email/Subscription')->debug(false)
+		$layout = Layout::factory('Email/Subscription')->debug(false)
 			->set('mail', $mail)
 			->set('message', $this)
 			->set('messageUrl', $url)
@@ -755,7 +771,7 @@ class Message extends KunenaDatabaseObject
 	 * @throws  null
 	 * @throws  Exception
 	 */
-	public function publish($value = \Joomla\Component\Kunena\Libraries\Forum\Forum::PUBLISHED)
+	public function publish($value = KunenaForum::PUBLISHED)
 	{
 		if ($this->hold == $value)
 		{
@@ -769,9 +785,9 @@ class Message extends KunenaDatabaseObject
 	}
 
 	/**
-	 * Method to save the KunenaForumMessage object to the database.
+	 * Method to save the \Kunena\Forum\Libraries\Forum\Message\Message object to the database.
 	 *
-	 * @return  boolean|KunenaExceptionAuthorise
+	 * @return  boolean|Authorise
 	 *
 	 * @since   Kunena 6.0
 	 *
@@ -780,16 +796,16 @@ class Message extends KunenaDatabaseObject
 	 */
 	public function save()
 	{
-		$user = \Joomla\Component\Kunena\Libraries\User\Helper::getMyself();
+		$user = \Kunena\Forum\Libraries\User\Helper::getMyself();
 
 		if ($user->userid == 0 && $this->userid)
 		{
-			$user = \Joomla\Component\Kunena\Libraries\User\Helper::get($this->userid);
+			$user = \Kunena\Forum\Libraries\User\Helper::get($this->userid);
 		}
 
-		if ($user->userid == 0 && !\Joomla\Component\Kunena\Libraries\KunenaFactory::getConfig()->pubwrite)
+		if ($user->userid == 0 && !KunenaFactory::getConfig()->pubwrite)
 		{
-			return new \Joomla\Component\Kunena\Libraries\Exception\Authorise(Text::_('COM_KUNENA_POST_ERROR_ANONYMOUS_FORBITTEN'), 401);
+			return new Authorise(Text::_('COM_KUNENA_POST_ERROR_ANONYMOUS_FORBITTEN'), 401);
 		}
 
 		$isNew = !$this->_exists;
@@ -972,7 +988,7 @@ class Message extends KunenaDatabaseObject
 	}
 
 	/**
-	 * Method to delete the KunenaForumMessage object from the database.
+	 * Method to delete the \Kunena\Forum\Libraries\Forum\Message\Message object from the database.
 	 *
 	 * @return  boolean  True on success
 	 *
@@ -1030,11 +1046,11 @@ class Message extends KunenaDatabaseObject
 			}
 			catch (ExecutionFailureException $e)
 			{
-				\Joomla\Component\Kunena\Libraries\Error::displayDatabaseError($e);
+				Error::displayDatabaseError($e);
 			}
 		}
 
-		\Joomla\Component\Kunena\Libraries\Forum\Message\Thankyou\Helper::recount();
+		\Kunena\Forum\Libraries\Forum\Message\Thankyou\Helper::recount();
 
 		return true;
 	}
@@ -1043,7 +1059,7 @@ class Message extends KunenaDatabaseObject
 	 * @param   bool|array  $ids     ids
 	 * @param   string      $action  action
 	 *
-	 * @return  KunenaAttachment[]
+	 * @return  Attachment[]
 	 *
 	 * @since   Kunena
 	 *
@@ -1054,11 +1070,11 @@ class Message extends KunenaDatabaseObject
 	{
 		if ($ids === false)
 		{
-			$attachments = \Joomla\Component\Kunena\Libraries\Attachment\Helper::getByMessage($this->id, $action);
+			$attachments = \Kunena\Forum\Libraries\Attachment\Helper::getByMessage($this->id, $action);
 		}
 		else
 		{
-			$attachments = \Joomla\Component\Kunena\Libraries\Attachment\Helper::getById($ids, $action);
+			$attachments = \Kunena\Forum\Libraries\Attachment\Helper::getById($ids, $action);
 
 			foreach ($attachments as $id => $attachment)
 			{
@@ -1086,7 +1102,7 @@ class Message extends KunenaDatabaseObject
 		// If post was published and then moved, we need to update old topic
 		if (!$this->_hold && $this->_thread && $this->_thread != $this->thread)
 		{
-			$topic = \Joomla\Component\Kunena\Libraries\Forum\Topic\Helper::get($this->_thread);
+			$topic = \Kunena\Forum\Libraries\Forum\Topic\Helper::get($this->_thread);
 
 			if (!$topic->update($this, -1))
 			{
@@ -1118,7 +1134,7 @@ class Message extends KunenaDatabaseObject
 		// Activity integration
 		// FIXME : load the plugin finder produce a fatal error
 		// Joomla\CMS\Plugin\PluginHelper::importPlugin('finder');
-		$activity = \Joomla\Component\Kunena\Libraries\KunenaFactory::getActivityIntegration();
+		$activity = KunenaFactory::getActivityIntegration();
 
 		if ($postDelta < 0)
 		{
@@ -1164,11 +1180,11 @@ class Message extends KunenaDatabaseObject
 	/**
 	 * @param   mixed  $user  user
 	 *
-	 * @return  KunenaForumTopicUser
+	 * @return \Kunena\Forum\Libraries\Forum\Topic\User\Helper
 	 *
 	 * @since   Kunena 6.0
 	 *
-	 * @throws  Exception
+	 * @throws Exception
 	 */
 	public function getUserTopic($user = null)
 	{
@@ -1176,7 +1192,7 @@ class Message extends KunenaDatabaseObject
 	}
 
 	/**
-	 * @return  KunenaForumMessageThankyou
+	 * @return  \Kunena\Forum\Libraries\Forum\Message\Thankyou\Helper
 	 *
 	 * @since   Kunena 6.0
 	 *
@@ -1184,11 +1200,11 @@ class Message extends KunenaDatabaseObject
 	 */
 	public function getThankyou()
 	{
-		return \Joomla\Component\Kunena\Libraries\Forum\Message\Thankyou\Helper::get($this->id);
+		return \Kunena\Forum\Libraries\Forum\Message\Thankyou\Helper::get($this->id);
 	}
 
 	/**
-	 * @return  KunenaForumMessage
+	 * @return  Message
 	 *
 	 * @since   Kunena 6.0
 	 *
@@ -1196,7 +1212,7 @@ class Message extends KunenaDatabaseObject
 	 */
 	public function getParent()
 	{
-		return \Joomla\Component\Kunena\Libraries\Forum\Message\Helper::get($this->parent);
+		return Helper::get($this->parent);
 	}
 
 	/**
@@ -1208,7 +1224,7 @@ class Message extends KunenaDatabaseObject
 	 */
 	public function getAuthor()
 	{
-		return \Joomla\Component\Kunena\Libraries\User\Helper::getAuthor($this->userid, $this->name);
+		return \Kunena\Forum\Libraries\User\Helper::getAuthor($this->userid, $this->name);
 	}
 
 	/**
@@ -1218,7 +1234,7 @@ class Message extends KunenaDatabaseObject
 	 */
 	public function getTime()
 	{
-		return new \Joomla\Component\Kunena\Libraries\KunenaDate($this->time);
+		return new KunenaDate($this->time);
 	}
 
 	/**
@@ -1230,7 +1246,7 @@ class Message extends KunenaDatabaseObject
 	 */
 	public function getModifier()
 	{
-		return \Joomla\Component\Kunena\Libraries\User\Helper::get($this->modified_by);
+		return \Kunena\Forum\Libraries\User\Helper::get($this->modified_by);
 	}
 
 	/**
@@ -1240,7 +1256,7 @@ class Message extends KunenaDatabaseObject
 	 */
 	public function getModifiedTime()
 	{
-		return new \Joomla\Component\Kunena\Libraries\KunenaDate($this->modified_time);
+		return new KunenaDate($this->modified_time);
 	}
 
 	/**
@@ -1263,9 +1279,9 @@ class Message extends KunenaDatabaseObject
 			case 'id':
 				return intval($this->id);
 			case 'subject':
-				return \Joomla\Component\Kunena\Libraries\Html\Parser::parseText($this->subject);
+				return Parser::parseText($this->subject);
 			case 'message':
-				return $html ? \Joomla\Component\Kunena\Libraries\Html\Parser::parseBBCode($this->message, $this, 0, $context) : \Joomla\Component\Kunena\Libraries\Html\Parser::stripBBCode($this->message, 0, $html);
+				return $html ? Parser::parseBBCode($this->message, $this, 0, $context) : Parser::stripBBCode($this->message, 0, $html);
 		}
 
 		return '';
@@ -1286,7 +1302,7 @@ class Message extends KunenaDatabaseObject
 	 */
 	public function isAuthorised($action = 'read', KunenaUser $user = null)
 	{
-		if (\Joomla\Component\Kunena\Libraries\KunenaFactory::getConfig()->read_only)
+		if (KunenaFactory::getConfig()->read_only)
 		{
 			// Special case to ignore authorisation.
 			if ($action != 'read')
@@ -1322,7 +1338,7 @@ class Message extends KunenaDatabaseObject
 		// Load user if not given.
 		if ($user === null)
 		{
-			$user = \Joomla\Component\Kunena\Libraries\User\Helper::getMyself();
+			$user = \Kunena\Forum\Libraries\User\Helper::getMyself();
 		}
 
 		if (empty($this->_authcache[$user->userid][$action]))
@@ -1385,7 +1401,7 @@ class Message extends KunenaDatabaseObject
 	 */
 	public function edit($fields = [], $user = null)
 	{
-		$user = \Joomla\Component\Kunena\Libraries\User\Helper::get($user);
+		$user = \Kunena\Forum\Libraries\User\Helper::get($user);
 
 		$this->bind($fields, ['name', 'email', 'subject', 'message', 'modified_reason'], true);
 
@@ -1407,7 +1423,7 @@ class Message extends KunenaDatabaseObject
 	 */
 	public function makeAnonymous($user = null)
 	{
-		$user = \Joomla\Component\Kunena\Libraries\User\Helper::get($user);
+		$user = \Kunena\Forum\Libraries\User\Helper::get($user);
 
 		if ($user->userid == $this->userid && $this->modified_by == $this->userid)
 		{
@@ -1443,7 +1459,7 @@ class Message extends KunenaDatabaseObject
 	 */
 	public function uploadAttachment($tmpid, $postvar, $catid = null)
 	{
-		$attachment                     = new KunenaAttachment;
+		$attachment                     = new Attachment;
 		$attachment->userid             = $this->userid;
 		$success                        = $attachment->upload($postvar, $catid);
 		$this->_attachments_add[$tmpid] = $attachment;
@@ -1498,7 +1514,7 @@ class Message extends KunenaDatabaseObject
 	 */
 	public function getNbAttachments()
 	{
-		$attachments = \Joomla\Component\Kunena\Libraries\Attachment\Helper::getNumberAttachments($this->id);
+		$attachments = \Kunena\Forum\Libraries\Attachment\Helper::getNumberAttachments($this->id);
 
 		$attachs           = new StdClass;
 		$attachs->inline   = 0;
@@ -1538,7 +1554,7 @@ class Message extends KunenaDatabaseObject
 	}
 
 	/**
-	 * Method to load a KunenaForumMessage object by id.
+	 * Method to load a \Kunena\Forum\Libraries\Forum\Message\Message object by id.
 	 *
 	 * @param   mixed  $id  The message id to be loaded
 	 *
@@ -1567,7 +1583,7 @@ class Message extends KunenaDatabaseObject
 	 */
 	public function check()
 	{
-		$author = \Joomla\Component\Kunena\Libraries\User\Helper::get($this->userid);
+		$author = \Kunena\Forum\Libraries\User\Helper::get($this->userid);
 
 		// Check username
 		if (!$this->userid)
@@ -1600,7 +1616,7 @@ class Message extends KunenaDatabaseObject
 				return false;
 			}
 		}
-		elseif (!\Joomla\Component\Kunena\Libraries\User\Helper::getMyself()->exists() && \Joomla\Component\Kunena\Libraries\KunenaFactory::getConfig()->askemail)
+		elseif (!\Kunena\Forum\Libraries\User\Helper::getMyself()->exists() && KunenaFactory::getConfig()->askemail)
 		{
 			$this->setError(Text::_('COM_KUNENA_LIB_MESSAGE_ERROR_EMAIL_EMPTY'));
 
@@ -1654,7 +1670,7 @@ class Message extends KunenaDatabaseObject
 		}
 
 		// Flood protection
-		$config = \Joomla\Component\Kunena\Libraries\KunenaFactory::getConfig();
+		$config = KunenaFactory::getConfig();
 
 		if ($config->floodprotection && !$this->getCategory()->isAuthorised('moderate') && !$this->exists())
 		{
@@ -1666,7 +1682,7 @@ class Message extends KunenaDatabaseObject
 			}
 			catch (ExecutionFailureException $e)
 			{
-				\Joomla\Component\Kunena\Libraries\Error::displayDatabaseError($e);
+				Error::displayDatabaseError($e);
 
 				return false;
 			}
@@ -1699,7 +1715,7 @@ class Message extends KunenaDatabaseObject
 			}
 			catch (ExecutionFailureException $e)
 			{
-				\Joomla\Component\Kunena\Libraries\Error::displayDatabaseError($e);
+				Error::displayDatabaseError($e);
 
 				return false;
 			}
@@ -1752,7 +1768,7 @@ class Message extends KunenaDatabaseObject
 	/**
 	 * @param   KunenaUser  $user  user
 	 *
-	 * @return  KunenaExceptionAuthorise|void
+	 * @return  Authorise|void
 	 *
 	 * @since   Kunena 6.0
 	 *
@@ -1762,18 +1778,18 @@ class Message extends KunenaDatabaseObject
 	{
 		if ($this->hold && !$user->exists())
 		{
-			return new \Joomla\Component\Kunena\Libraries\Exception\Authorise(Text::_('COM_KUNENA_NO_ACCESS'), 401);
+			return new Authorise(Text::_('COM_KUNENA_NO_ACCESS'), 401);
 		}
 
 		// Check that user has the right to see the post (user can see his own unapproved posts)
 		if ($this->hold > 1 || ($this->hold == 1 && $this->userid != $user->userid))
 		{
-			$access = \Joomla\Component\Kunena\Libraries\Access::getInstance();
+			$access = Access::getInstance();
 			$hold   = $access->getAllowedHold($user->userid, $this->catid, false);
 
 			if (!in_array($this->hold, $hold))
 			{
-				return new \Joomla\Component\Kunena\Libraries\Exception\Authorise(Text::_('COM_KUNENA_NO_ACCESS'), 403);
+				return new Authorise(Text::_('COM_KUNENA_NO_ACCESS'), 403);
 			}
 		}
 
@@ -1783,7 +1799,7 @@ class Message extends KunenaDatabaseObject
 	/**
 	 * @param   KunenaUser  $user  user
 	 *
-	 * @return  KunenaExceptionAuthorise|void
+	 * @return  Authorise|void
 	 *
 	 * @since   Kunena 6.0
 	 */
@@ -1792,7 +1808,7 @@ class Message extends KunenaDatabaseObject
 		if ($this->hold)
 		{
 			// Nobody can reply to unapproved or deleted post
-			return new \Joomla\Component\Kunena\Libraries\Exception\Authorise(Text::_('COM_KUNENA_NO_ACCESS'), 403);
+			return new Authorise(Text::_('COM_KUNENA_NO_ACCESS'), 403);
 		}
 
 		return;
@@ -1801,7 +1817,7 @@ class Message extends KunenaDatabaseObject
 	/**
 	 * @param   KunenaUser  $user  user
 	 *
-	 * @return  KunenaExceptionAuthorise|void
+	 * @return  Authorise|void
 	 *
 	 * @since   Kunena 6.0
 	 *
@@ -1812,14 +1828,14 @@ class Message extends KunenaDatabaseObject
 		// Guests cannot own posts.
 		if (!$user->exists())
 		{
-			return new \Joomla\Component\Kunena\Libraries\Exception\Authorise(Text::_('COM_KUNENA_POST_EDIT_NOT_ALLOWED'), 401);
+			return new Authorise(Text::_('COM_KUNENA_POST_EDIT_NOT_ALLOWED'), 401);
 		}
 
 		// Check that topic owned by the user or user is a moderator
 		// TODO: check #__kunena_user_topics
 		if ($this->userid != $user->userid && !$user->isModerator($this->getCategory()))
 		{
-			return new \Joomla\Component\Kunena\Libraries\Exception\Authorise(Text::_('COM_KUNENA_POST_EDIT_NOT_ALLOWED'), 403);
+			return new Authorise(Text::_('COM_KUNENA_POST_EDIT_NOT_ALLOWED'), 403);
 		}
 
 		return;
@@ -1828,7 +1844,7 @@ class Message extends KunenaDatabaseObject
 	/**
 	 * @param   KunenaUser  $user  user
 	 *
-	 * @return  KunenaExceptionAuthorise|void
+	 * @return  Authorise|void
 	 *
 	 * @since   Kunena 6.0
 	 *
@@ -1837,21 +1853,21 @@ class Message extends KunenaDatabaseObject
 	protected function authoriseThankyou(KunenaUser $user)
 	{
 		// Check that message is not your own
-		if (!\Joomla\Component\Kunena\Libraries\KunenaFactory::getConfig()->showthankyou)
+		if (!KunenaFactory::getConfig()->showthankyou)
 		{
-			return new \Joomla\Component\Kunena\Libraries\Exception\Authorise(Text::_('COM_KUNENA_THANKYOU_DISABLED'), 403);
+			return new Authorise(Text::_('COM_KUNENA_THANKYOU_DISABLED'), 403);
 		}
 
 		if (!$user->userid)
 		{
 			// TODO: better error message
-			return new \Joomla\Component\Kunena\Libraries\Exception\Authorise(Text::_('COM_KUNENA_THANKYOU_DISABLED'), 401);
+			return new Authorise(Text::_('COM_KUNENA_THANKYOU_DISABLED'), 401);
 		}
 
 		if (!$this->userid || $this->userid == $user->userid)
 		{
 			// TODO: better error message
-			return new \Joomla\Component\Kunena\Libraries\Exception\Authorise(Text::_('COM_KUNENA_THANKYOU_DISABLED'), 403);
+			return new Authorise(Text::_('COM_KUNENA_THANKYOU_DISABLED'), 403);
 		}
 
 		return;
@@ -1862,7 +1878,7 @@ class Message extends KunenaDatabaseObject
 	 *
 	 * @param   KunenaUser  $user  user
 	 *
-	 * @return  KunenaExceptionAuthorise|boolean|void
+	 * @return  Authorise|boolean|void
 	 *
 	 * @since   Kunena 6.0
 	 *
@@ -1877,32 +1893,32 @@ class Message extends KunenaDatabaseObject
 		}
 
 		// User is only allowed to edit post within time specified in the configuration
-		$config = \Joomla\Component\Kunena\Libraries\KunenaFactory::getConfig();
+		$config = KunenaFactory::getConfig();
 
 		if (intval($config->useredit) != 1)
 		{
 			// Edit never allowed
 			if (intval($config->useredit) == 0)
 			{
-				return new \Joomla\Component\Kunena\Libraries\Exception\Authorise(Text::_('COM_KUNENA_POST_EDIT_NOT_ALLOWED'), 403);
+				return new Authorise(Text::_('COM_KUNENA_POST_EDIT_NOT_ALLOWED'), 403);
 			}
 
 			// Edit allowed if replies
 			if (intval($config->useredit) == 2 && $this->getTopic()->getReplies())
 			{
-				return new \Joomla\Component\Kunena\Libraries\Exception\Authorise(Text::_('COM_KUNENA_POST_EDIT_ALLOWED_IF_REPLIES'), 403);
+				return new Authorise(Text::_('COM_KUNENA_POST_EDIT_ALLOWED_IF_REPLIES'), 403);
 			}
 
 			// Edit allowed for the first message of the topic
 			if (intval($config->useredit) == 4 && $this->id != $this->getTopic()->first_post_id)
 			{
-				return new \Joomla\Component\Kunena\Libraries\Exception\Authorise(Text::_('COM_KUNENA_POST_EDIT_ALLOWED_ONLY_FIRST_MESSAGE_OF_TOPIC'), 403);
+				return new Authorise(Text::_('COM_KUNENA_POST_EDIT_ALLOWED_ONLY_FIRST_MESSAGE_OF_TOPIC'), 403);
 			}
 
 			// Edit allowed for the last message of the topic
 			if (intval($config->useredit) == 3 && $this->id != $this->getTopic()->last_post_id)
 			{
-				return new \Joomla\Component\Kunena\Libraries\Exception\Authorise(Text::_('COM_KUNENA_POST_EDIT_ALLOWED_ONLY_LAST_MESSAGE_OF_TOPIC'), 403);
+				return new Authorise(Text::_('COM_KUNENA_POST_EDIT_ALLOWED_ONLY_LAST_MESSAGE_OF_TOPIC'), 403);
 			}
 		}
 
@@ -1913,11 +1929,11 @@ class Message extends KunenaDatabaseObject
 
 			if ($modtime + intval($config->useredittime) < Factory::getDate()->toUnix() && intval($config->useredittimegrace) == 0)
 			{
-				return new \Joomla\Component\Kunena\Libraries\Exception\Authorise(Text::_('COM_KUNENA_POST_EDIT_NOT_ALLOWED'), 403);
+				return new Authorise(Text::_('COM_KUNENA_POST_EDIT_NOT_ALLOWED'), 403);
 			}
 			elseif (intval($config->useredittimegrace) != 0 && $modtime + intval($config->useredittime) + intval($config->useredittimegrace) < Factory::getDate()->toUnix())
 			{
-				return new \Joomla\Component\Kunena\Libraries\Exception\Authorise(Text::_('COM_KUNENA_POST_EDIT_NOT_ALLOWED'), 403);
+				return new Authorise(Text::_('COM_KUNENA_POST_EDIT_NOT_ALLOWED'), 403);
 			}
 		}
 
@@ -1927,7 +1943,7 @@ class Message extends KunenaDatabaseObject
 	/**
 	 * @param   KunenaUser  $user  user
 	 *
-	 * @return  KunenaExceptionAuthorise|void
+	 * @return  Authorise|void
 	 *
 	 * @since   Kunena 6.0
 	 *
@@ -1935,32 +1951,32 @@ class Message extends KunenaDatabaseObject
 	 */
 	protected function authoriseDelete(KunenaUser $user)
 	{
-		$config = \Joomla\Component\Kunena\Libraries\KunenaFactory::getConfig();
+		$config = KunenaFactory::getConfig();
 
 		if (!$user->isModerator($this->getCategory()) && $config->userdeletetmessage != '2')
 		{
 			// Never
 			if ($config->userdeletetmessage == '0')
 			{
-				return new \Joomla\Component\Kunena\Libraries\Exception\Authorise(Text::_('COM_KUNENA_POST_ERROR_DELETE_REPLY_AFTER'), 403);
+				return new Authorise(Text::_('COM_KUNENA_POST_ERROR_DELETE_REPLY_AFTER'), 403);
 			}
 
 			// When no replies
 			if ($config->userdeletetmessage == '1' && ($this->getTopic()->first_post_id != $this->id || $this->getTopic()->getReplies()))
 			{
-				return new \Joomla\Component\Kunena\Libraries\Exception\Authorise(Text::_('COM_KUNENA_POST_ERROR_DELETE_REPLY_AFTER'), 403);
+				return new Authorise(Text::_('COM_KUNENA_POST_ERROR_DELETE_REPLY_AFTER'), 403);
 			}
 
 			// All except the first message of the topic
 			if ($config->userdeletetmessage == '3' && $this->id == $this->getTopic()->first_post_id)
 			{
-				return new \Joomla\Component\Kunena\Libraries\Exception\Authorise(Text::_('COM_KUNENA_POST_ERROR_DELETE_ONLY_FIRST_MESSAGE'), 403);
+				return new Authorise(Text::_('COM_KUNENA_POST_ERROR_DELETE_ONLY_FIRST_MESSAGE'), 403);
 			}
 
 			// Only the last message
 			if ($config->userdeletetmessage == '4' && $this->id != $this->getTopic()->last_post_id)
 			{
-				return new \Joomla\Component\Kunena\Libraries\Exception\Authorise(Text::_('COM_KUNENA_POST_ERROR_DELETE_ONLY_LAST_MESSAGE'), 403);
+				return new Authorise(Text::_('COM_KUNENA_POST_ERROR_DELETE_ONLY_LAST_MESSAGE'), 403);
 			}
 		}
 	}
@@ -1970,7 +1986,7 @@ class Message extends KunenaDatabaseObject
 	 *
 	 * @param   KunenaUser  $user  user
 	 *
-	 * @return  KunenaExceptionAuthorise|NULL
+	 * @return  Authorise|NULL
 	 *
 	 * @since   Kunena 6.0
 	 *
@@ -1978,7 +1994,7 @@ class Message extends KunenaDatabaseObject
 	 */
 	protected function authorisePermdelete(KunenaUser $user)
 	{
-		$config = \Joomla\Component\Kunena\Libraries\KunenaFactory::getConfig();
+		$config = KunenaFactory::getConfig();
 
 		if ($user->isAdmin() || $user->isModerator())
 		{
@@ -1987,7 +2003,7 @@ class Message extends KunenaDatabaseObject
 
 		if ($user->isModerator($this->getTopic()->getCategory()) && !$config->moderator_permdelete || !$user->isModerator($this->getTopic()->getCategory()))
 		{
-			return new \Joomla\Component\Kunena\Libraries\Exception\Authorise(Text::_('COM_KUNENA_POST_ERROR_DELETE_REPLY_AFTER'), 403);
+			return new Authorise(Text::_('COM_KUNENA_POST_ERROR_DELETE_REPLY_AFTER'), 403);
 		}
 
 		return null;
@@ -1998,7 +2014,7 @@ class Message extends KunenaDatabaseObject
 	 *
 	 * @param   KunenaUser  $user  user
 	 *
-	 * @return  KunenaExceptionAuthorise|void
+	 * @return  Authorise|void
 	 *
 	 * @since   Kunena 6.0
 	 *
@@ -2006,34 +2022,34 @@ class Message extends KunenaDatabaseObject
 	 */
 	protected function authoriseAttachmentsImage(KunenaUser $user)
 	{
-		if (empty(\Joomla\Component\Kunena\Libraries\KunenaFactory::getConfig()->image_upload))
+		if (empty(KunenaFactory::getConfig()->image_upload))
 		{
-			return new \Joomla\Component\Kunena\Libraries\Exception\Authorise(Text::_('COM_KUNENA_POST_ATTACHMENTS_NOT_ALLOWED'), 403);
+			return new Authorise(Text::_('COM_KUNENA_POST_ATTACHMENTS_NOT_ALLOWED'), 403);
 		}
 
-		if (\Joomla\Component\Kunena\Libraries\KunenaFactory::getConfig()->image_upload == 'admin')
+		if (KunenaFactory::getConfig()->image_upload == 'admin')
 		{
 			if (!$user->isAdmin())
 			{
-				return new \Joomla\Component\Kunena\Libraries\Exception\Authorise(Text::_('COM_KUNENA_POST_ATTACHMENTS_IMAGE_ONLY_FOR_ADMINISTRATORS'), 403);
+				return new Authorise(Text::_('COM_KUNENA_POST_ATTACHMENTS_IMAGE_ONLY_FOR_ADMINISTRATORS'), 403);
 			}
 		}
 
-		if (\Joomla\Component\Kunena\Libraries\KunenaFactory::getConfig()->image_upload == 'registered')
+		if (KunenaFactory::getConfig()->image_upload == 'registered')
 		{
 			if (!$user->userid)
 			{
-				return new \Joomla\Component\Kunena\Libraries\Exception\Authorise(Text::_('COM_KUNENA_POST_ATTACHMENTS_IMAGE_ONLY_FOR_REGISTERED_USERS'), 403);
+				return new Authorise(Text::_('COM_KUNENA_POST_ATTACHMENTS_IMAGE_ONLY_FOR_REGISTERED_USERS'), 403);
 			}
 		}
 
-		if (\Joomla\Component\Kunena\Libraries\KunenaFactory::getConfig()->image_upload == 'moderator')
+		if (KunenaFactory::getConfig()->image_upload == 'moderator')
 		{
 			$category = $this->getCategory();
 
 			if (!$user->isModerator($category))
 			{
-				return new \Joomla\Component\Kunena\Libraries\Exception\Authorise(Text::_('COM_KUNENA_POST_ATTACHMENTS_IMAGE_ONLY_FOR_MODERATORS'), 403);
+				return new Authorise(Text::_('COM_KUNENA_POST_ATTACHMENTS_IMAGE_ONLY_FOR_MODERATORS'), 403);
 			}
 		}
 
@@ -2045,7 +2061,7 @@ class Message extends KunenaDatabaseObject
 	 *
 	 * @param   KunenaUser  $user  user
 	 *
-	 * @return  KunenaExceptionAuthorise|void
+	 * @return  Authorise|void
 	 *
 	 * @since   Kunena 6.0
 	 *
@@ -2053,34 +2069,34 @@ class Message extends KunenaDatabaseObject
 	 */
 	protected function authoriseAttachmentsFile(KunenaUser $user)
 	{
-		if (empty(\Joomla\Component\Kunena\Libraries\KunenaFactory::getConfig()->file_upload))
+		if (empty(KunenaFactory::getConfig()->file_upload))
 		{
-			return new \Joomla\Component\Kunena\Libraries\Exception\Authorise(Text::_('COM_KUNENA_POST_ATTACHMENTS_NOT_ALLOWED'), 403);
+			return new Authorise(Text::_('COM_KUNENA_POST_ATTACHMENTS_NOT_ALLOWED'), 403);
 		}
 
-		if (\Joomla\Component\Kunena\Libraries\KunenaFactory::getConfig()->file_upload == 'admin')
+		if (KunenaFactory::getConfig()->file_upload == 'admin')
 		{
 			if (!$user->isAdmin())
 			{
-				return new \Joomla\Component\Kunena\Libraries\Exception\Authorise(Text::_('COM_KUNENA_POST_ATTACHMENTS_FILE_ONLY_FOR_ADMINISTRATORS'), 403);
+				return new Authorise(Text::_('COM_KUNENA_POST_ATTACHMENTS_FILE_ONLY_FOR_ADMINISTRATORS'), 403);
 			}
 		}
 
-		if (\Joomla\Component\Kunena\Libraries\KunenaFactory::getConfig()->file_upload == 'registered')
+		if (KunenaFactory::getConfig()->file_upload == 'registered')
 		{
 			if (!$user->userid)
 			{
-				return new \Joomla\Component\Kunena\Libraries\Exception\Authorise(Text::_('COM_KUNENA_POST_ATTACHMENTS_FILE_ONLY_FOR_REGISTERED_USERS'), 403);
+				return new Authorise(Text::_('COM_KUNENA_POST_ATTACHMENTS_FILE_ONLY_FOR_REGISTERED_USERS'), 403);
 			}
 		}
 
-		if (\Joomla\Component\Kunena\Libraries\KunenaFactory::getConfig()->file_upload == 'moderator')
+		if (KunenaFactory::getConfig()->file_upload == 'moderator')
 		{
 			$category = $this->getCategory();
 
 			if (!$user->isModerator($category))
 			{
-				return new \Joomla\Component\Kunena\Libraries\Exception\Authorise(Text::_('COM_KUNENA_POST_ATTACHMENTS_FILE_ONLY_FOR_MODERATORS'), 403);
+				return new Authorise(Text::_('COM_KUNENA_POST_ATTACHMENTS_FILE_ONLY_FOR_MODERATORS'), 403);
 			}
 		}
 
@@ -2090,7 +2106,7 @@ class Message extends KunenaDatabaseObject
 	/**
 	 * @param   KunenaUser  $user  user
 	 *
-	 * @return  KunenaExceptionAuthorise|void
+	 * @return  Authorise|void
 	 *
 	 * @since   Kunena 6.0
 	 *
@@ -2099,9 +2115,9 @@ class Message extends KunenaDatabaseObject
 	protected function authoriseGuestWrite(KunenaUser $user)
 	{
 		// Check if user is guest and they can create or reply topics
-		if ($user->userid == 0 && !\Joomla\Component\Kunena\Libraries\KunenaFactory::getConfig()->pubwrite)
+		if ($user->userid == 0 && !KunenaFactory::getConfig()->pubwrite)
 		{
-			return new \Joomla\Component\Kunena\Libraries\Exception\Authorise(Text::_('COM_KUNENA_POST_ERROR_ANONYMOUS_FORBITTEN'), 401);
+			return new Authorise(Text::_('COM_KUNENA_POST_ERROR_ANONYMOUS_FORBITTEN'), 401);
 		}
 
 		return;

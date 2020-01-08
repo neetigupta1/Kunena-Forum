@@ -9,7 +9,7 @@
  * @link           https://www.kunena.org
  **/
 
-namespace Joomla\Component\Kunena\Administrator;
+namespace Kunena\Forum\Administrator\Migrate\Php;
 
 defined('_JEXEC') or die();
 
@@ -58,7 +58,7 @@ class KunenaMigratorJoomlaboard
 	{
 		foreach ($this->versions as $version)
 		{
-			if (\Joomla\Component\Kunena\Libraries\Installer::getTableColumn($version['table'], $version['column']))
+			if (\Kunena\Forum\Libraries\Installer::getTableColumn($version['table'], $version['column']))
 			{
 				return $version->version;
 			}

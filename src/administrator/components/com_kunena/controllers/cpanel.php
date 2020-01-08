@@ -10,14 +10,18 @@
  * @link            https://www.kunena.org
  **/
 
-namespace Joomla\Component\Kunena\Administrator;
+namespace Kunena\Forum\Administrator\Controllers;
 
 defined('_JEXEC') or die();
 
 use Exception;
 use Joomla\CMS\Factory;
 use Joomla\CMS\Language\Text;
+use Joomla\CMS\MVC\Controller\BaseController;
 use Joomla\CMS\Uri\Uri;
+use Kunena\Forum\Libraries\Controller;
+use Kunena\Forum\Libraries\Forum\KunenaForum;
+use stdClass;
 use function defined;
 
 /**
@@ -25,7 +29,7 @@ use function defined;
  *
  * @since   Kunena 2.0
  */
-class KunenaAdminControllerCpanel extends KunenaController
+class KunenaAdminControllerCpanel extends Controller
 {
 	/**
 	 * @var     string
@@ -63,7 +67,7 @@ class KunenaAdminControllerCpanel extends KunenaController
 	{
 		$updateInfo = null;
 
-		if (\Joomla\Component\Kunena\Libraries\Forum\Forum::installed() && Factory::getApplication()->getIdentity()->authorise('core.manage', 'com_installer'))
+		if (KunenaForum::installed() && Factory::getApplication()->getIdentity()->authorise('core.manage', 'com_installer'))
 		{
 			$updateSite = 'https://update.kunena.org/%';
 			$db         = Factory::getDbo();
@@ -106,7 +110,7 @@ class KunenaAdminControllerCpanel extends KunenaController
 			}
 		}
 
-		if (!empty($updateInfo->version) && version_compare(\Joomla\Component\Kunena\Libraries\Forum\Forum::version(), $updateInfo->version, '<'))
+		if (!empty($updateInfo->version) && version_compare(KunenaForum::version(), $updateInfo->version, '<'))
 		{
 			// Has updates
 			Factory::getApplication()->enqueueMessage(Text::_('Kunena Update Found.  <a class="btn btn-small btn-outline-danger" href="index.php?option=com_installer&view=update&filter_search=kunena"> Update Now</a><br/> Please backup before updating.'), 'Notice');
@@ -136,7 +140,7 @@ class KunenaAdminControllerCpanel extends KunenaController
 	 * @param   bool  $cachable   cachable
 	 * @param   bool  $urlparams  urlparams
 	 *
-	 * @return  Joomla\CMS\MVC\Controller\BaseController|void
+	 * @return  BaseController|void
 	 *
 	 * @since   Kunena 2.0.0-BETA2
 	 *

@@ -9,7 +9,7 @@
  * @link           https://www.kunena.org
  **/
 
-namespace Joomla\Component\Kunena\Administrator;
+namespace Kunena\Forum\Administrator\Updates\Php;
 
 defined('_JEXEC') or die();
 
@@ -18,6 +18,10 @@ use Joomla\CMS\Factory;
 use Joomla\CMS\Filter\OutputFilter;
 use Joomla\CMS\Language\Text;
 use Joomla\String\StringHelper;
+use Kunena\Forum\Libraries\Forum\Category\Helper;
+use Kunena\Forum\Libraries\KunenaFactory;
+use Kunena\Forum\Libraries\Route\KunenaRoute;
+use Kunena\Forum\Libraries\Route\Legacy;
 use function defined;
 
 // Kunena 2.0.0: Create category aliases (all that K1.7 accepts)
@@ -32,28 +36,28 @@ use function defined;
  */
 function kunena_200_2011_12_14_aliases($parent)
 {
-	$config = \Joomla\Component\Kunena\Libraries\KunenaFactory::getConfig();
+	$config = KunenaFactory::getConfig();
 
 	// Create views
-	foreach (\Joomla\Component\Kunena\Libraries\Route\KunenaRoute::$views as $view => $dummy)
+	foreach (KunenaRoute::$views as $view => $dummy)
 	{
 		kCreateAlias('view', $view, $view, 1);
 	}
 
 	// Create layouts
-	foreach (\Joomla\Component\Kunena\Libraries\Route\KunenaRoute::$layouts as $layout => $dummy)
+	foreach (KunenaRoute::$layouts as $layout => $dummy)
 	{
 		kCreateAlias('layout', "category.{$layout}", "category/{$layout}", 1);
 		kCreateAlias('layout', "category.{$layout}", $layout, 0);
 	}
 
 	// Create legacy functions
-	foreach (KunenaRouteLegacy::$functions as $func => $dummy)
+	foreach (Legacy::$functions as $func => $dummy)
 	{
 		kCreateAlias('legacy', $func, $func, 1);
 	}
 
-	$categories = \Joomla\Component\Kunena\Libraries\Forum\Category\Helper::getCategories(false, false, 'none');
+	$categories = Helper::getCategories(false, false, 'none');
 	$aliasLit   = $aliasUtf = [];
 
 	// Create SEF: id

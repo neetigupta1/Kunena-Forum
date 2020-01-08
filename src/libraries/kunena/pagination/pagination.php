@@ -11,11 +11,10 @@
  * @link            https://www.kunena.org
  **/
 
-namespace Joomla\Component\Kunena\Libraries\Pagination;
+namespace Kunena\Forum\Libraries\Pagination;
 
 defined('_JEXEC') or die();
 
-use Exception;
 use Joomla\CMS\Factory;
 use Joomla\CMS\HTML\HTMLHelper;
 use Joomla\CMS\Language\Text;
@@ -200,7 +199,7 @@ class Pagination
 	 * @param   int  $start      How many items to display from the beginning (1 2 ...)
 	 * @param   int  $end        How many items to display from the end (... 49 50)
 	 *
-	 * @return  KunenaPagination  Method supports chaining.
+	 * @return  Pagination  Method supports chaining.
 	 *
 	 * @since   Kunena 6.0
 	 */
@@ -246,7 +245,7 @@ class Pagination
 	 *
 	 * @param   Uri  $uri  Joomla\CMS\Uri\Uri object.
 	 *
-	 * @return  KunenaPagination  Method supports chaining.
+	 * @return  Pagination  Method supports chaining.
 	 *
 	 * @since   Kunena 6.0
 	 */
@@ -345,7 +344,7 @@ class Pagination
 
 		if (!$this->uri)
 		{
-			$this->uri = \Joomla\Component\Kunena\Libraries\Route\KunenaRoute::$current;
+			$this->uri = \Kunena\Forum\Libraries\Route\KunenaRoute::$current;
 		}
 
 		// Build the additional URL parameters string.
@@ -471,7 +470,7 @@ class Pagination
 	 *
 	 * @since   1.5
 	 *
-	 * @throws  Exception
+	 * @throws  \Exception
 	 */
 	public function getListFooter()
 	{
@@ -498,7 +497,7 @@ class Pagination
 	 *
 	 * @since   1.5
 	 *
-	 * @throws  Exception
+	 * @throws  \Exception
 	 */
 	public function getLimitBox($all = false)
 	{
@@ -576,7 +575,7 @@ class Pagination
 	 *
 	 * @since   1.5
 	 *
-	 * @throws  Exception
+	 * @throws  \Exception
 	 */
 	public function getPagesLinks()
 	{
@@ -674,11 +673,11 @@ class Pagination
 	 *
 	 * @since   Kunena 6.0
 	 *
-	 * @throws  Exception
+	 * @throws  \Exception
 	 */
 	protected function setChrome()
 	{
-		$template                 = \Joomla\Component\Kunena\Libraries\KunenaFactory::getTemplate();
+		$template                 = \Kunena\Forum\Libraries\KunenaFactory::getTemplate();
 		$this->itemActiveChrome   = [$template, 'getPaginationItemActive'];
 		$this->itemInactiveChrome = [$template, 'getPaginationItemInactive'];
 		$this->listChrome         = [$template, 'getPaginationListRender'];
@@ -798,7 +797,7 @@ class Pagination
 	 *
 	 * @since   1.5
 	 *
-	 * @throws  Exception
+	 * @throws  \Exception
 	 */
 	protected function _item_active(PaginationObject $item)
 	{
@@ -832,7 +831,7 @@ class Pagination
 	 *
 	 * @since   1.5
 	 *
-	 * @throws  Exception
+	 * @throws  \Exception
 	 */
 	protected function _item_inactive(PaginationObject $item)
 	{

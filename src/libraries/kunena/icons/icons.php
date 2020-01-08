@@ -10,13 +10,16 @@
  * @link       https://www.kunena.org
  **/
 
-namespace Joomla\Component\Kunena\Libraries\Icons;
+namespace Kunena\Forum\Libraries\Icons;
 
 defined('_JEXEC') or die();
 
 use Exception;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\Uri\Uri;
+use Kunena\Forum\Libraries\KunenaFactory;
+use Kunena\Forum\Libraries\Template\Template;
+use Kunena\Forum\Libraries\User\Helper;
 use function defined;
 
 /**
@@ -37,7 +40,7 @@ class Icons
 	 */
 	public static function arrowdown()
 	{
-		$ktemplate     = \Joomla\Component\Kunena\Libraries\KunenaFactory::getTemplate();
+		$ktemplate     = KunenaFactory::getTemplate();
 		$topicicontype = $ktemplate->params->get('topicicontype');
 
 		if ($topicicontype == 'fa')
@@ -55,7 +58,7 @@ class Icons
 			return '<span class="glyphicon glyphicon-arrow-down hasTooltip" aria-hidden="true"></span>';
 		}
 
-		return KunenaSvgIcons::loadsvg('arrow-down');
+		return SvgIcons::loadsvg('arrow-down');
 	}
 
 	/**
@@ -69,7 +72,7 @@ class Icons
 	 */
 	public static function arrowup()
 	{
-		$ktemplate     = \Joomla\Component\Kunena\Libraries\KunenaFactory::getTemplate();
+		$ktemplate     = KunenaFactory::getTemplate();
 		$topicicontype = $ktemplate->params->get('topicicontype');
 
 		if ($topicicontype == 'fa')
@@ -87,7 +90,7 @@ class Icons
 			return '<span class="glyphicon glyphicon-arrow-up hasTooltip" aria-hidden="true"></span>';
 		}
 
-		return KunenaSvgIcons::loadsvg('arrow-up');
+		return SvgIcons::loadsvg('arrow-up');
 	}
 
 	/**
@@ -101,7 +104,7 @@ class Icons
 	 */
 	public static function arrowdownanchor()
 	{
-		$ktemplate     = \Joomla\Component\Kunena\Libraries\KunenaFactory::getTemplate();
+		$ktemplate     = KunenaFactory::getTemplate();
 		$topicicontype = $ktemplate->params->get('topicicontype');
 
 		if ($topicicontype == 'fa')
@@ -124,7 +127,7 @@ class Icons
 			return '<span class="kicon kforumtop"></span>';
 		}
 
-		return KunenaSvgIcons::loadsvg('arrow-down');
+		return SvgIcons::loadsvg('arrow-down');
 	}
 
 	/**
@@ -138,7 +141,7 @@ class Icons
 	 */
 	public static function arrowupanchor()
 	{
-		$ktemplate     = \Joomla\Component\Kunena\Libraries\KunenaFactory::getTemplate();
+		$ktemplate     = KunenaFactory::getTemplate();
 		$topicicontype = $ktemplate->params->get('topicicontype');
 
 		if ($topicicontype == 'fa')
@@ -161,7 +164,7 @@ class Icons
 			return '<span class="kicon kforumbottom"></span>';
 		}
 
-		return KunenaSvgIcons::loadsvg('arrow-up');
+		return SvgIcons::loadsvg('arrow-up');
 	}
 
 	/**
@@ -175,7 +178,7 @@ class Icons
 	 */
 	public static function chevronright()
 	{
-		$ktemplate     = \Joomla\Component\Kunena\Libraries\KunenaFactory::getTemplate();
+		$ktemplate     = KunenaFactory::getTemplate();
 		$topicicontype = $ktemplate->params->get('topicicontype');
 
 		if ($topicicontype == 'fa')
@@ -193,7 +196,7 @@ class Icons
 			return '<span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>';
 		}
 
-		return KunenaSvgIcons::loadsvg('arrow-right');
+		return SvgIcons::loadsvg('arrow-right');
 	}
 
 	/**
@@ -207,7 +210,7 @@ class Icons
 	 */
 	public static function members()
 	{
-		$ktemplate     = \Joomla\Component\Kunena\Libraries\KunenaFactory::getTemplate();
+		$ktemplate     = KunenaFactory::getTemplate();
 		$topicicontype = $ktemplate->params->get('topicicontype');
 
 		if ($topicicontype == 'fa')
@@ -225,7 +228,7 @@ class Icons
 			return '<span class="glyphicon glyphicon-user glyphicon-super" aria-hidden="true"></span>';
 		}
 
-		return KunenaSvgIcons::loadsvg('people');
+		return SvgIcons::loadsvg('people');
 	}
 
 	/**
@@ -239,7 +242,7 @@ class Icons
 	 */
 	public static function user()
 	{
-		$ktemplate     = \Joomla\Component\Kunena\Libraries\KunenaFactory::getTemplate();
+		$ktemplate     = KunenaFactory::getTemplate();
 		$topicicontype = $ktemplate->params->get('topicicontype');
 
 		if ($topicicontype == 'fa')
@@ -257,7 +260,7 @@ class Icons
 			return '<span class="glyphicon glyphicon-user" aria-hidden="true"></span>';
 		}
 
-		return KunenaSvgIcons::loadsvg('person');
+		return SvgIcons::loadsvg('person');
 	}
 
 	/**
@@ -271,7 +274,7 @@ class Icons
 	 */
 	public static function lock()
 	{
-		$ktemplate     = \Joomla\Component\Kunena\Libraries\KunenaFactory::getTemplate();
+		$ktemplate     = KunenaFactory::getTemplate();
 		$topicicontype = $ktemplate->params->get('topicicontype');
 
 		if ($topicicontype == 'fa')
@@ -289,7 +292,7 @@ class Icons
 			return '<span class="glyphicon glyphicon-lock" aria-hidden="true"></span>';
 		}
 
-		return KunenaSvgIcons::loadsvg('lock');
+		return SvgIcons::loadsvg('lock');
 	}
 
 	/**
@@ -303,7 +306,7 @@ class Icons
 	 */
 	public static function star()
 	{
-		$ktemplate     = \Joomla\Component\Kunena\Libraries\KunenaFactory::getTemplate();
+		$ktemplate     = KunenaFactory::getTemplate();
 		$topicicontype = $ktemplate->params->get('topicicontype');
 
 		if ($topicicontype == 'fa')
@@ -326,7 +329,7 @@ class Icons
 			return '<span class="kicon kfavoritestar ksmall" aria-hidden="true"></span>';
 		}
 
-		return KunenaSvgIcons::loadsvg('star');
+		return SvgIcons::loadsvg('star');
 	}
 
 	/**
@@ -340,7 +343,7 @@ class Icons
 	 */
 	public static function shield()
 	{
-		$ktemplate     = \Joomla\Component\Kunena\Libraries\KunenaFactory::getTemplate();
+		$ktemplate     = KunenaFactory::getTemplate();
 		$topicicontype = $ktemplate->params->get('topicicontype');
 
 		if ($topicicontype == 'fa')
@@ -358,7 +361,7 @@ class Icons
 			return '<span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span>';
 		}
 
-		return KunenaSvgIcons::loadsvg('eye-slash');
+		return SvgIcons::loadsvg('eye-slash');
 	}
 
 	/**
@@ -372,7 +375,7 @@ class Icons
 	 */
 	public static function flag()
 	{
-		$ktemplate     = \Joomla\Component\Kunena\Libraries\KunenaFactory::getTemplate();
+		$ktemplate     = KunenaFactory::getTemplate();
 		$topicicontype = $ktemplate->params->get('topicicontype');
 
 		if ($topicicontype == 'fa')
@@ -395,7 +398,7 @@ class Icons
 			return '<span class="kicon ktopicmy ksmall"></span>';
 		}
 
-		return KunenaSvgIcons::loadsvg('flag');
+		return SvgIcons::loadsvg('flag');
 	}
 
 	/**
@@ -409,7 +412,7 @@ class Icons
 	 */
 	public static function poll()
 	{
-		$ktemplate     = \Joomla\Component\Kunena\Libraries\KunenaFactory::getTemplate();
+		$ktemplate     = KunenaFactory::getTemplate();
 		$topicicontype = $ktemplate->params->get('topicicontype');
 
 		if ($topicicontype == 'fa')
@@ -427,7 +430,7 @@ class Icons
 			return '<span class="glyphicon glyphicon-stats" aria-hidden="true"></span>';
 		}
 
-		return KunenaSvgIcons::loadsvg('kanban');
+		return SvgIcons::loadsvg('kanban');
 	}
 
 	/**
@@ -441,7 +444,7 @@ class Icons
 	 */
 	public static function stats()
 	{
-		$ktemplate     = \Joomla\Component\Kunena\Libraries\KunenaFactory::getTemplate();
+		$ktemplate     = KunenaFactory::getTemplate();
 		$topicicontype = $ktemplate->params->get('topicicontype');
 
 		if ($topicicontype == 'fa')
@@ -459,7 +462,7 @@ class Icons
 			return '<span class="glyphicon glyphicon-stats glyphicon-super" aria-hidden="true"></span>';
 		}
 
-		return KunenaSvgIcons::loadsvg('bar-chart');
+		return SvgIcons::loadsvg('bar-chart');
 	}
 
 	/**
@@ -473,7 +476,7 @@ class Icons
 	 */
 	public static function search()
 	{
-		$ktemplate     = \Joomla\Component\Kunena\Libraries\KunenaFactory::getTemplate();
+		$ktemplate     = KunenaFactory::getTemplate();
 		$topicicontype = $ktemplate->params->get('topicicontype');
 
 		if ($topicicontype == 'fa')
@@ -491,7 +494,7 @@ class Icons
 			return '<span class="glyphicon glyphicon-search" aria-hidden="true"></span>';
 		}
 
-		return KunenaSvgIcons::loadsvg('search');
+		return SvgIcons::loadsvg('search');
 	}
 
 	/**
@@ -505,7 +508,7 @@ class Icons
 	 */
 	public static function collapse()
 	{
-		$ktemplate     = \Joomla\Component\Kunena\Libraries\KunenaFactory::getTemplate();
+		$ktemplate     = KunenaFactory::getTemplate();
 		$topicicontype = $ktemplate->params->get('topicicontype');
 
 		if ($topicicontype == 'fa')
@@ -523,7 +526,7 @@ class Icons
 			return '<span class="glyphicon glyphicon-sort" aria-hidden="true"></span>';
 		}
 
-		return KunenaSvgIcons::loadsvg('arrows-collapse');
+		return SvgIcons::loadsvg('arrows-collapse');
 	}
 
 	/**
@@ -537,7 +540,7 @@ class Icons
 	 */
 	public static function clock()
 	{
-		$ktemplate     = \Joomla\Component\Kunena\Libraries\KunenaFactory::getTemplate();
+		$ktemplate     = KunenaFactory::getTemplate();
 		$topicicontype = $ktemplate->params->get('topicicontype');
 
 		if ($topicicontype == 'fa')
@@ -555,7 +558,7 @@ class Icons
 			return '<span class="glyphicon glyphicon-time" aria-hidden="true"></span>';
 		}
 
-		return KunenaSvgIcons::loadsvg('clock');
+		return SvgIcons::loadsvg('clock');
 	}
 
 	/**
@@ -569,7 +572,7 @@ class Icons
 	 */
 	public static function thumbsup()
 	{
-		$ktemplate     = \Joomla\Component\Kunena\Libraries\KunenaFactory::getTemplate();
+		$ktemplate     = KunenaFactory::getTemplate();
 		$topicicontype = $ktemplate->params->get('topicicontype');
 
 		if ($topicicontype == 'fa')
@@ -587,7 +590,7 @@ class Icons
 			return '<span class="glyphicon glyphicon-thumbs-up" aria-hidden="true"></span>';
 		}
 
-		return KunenaSvgIcons::loadsvg('heart-fill');
+		return SvgIcons::loadsvg('heart-fill');
 	}
 
 	/**
@@ -601,7 +604,7 @@ class Icons
 	 */
 	public static function secure()
 	{
-		$ktemplate     = \Joomla\Component\Kunena\Libraries\KunenaFactory::getTemplate();
+		$ktemplate     = KunenaFactory::getTemplate();
 		$topicicontype = $ktemplate->params->get('topicicontype');
 
 		if ($topicicontype == 'fa')
@@ -619,7 +622,7 @@ class Icons
 			return '<span class="glyphicon glyphicon-shield" aria-hidden="true"></span>';
 		}
 
-		return KunenaSvgIcons::loadsvg('shield');
+		return SvgIcons::loadsvg('shield');
 	}
 
 	/**
@@ -633,7 +636,7 @@ class Icons
 	 */
 	public static function cancel()
 	{
-		$ktemplate     = \Joomla\Component\Kunena\Libraries\KunenaFactory::getTemplate();
+		$ktemplate     = KunenaFactory::getTemplate();
 		$topicicontype = $ktemplate->params->get('topicicontype');
 
 		if ($topicicontype == 'fa')
@@ -651,7 +654,7 @@ class Icons
 			return '<span class="glyphicon glyphicon-remove" aria-hidden="true"></span>';
 		}
 
-		return KunenaSvgIcons::loadsvg('x-circle');
+		return SvgIcons::loadsvg('x-circle');
 	}
 
 	/**
@@ -665,10 +668,10 @@ class Icons
 	 */
 	public static function ip()
 	{
-		$ktemplate     = \Joomla\Component\Kunena\Libraries\KunenaFactory::getTemplate();
+		$ktemplate     = KunenaFactory::getTemplate();
 		$topicicontype = $ktemplate->params->get('topicicontype');
 
-		if (!\Joomla\Component\Kunena\Libraries\User\Helper::getMyself()->isModerator())
+		if (!Helper::getMyself()->isModerator())
 		{
 			return false;
 		}
@@ -688,7 +691,7 @@ class Icons
 			return '<span class="glyphicon glyphicon-compass" aria-hidden="true"></span>';
 		}
 
-		return KunenaSvgIcons::loadsvg('compass');
+		return SvgIcons::loadsvg('compass');
 	}
 
 	/**
@@ -702,7 +705,7 @@ class Icons
 	 */
 	public static function email()
 	{
-		$ktemplate     = \Joomla\Component\Kunena\Libraries\KunenaFactory::getTemplate();
+		$ktemplate     = KunenaFactory::getTemplate();
 		$topicicontype = $ktemplate->params->get('topicicontype');
 
 		if ($topicicontype == 'fa')
@@ -725,7 +728,7 @@ class Icons
 			return '<span class="kicon-profile kicon-profile-email" aria-hidden="true"></span>';
 		}
 
-		return KunenaSvgIcons::loadsvg('envelope');
+		return SvgIcons::loadsvg('envelope');
 	}
 
 	/**
@@ -739,7 +742,7 @@ class Icons
 	 */
 	public static function bookmark()
 	{
-		$ktemplate     = \Joomla\Component\Kunena\Libraries\KunenaFactory::getTemplate();
+		$ktemplate     = KunenaFactory::getTemplate();
 		$topicicontype = $ktemplate->params->get('topicicontype');
 
 		if ($topicicontype == 'fa')
@@ -757,7 +760,7 @@ class Icons
 			return '<span class="glyphicon glyphicon-bookmark" aria-hidden="true"></span>';
 		}
 
-		return KunenaSvgIcons::loadsvg('bookmark');
+		return SvgIcons::loadsvg('bookmark');
 	}
 
 	/**
@@ -771,7 +774,7 @@ class Icons
 	 */
 	public static function back()
 	{
-		$ktemplate     = \Joomla\Component\Kunena\Libraries\KunenaFactory::getTemplate();
+		$ktemplate     = KunenaFactory::getTemplate();
 		$topicicontype = $ktemplate->params->get('topicicontype');
 
 		if ($topicicontype == 'fa')
@@ -789,7 +792,7 @@ class Icons
 			return '<span class="glyphicon glyphicon-arrow-left" aria-hidden="true"></span>';
 		}
 
-		return KunenaSvgIcons::loadsvg('arrow-left');
+		return SvgIcons::loadsvg('arrow-left');
 	}
 
 	/**
@@ -803,7 +806,7 @@ class Icons
 	 */
 	public static function save()
 	{
-		$ktemplate     = \Joomla\Component\Kunena\Libraries\KunenaFactory::getTemplate();
+		$ktemplate     = KunenaFactory::getTemplate();
 		$topicicontype = $ktemplate->params->get('topicicontype');
 
 		if ($topicicontype == 'fa')
@@ -821,7 +824,7 @@ class Icons
 			return '<span class="glyphicon glyphicon-save" aria-hidden="true"></span>';
 		}
 
-		return KunenaSvgIcons::loadsvg('check-circle');
+		return SvgIcons::loadsvg('check-circle');
 	}
 
 	/**
@@ -835,7 +838,7 @@ class Icons
 	 */
 	public static function edit()
 	{
-		$ktemplate     = \Joomla\Component\Kunena\Libraries\KunenaFactory::getTemplate();
+		$ktemplate     = KunenaFactory::getTemplate();
 		$topicicontype = $ktemplate->params->get('topicicontype');
 
 		if ($topicicontype == 'fa')
@@ -853,7 +856,7 @@ class Icons
 			return '<span class="glyphicon glyphicon-edit" aria-hidden="true"></span>';
 		}
 
-		return KunenaSvgIcons::loadsvg('pencil');
+		return SvgIcons::loadsvg('pencil');
 	}
 
 	/**
@@ -867,7 +870,7 @@ class Icons
 	 */
 	public static function pencil()
 	{
-		$ktemplate     = \Joomla\Component\Kunena\Libraries\KunenaFactory::getTemplate();
+		$ktemplate     = KunenaFactory::getTemplate();
 		$topicicontype = $ktemplate->params->get('topicicontype');
 
 		if ($topicicontype == 'fa')
@@ -885,7 +888,7 @@ class Icons
 			return '<span class="glyphicon glyphicon-pencil" aria-hidden="true"></span>';
 		}
 
-		return KunenaSvgIcons::loadsvg('pencil');
+		return SvgIcons::loadsvg('pencil');
 	}
 
 	/**
@@ -899,7 +902,7 @@ class Icons
 	 */
 	public static function attach()
 	{
-		$ktemplate     = \Joomla\Component\Kunena\Libraries\KunenaFactory::getTemplate();
+		$ktemplate     = KunenaFactory::getTemplate();
 		$topicicontype = $ktemplate->params->get('topicicontype');
 
 		if ($topicicontype == 'fa')
@@ -922,7 +925,7 @@ class Icons
 			return '<span class="kicon ktopicattach ksmall"></span>';
 		}
 
-		return KunenaSvgIcons::loadsvg('images');
+		return SvgIcons::loadsvg('images');
 	}
 
 	/**
@@ -936,7 +939,7 @@ class Icons
 	 */
 	public static function plus()
 	{
-		$ktemplate     = \Joomla\Component\Kunena\Libraries\KunenaFactory::getTemplate();
+		$ktemplate     = KunenaFactory::getTemplate();
 		$topicicontype = $ktemplate->params->get('topicicontype');
 
 		if ($topicicontype == 'fa')
@@ -954,7 +957,7 @@ class Icons
 			return '<span class="glyphicon glyphicon-plus" aria-hidden="true"></span>';
 		}
 
-		return KunenaSvgIcons::loadsvg('plus');
+		return SvgIcons::loadsvg('plus');
 	}
 
 	/**
@@ -970,9 +973,9 @@ class Icons
 	 */
 	public static function rss($text = null)
 	{
-		$ktemplate     = \Joomla\Component\Kunena\Libraries\KunenaFactory::getTemplate();
+		$ktemplate     = KunenaFactory::getTemplate();
 		$topicicontype = $ktemplate->params->get('topicicontype');
-		$class         = ' ' . \Joomla\Component\Kunena\Libraries\Template\Template::getInstance()->tooltips();
+		$class         = ' ' . Template::getInstance()->tooltips();
 
 		if ($topicicontype == 'fa')
 		{
@@ -989,7 +992,7 @@ class Icons
 			return '<span class="glyphicon glyphicon-list-alt ' . $class . '" title="' . Text::_('COM_KUNENA_CATEGORIES_LABEL_GETRSS') . '" aria-hidden="true"></span>';
 		}
 
-		return KunenaSvgIcons::loadsvg('rss');
+		return SvgIcons::loadsvg('rss');
 	}
 
 	/**
@@ -1003,7 +1006,7 @@ class Icons
 	 */
 	public static function upload()
 	{
-		$ktemplate     = \Joomla\Component\Kunena\Libraries\KunenaFactory::getTemplate();
+		$ktemplate     = KunenaFactory::getTemplate();
 		$topicicontype = $ktemplate->params->get('topicicontype');
 
 		if ($topicicontype == 'fa')
@@ -1021,7 +1024,7 @@ class Icons
 			return '<span class="glyphicon glyphicon-upload" aria-hidden="true"></span>';
 		}
 
-		return KunenaSvgIcons::loadsvg('upload');
+		return SvgIcons::loadsvg('upload');
 	}
 
 	/**
@@ -1037,7 +1040,7 @@ class Icons
 	 */
 	public static function picture($big = false)
 	{
-		$ktemplate     = \Joomla\Component\Kunena\Libraries\KunenaFactory::getTemplate();
+		$ktemplate     = KunenaFactory::getTemplate();
 		$topicicontype = $ktemplate->params->get('topicicontype');
 
 		if ($big)
@@ -1060,7 +1063,7 @@ class Icons
 			return '<span class="large-kicon glyphicon glyphicon-picture' . $big . '" aria-hidden="true"></span>';
 		}
 
-		return KunenaSvgIcons::loadsvg('image');
+		return SvgIcons::loadsvg('image');
 	}
 
 	/**
@@ -1076,7 +1079,7 @@ class Icons
 	 */
 	public static function file($big = false)
 	{
-		$ktemplate     = \Joomla\Component\Kunena\Libraries\KunenaFactory::getTemplate();
+		$ktemplate     = KunenaFactory::getTemplate();
 		$topicicontype = $ktemplate->params->get('topicicontype');
 
 		if ($big)
@@ -1099,7 +1102,7 @@ class Icons
 			return '<span class="large-kicon glyphicon glyphicon-file' . $big . '" aria-hidden="true"></span>';
 		}
 
-		return KunenaSvgIcons::loadsvg('document-richtext');
+		return SvgIcons::loadsvg('document-richtext');
 	}
 
 	/**
@@ -1113,7 +1116,7 @@ class Icons
 	 */
 	public static function delete()
 	{
-		$ktemplate     = \Joomla\Component\Kunena\Libraries\KunenaFactory::getTemplate();
+		$ktemplate     = KunenaFactory::getTemplate();
 		$topicicontype = $ktemplate->params->get('topicicontype');
 
 		if ($topicicontype == 'fa')
@@ -1131,7 +1134,7 @@ class Icons
 			return '<span class="large-kicon glyphicon glyphicon-trash" aria-hidden="true"></span>';
 		}
 
-		return KunenaSvgIcons::loadsvg('trash');
+		return SvgIcons::loadsvg('trash');
 	}
 
 	/**
@@ -1145,7 +1148,7 @@ class Icons
 	 */
 	public static function poll_add()
 	{
-		$ktemplate     = \Joomla\Component\Kunena\Libraries\KunenaFactory::getTemplate();
+		$ktemplate     = KunenaFactory::getTemplate();
 		$topicicontype = $ktemplate->params->get('topicicontype');
 
 		if ($topicicontype == 'fa')
@@ -1166,7 +1169,7 @@ class Icons
 						alt="' . Text::_('COM_KUNENA_POLL_ADD_POLL_OPTION') . '" aria-hidden="true"> </i>';
 		}
 
-		return KunenaSvgIcons::loadsvg('pie-chart-fill');
+		return SvgIcons::loadsvg('pie-chart-fill');
 	}
 
 	/**
@@ -1180,7 +1183,7 @@ class Icons
 	 */
 	public static function poll_rem()
 	{
-		$ktemplate     = \Joomla\Component\Kunena\Libraries\KunenaFactory::getTemplate();
+		$ktemplate     = KunenaFactory::getTemplate();
 		$topicicontype = $ktemplate->params->get('topicicontype');
 
 		if ($topicicontype == 'fa')
@@ -1201,7 +1204,7 @@ class Icons
 						alt="' . Text::_('COM_KUNENA_POLL_ADD_POLL_OPTION') . '" aria-hidden="true"> </i>';
 		}
 
-		return KunenaSvgIcons::loadsvg('bar-chart');
+		return SvgIcons::loadsvg('bar-chart');
 	}
 
 	/**
@@ -1215,7 +1218,7 @@ class Icons
 	 */
 	public static function undo()
 	{
-		$ktemplate     = \Joomla\Component\Kunena\Libraries\KunenaFactory::getTemplate();
+		$ktemplate     = KunenaFactory::getTemplate();
 		$topicicontype = $ktemplate->params->get('topicicontype');
 
 		if ($topicicontype == 'fa')
@@ -1238,7 +1241,7 @@ class Icons
 			return '<span class="kicon-reply" aria-hidden="true"></span>';
 		}
 
-		return KunenaSvgIcons::loadsvg('arrow-clockwise');
+		return SvgIcons::loadsvg('arrow-clockwise');
 	}
 
 	/**
@@ -1252,7 +1255,7 @@ class Icons
 	 */
 	public static function shuffle()
 	{
-		$ktemplate     = \Joomla\Component\Kunena\Libraries\KunenaFactory::getTemplate();
+		$ktemplate     = KunenaFactory::getTemplate();
 		$topicicontype = $ktemplate->params->get('topicicontype');
 
 		if ($topicicontype == 'fa')
@@ -1270,7 +1273,7 @@ class Icons
 			return '<span class="glyphicon glyphicon-random" aria-hidden="true"></span>';
 		}
 
-		return KunenaSvgIcons::loadsvg('arrow-repeat');
+		return SvgIcons::loadsvg('arrow-repeat');
 	}
 
 	/**
@@ -1288,7 +1291,7 @@ class Icons
 	 */
 	public static function caticon($categoryicon, $new = null, $big = true)
 	{
-		$ktemplate     = \Joomla\Component\Kunena\Libraries\KunenaFactory::getTemplate();
+		$ktemplate     = KunenaFactory::getTemplate();
 		$topicicontype = $ktemplate->params->get('topicicontype');
 		$caticon       = $ktemplate->params->get('DefaultCategoryicon');
 
@@ -1440,11 +1443,11 @@ class Icons
 			{
 				if ($newchar)
 				{
-					return KunenaSvgIcons::loadsvg('folder-fill');
+					return SvgIcons::loadsvg('folder-fill');
 				}
 				else
 				{
-					return KunenaSvgIcons::loadsvg('folder');
+					return SvgIcons::loadsvg('folder');
 				}
 			}
 			else
@@ -1453,7 +1456,7 @@ class Icons
 
 				if ($svg)
 				{
-					return KunenaSvgIcons::loadsvg($categoryicon);
+					return SvgIcons::loadsvg($categoryicon);
 				}
 				else
 				{
@@ -1481,7 +1484,7 @@ class Icons
 	 */
 	public static function home()
 	{
-		$ktemplate     = \Joomla\Component\Kunena\Libraries\KunenaFactory::getTemplate();
+		$ktemplate     = KunenaFactory::getTemplate();
 		$topicicontype = $ktemplate->params->get('topicicontype');
 
 		if ($topicicontype == 'fa')
@@ -1499,7 +1502,7 @@ class Icons
 			return '<span class="glyphicon glyphicon-home hasTooltip" aria-hidden="true"></span>';
 		}
 
-		return KunenaSvgIcons::loadsvg('house');
+		return SvgIcons::loadsvg('house');
 	}
 
 	/**
@@ -1513,7 +1516,7 @@ class Icons
 	 */
 	public static function calendar()
 	{
-		$ktemplate     = \Joomla\Component\Kunena\Libraries\KunenaFactory::getTemplate();
+		$ktemplate     = KunenaFactory::getTemplate();
 		$topicicontype = $ktemplate->params->get('topicicontype');
 
 		if ($topicicontype == 'fa')
@@ -1531,7 +1534,7 @@ class Icons
 			return '<span class="glyphicon glyphicon-calendar" aria-hidden="true"></span>';
 		}
 
-		return KunenaSvgIcons::loadsvg('calendar');
+		return SvgIcons::loadsvg('calendar');
 	}
 
 	/**
@@ -1545,7 +1548,7 @@ class Icons
 	 */
 	public static function hamburger()
 	{
-		$ktemplate     = \Joomla\Component\Kunena\Libraries\KunenaFactory::getTemplate();
+		$ktemplate     = KunenaFactory::getTemplate();
 		$topicicontype = $ktemplate->params->get('topicicontype');
 
 		if ($topicicontype == 'fa')
@@ -1563,7 +1566,7 @@ class Icons
 			return '<span class="glyphicon glyphicon-large glyphicon-menu-hamburger" aria-hidden="true"></span> <b class="caret"></b>';
 		}
 
-		return KunenaSvgIcons::loadsvg('three-dots-vertical');
+		return SvgIcons::loadsvg('three-dots-vertical');
 	}
 
 	/**
@@ -1577,7 +1580,7 @@ class Icons
 	 */
 	public static function info()
 	{
-		$ktemplate     = \Joomla\Component\Kunena\Libraries\KunenaFactory::getTemplate();
+		$ktemplate     = KunenaFactory::getTemplate();
 		$topicicontype = $ktemplate->params->get('topicicontype');
 
 		if ($topicicontype == 'fa')
@@ -1595,7 +1598,7 @@ class Icons
 			return '<span class="glyphicon glyphicon-info-sign" aria-hidden="true"></span>';
 		}
 
-		return KunenaSvgIcons::loadsvg('alert-circle');
+		return SvgIcons::loadsvg('alert-circle');
 	}
 
 	/**
@@ -1609,7 +1612,7 @@ class Icons
 	 */
 	public static function online()
 	{
-		$ktemplate     = \Joomla\Component\Kunena\Libraries\KunenaFactory::getTemplate();
+		$ktemplate     = KunenaFactory::getTemplate();
 		$topicicontype = $ktemplate->params->get('topicicontype');
 
 		if ($topicicontype == 'fa')
@@ -1627,7 +1630,7 @@ class Icons
 			return '<span class="glyphicon glyphicon-plus green" aria-hidden="true"></span>';
 		}
 
-		return KunenaSvgIcons::loadsvg('plus');
+		return SvgIcons::loadsvg('plus');
 	}
 
 	/**
@@ -1641,7 +1644,7 @@ class Icons
 	 */
 	public static function away()
 	{
-		$ktemplate     = \Joomla\Component\Kunena\Libraries\KunenaFactory::getTemplate();
+		$ktemplate     = KunenaFactory::getTemplate();
 		$topicicontype = $ktemplate->params->get('topicicontype');
 
 		if ($topicicontype == 'fa')
@@ -1659,7 +1662,7 @@ class Icons
 			return '<span class="glyphicon glyphicon-plus yellow" aria-hidden="true"></span>';
 		}
 
-		return KunenaSvgIcons::loadsvg('plus');
+		return SvgIcons::loadsvg('plus');
 	}
 
 	/**
@@ -1673,7 +1676,7 @@ class Icons
 	 */
 	public static function busy()
 	{
-		$ktemplate     = \Joomla\Component\Kunena\Libraries\KunenaFactory::getTemplate();
+		$ktemplate     = KunenaFactory::getTemplate();
 		$topicicontype = $ktemplate->params->get('topicicontype');
 
 		if ($topicicontype == 'fa')
@@ -1691,7 +1694,7 @@ class Icons
 			return '<span class="glyphicon glyphicon-minus red" aria-hidden="true"></span>';
 		}
 
-		return KunenaSvgIcons::loadsvg('dash');
+		return SvgIcons::loadsvg('dash');
 	}
 
 	/**
@@ -1705,7 +1708,7 @@ class Icons
 	 */
 	public static function invisible()
 	{
-		$ktemplate     = \Joomla\Component\Kunena\Libraries\KunenaFactory::getTemplate();
+		$ktemplate     = KunenaFactory::getTemplate();
 		$topicicontype = $ktemplate->params->get('topicicontype');
 
 		if ($topicicontype == 'fa')
@@ -1723,7 +1726,7 @@ class Icons
 			return '<span class="glyphicon glyphicon-minus grey" aria-hidden="true"></span>';
 		}
 
-		return KunenaSvgIcons::loadsvg('dash');
+		return SvgIcons::loadsvg('dash');
 	}
 
 	/**
@@ -1737,7 +1740,7 @@ class Icons
 	 */
 	public static function cog()
 	{
-		$ktemplate     = \Joomla\Component\Kunena\Libraries\KunenaFactory::getTemplate();
+		$ktemplate     = KunenaFactory::getTemplate();
 		$topicicontype = $ktemplate->params->get('topicicontype');
 
 		if ($topicicontype == 'fa')
@@ -1755,7 +1758,7 @@ class Icons
 			return '<span class="glyphicon glyphicon-cog" aria-hidden="true"></span>';
 		}
 
-		return KunenaSvgIcons::loadsvg('gear');
+		return SvgIcons::loadsvg('gear');
 	}
 
 	/**
@@ -1769,7 +1772,7 @@ class Icons
 	 */
 	public static function drawer()
 	{
-		$ktemplate     = \Joomla\Component\Kunena\Libraries\KunenaFactory::getTemplate();
+		$ktemplate     = KunenaFactory::getTemplate();
 		$topicicontype = $ktemplate->params->get('topicicontype');
 
 		if ($topicicontype == 'fa')
@@ -1787,7 +1790,7 @@ class Icons
 			return '<span class="glyphicon glyphicon-inbox" aria-hidden="true"></span>';
 		}
 
-		return KunenaSvgIcons::loadsvg('inbox');
+		return SvgIcons::loadsvg('inbox');
 	}
 
 	/**
@@ -1801,7 +1804,7 @@ class Icons
 	 */
 	public static function out()
 	{
-		$ktemplate     = \Joomla\Component\Kunena\Libraries\KunenaFactory::getTemplate();
+		$ktemplate     = KunenaFactory::getTemplate();
 		$topicicontype = $ktemplate->params->get('topicicontype');
 
 		if ($topicicontype == 'fa')
@@ -1819,7 +1822,7 @@ class Icons
 			return '<span class="glyphicon glyphicon-log-out" aria-hidden="true"></span>';
 		}
 
-		return KunenaSvgIcons::loadsvg('power');
+		return SvgIcons::loadsvg('power');
 	}
 
 	/**
@@ -1833,7 +1836,7 @@ class Icons
 	 */
 	public static function grid()
 	{
-		$ktemplate     = \Joomla\Component\Kunena\Libraries\KunenaFactory::getTemplate();
+		$ktemplate     = KunenaFactory::getTemplate();
 		$topicicontype = $ktemplate->params->get('topicicontype');
 
 		if ($topicicontype == 'fa')
@@ -1851,7 +1854,7 @@ class Icons
 			return '<span class="glyphicon glyphicon-th" aria-hidden="true"></span>';
 		}
 
-		return KunenaSvgIcons::loadsvg('grid');
+		return SvgIcons::loadsvg('grid');
 	}
 
 	/**
@@ -1865,7 +1868,7 @@ class Icons
 	 */
 	public static function globe()
 	{
-		$ktemplate     = \Joomla\Component\Kunena\Libraries\KunenaFactory::getTemplate();
+		$ktemplate     = KunenaFactory::getTemplate();
 		$topicicontype = $ktemplate->params->get('topicicontype');
 
 		if ($topicicontype == 'fa')
@@ -1888,7 +1891,7 @@ class Icons
 			return '<span class="kicon-profile kicon-profile-website" aria-hidden="true"></span>';
 		}
 
-		return KunenaSvgIcons::loadsvg('window');
+		return SvgIcons::loadsvg('window');
 	}
 
 	/**
@@ -1902,7 +1905,7 @@ class Icons
 	 */
 	public static function location()
 	{
-		$ktemplate     = \Joomla\Component\Kunena\Libraries\KunenaFactory::getTemplate();
+		$ktemplate     = KunenaFactory::getTemplate();
 		$topicicontype = $ktemplate->params->get('topicicontype');
 
 		if ($topicicontype == 'fa')
@@ -1925,7 +1928,7 @@ class Icons
 			return '<span class="kicon-profile kicon-profile-location" aria-hidden="true"></span>';
 		}
 
-		return KunenaSvgIcons::loadsvg('geo');
+		return SvgIcons::loadsvg('geo');
 	}
 
 	/**
@@ -1939,7 +1942,7 @@ class Icons
 	 */
 	public static function pm()
 	{
-		$ktemplate     = \Joomla\Component\Kunena\Libraries\KunenaFactory::getTemplate();
+		$ktemplate     = KunenaFactory::getTemplate();
 		$topicicontype = $ktemplate->params->get('topicicontype');
 
 		if ($topicicontype == 'fa')
@@ -1962,7 +1965,7 @@ class Icons
 			return '<span class="kicon-profile kicon-profile-pm" aria-hidden="true"></span>';
 		}
 
-		return KunenaSvgIcons::loadsvg('chat');
+		return SvgIcons::loadsvg('chat');
 	}
 
 	/**
@@ -1976,7 +1979,7 @@ class Icons
 	 */
 	public static function report()
 	{
-		$ktemplate     = \Joomla\Component\Kunena\Libraries\KunenaFactory::getTemplate();
+		$ktemplate     = KunenaFactory::getTemplate();
 		$topicicontype = $ktemplate->params->get('topicicontype');
 
 		if ($topicicontype == 'fa')
@@ -1999,7 +2002,7 @@ class Icons
 			return '<span class="kicon-report" aria-hidden="true"></span>';
 		}
 
-		return KunenaSvgIcons::loadsvg('alert-octagon');
+		return SvgIcons::loadsvg('alert-octagon');
 	}
 
 	/**
@@ -2013,7 +2016,7 @@ class Icons
 	 */
 	public static function reportname()
 	{
-		$ktemplate     = \Joomla\Component\Kunena\Libraries\KunenaFactory::getTemplate();
+		$ktemplate     = KunenaFactory::getTemplate();
 		$topicicontype = $ktemplate->params->get('topicicontype');
 
 		if ($topicicontype == 'B2')

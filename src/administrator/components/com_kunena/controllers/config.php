@@ -10,13 +10,14 @@
  * @link            https://www.kunena.org
  **/
 
-namespace Joomla\Component\Kunena\Administrator;
+namespace Kunena\Forum\Administrator\Controllers;
 
 defined('_JEXEC') or die();
 
-use Exception;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\Session\Session;
+use Kunena\Forum\Libraries\Controller;
+use Kunena\Forum\Libraries\Route\KunenaRoute;
 use Joomla\String\StringHelper;
 use function defined;
 
@@ -25,7 +26,7 @@ use function defined;
  *
  * @since   Kunena 2.0
  */
-class KunenaAdminControllerConfig extends KunenaController
+class KunenaAdminControllerConfig extends Controller
 {
 	/**
 	 * @var     null|string
@@ -46,7 +47,7 @@ class KunenaAdminControllerConfig extends KunenaController
 	 *
 	 * @since   Kunena 2.0.0-BETA2
 	 *
-	 * @throws  Exception
+	 * @throws  \Exception
 	 */
 	public function __construct($config = [])
 	{
@@ -62,7 +63,7 @@ class KunenaAdminControllerConfig extends KunenaController
 	 *
 	 * @since   Kunena 2.0.0-BETA2
 	 *
-	 * @throws  Exception
+	 * @throws  \Exception
 	 * @throws  null
 	 */
 	public function apply()
@@ -79,7 +80,7 @@ class KunenaAdminControllerConfig extends KunenaController
 	 *
 	 * @since   Kunena 2.0.0-BETA2
 	 *
-	 * @throws  Exception
+	 * @throws  \Exception
 	 * @throws  null
 	 */
 	public function save($url = null)
@@ -87,7 +88,7 @@ class KunenaAdminControllerConfig extends KunenaController
 		if (!Session::checkToken('post'))
 		{
 			$this->app->enqueueMessage(Text::_('COM_KUNENA_ERROR_TOKEN'), 'error');
-			$this->setRedirect(\Joomla\Component\Kunena\Libraries\Route\KunenaRoute::_($this->baseurl, false));
+			$this->setRedirect(KunenaRoute::_($this->baseurl, false));
 
 			return;
 		}
@@ -113,7 +114,7 @@ class KunenaAdminControllerConfig extends KunenaController
 					if (empty($postvalue))
 					{
 						$this->app->enqueueMessage(Text::_('COM_KUNENA_IMAGEWIDTH_IMAGEHEIGHT_EMPTY_CONFIG_NOT_SAVED'));
-						$this->setRedirect(\Joomla\Component\Kunena\Libraries\Route\KunenaRoute::_($url, false));
+						$this->setRedirect(KunenaRoute::_($url, false));
 
 						return;
 					}
@@ -134,12 +135,12 @@ class KunenaAdminControllerConfig extends KunenaController
 
 		if (empty($url))
 		{
-			$this->setRedirect(\Joomla\Component\Kunena\Libraries\Route\KunenaRoute::_($this->kunenabaseurl, false));
+			$this->setRedirect(KunenaRoute::_($this->kunenabaseurl, false));
 
 			return;
 		}
 
-		$this->setRedirect(\Joomla\Component\Kunena\Libraries\Route\KunenaRoute::_($url, false));
+		$this->setRedirect(KunenaRoute::_($url, false));
 	}
 
 	/**
@@ -149,7 +150,7 @@ class KunenaAdminControllerConfig extends KunenaController
 	 *
 	 * @since   Kunena 2.0.0-BETA2
 	 *
-	 * @throws  Exception
+	 * @throws  \Exception
 	 * @throws  null
 	 */
 	public function setdefault()
@@ -157,7 +158,7 @@ class KunenaAdminControllerConfig extends KunenaController
 		if (!Session::checkToken('post'))
 		{
 			$this->app->enqueueMessage(Text::_('COM_KUNENA_ERROR_TOKEN'), 'error');
-			$this->setRedirect(\Joomla\Component\Kunena\Libraries\Route\KunenaRoute::_($this->baseurl, false));
+			$this->setRedirect(KunenaRoute::_($this->baseurl, false));
 
 			return;
 		}

@@ -9,18 +9,18 @@
  * @link           https://www.kunena.org
  **/
 
-namespace Joomla\Component\Kunena\Administrator;
+namespace Kunena\Forum\Administrator;
 
 defined('_JEXEC') or die();
 
 use Joomla\CMS\Factory;
 use Joomla\CMS\Language\Text;
-use Joomla\Component\Kunena\Administrator\Install\Controller\KunenaControllerInstall;
-use Joomla\Component\Kunena\Libraries\Controller;
-use Joomla\Component\Kunena\Libraries\Error;
-use Joomla\Component\Kunena\Libraries\Exception\Authorise;
-use Joomla\Component\Kunena\Libraries\Forum\Forum;
-use Joomla\Component\Kunena\Libraries\KunenaProfiler;
+use Kunena\Forum\Administrator\Install\KunenaControllerInstall;
+use Kunena\Forum\Libraries\Controller;
+use Kunena\Forum\Libraries\Error;
+use Kunena\Forum\Libraries\Exception\Authorise;
+use Kunena\Forum\Libraries\Forum\KunenaForum;
+use Kunena\Forum\Libraries\KunenaProfiler;
 use function defined;
 
 // Access check.
@@ -37,7 +37,7 @@ KUNENA_PROFILER ? $kunena_profiler->mark('afterLoad') : null;
 $app = Factory::getApplication();
 
 // Safety check to prevent fatal error if 'System - Kunena Forum' plug-in has been disabled.
-if ($app->input->getCmd('view') == 'install' || !class_exists('KunenaForum') || !Forum::isCompatible('4.0'))
+if ($app->input->getCmd('view') == 'install' || !class_exists('KunenaForum') || !KunenaForum::isCompatible('4.0'))
 {
 	// Run installer instead..
 	require_once __DIR__ . '/install/controller.php';
@@ -69,7 +69,7 @@ if ($app->input->getCmd('view') == 'uninstall')
 }
 
 // Initialize Kunena Framework.
-Forum::setup();
+KunenaForum::setup();
 
 // Initialize custom error handlers.
 Error::initialize();

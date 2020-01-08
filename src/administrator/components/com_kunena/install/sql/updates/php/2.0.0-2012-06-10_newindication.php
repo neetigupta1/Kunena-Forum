@@ -9,7 +9,7 @@
  * @link           https://www.kunena.org
  **/
 
-namespace Joomla\Component\Kunena\Administrator;
+namespace Kunena\Forum\Administrator\Updates\Php;
 
 defined('_JEXEC') or die();
 
@@ -26,7 +26,7 @@ use function defined;
  *
  * @since   Kunena 6.0
  *
- * @throws  Exception
+ * @throws  \Exception
  */
 function kunena_200_2012_06_10_newindication($parent)
 {
@@ -34,7 +34,7 @@ function kunena_200_2012_06_10_newindication($parent)
 	$now = Factory::getDate()->toUnix();
 
 	// First remove old session information (not used anyway, speeds up conversion)
-	$lasttime = $now - max(intval(Factory::getConfig()->get('config.lifetime')) * 60, intval(\Joomla\Component\Kunena\Libraries\KunenaFactory::getConfig()->sessiontimeout)) - 60;
+	$lasttime = $now - max(intval(Factory::getConfig()->get('config.lifetime')) * 60, intval(\Kunena\Forum\Libraries\KunenaFactory::getConfig()->sessiontimeout)) - 60;
 	$query    = "UPDATE `#__kunena_sessions` SET readtopics='0' WHERE currvisit<{$db->quote($lasttime)}";
 	$db->setQuery($query);
 
@@ -44,7 +44,7 @@ function kunena_200_2012_06_10_newindication($parent)
 	}
 	catch (Exception $e)
 	{
-		throw new KunenaInstallerException($e->getMessage(), $e->getCode());
+		throw new Exception($e->getMessage(), $e->getCode());
 	}
 
 	$limit = 100;
@@ -67,7 +67,7 @@ function kunena_200_2012_06_10_newindication($parent)
 		}
 		catch (Exception $e)
 		{
-			throw new KunenaInstallerException($e->getMessage(), $e->getCode());
+			throw new Exception($e->getMessage(), $e->getCode());
 		}
 
 		// Create new data
@@ -116,7 +116,7 @@ function kunena_200_2012_06_10_newindication($parent)
 				}
 				catch (Exception $e)
 				{
-					throw new KunenaInstallerException($e->getMessage(), $e->getCode());
+					throw new Exception($e->getMessage(), $e->getCode());
 				}
 			}
 		}
@@ -136,7 +136,7 @@ function kunena_200_2012_06_10_newindication($parent)
 			}
 			catch (Exception $e)
 			{
-				throw new KunenaInstallerException($e->getMessage(), $e->getCode());
+				throw new Exception($e->getMessage(), $e->getCode());
 			}
 		}
 
@@ -157,7 +157,7 @@ function kunena_200_2012_06_10_newindication($parent)
 	}
 	catch (Exception $e)
 	{
-		throw new KunenaInstallerException($e->getMessage(), $e->getCode());
+		throw new Exception($e->getMessage(), $e->getCode());
 	}
 
 	return ['action' => '', 'name' => Text::_('COM_KUNENA_INSTALL_200_NEW_INDICATION'), 'success' => true];

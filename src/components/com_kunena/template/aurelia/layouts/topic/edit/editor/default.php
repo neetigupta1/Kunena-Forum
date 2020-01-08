@@ -10,7 +10,7 @@
  * @link            https://www.kunena.org
  **/
 
-namespace Joomla\Component\Kunena\Site;
+namespace Kunena\Forum\Site;
 
 defined('_JEXEC') or die();
 
@@ -263,8 +263,8 @@ if (!empty($codeTypes)) : ?>
 							/>
 						</div>
 						<div class="clearfix"></div>
-						<?php echo KunenaIcons::poll_add(); ?>
-						<?php echo KunenaIcons::poll_rem(); ?>
+						<?php echo \Kunena\Forum\Libraries\Icons\Icons::poll_add(); ?>
+						<?php echo \Kunena\Forum\Libraries\Icons\Icons::poll_rem(); ?>
 						<div class="clearfix"></div>
 						<div id="datepoll-container">
 							<label class="kpoll-term-lbl"
@@ -274,7 +274,7 @@ if (!empty($codeTypes)) : ?>
 								       data-date-format="mm/dd/yyyy"
 								       value="<?php echo !empty($this->poll->polltimetolive) ? $this->poll->polltimetolive : '' ?>">
 								<span class="input-group-addon">
-								<?php echo KunenaIcons::grid(); ?>
+								<?php echo \Kunena\Forum\Libraries\Icons\Icons::grid(); ?>
 							</span>
 							</div>
 						</div>
@@ -323,7 +323,7 @@ if (!empty($codeTypes)) : ?>
 			</div>
 			<div class="modal-body">
 				<div id="smilie"><?php
-					$emoticons = \Joomla\Component\Kunena\Libraries\Html\Parser::getEmoticons(0, 1);
+					$emoticons = \Kunena\Forum\Libraries\Html\Parser::getEmoticons(0, 1);
 					foreach ($emoticons as $emo_code => $emo_properties)
 					{
 						echo '<img class="smileyimage" src="' . $emo_properties->path . '" border="0" width="' . $emo_properties->width . '" height="' . $emo_properties->height . '"  alt="' . $emo_code . ' " title="' . $emo_code . ' " style="cursor:pointer"/> ';
@@ -342,7 +342,7 @@ if (!empty($codeTypes)) : ?>
 <div class="control-group">
 	<div class="controls">
 		<input type="hidden" id="kurl_emojis" name="kurl_emojis"
-		       value="<?php echo \Joomla\Component\Kunena\Libraries\Route\KunenaRoute::_('index.php?option=com_kunena&view=topic&layout=listemoji&format=raw') ?>"/>
+		       value="<?php echo \Kunena\Forum\Libraries\Route\KunenaRoute::_('index.php?option=com_kunena&view=topic&layout=listemoji&format=raw') ?>"/>
 		<input type="hidden" id="kemojis_allowed" name="kemojis_allowed"
 		       value="<?php echo $this->config->disemoticons ?>"/>
 	</div>

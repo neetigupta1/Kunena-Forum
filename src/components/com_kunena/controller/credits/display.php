@@ -10,7 +10,7 @@
  * @link            https://www.kunena.org
  **/
 
-namespace Joomla\Component\Kunena\Site\Controller\Credits;
+namespace Kunena\Forum\Site\Controller\Credits;
 
 defined('_JEXEC') or die();
 
@@ -19,9 +19,9 @@ use Joomla\CMS\Factory;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\MVC\Controller\BaseController;
 use Joomla\CMS\Plugin\PluginHelper;
-use Joomla\Component\Kunena\Libraries\Controller\Display;
-use Joomla\Component\Kunena\Libraries\KunenaFactory;
-use Joomla\Component\Kunena\Libraries\Route\KunenaRoute;
+use Kunena\Forum\Libraries\Controller\KunenaControllerDisplay;
+use Kunena\Forum\Libraries\KunenaFactory;
+use Kunena\Forum\Libraries\Route\KunenaRoute;
 use function defined;
 
 /**
@@ -29,7 +29,7 @@ use function defined;
  *
  * @since  4.0
  */
-class ComponentKunenaControllerCreditsDisplay extends Display
+class ComponentKunenaControllerCreditsDisplay extends KunenaControllerDisplay
 {
 	/**
 	 * @var     string

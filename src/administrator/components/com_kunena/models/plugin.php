@@ -6,7 +6,8 @@
  * @copyright   Copyright (C) 2005 - 2013 Open Source Matters, Inc. All rights reserved.
  * @license     GNU General Public License version 2 or later; see LICENSE.txt
  */
-namespace Joomla\Component\Kunena\Administrator;
+
+namespace Kunena\Forum\Administrator\Models;
 
 defined('_JEXEC') or die;
 
@@ -66,7 +67,7 @@ class KunenaAdminModelPlugin extends AdminModel
 	 *
 	 * @since   Kunena 6.0
 	 *
-	 * @throws  Exception
+	 * @throws  \Exception
 	 */
 	public function __construct($config = [])
 	{
@@ -84,7 +85,7 @@ class KunenaAdminModelPlugin extends AdminModel
 	 *
 	 * @since   Kunena 1.6
 	 *
-	 * @throws  Exception
+	 * @throws  \Exception
 	 */
 	public function getForm($data = [], $loadData = true)
 	{
@@ -140,7 +141,7 @@ class KunenaAdminModelPlugin extends AdminModel
 	 *
 	 * @since   Kunena 6.0
 	 *
-	 * @throws  Exception
+	 * @throws  \Exception
 	 */
 	public function getItem($pk = null)
 	{
@@ -174,7 +175,7 @@ class KunenaAdminModelPlugin extends AdminModel
 			$this->_cache[$pk]->params = $registry->toArray();
 
 			// Get the plugin XML.
-			$path = KunenaPath::clean(JPATH_PLUGINS . '/' . $table->folder . '/' . $table->element . '/' . $table->element . '.xml');
+			$path = \Kunena\Forum\Libraries\Path\KunenaPath::clean(JPATH_PLUGINS . '/' . $table->folder . '/' . $table->element . '/' . $table->element . '.xml');
 
 			if (is_file($path))
 			{
@@ -214,7 +215,7 @@ class KunenaAdminModelPlugin extends AdminModel
 	 *
 	 * @since   Kunena 1.6
 	 *
-	 * @throws  Exception
+	 * @throws  \Exception
 	 */
 	public function save($data)
 	{
@@ -249,7 +250,7 @@ class KunenaAdminModelPlugin extends AdminModel
 	 * @return  mixed  The data for the form.
 	 *
 	 * @since   Kunena 1.6
-	 * @throws  Exception
+	 * @throws  \Exception
 	 */
 	protected function loadFormData()
 	{
@@ -277,7 +278,7 @@ class KunenaAdminModelPlugin extends AdminModel
 	 *
 	 * @since   Joomla 3.1
 	 *
-	 * @throws  Exception
+	 * @throws  \Exception
 	 */
 	protected function preprocessData($context, &$data, $group = 'kunena')
 	{
@@ -303,7 +304,7 @@ class KunenaAdminModelPlugin extends AdminModel
 	 *
 	 * @since   Kunena 1.6
 	 *
-	 * @throws  Exception
+	 * @throws  \Exception
 	 */
 	protected function populateState()
 	{
@@ -328,7 +329,7 @@ class KunenaAdminModelPlugin extends AdminModel
 	 *
 	 * @since   Kunena 1.6
 	 *
-	 * @throws  Exception if there is an error in the form event.
+	 * @throws  \Exception if there is an error in the form event.
 	 */
 	protected function preprocessForm(JForm $form, $data, $group = 'content')
 	{
@@ -358,7 +359,7 @@ class KunenaAdminModelPlugin extends AdminModel
 			$app->redirect(Route::_('index.php?option=com_kunena&view=plugins', false));
 		}
 
-		$formFile = KunenaPath::clean(JPATH_PLUGINS . '/' . $folder . '/' . $element . '/' . $element . '.xml');
+		$formFile = \Kunena\Forum\Libraries\Path\KunenaPath::clean(JPATH_PLUGINS . '/' . $folder . '/' . $element . '/' . $element . '.xml');
 
 		if (!is_file($formFile))
 		{

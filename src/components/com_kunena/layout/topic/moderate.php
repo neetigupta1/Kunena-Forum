@@ -10,16 +10,15 @@
  * @link            https://www.kunena.org
  **/
 
-namespace Joomla\Component\Kunena\Site\Layout\Topic;
+namespace Kunena\Forum\Site\Layout\Topic;
 
 defined('_JEXEC') or die;
 
-use Exception;
 use Joomla\CMS\Factory;
 use Joomla\CMS\HTML\HTMLHelper;
 use Joomla\CMS\Language\Text;
-use Joomla\Component\Kunena\Libraries\Forum\Topic\Helper;
-use Joomla\Component\Kunena\Libraries\Layout\Layout;
+use Kunena\Forum\Libraries\Forum\Topic\Helper;
+use Kunena\Forum\Libraries\Layout\Layout;
 use function defined;
 
 /**
@@ -30,19 +29,19 @@ use function defined;
 class KunenaLayoutTopicModerate extends Layout
 {
 	/**
-	 * @var     KunenaForumMessage
+	 * @var     \Kunena\Forum\Libraries\Forum\Message\Message
 	 * @since   Kunena 6.0
 	 */
 	public $message;
 
 	/**
-	 * @var     KunenaForumTopic
+	 * @var     \Kunena\Forum\Libraries\Forum\Topic\Topic
 	 * @since   Kunena 6.0
 	 */
 	public $topic;
 
 	/**
-	 * @var     KunenaForumCategory
+	 * @var     \Kunena\Forum\Libraries\Forum\Category\Category
 	 * @since   Kunena 6.0
 	 */
 	public $category;
@@ -54,7 +53,7 @@ class KunenaLayoutTopicModerate extends Layout
 	 *
 	 * @since   Kunena 6.0
 	 *
-	 * @throws  Exception
+	 * @throws  \Exception
 	 * @throws  null
 	 */
 	public function getTopicOptions()

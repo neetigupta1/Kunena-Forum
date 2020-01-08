@@ -10,11 +10,12 @@
  * @link            https://www.kunena.org
  **/
 
-namespace Joomla\Component\Kunena\Administrator;
+namespace Kunena\Forum\Administrator;
 
 defined('_JEXEC') or die();
 
 use Joomla\CMS\Language\Text;
+use Kunena\Forum\Administrator\Install\KunenaVersion;
 
 ?>
 

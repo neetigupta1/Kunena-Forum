@@ -10,16 +10,20 @@
  * @link            https://www.kunena.org
  **/
 
-namespace Joomla\Component\Kunena\Libraries\Upload;
+namespace Kunena\Forum\Libraries\Upload;
 
 defined('_JEXEC') or die;
 
 use Exception;
 use finfo;
 use Joomla\CMS\Factory;
-use Joomla\CMS\Language\Text;
 use Joomla\CMS\Filesystem\File;
 use Joomla\CMS\Filesystem\Folder;
+use Joomla\CMS\Language\Text;
+use Kunena\Forum\Libraries\Config;
+use Kunena\Forum\Libraries\Image\KunenaImage;
+use Kunena\Forum\Libraries\KunenaFactory;
+use Kunena\Forum\Libraries\Path\KunenaPath;
 use Joomla\String\StringHelper;
 use RuntimeException;
 use StdClass;
@@ -48,13 +52,13 @@ class Upload
 	 *
 	 * @param   array  $extensions  List of allowed file extensions.
 	 *
-	 * @return  KunenaUpload
+	 * @return  Upload
 	 *
 	 * @since   Kunena 6.0
 	 */
 	public static function getInstance(array $extensions = [])
 	{
-		$instance = new KunenaUpload;
+		$instance = new Upload;
 
 		if ($extensions)
 		{
@@ -261,7 +265,7 @@ class Upload
 				// Get filename from stream
 				$meta_data = stream_get_meta_data($out);
 				$filename  = $meta_data['uri'];
-				\Joomla\Component\Kunena\Libraries\Image\KunenaImage::correctImageOrientation($filename);
+				KunenaImage::correctImageOrientation($filename);
 			}
 		}
 		catch (Exception $exception)
@@ -299,14 +303,14 @@ class Upload
 
 		if ($options['completed'])
 		{
-			$options['mime'] = KunenaFile::getMime($outFile);
+			$options['mime'] = \Kunena\Forum\Libraries\File\File::getMime($outFile);
 			$options['hash'] = md5_file($outFile);
 		}
 		else
 		{
 			if ($size)
 			{
-				$options['mime'] = KunenaFile::getMime($outFile);
+				$options['mime'] = \Kunena\Forum\Libraries\File\File::getMime($outFile);
 			}
 		}
 
@@ -647,7 +651,7 @@ class Upload
 		$file->ext  = File::getExt($fileInput['name']);
 		$file->ext  = strtolower($file->ext);
 		$file->size = $fileInput['size'];
-		$config     = \Joomla\Component\Kunena\Libraries\KunenaFactory::getConfig();
+		$config     = KunenaFactory::getConfig();
 
 		if ($type != 'attachment' && $config->attachment_utf8)
 		{
@@ -747,7 +751,7 @@ class Upload
 			}
 		}
 
-		\Joomla\Component\Kunena\Libraries\Image\KunenaImage::correctImageOrientation($file->tmp_name);
+		KunenaImage::correctImageOrientation($file->tmp_name);
 
 		if (!File::copy($file->tmp_name, $file->destination))
 		{

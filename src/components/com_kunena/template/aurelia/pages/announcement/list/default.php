@@ -10,7 +10,7 @@
  * @link            https://www.kunena.org
 **/
 
-namespace Joomla\Component\Kunena\Site;
+namespace Kunena\Forum\Site;
 
 defined('_JEXEC') or die();
 
@@ -19,7 +19,7 @@ use function defined;
 
 $this->addBreadcrumb(
 	Text::_('COM_KUNENA_ANN_ANNOUNCEMENTS'),
-	\Joomla\Component\Kunena\Libraries\Route\KunenaRoute::normalize("index.php?option=com_kunena&view=announcement&layout=list")
+	\Kunena\Forum\Libraries\Route\KunenaRoute::normalize("index.php?option=com_kunena&view=announcement&layout=list")
 );
 
 echo $this->subRequest('Announcement/List');

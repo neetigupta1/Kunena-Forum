@@ -10,7 +10,7 @@
  * @link          https://www.kunena.org
  **/
 
-namespace Joomla\Component\Kunena\Libraries\Forum\Message\Thankyou;
+namespace Kunena\Forum\Libraries\Forum\Message\Thankyou;
 
 defined('_JEXEC') or die();
 
@@ -19,10 +19,13 @@ use Joomla\CMS\Factory;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\Object\CMSObject;
 use Joomla\Database\Exception\ExecutionFailureException;
+use Kunena\Forum\Libraries\Error;
+use Kunena\Forum\Libraries\Forum\Message\Message;
+use Kunena\Forum\Libraries\KunenaFactory;
 use function defined;
 
 /**
- * Class KunenaForumMessageThankyou
+ * Class \Kunena\Forum\Libraries\Forum\Message\MessageThankyou
  *
  * @property int    $userid
  * @property int    $targetuserid
@@ -61,7 +64,7 @@ class Thankyou extends CMSObject
 	 * @param   null  $identifier  identifier
 	 * @param   bool  $reload      reload
 	 *
-	 * @return  KunenaForumMessageThankyou
+	 * @return  Helper
 	 *
 	 * @since   Kunena 6.0
 	 *
@@ -69,7 +72,7 @@ class Thankyou extends CMSObject
 	 */
 	public static function getInstance($identifier = null, $reload = false)
 	{
-		return \Joomla\Component\Kunena\Libraries\Forum\Message\Thankyou\Helper::get($identifier, $reload);
+		return Helper::get($identifier, $reload);
 	}
 
 	/**
@@ -98,8 +101,8 @@ class Thankyou extends CMSObject
 	 */
 	public function save($user)
 	{
-		$user    = \Joomla\Component\Kunena\Libraries\KunenaFactory::getUser($user);
-		$message = \Joomla\Component\Kunena\Libraries\Forum\Message\Helper::get($this->id);
+		$user    = KunenaFactory::getUser($user);
+		$message = \Kunena\Forum\Libraries\Forum\Message\Helper::get($this->id);
 
 		if (!$user->exists())
 		{
@@ -134,7 +137,7 @@ class Thankyou extends CMSObject
 		}
 		catch (ExecutionFailureException $e)
 		{
-			\Joomla\Component\Kunena\Libraries\Error::displayDatabaseError($e);
+			Error::displayDatabaseError($e);
 
 			return false;
 		}
@@ -159,7 +162,7 @@ class Thankyou extends CMSObject
 	}
 
 	/**
-	 * @param   KunenaForumMessage  $message  message
+	 * @param   Message  $message  message
 	 *
 	 * @return  boolean
 	 *
@@ -167,7 +170,7 @@ class Thankyou extends CMSObject
 	 *
 	 * @throws  Exception
 	 */
-	protected function _savethankyou(KunenaForumMessage $message)
+	protected function _savethankyou(Message $message)
 	{
 		$db    = Factory::getDBO();
 		$query = $db->getQuery(true);
@@ -182,7 +185,7 @@ class Thankyou extends CMSObject
 		}
 		catch (ExecutionFailureException $e)
 		{
-			\Joomla\Component\Kunena\Libraries\Error::displayDatabaseError($e);
+			Error::displayDatabaseError($e);
 
 			return false;
 		}
@@ -215,8 +218,8 @@ class Thankyou extends CMSObject
 	 */
 	public function delete($user)
 	{
-		$user    = \Joomla\Component\Kunena\Libraries\KunenaFactory::getUser($user);
-		$message = \Joomla\Component\Kunena\Libraries\Forum\Message\Helper::get($this->id);
+		$user    = KunenaFactory::getUser($user);
+		$message = \Kunena\Forum\Libraries\Forum\Message\Helper::get($this->id);
 
 		if (!$user->exists())
 		{
@@ -248,7 +251,7 @@ class Thankyou extends CMSObject
 		}
 		catch (ExecutionFailureException $e)
 		{
-			\Joomla\Component\Kunena\Libraries\Error::displayDatabaseError($e);
+			Error::displayDatabaseError($e);
 
 			return false;
 		}

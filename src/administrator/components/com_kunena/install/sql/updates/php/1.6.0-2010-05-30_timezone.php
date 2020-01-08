@@ -9,7 +9,7 @@
  * @link           https://www.kunena.org
  **/
 
-namespace Joomla\Component\Kunena\Administrator;
+namespace Kunena\Forum\Administrator\Updates\Php;
 
 defined('_JEXEC') or die();
 
@@ -26,12 +26,12 @@ use function defined;
  *
  * @since   Kunena 6.0
  *
- * @throws  Exception
+ * @throws  \Exception
  */
 function kunena_160_2010_05_30_timezone($parent)
 {
 	$result = null;
-	$config = \Joomla\Component\Kunena\Libraries\KunenaFactory::getConfig();
+	$config = \Kunena\Forum\Libraries\KunenaFactory::getConfig();
 	$db     = Factory::getDbo();
 
 	// We need to fix all timestamps to UTC (if not already done)
@@ -47,7 +47,7 @@ function kunena_160_2010_05_30_timezone($parent)
 		}
 		catch (Exception $e)
 		{
-			throw new KunenaInstallerException($e->getMessage(), $e->getCode());
+			throw new Exception($e->getMessage(), $e->getCode());
 		}
 
 		$db->setQuery("UPDATE `#__kunena_sessions` SET lasttime = lasttime - {$timeshift}, currvisit  = currvisit  - {$timeshift}");
@@ -58,7 +58,7 @@ function kunena_160_2010_05_30_timezone($parent)
 		}
 		catch (Exception $e)
 		{
-			throw new KunenaInstallerException($e->getMessage(), $e->getCode());
+			throw new Exception($e->getMessage(), $e->getCode());
 		}
 
 		$db->setQuery("UPDATE `#__kunena_whoisonline` SET time = time - {$timeshift}");
@@ -69,7 +69,7 @@ function kunena_160_2010_05_30_timezone($parent)
 		}
 		catch (Exception $e)
 		{
-			throw new KunenaInstallerException($e->getMessage(), $e->getCode());
+			throw new Exception($e->getMessage(), $e->getCode());
 		}
 
 		$db->setQuery("UPDATE `#__kunena_messages` SET time = time - {$timeshift}, modified_time = modified_time - {$timeshift}");
@@ -80,7 +80,7 @@ function kunena_160_2010_05_30_timezone($parent)
 		}
 		catch (Exception $e)
 		{
-			throw new KunenaInstallerException($e->getMessage(), $e->getCode());
+			throw new Exception($e->getMessage(), $e->getCode());
 		}
 
 		unset($config->board_ofset);

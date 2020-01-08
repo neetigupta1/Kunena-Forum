@@ -10,7 +10,7 @@
  * @link            https://www.kunena.org
 **/
 
-namespace Joomla\Component\Kunena\Site;
+namespace Kunena\Forum\Site;
 
 defined('_JEXEC') or die();
 
@@ -24,11 +24,11 @@ $cols            = !empty($this->actions) ? 6 : 7;
 $colspan         = !empty($this->actions) ? 4 : 3;
 $view            = Factory::getApplication()->input->getWord('view');
 $layout          = Factory::getApplication()->input->getWord('layout');
-$this->ktemplate = \Joomla\Component\Kunena\Libraries\KunenaFactory::getTemplate();
+$this->ktemplate = \Kunena\Forum\Libraries\KunenaFactory::getTemplate();
 $social          = $this->ktemplate->params->get('socialshare');
-$me              = \Joomla\Component\Kunena\Libraries\User\Helper::getMyself();
+$me              = \Kunena\Forum\Libraries\User\Helper::getMyself();
 
-if (Config::getInstance()->ratingenabled)
+if (\Kunena\Forum\Libraries\Config::getInstance()->ratingenabled)
 {
 	$this->addStyleSheet('rating.css');
 }
@@ -47,7 +47,7 @@ if (Config::getInstance()->ratingenabled)
 
 				<?php if ($layout != 'unread') : ?>
 					<small class="hidden-xs-down">
-						(<?php echo KunenaForumCategory::getInstance()->totalCount($this->pagination->total); ?>)
+						(<?php echo \Kunena\Forum\Libraries\Forum\Category\Category::getInstance()->totalCount($this->pagination->total); ?>)
 					</small>
 				<?php endif; ?>
 				<?php // ToDo:: <span class="badge badge-success"> <?php echo $this->topics->count->unread; ?/></span> ?>
@@ -88,19 +88,19 @@ if ($this->config->enableforumjump && !$this->embedded && $this->topics)
 </div>
 
 <div class="kfrontend shadow-lg rounded mt-4 border">
-	<form action="<?php echo \Joomla\Component\Kunena\Libraries\Route\KunenaRoute::_('index.php?option=com_kunena&view=topics'); ?>" method="post" name="ktopicsform"
+	<form action="<?php echo \Kunena\Forum\Libraries\Route\KunenaRoute::_('index.php?option=com_kunena&view=topics'); ?>" method="post" name="ktopicsform"
 	      id="ktopicsform">
 		<?php echo HTMLHelper::_('form.token'); ?>
 		<?php if ($view == 'user'): ?>
 			<input type="hidden" name="userid" value="<?php echo $this->user->userid; ?>"/>
 		<?php endif; ?>
-		<table class="table<?php echo \Joomla\Component\Kunena\Libraries\Template\Template::getInstance()->borderless(); ?> shadow-lg rounded">
+		<table class="table<?php echo \Kunena\Forum\Libraries\Template\Template::getInstance()->borderless(); ?> shadow-lg rounded">
 			<thead>
 			<tr>
 				<th scope="col" class="center hidden-xs-down">
 					<a id="forumtop"> </a>
 					<a href="#forumbottom" rel="nofollow">
-						<?php echo KunenaIcons::arrowdown(); ?>
+						<?php echo \Kunena\Forum\Libraries\Icons\Icons::arrowdown(); ?>
 					</a>
 				</th>
 				<th scope="col" class="hidden-xs-down"><?php echo Text::_('COM_KUNENA_GEN_SUBJECT'); ?></th>
@@ -119,7 +119,7 @@ if ($this->config->enableforumjump && !$this->embedded && $this->topics)
 					<a id="forumbottom"> </a>
 					<a href="#forumtop" rel="nofollow">
 						<span class="dropdown-divider"></span>
-						<?php echo KunenaIcons::arrowup(); ?>
+						<?php echo \Kunena\Forum\Libraries\Icons\Icons::arrowup(); ?>
 					</a>
 				</th>
 				<?php if (!empty($this->actions) || !empty($this->moreUri)) : ?>

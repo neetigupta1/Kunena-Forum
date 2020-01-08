@@ -9,7 +9,7 @@
  * @link           https://www.kunena.org
  **/
 
-namespace Joomla\Component\Kunena\Libraries;
+namespace Kunena\Forum\Libraries;
 
 defined('_JEXEC') or die();
 
@@ -17,6 +17,7 @@ use Exception;
 use Joomla\CMS\Factory;
 use Joomla\CMS\Object\CMSObject;
 use Joomla\CMS\Table\Table;
+use Kunena\Forum\Libraries\Forum\Category\User\Helper;
 use RuntimeException;
 use function defined;
 
@@ -94,7 +95,7 @@ class Session extends CMSObject
 		else
 		{
 			// Deal with users who do not (yet) have all read time set.
-			$userCategory      = KunenaForumCategoryUserHelper::get(0, (int) $identifier);
+			$userCategory      = Helper::get(0, (int) $identifier);
 			$this->allreadtime = $userCategory->allreadtime ? $userCategory->allreadtime : $this->lasttime;
 		}
 	}
@@ -161,7 +162,7 @@ class Session extends CMSObject
 	 * @param   bool  $update  update
 	 * @param   null  $userid  userid
 	 *
-	 * @return  KunenaSession
+	 * @return  Session
 	 * @since   Kunena 6.0
 	 *
 	 * @throws  Exception
@@ -171,7 +172,7 @@ class Session extends CMSObject
 		if (!self::$_instance)
 		{
 			$my              = Factory::getApplication()->getIdentity();
-			self::$_instance = new KunenaSession($userid !== null ? $userid : $my->id);
+			self::$_instance = new Session($userid !== null ? $userid : $my->id);
 
 			if ($update)
 			{
@@ -213,7 +214,7 @@ class Session extends CMSObject
 	{
 		// Perform session timeout check
 		$lifetime              = max(intval(Factory::getConfig()->get('config.lifetime')) * 60,
-			intval(\Joomla\Component\Kunena\Libraries\KunenaFactory::getConfig()->sessiontimeout)
+			intval(KunenaFactory::getConfig()->sessiontimeout)
 		);
 		$this->_sessiontimeout = ($this->currvisit + $lifetime < Factory::getDate()->toUnix());
 
@@ -281,7 +282,7 @@ class Session extends CMSObject
 		}
 
 		// Read indication has moved outside of the session table -- let's update it too.
-		$userCategory = KunenaForumCategoryUserHelper::get(0, $this->userid);
+		$userCategory = Helper::get(0, $this->userid);
 
 		if ($userCategory->allreadtime != $this->allreadtime)
 		{

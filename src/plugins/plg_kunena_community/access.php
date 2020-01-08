@@ -10,19 +10,19 @@
  * @link            https://www.kunena.org
  **/
 
-namespace Joomla\Component\Kunena\Plugin\Kunena\Community;
+namespace Kunena\Forum\Plugin\Kunena\Community;
 
 defined('_JEXEC') or die();
 
 use Exception;
-use Joomla\CMS\HTML\HTMLHelper;
 use Joomla\CMS\Factory;
+use Joomla\CMS\HTML\HTMLHelper;
 use Joomla\CMS\Language\Text;
-use Joomla\Component\Kunena\Libraries\Database\KunenaDatabaseObject;
-use Joomla\Component\Kunena\Libraries\Error;
-use Joomla\Component\Kunena\Libraries\Forum\Forum;
-use Joomla\Component\Kunena\Libraries\KunenaFactory;
-use Joomla\Component\Kunena\Libraries\Tree;
+use Kunena\Forum\Libraries\Database\KunenaDatabaseObject;
+use Kunena\Forum\Libraries\Error;
+use Kunena\Forum\Libraries\Forum\KunenaForum;
+use Kunena\Forum\Libraries\KunenaFactory;
+use Kunena\Forum\Libraries\Tree;
 use RuntimeException;
 use function defined;
 
@@ -245,7 +245,7 @@ class KunenaAccessCommunity
 	{
 		$db    = Factory::getDBO();
 		$query = $db->getQuery(true);
-		$query->select('g.memberid AS user_id, c.id AS category_id, ' . Forum::ADMINISTRATOR . ' AS role')
+		$query->select('g.memberid AS user_id, c.id AS category_id, ' . KunenaForum::ADMINISTRATOR . ' AS role')
 			->from($db->quoteName('#__kunena_categories', 'c'))
 			->innerJoin($db->quoteName('#__community_groups_members', 'g') . ' ON c.accesstype=\'jomsocial\' AND c.access = g.groupid')
 			->where('c.published = 1')
@@ -268,7 +268,7 @@ class KunenaAccessCommunity
 	/**
 	 * Authorise list of categories.
 	 *
-	 * Function accepts array of id indexed KunenaForumCategory objects and removes unauthorised
+	 * Function accepts array of id indexed \Kunena\Forum\Libraries\Forum\Category\Category objects and removes unauthorised
 	 * categories from the list.
 	 *
 	 * Results for the current user are saved into session.

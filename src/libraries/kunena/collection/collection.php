@@ -10,7 +10,7 @@
  * @link          https://www.kunena.org
  **/
 
-namespace Joomla\Component\Kunena\Libraries\Collection;
+namespace Kunena\Forum\Libraries\Collection;
 
 use ArrayAccess;
 use ArrayIterator;
@@ -89,7 +89,7 @@ class Collection implements ArrayAccess, Countable, IteratorAggregate
 	 *
 	 * @param   Closure  $callback  callback
 	 *
-	 * @return  KunenaCollection
+	 * @return  Collection
 	 *
 	 * @since   Kunena 6.0
 	 */
@@ -103,7 +103,7 @@ class Collection implements ArrayAccess, Countable, IteratorAggregate
 	 *
 	 * @param   Closure  $callback  callback
 	 *
-	 * @return  KunenaCollection
+	 * @return  Collection
 	 *
 	 * @since   Kunena 6.0
 	 */
@@ -119,7 +119,7 @@ class Collection implements ArrayAccess, Countable, IteratorAggregate
 	 *
 	 * @param   Closure  $callback  callback
 	 *
-	 * @return  KunenaCollection
+	 * @return  Collection
 	 *
 	 * @since   Kunena 6.0
 	 */

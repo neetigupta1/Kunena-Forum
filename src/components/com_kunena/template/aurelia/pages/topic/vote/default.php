@@ -10,7 +10,7 @@
  * @link            https://www.kunena.org
 **/
 
-namespace Joomla\Component\Kunena\Site;
+namespace Kunena\Forum\Site;
 
 defined('_JEXEC') or die();
 
@@ -22,7 +22,7 @@ $content = $this->request('Topic/Poll')
 	->execute();
 
 // Display breadcrumb path to the current category / topic / message / report.
-$parents   = \Joomla\Component\Kunena\Libraries\Forum\Category\Helper::getParents($content->category->id);
+$parents   = \Kunena\Forum\Libraries\Forum\Category\Helper::getParents($content->category->id);
 $parents[] = $content->category;
 
 foreach ($parents as $parent)

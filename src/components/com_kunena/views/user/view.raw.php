@@ -10,15 +10,14 @@
  * @link            https://www.kunena.org
  **/
 
-namespace Joomla\Component\Kunena\Site\View\User;
+namespace Kunena\Forum\Site\View\User;
 
 defined('_JEXEC') or die();
 
-use Exception;
 use Joomla\CMS\Factory;
-use Joomla\CMS\Uri\Uri;
 use Joomla\CMS\Filesystem\Folder;
-use Joomla\Component\Kunena\Libraries\View;
+use Joomla\CMS\Uri\Uri;
+use Kunena\Forum\Libraries\View;
 use stdClass;
 use function defined;
 
@@ -36,7 +35,7 @@ class Raw extends View
 	 *
 	 * @since   Kunena 6.0
 	 *
-	 * @throws  Exception
+	 * @throws  \Exception
 	 */
 	public function displayList($tpl = null)
 	{
@@ -78,7 +77,7 @@ class Raw extends View
 	 *
 	 * @since   Kunena 4.0
 	 *
-	 * @throws  Exception
+	 * @throws  \Exception
 	 */
 	public function displayListMention($tpl = null)
 	{
@@ -117,7 +116,7 @@ class Raw extends View
 	 *
 	 * @since   Kunena 5.0
 	 *
-	 * @throws  Exception
+	 * @throws  \Exception
 	 */
 	public function displayGalleryimages()
 	{

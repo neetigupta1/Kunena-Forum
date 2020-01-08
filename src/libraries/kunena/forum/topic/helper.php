@@ -10,35 +10,39 @@
  * @link          https://www.kunena.org
  **/
 
-namespace Joomla\Component\Kunena\Libraries\Forum\Topic;
+namespace Kunena\Forum\Libraries\Forum\Topic;
 
 defined('_JEXEC') or die();
 
 use Exception;
 use Joomla\CMS\Factory;
 use Joomla\Database\Exception\ExecutionFailureException;
+use Kunena\Forum\Libraries\Error;
+use Kunena\Forum\Libraries\Forum\Topic\User\User;
+use Kunena\Forum\Libraries\KunenaFactory;
+use Kunena\Forum\Libraries\KunenaProfiler;
 use function defined;
 
 /**
- * Class KunenaForumTopicHelper
+ * Class \Kunena\Forum\Libraries\Forum\Topic\TopicHelper
  *
  * @since   Kunena 6.0
  */
 abstract class Helper
 {
 	/**
-	 * @var     KunenaForumTopic[]
+	 * @var     Topic[]
 	 * @since   Kunena 6.0
 	 */
 	protected static $_instances = [];
 
 	/**
-	 * Returns KunenaForumTopic object.
+	 * Returns \Kunena\Forum\Libraries\Forum\Topic\Topic object.
 	 *
 	 * @param   int   $identifier  The topic to load - Can be only an integer.
 	 * @param   bool  $reload      reload
 	 *
-	 * @return  KunenaForumTopic
+	 * @return  Topic
 	 *
 	 * @since   Kunena 6.0
 	 *
@@ -46,7 +50,7 @@ abstract class Helper
 	 */
 	public static function get($identifier = null, $reload = false)
 	{
-		if ($identifier instanceof KunenaForumTopic)
+		if ($identifier instanceof Topic)
 		{
 			return $identifier;
 		}
@@ -55,12 +59,12 @@ abstract class Helper
 
 		if ($id < 1)
 		{
-			return new KunenaForumTopic;
+			return new Topic;
 		}
 
 		if (empty(self::$_instances[$id]))
 		{
-			$instance = new KunenaForumTopic;
+			$instance = new Topic;
 
 			// Only load topics which haven't been preloaded before (including missing ones).
 			$instance->load(!array_key_exists($id, self::$_instances) ? $id : null);
@@ -89,12 +93,13 @@ abstract class Helper
 	public static function subscribe($ids, $value = true, $user = null)
 	{
 		// Pre-load all items
-		KunenaForumTopicUserHelper::getTopics($ids, $user);
+		// Codestyle fixes: use real url
+		\Kunena\Forum\Libraries\Forum\Topic\User\Helper::getTopics($ids, $user);
 		$count = 0;
 
 		foreach ($ids as $id)
 		{
-			$usertopic = KunenaForumTopicUserHelper::get($id, $user);
+			$usertopic = \Kunena\Forum\Libraries\Forum\Topic\User\Helper::get($id, $user);
 
 			if ($usertopic->subscribed != (int) $value)
 			{
@@ -122,12 +127,12 @@ abstract class Helper
 	public static function favorite($ids, $value = true, $user = null)
 	{
 		// Pre-load all items
-		KunenaForumTopicUserHelper::getTopics($ids, $user);
+		\Kunena\Forum\Libraries\Forum\Topic\User\Helper::getTopics($ids, $user);
 		$count = 0;
 
 		foreach ($ids as $id)
 		{
-			$usertopic = KunenaForumTopicUserHelper::get($id, $user);
+			$usertopic = \Kunena\Forum\Libraries\Forum\Topic\User\Helper::get($id, $user);
 
 			if ($usertopic->favorite != (int) $value)
 			{
@@ -145,7 +150,7 @@ abstract class Helper
 	 * @param   mixed   $ids        ids
 	 * @param   string  $authorise  authorise
 	 *
-	 * @return  KunenaForumTopic[]
+	 * @return  Topic[]
 	 *
 	 * @since   Kunena
 	 *
@@ -154,7 +159,7 @@ abstract class Helper
 	 */
 	public static function getTopics($ids = false, $authorise = 'read')
 	{
-		KUNENA_PROFILER ? \Joomla\Component\Kunena\Libraries\KunenaProfiler::instance()->start('function ' . __CLASS__ . '::' . __FUNCTION__ . '()') : null;
+		KUNENA_PROFILER ? KunenaProfiler::instance()->start('function ' . __CLASS__ . '::' . __FUNCTION__ . '()') : null;
 
 		if ($ids === false)
 		{
@@ -181,7 +186,7 @@ abstract class Helper
 			}
 		}
 
-		KUNENA_PROFILER ? \Joomla\Component\Kunena\Libraries\KunenaProfiler::instance()->stop('function ' . __CLASS__ . '::' . __FUNCTION__ . '()') : null;
+		KUNENA_PROFILER ? KunenaProfiler::instance()->stop('function ' . __CLASS__ . '::' . __FUNCTION__ . '()') : null;
 
 		return $list;
 	}
@@ -226,14 +231,14 @@ abstract class Helper
 		}
 		catch (ExecutionFailureException $e)
 		{
-			\Joomla\Component\Kunena\Libraries\Error::displayDatabaseError($e);
+			Error::displayDatabaseError($e);
 		}
 
 		foreach ($ids as $id)
 		{
 			if (isset($results[$id]))
 			{
-				$instance = new KunenaForumTopic($results[$id]);
+				$instance = new Topic($results[$id]);
 				$instance->exists(true);
 				self::$_instances [$id] = $instance;
 			}
@@ -250,7 +255,7 @@ abstract class Helper
 	 * @param   mixed  $ids   ids
 	 * @param   mixed  $user  user
 	 *
-	 * @return  KunenaForumTopicUser[]
+	 * @return  User[]
 	 *
 	 * @since   Kunena 6.0
 	 *
@@ -263,7 +268,7 @@ abstract class Helper
 			$ids = array_keys(self::$_instances);
 		}
 
-		return KunenaForumTopicUserHelper::getTopics($ids, $user);
+		return \Kunena\Forum\Libraries\Forum\Topic\User\Helper::getTopics($ids, $user);
 	}
 
 	/**
@@ -272,7 +277,7 @@ abstract class Helper
 	 * @param   int    $limit       limit
 	 * @param   array  $params      params
 	 *
-	 * @return  array|KunenaForumTopic[]
+	 * @return  array|Topic[]
 	 *
 	 * @since   Kunena
 	 *
@@ -281,9 +286,9 @@ abstract class Helper
 	 */
 	public static function getLatestTopics($categories = false, $limitstart = 0, $limit = 0, $params = [])
 	{
-		KUNENA_PROFILER ? \Joomla\Component\Kunena\Libraries\KunenaProfiler::instance()->start('function ' . __CLASS__ . '::' . __FUNCTION__ . '()') : null;
+		KUNENA_PROFILER ? KunenaProfiler::instance()->start('function ' . __CLASS__ . '::' . __FUNCTION__ . '()') : null;
 		$db     = Factory::getDBO();
-		$config = \Joomla\Component\Kunena\Libraries\KunenaFactory::getConfig();
+		$config = KunenaFactory::getConfig();
 
 		if ($limit < 1 && empty($params['nolimit']))
 		{
@@ -294,7 +299,7 @@ abstract class Helper
 		$exclude   = isset($params['exclude']) ? (int) $params['exclude'] : 0;
 		$orderby   = isset($params['orderby']) ? (string) $params['orderby'] : 'tt.last_post_time DESC';
 		$starttime = isset($params['starttime']) ? (int) $params['starttime'] : 0;
-		$user      = isset($params['user']) ? \Joomla\Component\Kunena\Libraries\User\Helper::get($params['user']) : \Joomla\Component\Kunena\Libraries\User\Helper::getMyself();
+		$user      = isset($params['user']) ? \Kunena\Forum\Libraries\User\Helper::get($params['user']) : \Kunena\Forum\Libraries\User\Helper::getMyself();
 		$hold      = isset($params['hold']) ? (string) $params['hold'] : 0;
 		$moved     = isset($params['moved']) ? (string) $params['moved'] : 0;
 		$where     = isset($params['where']) ? (string) $params['where'] : '';
@@ -314,11 +319,11 @@ abstract class Helper
 
 		if (!$exclude)
 		{
-			$categories = \Joomla\Component\Kunena\Libraries\Forum\Category\Helper::getCategories($categories, $reverse);
+			$categories = \Kunena\Forum\Libraries\Forum\Category\Helper::getCategories($categories, $reverse);
 		}
 		else
 		{
-			$categories = \Joomla\Component\Kunena\Libraries\Forum\Category\Helper::getCategories($categories, 0);
+			$categories = \Kunena\Forum\Libraries\Forum\Category\Helper::getCategories($categories, 0);
 		}
 
 		$catlist = [];
@@ -330,7 +335,7 @@ abstract class Helper
 
 		if (empty($catlist))
 		{
-			KUNENA_PROFILER ? \Joomla\Component\Kunena\Libraries\KunenaProfiler::instance()->stop('function ' . __CLASS__ . '::' . __FUNCTION__ . '()') : null;
+			KUNENA_PROFILER ? KunenaProfiler::instance()->stop('function ' . __CLASS__ . '::' . __FUNCTION__ . '()') : null;
 
 			return [0, []];
 		}
@@ -399,14 +404,14 @@ abstract class Helper
 		}
 		catch (ExecutionFailureException $e)
 		{
-			\Joomla\Component\Kunena\Libraries\Error::displayDatabaseError($e);
+			Error::displayDatabaseError($e);
 
 			return [0, []];
 		}
 
 		if (!$total)
 		{
-			KUNENA_PROFILER ? \Joomla\Component\Kunena\Libraries\KunenaProfiler::instance()->stop('function ' . __CLASS__ . '::' . __FUNCTION__ . '()') : null;
+			KUNENA_PROFILER ? KunenaProfiler::instance()->stop('function ' . __CLASS__ . '::' . __FUNCTION__ . '()') : null;
 
 			return [0, []];
 		}
@@ -446,9 +451,9 @@ abstract class Helper
 		}
 		catch (ExecutionFailureException $e)
 		{
-			\Joomla\Component\Kunena\Libraries\Error::displayDatabaseError($e);
+			Error::displayDatabaseError($e);
 
-			KUNENA_PROFILER ? \Joomla\Component\Kunena\Libraries\KunenaProfiler::instance()->stop('function ' . __CLASS__ . '::' . __FUNCTION__ . '()') : null;
+			KUNENA_PROFILER ? KunenaProfiler::instance()->stop('function ' . __CLASS__ . '::' . __FUNCTION__ . '()') : null;
 
 			return [0, []];
 		}
@@ -457,14 +462,14 @@ abstract class Helper
 
 		foreach ($results as $id => $result)
 		{
-			$instance = new KunenaForumTopic($result);
+			$instance = new Topic($result);
 			$instance->exists(true);
 			self::$_instances [$id] = $instance;
 			$topics[$id]            = $instance;
 		}
 
 		unset($results);
-		KUNENA_PROFILER ? \Joomla\Component\Kunena\Libraries\KunenaProfiler::instance()->stop('function ' . __CLASS__ . '::' . __FUNCTION__ . '()') : null;
+		KUNENA_PROFILER ? KunenaProfiler::instance()->stop('function ' . __CLASS__ . '::' . __FUNCTION__ . '()') : null;
 
 		return [$total, $topics];
 	}
@@ -533,7 +538,7 @@ abstract class Helper
 			}
 			catch (ExecutionFailureException $e)
 			{
-				\Joomla\Component\Kunena\Libraries\Error::displayDatabaseError($e);
+				Error::displayDatabaseError($e);
 
 				return false;
 			}
@@ -583,7 +588,7 @@ abstract class Helper
 			}
 			catch (ExecutionFailureException $e)
 			{
-				\Joomla\Component\Kunena\Libraries\Error::displayDatabaseError($e);
+				Error::displayDatabaseError($e);
 
 				return false;
 			}
@@ -672,7 +677,7 @@ abstract class Helper
 		}
 		catch (ExecutionFailureException $e)
 		{
-			\Joomla\Component\Kunena\Libraries\Error::displayDatabaseError($e);
+			Error::displayDatabaseError($e);
 
 			return false;
 		}
@@ -694,7 +699,7 @@ abstract class Helper
 		}
 		catch (ExecutionFailureException $e)
 		{
-			\Joomla\Component\Kunena\Libraries\Error::displayDatabaseError($e);
+			Error::displayDatabaseError($e);
 
 			return false;
 		}
@@ -735,7 +740,7 @@ abstract class Helper
 		}
 		catch (ExecutionFailureException $e)
 		{
-			\Joomla\Component\Kunena\Libraries\Error::displayDatabaseError($e);
+			Error::displayDatabaseError($e);
 
 			return false;
 		}
@@ -757,14 +762,14 @@ abstract class Helper
 	 */
 	public static function fetchNewStatus(array $topics, $user = null)
 	{
-		$user = \Joomla\Component\Kunena\Libraries\User\Helper::get($user);
+		$user = \Kunena\Forum\Libraries\User\Helper::get($user);
 
-		if (!\Joomla\Component\Kunena\Libraries\KunenaFactory::getConfig()->shownew || empty($topics) || !$user->exists())
+		if (!KunenaFactory::getConfig()->shownew || empty($topics) || !$user->exists())
 		{
 			return [];
 		}
 
-		$session = \Joomla\Component\Kunena\Libraries\KunenaFactory::getSession();
+		$session = KunenaFactory::getSession();
 
 		$ids = [];
 
@@ -809,7 +814,7 @@ abstract class Helper
 			}
 			catch (ExecutionFailureException $e)
 			{
-				\Joomla\Component\Kunena\Libraries\Error::displayDatabaseError($e);
+				Error::displayDatabaseError($e);
 
 				return false;
 			}

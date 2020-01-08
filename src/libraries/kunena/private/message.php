@@ -10,12 +10,17 @@
  * @link          http://www.kunena.org
  **/
 
-namespace Joomla\Component\Kunena\Libraries\KunenaPrivate;
+namespace Kunena\Forum\Libraries\KunenaPrivate;
 
 defined('_JEXEC') or die();
 
 use Exception;
 use Joomla\Registry\Registry;
+use Kunena\Forum\Libraries\Attachment\Attachment;
+use Kunena\Forum\Libraries\Attachment\Helper;
+use Kunena\Forum\Libraries\Database\KunenaDatabaseObject;
+use Kunena\Forum\Libraries\Html\Parser;
+use Kunena\Forum\Libraries\Table\KunenaTableMap;
 use function defined;
 
 /**
@@ -96,9 +101,9 @@ class Message extends KunenaDatabaseObject
 			case 'id':
 				return intval($this->id);
 			case 'subject':
-				return \Joomla\Component\Kunena\Libraries\Html\Parser::parseText($this->subject);
+				return Parser::parseText($this->subject);
 			case 'body':
-				return \Joomla\Component\Kunena\Libraries\Html\Parser::parseBBCode($this->body, $this);
+				return Parser::parseBBCode($this->body, $this);
 		}
 
 		return '';
@@ -196,11 +201,11 @@ class Message extends KunenaDatabaseObject
 		{
 			$this->_attachments->setKey($this->id)->save();
 			$ids         = $this->_attachments->getMapped();
-			$attachments = \Joomla\Component\Kunena\Libraries\Attachment\Helper::getById($ids, 'none');
+			$attachments = Helper::getById($ids, 'none');
 
 			foreach ($attachments as $attachment)
 			{
-				$attachment->protected = KunenaAttachment::PROTECTION_PRIVATE;
+				$attachment->protected = Attachment::PROTECTION_PRIVATE;
 				$attachment->save();
 			}
 		}

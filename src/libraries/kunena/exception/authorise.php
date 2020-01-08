@@ -10,7 +10,7 @@
  * @link          https://www.kunena.org
  **/
 
-namespace Joomla\Component\Kunena\Libraries\Exception;
+namespace Kunena\Forum\Libraries\Exception;
 
 defined('_JEXEC') or die();
 

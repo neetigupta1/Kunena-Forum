@@ -10,10 +10,11 @@
  * @link          http://www.kunena.org
  **/
 
-namespace Joomla\Component\Kunena\Libraries\KunenaPrivate\Message;
+namespace Kunena\Forum\Libraries\KunenaPrivate\Message;
 
 defined('_JEXEC') or die();
 
+use Kunena\Forum\Libraries\Database\KunenaDatabaseObject;
 use function defined;
 
 /**

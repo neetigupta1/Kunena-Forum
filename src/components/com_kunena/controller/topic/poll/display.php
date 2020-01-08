@@ -10,16 +10,20 @@
  * @link            https://www.kunena.org
  **/
 
-namespace Joomla\Component\Kunena\Site\Controller\Topic\Poll;
+namespace Kunena\Forum\Site\Controller\Topic\Poll;
 
 defined('_JEXEC') or die();
 
 use Exception;
 use Joomla\CMS\Language\Text;
-use Joomla\Component\Kunena\Libraries\Controller\Display;
-use Joomla\Component\Kunena\Libraries\Html\Parser;
-use Joomla\Component\Kunena\Libraries\KunenaFactory;
-use Joomla\Component\Kunena\Libraries\User\Helper;
+use Kunena\Forum\Libraries\Controller\KunenaControllerDisplay;
+use Kunena\Forum\Libraries\Forum\Category\Category;
+use Kunena\Forum\Libraries\Forum\Topic\Topic;
+use Kunena\Forum\Libraries\Forum\Topic\Poll\Poll;
+use Kunena\Forum\Libraries\Html\Parser;
+use Kunena\Forum\Libraries\KunenaFactory;
+use Kunena\Forum\Libraries\User\Helper;
+use Kunena\Forum\Libraries\User\KunenaUser;
 use function defined;
 
 /**
@@ -27,7 +31,7 @@ use function defined;
  *
  * @since   Kunena 4.0
  */
-class ComponentKunenaControllerTopicPollDisplay extends Display
+class ComponentKunenaControllerTopicPollDisplay extends KunenaControllerDisplay
 {
 	/**
 	 * @var     KunenaUser
@@ -36,19 +40,19 @@ class ComponentKunenaControllerTopicPollDisplay extends Display
 	public $me;
 
 	/**
-	 * @var     KunenaForumCategory
+	 * @var     Category
 	 * @since   Kunena 6.0
 	 */
 	public $category;
 
 	/**
-	 * @var     KunenaForumTopic
+	 * @var     Topic
 	 * @since   Kunena 6.0
 	 */
 	public $topic;
 
 	/**
-	 * @var     KunenaForumTopicPoll
+	 * @var     Poll
 	 * @since   Kunena 6.0
 	 */
 	public $poll;
@@ -73,7 +77,7 @@ class ComponentKunenaControllerTopicPollDisplay extends Display
 	{
 		parent::before();
 
-		$this->topic    = \Joomla\Component\Kunena\Libraries\Forum\Topic\Helper::get($this->input->getInt('id'));
+		$this->topic    = \Kunena\Forum\Libraries\Forum\Topic\Helper::get($this->input->getInt('id'));
 		$this->category = $this->topic->getCategory();
 		$this->config   = KunenaFactory::getConfig();
 		$this->me       = Helper::getMyself();

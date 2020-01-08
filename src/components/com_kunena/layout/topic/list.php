@@ -10,13 +10,13 @@
  * @link            https://www.kunena.org
  **/
 
-namespace Joomla\Component\Kunena\Site\Layout\Topic;
+namespace Kunena\Forum\Site\Layout\Topic;
 
 defined('_JEXEC') or die;
 
 use Joomla\CMS\HTML\HTMLHelper;
 use Joomla\CMS\Language\Text;
-use Joomla\Component\Kunena\Libraries\Layout\Layout;
+use Kunena\Forum\Libraries\Layout\Layout;
 use function defined;
 
 /**

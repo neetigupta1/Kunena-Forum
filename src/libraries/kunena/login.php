@@ -10,7 +10,7 @@
  * @link            https://www.kunena.org
  **/
 
-namespace Joomla\Component\Kunena\Libraries;
+namespace Kunena\Forum\Libraries;
 
 defined('_JEXEC') or die();
 
@@ -18,8 +18,8 @@ use Exception;
 use Joomla\CMS\Factory;
 use Joomla\CMS\Helper\AuthenticationHelper;
 use Joomla\CMS\Plugin\PluginHelper;
-use Joomla\Component\Users\Administrator\Model\UserModel;
 use Joomla\Component\Users\Administrator\Helper\UsersHelper;
+use Joomla\Component\Users\Administrator\Model\UserModel;
 use Joomla\Registry\Registry;
 use function defined;
 
@@ -37,7 +37,7 @@ class Login
 	protected static $instance = false;
 
 	/**
-	 * @var     array|KunenaLogin[]
+	 * @var     array| Login[]
 	 * @since   Kunena 6.0
 	 */
 	protected $instances = [];
@@ -68,7 +68,7 @@ class Login
 	/**
 	 * @param   null  $integration  integration
 	 *
-	 * @return  boolean|KunenaLogin
+	 * @return  boolean|Login
 	 *
 	 * @since   Kunena 6.0
 	 *
@@ -78,7 +78,7 @@ class Login
 	{
 		if (self::$instance === false)
 		{
-			self::$instance = new KunenaLogin;
+			self::$instance = new Login;
 		}
 
 		return self::$instance;

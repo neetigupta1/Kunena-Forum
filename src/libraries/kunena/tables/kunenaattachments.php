@@ -10,13 +10,13 @@
  * @link          https://www.kunena.org
  **/
 
-namespace Joomla\Component\Kunena\Libraries\Tables;
+namespace Kunena\Forum\Libraries\Tables;
 
 defined('_JEXEC') or die();
 
-use Joomla\Database\DatabaseDriver;
 use Exception;
 use Joomla\CMS\Language\Text;
+use Joomla\Database\DatabaseDriver;
 use RuntimeException;
 use UnexpectedValueException;
 use function defined;
@@ -122,8 +122,8 @@ class TableKunenaAttachments extends KunenaTable
 	 */
 	public function check()
 	{
-		$user    = \Joomla\Component\Kunena\Libraries\User\Helper::get($this->userid);
-		$message = \Joomla\Component\Kunena\Libraries\Forum\Message\Helper::get($this->mesid);
+		$user    = \Kunena\Forum\Libraries\User\Helper::get($this->userid);
+		$message = \Kunena\Forum\Libraries\Forum\Message\Helper::get($this->mesid);
 
 		if ($user->userid != 0 && !$user->exists())
 		{
@@ -172,7 +172,7 @@ class TableKunenaAttachments extends KunenaTable
 
 			if (!$this->filetype)
 			{
-				$this->filetype = KunenaFile::getMime($file);
+				$this->filetype = \Kunena\Forum\Libraries\File\File::getMime($file);
 			}
 		}
 

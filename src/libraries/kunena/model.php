@@ -9,7 +9,7 @@
  * @link           https://www.kunena.org
  **/
 
-namespace Joomla\Component\Kunena\Libraries;
+namespace Kunena\Forum\Libraries;
 
 defined('_JEXEC') or die();
 
@@ -18,9 +18,11 @@ use Joomla\CMS\Component\ComponentHelper;
 use Joomla\CMS\Factory;
 use Joomla\CMS\Filter\InputFilter;
 use Joomla\CMS\MVC\Model\BaseDatabaseModel;
-use Joomla\Registry\Registry;
-use Joomla\Input\Input;
 use Joomla\CMS\Object\CMSObject;
+use Joomla\Input\Input;
+use Joomla\Registry\Registry;
+use Kunena\Forum\Libraries\User\Helper;
+use Kunena\Forum\Libraries\User\KunenaUser;
 use function defined;
 
 /**
@@ -92,8 +94,8 @@ class Model extends BaseDatabaseModel
 		parent::__construct($config);
 
 		$this->app    = Factory::getApplication();
-		$this->me     = \Joomla\Component\Kunena\Libraries\User\Helper::getMyself();
-		$this->config = \Joomla\Component\Kunena\Libraries\KunenaFactory::getConfig();
+		$this->me     = Helper::getMyself();
+		$this->config = KunenaFactory::getConfig();
 		$this->input  = $input ? $input : $this->app->input;
 	}
 

@@ -10,12 +10,14 @@
  * @link          https://www.kunena.org
  **/
 
-namespace Joomla\Component\Kunena\Libraries\Request;
+namespace Kunena\Forum\Libraries\Request;
 
 defined('_JEXEC') or die();
 
 use InvalidArgumentException;
 use Joomla\Input\Input;
+use Kunena\Forum\Libraries\Controller\KunenaControllerBase;
+use Kunena\Forum\Libraries\Controller\KunenaControllerDisplay;
 use function defined;
 
 /**
@@ -26,10 +28,10 @@ use function defined;
  *
  * <code>
  *    // Executes the controller and sets the layout for the view.
- *    echo \Joomla\Component\Kunena\Libraries\Request\Request::factory('User/Login')->execute()->set('layout', 'form');
+ *    echo \Kunena\Forum\Libraries\Request\Request::factory('User/Login')->execute()->set('layout', 'form');
  *
  *    // If there are no parameters for the view, this shorthand works also.
- *    echo \Joomla\Component\Kunena\Libraries\Request\Request::factory('User/Registration');
+ *    echo \Kunena\Forum\Libraries\Request\Request::factory('User/Registration');
  * </code>
  *
  * Individual controller classes are located in /components/com_kunena/controller
@@ -47,7 +49,7 @@ class Request
 	 * @param   Input   $input    input
 	 * @param   mixed   $options  options
 	 *
-	 * @return  KunenaControllerBase|KunenaControllerDisplay
+	 * @return  KunenaControllerBase| KunenaControllerDisplay
 	 *
 	 * @since   Kunena 6.0
 	 */

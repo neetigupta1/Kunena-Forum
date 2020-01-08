@@ -10,7 +10,7 @@
  * @link            https://www.kunena.org
  **/
 
-namespace Joomla\Component\Kunena\Site\View\Topics;
+namespace Kunena\Forum\Site\View\Topics;
 
 defined('_JEXEC') or die();
 
@@ -19,9 +19,9 @@ use Joomla\CMS\Date\Date;
 use Joomla\CMS\Document\Feed\FeedItem;
 use Joomla\CMS\Factory;
 use Joomla\CMS\Language\Text;
-use Joomla\Component\Kunena\Libraries\Html\Parser;
-use Joomla\Component\Kunena\Libraries\KunenaFactory;
-use Joomla\Component\Kunena\Libraries\View;
+use Kunena\Forum\Libraries\Html\Parser;
+use Kunena\Forum\Libraries\KunenaFactory;
+use Kunena\Forum\Libraries\View;
 use function defined;
 
 /**
@@ -38,7 +38,7 @@ class feed extends View
 	 *
 	 * @since   Kunena 6.0
 	 *
-	 * @throws  Exception
+	 * @throws  \Exception
 	 */
 	public function displayDefault($tpl = null)
 	{
@@ -112,7 +112,7 @@ class feed extends View
 	 *
 	 * @since   Kunena 6.0
 	 *
-	 * @throws  Exception
+	 * @throws  \Exception
 	 */
 	public function displayUser($tpl = null)
 	{
@@ -159,7 +159,7 @@ class feed extends View
 	 *
 	 * @since   Kunena 6.0
 	 *
-	 * @throws  Exception
+	 * @throws  \Exception
 	 */
 	public function displayPosts($tpl = null)
 	{
@@ -206,7 +206,7 @@ class feed extends View
 	 *
 	 * @since   Kunena 6.0
 	 *
-	 * @throws  Exception
+	 * @throws  \Exception
 	 */
 	public function displayTopicRows()
 	{
@@ -255,7 +255,7 @@ class feed extends View
 	 *
 	 * @since   Kunena 6.0
 	 *
-	 * @throws  Exception
+	 * @throws  \Exception
 	 */
 	public function displayPostRows()
 	{
@@ -302,7 +302,7 @@ class feed extends View
 	 *
 	 * @since   Kunena 6.0
 	 *
-	 * @throws  Exception
+	 * @throws  \Exception
 	 */
 	public function createItem($title, $url, $description, $category, $date, $userid, $username)
 	{

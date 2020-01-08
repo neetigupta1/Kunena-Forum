@@ -10,16 +10,17 @@
  * @link            https://www.kunena.org
  **/
 
-namespace Joomla\Component\Kunena\Site\Controllers;
+namespace Kunena\Forum\Site\Controllers;
 
 defined('_JEXEC') or die();
 
 use Exception;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\Session\Session;
-use Joomla\Component\Kunena\Libraries\Forum\Category\Helper;
-use Joomla\Component\Kunena\Libraries\KunenaFactory;
-use Joomla\Component\Kunena\Libraries\Route\KunenaRoute;
+use Kunena\Forum\Administrator\Controllers\KunenaAdminControllerCategories;
+use Kunena\Forum\Libraries\Forum\Category\Helper;
+use Kunena\Forum\Libraries\KunenaFactory;
+use Kunena\Forum\Libraries\Route\KunenaRoute;
 use Joomla\Utilities\ArrayHelper;
 use function defined;
 
@@ -130,7 +131,7 @@ class KunenaControllerCategory extends KunenaAdminControllerCategories
 				}
 
 				// Mark all unread topics in selected categories as read.
-				KunenaForumCategoryUserHelper::markRead(array_keys($categories));
+				\Kunena\Forum\Libraries\Forum\Category\User\Helper::markRead(array_keys($categories));
 
 				if (count($categories) > 1)
 				{
@@ -205,7 +206,7 @@ class KunenaControllerCategory extends KunenaAdminControllerCategories
 			return;
 		}
 
-		$me = \Joomla\Component\Kunena\Libraries\User\Helper::getMyself();
+		$me = \Kunena\Forum\Libraries\User\Helper::getMyself();
 
 		$userid = $this->app->input->getInt('userid');
 

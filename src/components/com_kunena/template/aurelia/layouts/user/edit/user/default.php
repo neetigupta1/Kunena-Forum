@@ -10,7 +10,7 @@
  * @link            https://www.kunena.org
  **/
 
-namespace Joomla\Component\Kunena\Site;
+namespace Kunena\Forum\Site;
 
 defined('_JEXEC') or die();
 
@@ -109,7 +109,7 @@ use function defined;
 	</table>
 <?php endif;
 
-if (\Joomla\Component\Kunena\Libraries\Login::getTwoFactorMethods() > 1)
+if (\Kunena\Forum\Libraries\Login::getTwoFactorMethods() > 1)
 :
 	?>
 	<a class="btn btn-outline-primary border"

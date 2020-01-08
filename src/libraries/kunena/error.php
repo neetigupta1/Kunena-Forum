@@ -9,7 +9,7 @@
  * @link           https://www.kunena.org
  **/
 
-namespace Joomla\Component\Kunena\Libraries;
+namespace Kunena\Forum\Libraries;
 
 defined('_JEXEC') or die();
 
@@ -17,6 +17,10 @@ use Exception;
 use Joomla\CMS\Factory;
 use Joomla\CMS\Language\Text;
 use Joomla\Database\Exception\ExecutionFailureException;
+use Kunena\Forum\Libraries\Email\Email;
+use Kunena\Forum\Libraries\Forum\KunenaForum;
+use Kunena\Forum\Libraries\Log\Log;
+use StdClass;
 use function defined;
 
 /**
@@ -65,10 +69,10 @@ abstract class Error
 	 */
 	public static function initialize()
 	{
-		if (!self::$enabled && !\Joomla\Component\Kunena\Libraries\Forum\Forum::isDev())
+		if (!self::$enabled && !KunenaForum::isDev())
 		{
 			self::$format = Factory::getApplication()->input->getWord('format', 'html');
-			self::$debug  = JDEBUG || \Joomla\Component\Kunena\Libraries\KunenaFactory::getConfig()->debug;
+			self::$debug  = JDEBUG || KunenaFactory::getConfig()->debug;
 			self::$admin  = Factory::getApplication()->isClient('administrator');
 
 			// Make sure we are able to log fatal errors.
@@ -162,12 +166,12 @@ abstract class Error
 		{
 			$app->enqueueMessage('Exception throw at line ' . $exception->getLine() . ' in file ' . $exception->getFile() . ' with message ' . $exception->getMessage(), 'error');
 		}
-		elseif (!JDEBUG && !\Joomla\Component\Kunena\Libraries\KunenaFactory::getConfig()->debug && !self::$admin)
+		elseif (!JDEBUG && !KunenaFactory::getConfig()->debug && !self::$admin)
 		{
 			$app->enqueueMessage('Kunena ' . Text::sprintf('COM_KUNENA_INTERNAL_ERROR_ADMIN',
 					'<a href="https://www.kunena.org/">www.kunena.org</a>'), 'error');
 		}
-		elseif (\Joomla\Component\Kunena\Libraries\KunenaFactory::getUser()->isAdmin() && Factory::getApplication()->isClient('site'))
+		elseif (KunenaFactory::getUser()->isAdmin() && Factory::getApplication()->isClient('site'))
 		{
 			$app->enqueueMessage('Exception throw at line ' . $exception->getLine() . ' in file ' . $exception->getFile() . ' with message ' . $exception->getMessage(), 'error');
 		}
@@ -176,7 +180,7 @@ abstract class Error
 			$app->enqueueMessage('Kunena ' . Text::_('COM_KUNENA_INTERNAL_ERROR'), 'error');
 		}
 
-		KunenaLog::log(KunenaLog::TYPE_ERROR, KunenaLog::LOG_ERROR_FATAL, 'Exception throw at line ' . $exception->getLine() . ' in file ' . $exception->getFile() . ' with message ' . $exception->getMessage());
+		Log::log(Log::TYPE_ERROR, Log::LOG_ERROR_FATAL, 'Exception throw at line ' . $exception->getLine() . ' in file ' . $exception->getFile() . ' with message ' . $exception->getMessage());
 	}
 
 	/**
@@ -195,7 +199,7 @@ abstract class Error
 		{
 			if (strpos($errstr, "mail()") !== false)
 			{
-				return KunenaEmail::on_mail_error($errno, $errstr, $errfile, $errline);
+				return Email::on_mail_error($errno, $errstr, $errfile, $errline);
 			}
 
 			return false;
@@ -263,7 +267,7 @@ abstract class Error
 
 		if ($error && in_array($error['type'], $types))
 		{
-			KunenaLog::log(KunenaLog::TYPE_ERROR, KunenaLog::LOG_ERROR_FATAL, $error);
+			Log::log(Log::TYPE_ERROR, Log::LOG_ERROR_FATAL, $error);
 
 			if ($debug)
 			{
@@ -385,6 +389,6 @@ abstract class Error
 		}
 
 		// Flush Kunena Logger if it was used.
-		KunenaLog::flush();
+		Log::flush();
 	}
 }

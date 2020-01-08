@@ -10,7 +10,7 @@
  * @link            https://www.kunena.org
 **/
 
-namespace Joomla\Component\Kunena\Site;
+namespace Kunena\Forum\Site;
 
 defined('_JEXEC') or die();
 
@@ -32,9 +32,9 @@ $this->addScript('jquery.fileupload-image.js');
 $this->addScript('upload.avatar.js');
 $this->addStyleSheet('fileupload.css');
 
-$this->addScriptOptions('com_kunena.avatar_remove_url', \Joomla\Component\Kunena\Libraries\Route\KunenaRoute::_('index.php?option=com_kunena&view=user&task=removeavatar&format=json&' . Session::getFormToken() . '=1', false));
-$this->addScriptOptions('com_kunena.avatar_preload_url', \Joomla\Component\Kunena\Libraries\Route\KunenaRoute::_('index.php?option=com_kunena&view=user&task=loadavatar&format=json&' . Session::getFormToken() . '=1', false));
-$this->addScriptOptions('com_kunena.avatar_delete', KunenaIcons::delete());
+$this->addScriptOptions('com_kunena.avatar_remove_url', \Kunena\Forum\Libraries\Route\KunenaRoute::_('index.php?option=com_kunena&view=user&task=removeavatar&format=json&' . Session::getFormToken() . '=1', false));
+$this->addScriptOptions('com_kunena.avatar_preload_url', \Kunena\Forum\Libraries\Route\KunenaRoute::_('index.php?option=com_kunena&view=user&task=loadavatar&format=json&' . Session::getFormToken() . '=1', false));
+$this->addScriptOptions('com_kunena.avatar_delete', \Kunena\Forum\Libraries\Icons\Icons::delete());
 ?>
 <h3>
 	<?php echo $this->headerText; ?>
@@ -51,7 +51,7 @@ $this->addScriptOptions('com_kunena.avatar_delete', KunenaIcons::delete());
 			</td>
 			<td>
 					<span class="btn btn-outline-primary fileinput-button">
-						<?php echo KunenaIcons::plus(); ?>
+						<?php echo \Kunena\Forum\Libraries\Icons\Icons::plus(); ?>
 						<span><?php echo Text::_('COM_KUNENA_UPLOADED_LABEL_ADD_AVATAR_BUTTON') ?></span>
 						<!-- The file input field used as target for the file upload widget -->
 						<input id="fileupload" type="file" name="file" multiple>
@@ -79,7 +79,7 @@ $this->addScriptOptions('com_kunena.avatar_delete', KunenaIcons::delete());
 			<td class="col-md-3">
 				<label><?php echo Text::_('COM_KUNENA_PROFILE_AVATAR_GALLERY'); ?></label>
 				<input id="kunena_url_avatargallery" type="hidden"
-				       value="<?php echo \Joomla\Component\Kunena\Libraries\Route\KunenaRoute::_('index.php?option=com_kunena&view=user&layout=galleryimages&format=raw') ?>"/>
+				       value="<?php echo \Kunena\Forum\Libraries\Route\KunenaRoute::_('index.php?option=com_kunena&view=user&layout=galleryimages&format=raw') ?>"/>
 			</td>
 			<td>
 

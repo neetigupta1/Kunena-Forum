@@ -9,16 +9,15 @@
  * @link          https://www.kunena.org
  **/
 
-namespace Joomla\Component\Kunena\Site\View\Topics;
+namespace Kunena\Forum\Site\View\Topics;
 
 defined('_JEXEC') or die;
 
-use Exception;
-use Joomla\Component\Kunena\Libraries\Html\Parser;
-use Joomla\Component\Kunena\Libraries\KunenaFactory;
-use Joomla\Component\Kunena\Libraries\User\Helper;
-use Joomla\Component\Kunena\Libraries\Forum\Topic;
-use Joomla\Component\Kunena\Libraries\View;
+use Kunena\Forum\Libraries\Forum\Topic;
+use Kunena\Forum\Libraries\Html\Parser;
+use Kunena\Forum\Libraries\KunenaFactory;
+use Kunena\Forum\Libraries\User\Helper;
+use Kunena\Forum\Libraries\View;
 use stdClass;
 use function defined;
 
@@ -36,7 +35,7 @@ class json extends View
 	 *
 	 * @since   Kunena 6.0
 	 *
-	 * @throws  Exception
+	 * @throws  \Exception
 	 */
 	public function display($tpl = null)
 	{

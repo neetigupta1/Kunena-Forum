@@ -14,7 +14,7 @@
  * Taken from Joomla Platform 11.1
  */
 
-namespace Joomla\Component\Kunena\Libraries\Html\Html;
+namespace Kunena\Forum\Libraries\Html\Html;
 
 defined('_JEXEC') or die();
 
@@ -43,7 +43,7 @@ abstract class Grid
 	 *
 	 * @since   Kunena 6.0
 	 *
-	 * @throws  Exception
+	 * @throws  \Exception
 	 */
 	public static function boolean($i, $value, $taskOn = null, $taskOff = null)
 	{
@@ -72,7 +72,7 @@ abstract class Grid
 	 *
 	 * @since   Kunena 6.0
 	 *
-	 * @throws  Exception
+	 * @throws  \Exception
 	 */
 	public static function behavior()
 	{
@@ -169,7 +169,7 @@ abstract class Grid
 	 *
 	 * @since   Kunena 6.0
 	 *
-	 * @throws  Exception
+	 * @throws  \Exception
 	 */
 	public static function checkedOut($row, $i, $identifier = 'id')
 	{
@@ -254,7 +254,7 @@ abstract class Grid
 	 *
 	 * @since   Kunena 6.0
 	 *
-	 * @throws  Exception
+	 * @throws  \Exception
 	 */
 	public static function published($i, $value, $prefix = '', $bootstrap = false)
 	{
@@ -311,7 +311,7 @@ abstract class Grid
 		}
 
 		$active        = $task == 'publish' ? 'active' : '';
-		$ktemplate     = \Joomla\Component\Kunena\Libraries\KunenaFactory::getTemplate();
+		$ktemplate     = \Kunena\Forum\Libraries\KunenaFactory::getTemplate();
 		$topicicontype = $ktemplate->params->get('topicicontype');
 
 		if ($bootstrap && $topicicontype == 'B2')
@@ -420,11 +420,11 @@ abstract class Grid
 	 *
 	 * @since   Kunena 6.0
 	 *
-	 * @throws  Exception
+	 * @throws  \Exception
 	 */
 	public static function task($i, $img, $alt, $task, $prefix = '', $bootstrap = false)
 	{
-		return self::action($i, $task, $prefix, $alt, '', $task, $bootstrap, '<img src="' . \Joomla\Component\Kunena\Libraries\KunenaFactory::getTemplate()->getImagePath($img) . '" alt="' . $alt . '" title="' . $alt . '" />');
+		return self::action($i, $task, $prefix, $alt, '', $task, $bootstrap, '<img src="' . \Kunena\Forum\Libraries\KunenaFactory::getTemplate()->getImagePath($img) . '" alt="' . $alt . '" title="' . $alt . '" />');
 	}
 
 	/**

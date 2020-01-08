@@ -10,12 +10,13 @@
  * @link            https://www.kunena.org
  **/
 
-namespace Joomla\Component\Kunena\Administrator;
+namespace Kunena\Forum\Administrator;
 
 defined('_JEXEC') or die();
 
 use Joomla\CMS\HTML\HTMLHelper;
 use Joomla\CMS\Language\Text;
+use Kunena\Forum\Administrator\Install\KunenaVersion;
 
 ?>
 
@@ -23,7 +24,7 @@ use Joomla\CMS\Language\Text;
 	<div class="row">
 		<div id="j-main-container" class="col-md-12" role="main">
 			<div class="card card-block bg-faded p-2">
-				<form action="<?php echo \Joomla\Component\Kunena\Libraries\Route\KunenaRoute::_('administrator/index.php?option=com_kunena&view=tools') ?>"
+				<form action="<?php echo \Kunena\Forum\Libraries\Route\KunenaRoute::_('administrator/index.php?option=com_kunena&view=tools') ?>"
 					  method="post" id="adminForm"
 					  name="adminForm">
 					<input type="hidden" name="task" value="cleanupip"/>

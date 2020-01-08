@@ -10,13 +10,17 @@
  * @link              https://www.kunena.org
  **/
 
-namespace Joomla\Component\Kunena\Administrator;
+namespace Kunena\Forum\Administrator;
 
 defined('_JEXEC') or die();
 
 use Joomla\CMS\HTML\HTMLHelper;
 use Joomla\CMS\Factory;
 use Joomla\CMS\Language\Text;
+use Joomla\String\StringHelper;
+use Kunena\Forum\Administrator\Install\KunenaVersion;
+use Kunena\Forum\Libraries\KunenaDate;
+use Kunena\Forum\Libraries\Route\KunenaRoute;
 
 HTMLHelper::_('behavior.multiselect');
 HTMLHelper::_('dropdown.init');
@@ -49,7 +53,7 @@ jQuery(function($) {
 					<?php echo Text::_('COM_KUNENA_USRL_USERNAME') ?>
 					: <?php echo $this->escape($this->user->username); ?></div>
 				<hr class="hr-condensed">
-				<form action="<?php echo \Joomla\Component\Kunena\Libraries\Route\KunenaRoute::_('administrator/index.php?option=com_kunena&view=users'); ?>"
+				<form action="<?php echo KunenaRoute::_('administrator/index.php?option=com_kunena&view=users'); ?>"
 				      method="post" id="adminForm"
 				      name="adminForm">
 					<input type="hidden" name="task" value=""/>
@@ -123,7 +127,7 @@ jQuery(function($) {
 												<div>
 													<?php echo Text::sprintf(
 														'COM_KUNENA_SIGNATURE_LENGTH_COUNTER', intval($this->config->maxsig),
-														'<input id="current_count" class="col-md-1" readonly="readonly" type="text" name="current_count" value="' . (intval($this->config->maxsig) - Joomla\String\StringHelper::strlen($this->user->signature)) . '" />'
+														'<input id="current_count" class="col-md-1" readonly="readonly" type="text" name="current_count" value="' . (intval($this->config->maxsig) - StringHelper::strlen($this->user->signature)) . '" />'
 													); ?>
 												</div>
 											</fieldset>
@@ -157,7 +161,7 @@ jQuery(function($) {
 																<div class="input-append date">
 																	<input type="text" name="birthdate"
 																	       data-date-format="mm/dd/yyyy"
-																	       value="<?php echo $this->user->birthdate == '1000-01-01' ? '' : \Joomla\Component\Kunena\Libraries\KunenaDate::getInstance($this->user->birthdate)->format('m/d/Y'); ?>">
+																	       value="<?php echo $this->user->birthdate == '1000-01-01' ? '' : KunenaDate::getInstance($this->user->birthdate)->format('m/d/Y'); ?>">
 																</div>
 															</div>
 														</td>

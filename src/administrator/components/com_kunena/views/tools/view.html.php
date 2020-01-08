@@ -10,13 +10,18 @@
  * @link            https://www.kunena.org
  **/
 
-namespace Joomla\Component\Kunena\Administrator;
+namespace Kunena\Forum\Administrator\Views;
 
 defined('_JEXEC') or die();
 
 use Exception;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\Toolbar\ToolbarHelper;
+use Kunena\Forum\Libraries\Access;
+use Kunena\Forum\Libraries\Login;
+use Kunena\Forum\Libraries\Menu\Fix;
+use Kunena\Forum\Libraries\User\Helper;
+use Kunena\Forum\Libraries\View;
 use function defined;
 
 /**
@@ -24,7 +29,7 @@ use function defined;
  *
  * @since   Kunena 6.0
  */
-class KunenaAdminViewTools extends \Joomla\Component\Kunena\Libraries\View
+class KunenaAdminViewTools extends View
 {
 	/**
 	 * @return  void
@@ -97,16 +102,16 @@ class KunenaAdminViewTools extends \Joomla\Component\Kunena\Libraries\View
 	{
 		$id = $this->app->input->get('id', 0, 'int');
 
-		$topic           = \Joomla\Component\Kunena\Libraries\Forum\Topic\Helper::get($id);
-		$acl             = \Joomla\Component\Kunena\Libraries\Access::getInstance();
-		$cat_subscribers = $acl->loadSubscribers($topic, \Joomla\Component\Kunena\Libraries\Access::CATEGORY_SUBSCRIPTION);
+		$topic           = \Kunena\Forum\Libraries\Forum\Topic\Helper::get($id);
+		$acl             = Access::getInstance();
+		$cat_subscribers = $acl->loadSubscribers($topic, Access::CATEGORY_SUBSCRIPTION);
 
-		$this->cat_subscribers_users = \Joomla\Component\Kunena\Libraries\User\Helper::loadUsers($cat_subscribers);
+		$this->cat_subscribers_users = Helper::loadUsers($cat_subscribers);
 
-		$topic_subscribers             = $acl->loadSubscribers($topic, \Joomla\Component\Kunena\Libraries\Access::TOPIC_SUBSCRIPTION);
-		$this->topic_subscribers_users = \Joomla\Component\Kunena\Libraries\User\Helper::loadUsers($topic_subscribers);
+		$topic_subscribers             = $acl->loadSubscribers($topic, Access::TOPIC_SUBSCRIPTION);
+		$this->topic_subscribers_users = Helper::loadUsers($topic_subscribers);
 
-		$this->cat_topic_subscribers = $acl->getSubscribers($topic->getCategory()->id, $id, \Joomla\Component\Kunena\Libraries\Access::CATEGORY_SUBSCRIPTION | \Joomla\Component\Kunena\Libraries\Access::TOPIC_SUBSCRIPTION, 1, 1);
+		$this->cat_topic_subscribers = $acl->getSubscribers($topic->getCategory()->id, $id, Access::CATEGORY_SUBSCRIPTION | Access::TOPIC_SUBSCRIPTION, 1, 1);
 
 		$this->display();
 	}
@@ -180,9 +185,9 @@ class KunenaAdminViewTools extends \Joomla\Component\Kunena\Libraries\View
 	 */
 	public function displayMenu()
 	{
-		$this->legacy    = KunenaMenuFix::getLegacy();
-		$this->invalid   = KunenaMenuFix::getInvalid();
-		$this->conflicts = KunenaMenuFix::getConflicts();
+		$this->legacy    = Fix::getLegacy();
+		$this->invalid   = Fix::getInvalid();
+		$this->conflicts = Fix::getConflicts();
 
 		$this->setToolBarMenu();
 		$this->display();
@@ -310,7 +315,7 @@ class KunenaAdminViewTools extends \Joomla\Component\Kunena\Libraries\View
 	{
 		$this->setToolBarUninstall();
 
-		$login              = \Joomla\Component\Kunena\Libraries\Login::getInstance();
+		$login              = Login::getInstance();
 		$this->isTFAEnabled = $login->isTFAEnabled();
 
 		$this->display();

@@ -10,24 +10,24 @@
  * @link            https://www.kunena.org
  **/
 
-namespace Joomla\Component\Kunena\Plugin\Kunena\Kunena;
+namespace Kunena\Forum\Plugin\Kunena\Kunena;
 
 defined('_JEXEC') or die();
 
 use Exception;
 use Joomla\CMS\Access\Access;
 use Joomla\CMS\Factory;
-use Joomla\Component\Kunena\Libraries\Error;
-use Joomla\Component\Kunena\Libraries\Integration\Profile;
-use Joomla\Component\Kunena\Libraries\KunenaFactory;
-use Joomla\Component\Kunena\Libraries\Route\KunenaRoute;
-use Joomla\Component\Kunena\Libraries\User\Helper;
-use Joomla\Component\Kunena\Libraries\User\KunenaUser;
+use Kunena\Forum\Libraries\Error;
+use Kunena\Forum\Libraries\Integration\Profile;
+use Kunena\Forum\Libraries\KunenaFactory;
+use Kunena\Forum\Libraries\Route\KunenaRoute;
+use Kunena\Forum\Libraries\User\Helper;
+use Kunena\Forum\Libraries\User\KunenaUser;
 use RuntimeException;
 use function defined;
 
 /**
- * Class \Joomla\Component\Kunena\Libraries\Integration\Profile
+ * Class \Kunena\Forum\Libraries\Integration\Profile
  *
  * @since   Kunena 6.0
  */

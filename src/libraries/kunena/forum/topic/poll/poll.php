@@ -10,7 +10,7 @@
  * @link          https://www.kunena.org
  **/
 
-namespace Joomla\Component\Kunena\Libraries\Forum\Topic\Poll;
+namespace Kunena\Forum\Libraries\Forum\Topic\Poll;
 
 defined('_JEXEC') or die();
 
@@ -20,13 +20,17 @@ use Joomla\CMS\Filter\InputFilter;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\Object\CMSObject;
 use Joomla\CMS\Table\Table;
-use Joomla\Database\Exception\ExecutionFailureException;
 use Joomla\Database\DatabaseDriver;
+use Joomla\Database\Exception\ExecutionFailureException;
+use Kunena\Forum\Libraries\Error;
+use Kunena\Forum\Libraries\KunenaFactory;
+use Kunena\Forum\Libraries\Tables\KunenaTable;
+use Kunena\Forum\Libraries\Tables\TableKunenaPolls;
 use StdClass;
 use function defined;
 
 /**
- * Class KunenaForumTopicPoll
+ * Class \Kunena\Forum\Libraries\Forum\Topic\TopicPoll
  *
  * @property string $title
  * @property int    $threadid
@@ -106,7 +110,7 @@ class Poll extends CMSObject
 	}
 
 	/**
-	 * Method to load a KunenaForumTopicPoll object by id.
+	 * Method to load a \Kunena\Forum\Libraries\Forum\Topic\TopicPoll object by id.
 	 *
 	 * @param   int  $id  The poll id to be loaded.
 	 *
@@ -156,12 +160,12 @@ class Poll extends CMSObject
 	}
 
 	/**
-	 * Returns KunenaForumTopicPoll object.
+	 * Returns \Kunena\Forum\Libraries\Forum\Topic\Poll object.
 	 *
 	 * @param   mixed  $identifier  Poll to load - Can be only an integer.
 	 * @param   bool   $reset       reset
 	 *
-	 * @return  KunenaForumTopicPoll
+	 * @return  Poll
 	 *
 	 * @since   Kunena 6.0
 	 *
@@ -169,7 +173,7 @@ class Poll extends CMSObject
 	 */
 	public static function getInstance($identifier = null, $reset = false)
 	{
-		return KunenaForumTopicPollHelper::get($identifier, $reset);
+		return Helper::get($identifier, $reset);
 	}
 
 	/**
@@ -219,7 +223,7 @@ class Poll extends CMSObject
 			}
 			catch (ExecutionFailureException $e)
 			{
-				\Joomla\Component\Kunena\Libraries\Error::displayDatabaseError($e);
+				Error::displayDatabaseError($e);
 			}
 		}
 
@@ -281,7 +285,7 @@ class Poll extends CMSObject
 			}
 			catch (ExecutionFailureException $e)
 			{
-				\Joomla\Component\Kunena\Libraries\Error::displayDatabaseError($e);
+				Error::displayDatabaseError($e);
 			}
 		}
 
@@ -316,7 +320,7 @@ class Poll extends CMSObject
 			}
 			catch (ExecutionFailureException $e)
 			{
-				\Joomla\Component\Kunena\Libraries\Error::displayDatabaseError($e);
+				Error::displayDatabaseError($e);
 			}
 		}
 
@@ -334,7 +338,7 @@ class Poll extends CMSObject
 	 */
 	public function getMyTime($user = null)
 	{
-		$user = \Joomla\Component\Kunena\Libraries\KunenaFactory::getUser($user);
+		$user = KunenaFactory::getUser($user);
 
 		if (!isset($this->mytime[$user->userid]))
 		{
@@ -351,7 +355,7 @@ class Poll extends CMSObject
 			}
 			catch (ExecutionFailureException $e)
 			{
-				\Joomla\Component\Kunena\Libraries\Error::displayDatabaseError($e);
+				Error::displayDatabaseError($e);
 			}
 		}
 
@@ -387,7 +391,7 @@ class Poll extends CMSObject
 			return false;
 		}
 
-		$user = \Joomla\Component\Kunena\Libraries\KunenaFactory::getUser($user);
+		$user = KunenaFactory::getUser($user);
 
 		if (!$user->exists())
 		{
@@ -435,7 +439,7 @@ class Poll extends CMSObject
 			}
 		}
 
-		$votes->lasttime = \Joomla\Component\Kunena\Libraries\User\Helper::getMyself()->getTime();
+		$votes->lasttime = \Kunena\Forum\Libraries\User\Helper::getMyself()->getTime();
 		$votes->lastvote = $option;
 		$votes->userid   = (int) $user->userid;
 
@@ -466,7 +470,7 @@ class Poll extends CMSObject
 			}
 			catch (ExecutionFailureException $e)
 			{
-				\Joomla\Component\Kunena\Libraries\Error::displayDatabaseError($e);
+				Error::displayDatabaseError($e);
 
 				$this->setError(Text::_('COM_KUNENA_LIB_POLL_VOTE_ERROR_USER_INSERT_FAIL'));
 
@@ -498,7 +502,7 @@ class Poll extends CMSObject
 			}
 			catch (ExecutionFailureException $e)
 			{
-				\Joomla\Component\Kunena\Libraries\Error::displayDatabaseError($e);
+				Error::displayDatabaseError($e);
 
 				$this->setError(Text::_('COM_KUNENA_LIB_POLL_VOTE_ERROR_USER_UPDATE_FAIL'));
 
@@ -539,7 +543,7 @@ class Poll extends CMSObject
 	 */
 	public function getLastVoteId($user = null)
 	{
-		$user  = \Joomla\Component\Kunena\Libraries\KunenaFactory::getUser($user);
+		$user  = KunenaFactory::getUser($user);
 		$query = $this->_db->getQuery(true);
 		$query->select($this->_db->quoteName('lastvote'))
 			->from($this->_db->quoteName('#__kunena_polls_users'))
@@ -553,7 +557,7 @@ class Poll extends CMSObject
 		}
 		catch (ExecutionFailureException $e)
 		{
-			\Joomla\Component\Kunena\Libraries\Error::displayDatabaseError($e);
+			Error::displayDatabaseError($e);
 		}
 
 		return $this->mylastvoteId;
@@ -570,7 +574,7 @@ class Poll extends CMSObject
 	 */
 	public function getMyVotes($user = null)
 	{
-		$user = \Joomla\Component\Kunena\Libraries\KunenaFactory::getUser($user);
+		$user = KunenaFactory::getUser($user);
 
 		if (!isset($this->myvotes[$user->userid]))
 		{
@@ -587,7 +591,7 @@ class Poll extends CMSObject
 			}
 			catch (ExecutionFailureException $e)
 			{
-				\Joomla\Component\Kunena\Libraries\Error::displayDatabaseError($e);
+				Error::displayDatabaseError($e);
 			}
 		}
 
@@ -628,7 +632,7 @@ class Poll extends CMSObject
 		}
 		catch (ExecutionFailureException $e)
 		{
-			\Joomla\Component\Kunena\Libraries\Error::displayDatabaseError($e);
+			Error::displayDatabaseError($e);
 
 			$this->setError(Text::_('COM_KUNENA_LIB_POLL_VOTE_ERROR_OPTION_SAVE_FAIL'));
 
@@ -657,7 +661,7 @@ class Poll extends CMSObject
 	}
 
 	/**
-	 * Method to delete the KunenaForumTopicPoll object from the database.
+	 * Method to delete the \Kunena\Forum\Libraries\Forum\Topic\TopicPoll object from the database.
 	 *
 	 * @return  boolean  True on success.
 	 *
@@ -697,7 +701,7 @@ class Poll extends CMSObject
 		}
 		catch (ExecutionFailureException $e)
 		{
-			\Joomla\Component\Kunena\Libraries\Error::displayDatabaseError($e);
+			Error::displayDatabaseError($e);
 		}
 
 		// Delete votes
@@ -712,11 +716,11 @@ class Poll extends CMSObject
 		}
 		catch (ExecutionFailureException $e)
 		{
-			\Joomla\Component\Kunena\Libraries\Error::displayDatabaseError($e);
+			Error::displayDatabaseError($e);
 		}
 
 		// Remove poll from the topic
-		$topic = \Joomla\Component\Kunena\Libraries\Forum\Topic\Helper::get($this->threadid);
+		$topic = \Kunena\Forum\Libraries\Forum\Topic\Helper::get($this->threadid);
 
 		if ($success && $topic->exists() && $topic->poll_id)
 		{
@@ -745,7 +749,7 @@ class Poll extends CMSObject
 	}
 
 	/**
-	 * Method to save the KunenaForumTopicPoll object to the database.
+	 * Method to save the \Kunena\Forum\Libraries\Forum\Topic\TopicPoll object to the database.
 	 *
 	 * @param   bool  $updateOnly  Save the object only if not a new poll.
 	 *
@@ -780,7 +784,7 @@ class Poll extends CMSObject
 			return false;
 		}
 
-		// Set the id for the KunenaForumTopic object in case we created a new topic.
+		// Set the id for the \Kunena\Forum\Libraries\Forum\Topic\Topic object in case we created a new topic.
 		if ($isnew)
 		{
 			$this->load($table->id);
@@ -812,7 +816,7 @@ class Poll extends CMSObject
 				}
 				catch (ExecutionFailureException $e)
 				{
-					\Joomla\Component\Kunena\Libraries\Error::displayDatabaseError($e);
+					Error::displayDatabaseError($e);
 				}
 
 				// TODO: Votes in #__kunena_polls_users will be off and there's no way we can fix that
@@ -846,7 +850,7 @@ class Poll extends CMSObject
 				}
 				catch (ExecutionFailureException $e)
 				{
-					\Joomla\Component\Kunena\Libraries\Error::displayDatabaseError($e);
+					Error::displayDatabaseError($e);
 				}
 			}
 			elseif ($options[$key]->text != $value)
@@ -864,7 +868,7 @@ class Poll extends CMSObject
 				}
 				catch (ExecutionFailureException $e)
 				{
-					\Joomla\Component\Kunena\Libraries\Error::displayDatabaseError($e);
+					Error::displayDatabaseError($e);
 				}
 			}
 		}

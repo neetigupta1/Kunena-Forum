@@ -10,15 +10,18 @@
  * @link            https://www.kunena.org
  **/
 
-namespace Joomla\Component\Kunena\Administrator;
+namespace Kunena\Forum\Administrator\Models;
 
 defined('_JEXEC') or die();
 
 use Exception;
-use Joomla\CMS\HTML\HTMLHelper;
 use Joomla\CMS\Factory;
+use Joomla\CMS\HTML\HTMLHelper;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\Pagination\Pagination;
+use Kunena\Forum\Libraries\Forum\Message\Finder;
+use Kunena\Forum\Libraries\Forum\Message\Helper;
+use Kunena\Forum\Libraries\Model;
 use Joomla\Database\Exception\ExecutionFailureException;
 use function defined;
 
@@ -27,7 +30,7 @@ use function defined;
  *
  * @since   Kunena 2.0
  */
-class KunenaAdminModelTrash extends \Joomla\Component\Kunena\Libraries\Model
+class KunenaAdminModelTrash extends Model
 {
 	/**
 	 * @var     boolean
@@ -87,7 +90,7 @@ class KunenaAdminModelTrash extends \Joomla\Component\Kunena\Libraries\Model
 	 */
 	protected function _getTopics()
 	{
-		$finder = new KunenaForumMessageFinder;
+		$finder = new Finder;
 		$finder->filterByHold([2, 3]);
 
 		$direction = strtoupper($this->getState('list.direction'));
@@ -322,7 +325,7 @@ class KunenaAdminModelTrash extends \Joomla\Component\Kunena\Libraries\Model
 		$db->setQuery($query);
 		$ids = $db->loadColumn();
 
-		return \Joomla\Component\Kunena\Libraries\Forum\Message\Helper::getMessages($ids, 'none');
+		return Helper::getMessages($ids, 'none');
 	}
 
 	/**
@@ -362,11 +365,11 @@ class KunenaAdminModelTrash extends \Joomla\Component\Kunena\Libraries\Model
 
 		if ($type == 'topics')
 		{
-			$items = \Joomla\Component\Kunena\Libraries\Forum\Topic\Helper::getTopics($ids, 'none');
+			$items = \Kunena\Forum\Libraries\Forum\Topic\Helper::getTopics($ids, 'none');
 		}
 		elseif ($type == 'messages')
 		{
-			$items = \Joomla\Component\Kunena\Libraries\Forum\Message\Helper::getMessages($ids, 'none');
+			$items = Helper::getMessages($ids, 'none');
 		}
 
 		return $items;

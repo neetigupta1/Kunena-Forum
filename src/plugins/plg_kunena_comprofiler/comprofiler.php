@@ -10,7 +10,7 @@
  * @link            https://www.kunena.org
  **/
 
-namespace Joomla\Component\Kunena\Plugin\Kunena\Comprofiler;
+namespace Kunena\Forum\Plugin\Kunena\Comprofiler;
 
 defined('_JEXEC') or die();
 
@@ -19,9 +19,14 @@ use Joomla\CMS\Factory;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\Plugin\CMSPlugin;
 use Joomla\CMS\Plugin\PluginHelper;
-use Joomla\Component\Kunena\Libraries\Forum\Forum;
-use Joomla\Component\Kunena\Libraries\Integration\Avatar;
-use Joomla\Component\Kunena\Libraries\KunenaFactory;
+use Kunena\Forum\Libraries\Access;
+use Kunena\Forum\Libraries\Forum\KunenaForum;
+use Kunena\Forum\Libraries\Integration\Activity;
+use Kunena\Forum\Libraries\Integration\Avatar;
+use Kunena\Forum\Libraries\Integration\KunenaPrivate;
+use Kunena\Forum\Libraries\Integration\Profile;
+use Kunena\Forum\Libraries\KunenaFactory;
+use Kunena\Forum\Libraries\Login;
 use function defined;
 
 /**
@@ -52,7 +57,7 @@ class plgKunenaComprofiler extends CMSPlugin
 		global $ueConfig;
 
 		// Do not load if Kunena version is not supported or Kunena is offline
-		if (!(class_exists('KunenaForum') && Forum::isCompatible('4.0') && Forum::installed()))
+		if (!(class_exists('KunenaForum') && KunenaForum::isCompatible('4.0') && KunenaForum::installed()))
 		{
 			return;
 		}
@@ -154,7 +159,7 @@ class plgKunenaComprofiler extends CMSPlugin
 	/**
 	 * Get Kunena access control object.
 	 *
-	 * @return  KunenaAccess|KunenaAccessComprofiler|void
+	 * @return  Access|KunenaAccessComprofiler|void
 	 *
 	 * @since   Kunena 6.0
 	 */
@@ -173,7 +178,7 @@ class plgKunenaComprofiler extends CMSPlugin
 	/**
 	 * Get Kunena login integration object.
 	 *
-	 * @return  KunenaLogin|KunenaLoginComprofiler|void
+	 * @return  Login|KunenaLoginComprofiler|void
 	 *
 	 * @since   Kunena 6.0
 	 */
@@ -211,7 +216,7 @@ class plgKunenaComprofiler extends CMSPlugin
 	/**
 	 * Get Kunena profile integration object.
 	 *
-	 * @return  KunenaProfile|void
+	 * @return  Profile|void
 	 *
 	 * @since   Kunena 6.0
 	 */
@@ -249,7 +254,7 @@ class plgKunenaComprofiler extends CMSPlugin
 	/**
 	 * Get Kunena activity stream integration object.
 	 *
-	 * @return  KunenaActivity|void
+	 * @return  Activity|void
 	 *
 	 * @since   Kunena 6.0
 	 */

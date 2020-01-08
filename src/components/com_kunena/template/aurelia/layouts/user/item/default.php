@@ -10,7 +10,7 @@
  * @link            https://www.kunena.org
 **/
 
-namespace Joomla\Component\Kunena\Site;
+namespace Kunena\Forum\Site;
 
 defined('_JEXEC') or die();
 
@@ -30,7 +30,7 @@ $tabs = $this->getTabs();
 		:
 		?>
 		<?php echo $this->profile->getLink(
-		KunenaIcons::edit() . ' ' . Text::_('COM_KUNENA_EDIT'),
+		\Kunena\Forum\Libraries\Icons\Icons::edit() . ' ' . Text::_('COM_KUNENA_EDIT'),
 		Text::_('COM_KUNENA_EDIT'), 'nofollow', 'edit', 'btn'
 	); ?>
 	<?php endif; ?>

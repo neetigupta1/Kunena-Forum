@@ -9,7 +9,7 @@
  * @link           https://www.kunena.org
  **/
 
-namespace Joomla\Component\Kunena\Administrator;
+namespace Kunena\Forum\Administrator\Migrate\Php;
 
 defined('_JEXEC') or die();
 
@@ -62,7 +62,7 @@ class KunenaMigratorFireboard
 	public function detect()
 	{
 		// Check if FireBoard can be found from the Joomla installation.
-		if (\Joomla\Component\Kunena\Libraries\Installer::detectTable('fb_version'))
+		if (\Kunena\Forum\Libraries\Installer::detectTable('fb_version'))
 		{
 			// Get installed version.
 			$db = Factory::getDBO();
@@ -84,7 +84,7 @@ class KunenaMigratorFireboard
 
 		foreach ($this->versions as $version)
 		{
-			if (\Joomla\Component\Kunena\Libraries\Installer::getTableColumn($version['table'], $version['column']))
+			if (\Kunena\Forum\Libraries\Installer::getTableColumn($version['table'], $version['column']))
 			{
 				return $version->version;
 			}

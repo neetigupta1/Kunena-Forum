@@ -9,7 +9,7 @@
  * @link           https://www.kunena.org
  **/
 
-namespace Joomla\Component\Kunena\Administrator;
+namespace Kunena\Forum\Administrator\Install;
 
 defined('_JEXEC') or die();
 
@@ -100,7 +100,7 @@ class KunenaModelSchema extends BaseDatabaseModel
 	/**
 	 * @since   Kunena 6.0
 	 *
-	 * @throws  Exception
+	 * @throws  \Exception
 	 */
 	public function __construct()
 	{

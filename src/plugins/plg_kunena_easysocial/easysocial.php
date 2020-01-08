@@ -10,14 +10,13 @@
  * See COPYRIGHT.php for copyright notices and details.
  */
 
-namespace Joomla\Component\Kunena\Plugin\Kunena\Easysocial;
+namespace Kunena\Forum\Plugin\Kunena\Easysocial;
 
 defined('_JEXEC') or die('Unauthorized Access');
 
 use EasySocialPlugins;
 use Joomla\CMS\Filesystem\File;
-use Joomla\Component\Kunena\Libraries\Forum\Forum;
-use Joomla\Component\Kunena\Libraries\Integration\Avatar;
+use Kunena\Forum\Libraries\Forum\KunenaForum;
 use function defined;
 
 $file = JPATH_ADMINISTRATOR . '/components/com_easysocial/includes/plugins.php';
@@ -50,7 +49,7 @@ class plgKunenaEasySocial extends EasySocialPlugins
 	public function __construct(&$subject, $config)
 	{
 		// Do not load if Kunena version is not supported or Kunena is offline
-		if (!(class_exists('KunenaForum') && Forum::isCompatible('3.0') && Forum::installed()))
+		if (!(class_exists('KunenaForum') && KunenaForum::isCompatible('3.0') && KunenaForum::installed()))
 		{
 			return true;
 		}

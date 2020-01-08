@@ -9,7 +9,7 @@
  * @link           https://www.kunena.org
  **/
 
-namespace Joomla\Component\Kunena\Administrator;
+namespace Kunena\Forum\Administrator\Migrate\Php;
 
 defined('_JEXEC') or die();
 
@@ -50,7 +50,7 @@ class KunenaMigratorKunena
 	public function detect()
 	{
 		// Check if Kunena 1.x can be found from the Joomla installation.
-		if (\Joomla\Component\Kunena\Libraries\Installer::detectTable('fb_version'))
+		if (\Kunena\Forum\Libraries\Installer::detectTable('fb_version'))
 		{
 			// Get installed version.
 			$db = Factory::getDBO();

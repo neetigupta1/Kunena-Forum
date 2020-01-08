@@ -9,7 +9,7 @@
  * @link           https://www.kunena.org
  **/
 
-namespace Joomla\Component\Kunena\Libraries;
+namespace Kunena\Forum\Libraries;
 
 defined('_JEXEC') or die();
 
@@ -36,7 +36,7 @@ class KunenaProfiler extends Profiler
 	protected $_kstart = [];
 
 	/**
-	 * @var     array|KunenaProfilerItem[]
+	 * @var     array| KunenaProfilerItem[]
 	 * @since   Kunena 6.0
 	 */
 	protected $_heap = [];

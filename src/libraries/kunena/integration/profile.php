@@ -10,13 +10,15 @@
  * @link          https://www.kunena.org
  **/
 
-namespace Joomla\Component\Kunena\Libraries\Integration;
+namespace Kunena\Forum\Libraries\Integration;
 
 defined('_JEXEC') or die();
 
 use Exception;
 use Joomla\CMS\Factory;
 use Joomla\CMS\Plugin\PluginHelper;
+use Kunena\Forum\Libraries\KunenaFactory;
+use Kunena\Forum\Libraries\Route\KunenaRoute;
 use function defined;
 
 /**
@@ -35,7 +37,7 @@ class Profile
 	/**
 	 * @param   null  $integration  integration
 	 *
-	 * @return  boolean|KunenaProfile
+	 * @return  boolean|Profile
 	 *
 	 * @since   Kunena 6.0
 	 *
@@ -62,7 +64,7 @@ class Profile
 
 			if (!self::$instance)
 			{
-				self::$instance = new KunenaProfile;
+				self::$instance = new Profile;
 			}
 		}
 
@@ -82,7 +84,7 @@ class Profile
 	{
 		if (!$limit)
 		{
-			$limit = \Joomla\Component\Kunena\Libraries\KunenaFactory::getConfig()->popusercount;
+			$limit = KunenaFactory::getConfig()->popusercount;
 		}
 
 		return (array) $this->_getTopHits($limit);
@@ -113,7 +115,7 @@ class Profile
 	 */
 	public function getStatisticsURL($action = '', $xhtml = true)
 	{
-		$config = \Joomla\Component\Kunena\Libraries\KunenaFactory::getConfig();
+		$config = KunenaFactory::getConfig();
 		$my     = Factory::getApplication()->getIdentity();
 
 		if ($config->statslink_allowed == 0 && $my->id == 0)
@@ -121,7 +123,7 @@ class Profile
 			return false;
 		}
 
-		return \Joomla\Component\Kunena\Libraries\Route\KunenaRoute::_('index.php?option=com_kunena&view=statistics' . $action, $xhtml);
+		return KunenaRoute::_('index.php?option=com_kunena&view=statistics' . $action, $xhtml);
 	}
 
 	/**
@@ -165,7 +167,7 @@ class Profile
 	 * @param   integer  $userid  userid
 	 * @param   bool     $xhtml   xhtml
 	 *
-	 * @return  void|KunenaProfile
+	 * @return  void|Profile
 	 *
 	 * @since   Kunena 6.0
 	 */

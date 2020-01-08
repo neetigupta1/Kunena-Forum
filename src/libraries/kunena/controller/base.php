@@ -10,7 +10,7 @@
  * @link          https://www.kunena.org
  **/
 
-namespace Joomla\Component\Kunena\Libraries\Controller;
+namespace Kunena\Forum\Libraries\Controller;
 
 defined('_JEXEC') or die();
 
@@ -31,7 +31,7 @@ use function defined;
  * @see     JController in Joomla! 3.0
  * @since   Kunena 6.0
  */
-abstract class Base implements Serializable
+abstract class KunenaControllerBase implements Serializable
 {
 	/**
 	 * The application object.
@@ -60,9 +60,9 @@ abstract class Base implements Serializable
 	/**
 	 * Instantiate the controller.
 	 *
-	 * @param   Input                            $input           The input object.
-	 * @param   BaseApplication                  $app             The application object.
-	 * @param   Registry|array                   $options         Array Joomla\Registry\Registry object with the
+	 * @param   Input            $input                           The input object.
+	 * @param   BaseApplication  $app                             The application object.
+	 * @param   Registry|array   $options                         Array Joomla\Registry\Registry object with the
 	 *                                                            options to load.
 	 *
 	 * @since   Kunena 6.0
@@ -136,7 +136,7 @@ abstract class Base implements Serializable
 	 */
 	public function setOptions($options = null)
 	{
-		// Received Joomla\Registry\Registry
+		// Received \Joomla\Registry\Registry
 		if ($options instanceof Registry)
 		{
 			$this->options = $options;
@@ -219,7 +219,7 @@ abstract class Base implements Serializable
 	 *
 	 * @param   string  $input  The serialized controller.
 	 *
-	 * @return  JController|KunenaControllerBase
+	 * @return JController|KunenaControllerBase
 	 *
 	 * @since   Kunena 6.0
 	 *

@@ -10,16 +10,15 @@
  * @link            https://www.kunena.org
  **/
 
-namespace Joomla\Component\Kunena\Site\Controller\Announement\Item;
+namespace Kunena\Forum\Site\Controller\Announement\Item;
 
 defined('_JEXEC') or die();
 
-use Exception;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\MVC\Controller\BaseController;
-use Joomla\Component\Kunena\Libraries\Controller\Display;
-use Joomla\Component\Kunena\Libraries\Forum\Announcement\Helper;
-use Joomla\Component\Kunena\Libraries\Route\KunenaRoute;
+use Kunena\Forum\Libraries\Controller\KunenaControllerDisplay;
+use Kunena\Forum\Libraries\Forum\Announcement\Helper;
+use Kunena\Forum\Libraries\Route\KunenaRoute;
 use function defined;
 
 /**
@@ -27,7 +26,7 @@ use function defined;
  *
  * @since   Kunena 4.0
  */
-class ComponentKunenaControllerAnnouncementItemDisplay extends Display
+class ComponentKunenaControllerAnnouncementItemDisplay extends KunenaControllerDisplay
 {
 	/**
 	 * @var     string
@@ -48,7 +47,7 @@ class ComponentKunenaControllerAnnouncementItemDisplay extends Display
 	 * @since   Kunena 6.0
 	 *
 	 * @throws  null
-	 * @throws  Exception
+	 * @throws  \Exception
 	 */
 	protected function before()
 	{
@@ -77,7 +76,7 @@ class ComponentKunenaControllerAnnouncementItemDisplay extends Display
 	 *
 	 * @since   Kunena 6.0
 	 *
-	 * @throws  Exception
+	 * @throws  \Exception
 	 */
 	protected function prepareDocument()
 	{

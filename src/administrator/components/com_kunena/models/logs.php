@@ -10,7 +10,7 @@
  * @link          https://www.kunena.org
  **/
 
-namespace Joomla\Component\Kunena\Administrator;
+namespace Kunena\Forum\Administrator\Models;
 
 defined('_JEXEC') or die();
 
@@ -18,6 +18,10 @@ use Exception;
 use Joomla\CMS\Date\Date;
 use Joomla\CMS\Factory;
 use Joomla\CMS\MVC\Model\ListModel;
+use Kunena\Forum\Libraries\Access;
+use Kunena\Forum\Libraries\Forum\Topic\Helper;
+use Kunena\Forum\Libraries\Log\Finder;
+use Kunena\Forum\Libraries\User\KunenaUser;
 use function defined;
 
 /**
@@ -57,7 +61,7 @@ class KunenaAdminModelLogs extends ListModel
 			];
 		}
 
-		$this->me = \Joomla\Component\Kunena\Libraries\User\Helper::getMyself();
+		$this->me = \Kunena\Forum\Libraries\User\Helper::getMyself();
 
 		parent::__construct($config);
 	}
@@ -128,7 +132,7 @@ class KunenaAdminModelLogs extends ListModel
 	/**
 	 * Build a finder query to load the list data.
 	 *
-	 * @return  KunenaLogFinder
+	 * @return  Finder
 	 *
 	 * @since   Kunena 6.0
 	 *
@@ -147,7 +151,7 @@ class KunenaAdminModelLogs extends ListModel
 
 		// Create a new query object.
 		$db     = $this->getDbo();
-		$finder = new KunenaLogFinder;
+		$finder = new Finder;
 
 		// Filter by type.
 		$filter = $this->getState('filter.type');
@@ -265,7 +269,7 @@ class KunenaAdminModelLogs extends ListModel
 
 		if (is_numeric($usertypes))
 		{
-			$access = \Joomla\Component\Kunena\Libraries\Access::getInstance();
+			$access = Access::getInstance();
 
 			switch ($usertypes)
 			{
@@ -312,7 +316,7 @@ class KunenaAdminModelLogs extends ListModel
 	/**
 	 * Method to get User objects of data items.
 	 *
-	 * @return  KunenaUser  List of KunenaUser objects found.
+	 * @return  KunenaUser  List of \Kunena\Forum\Libraries\User\KunenaUser objects found.
 	 *
 	 * @since   Kunena 5.0
 	 *
@@ -346,9 +350,9 @@ class KunenaAdminModelLogs extends ListModel
 
 		$userIds = array_unique(array_merge($userIds1->all(), $userIds2->all()));
 
-		\Joomla\Component\Kunena\Libraries\User\Helper::loadUsers($userIds);
+		\Kunena\Forum\Libraries\User\Helper::loadUsers($userIds);
 
-		\Joomla\Component\Kunena\Libraries\Forum\Topic\Helper::getTopics($items->map(function ($item, $key) {
+		Helper::getTopics($items->map(function ($item, $key) {
 			return $item->topic_id;
 		})->all());
 

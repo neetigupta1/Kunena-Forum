@@ -10,13 +10,16 @@
  * @link            https://www.kunena.org
  **/
 
-namespace Joomla\Component\Kunena\Administrator;
+namespace Kunena\Forum\Administrator\Controllers;
 
 defined('_JEXEC') or die();
 
-use Exception;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\Session\Session;
+use Kunena\Forum\Libraries\Controller;
+use Kunena\Forum\Libraries\Forum\Category\Helper;
+use Kunena\Forum\Libraries\Forum\KunenaForum;
+use Kunena\Forum\Libraries\Route\KunenaRoute;
 use Joomla\Utilities\ArrayHelper;
 use function defined;
 
@@ -25,7 +28,7 @@ use function defined;
  *
  * @since   Kunena 2.0
  */
-class KunenaAdminControllerTrash extends KunenaController
+class KunenaAdminControllerTrash extends Controller
 {
 	/**
 	 * @var     null|string
@@ -40,7 +43,7 @@ class KunenaAdminControllerTrash extends KunenaController
 	 *
 	 * @since   Kunena 2.0
 	 *
-	 * @throws  Exception
+	 * @throws  \Exception
 	 */
 	public function __construct($config = [])
 	{
@@ -56,14 +59,14 @@ class KunenaAdminControllerTrash extends KunenaController
 	 * @since   Kunena 2.0
 	 *
 	 * @throws  null
-	 * @throws  Exception
+	 * @throws  \Exception
 	 */
 	public function purge()
 	{
 		if (!Session::checkToken('post'))
 		{
 			$this->app->enqueueMessage(Text::_('COM_KUNENA_ERROR_TOKEN'), 'error');
-			$this->setRedirect(\Joomla\Component\Kunena\Libraries\Route\KunenaRoute::_($this->baseurl, false));
+			$this->setRedirect(KunenaRoute::_($this->baseurl, false));
 
 			return;
 		}
@@ -88,7 +91,7 @@ class KunenaAdminControllerTrash extends KunenaController
 			{
 				if ($type == 'topics')
 				{
-					$topics = \Joomla\Component\Kunena\Libraries\Forum\Topic\Helper::getTopics($ids, 'none');
+					$topics = \Kunena\Forum\Libraries\Forum\Topic\Helper::getTopics($ids, 'none');
 
 					foreach ($topics as $topic)
 					{
@@ -102,20 +105,20 @@ class KunenaAdminControllerTrash extends KunenaController
 
 					if ($success)
 					{
-						\Joomla\Component\Kunena\Libraries\Forum\Topic\Helper::recount($ids);
-						\Joomla\Component\Kunena\Libraries\Forum\Category\Helper::recount($topic->getCategory()->id);
+						\Kunena\Forum\Libraries\Forum\Topic\Helper::recount($ids);
+						Helper::recount($topic->getCategory()->id);
 						$this->app->enqueueMessage(Text::_('COM_KUNENA_TRASH_DELETE_TOPICS_DONE'));
 					}
 				}
 				elseif ($type == 'messages')
 				{
-					$messages = \Joomla\Component\Kunena\Libraries\Forum\Message\Helper::getMessages($ids, 'none');
+					$messages = \Kunena\Forum\Libraries\Forum\Message\Helper::getMessages($ids, 'none');
 
 					foreach ($messages as $message)
 					{
 						$success = $message->delete();
-						$target  = \Joomla\Component\Kunena\Libraries\Forum\Message\Helper::get($message->id);
-						$topic   = \Joomla\Component\Kunena\Libraries\Forum\Topic\Helper::get($target->getTopic());
+						$target  = \Kunena\Forum\Libraries\Forum\Message\Helper::get($message->id);
+						$topic   = \Kunena\Forum\Libraries\Forum\Topic\Helper::get($target->getTopic());
 
 						if ($topic->attachments > 0)
 						{
@@ -131,8 +134,8 @@ class KunenaAdminControllerTrash extends KunenaController
 
 					if ($success)
 					{
-						\Joomla\Component\Kunena\Libraries\Forum\Topic\Helper::recount($ids);
-						\Joomla\Component\Kunena\Libraries\Forum\Category\Helper::recount($topic->getCategory()->id);
+						\Kunena\Forum\Libraries\Forum\Topic\Helper::recount($ids);
+						Helper::recount($topic->getCategory()->id);
 						$this->app->enqueueMessage(Text::_('COM_KUNENA_TRASH_DELETE_MESSAGES_DONE'));
 					}
 				}
@@ -147,11 +150,11 @@ class KunenaAdminControllerTrash extends KunenaController
 
 			if ($type == 'messages')
 			{
-				$this->setRedirect(\Joomla\Component\Kunena\Libraries\Route\KunenaRoute::_($this->baseurl . "&layout=messages", false));
+				$this->setRedirect(KunenaRoute::_($this->baseurl . "&layout=messages", false));
 			}
 			else
 			{
-				$this->setRedirect(\Joomla\Component\Kunena\Libraries\Route\KunenaRoute::_($this->baseurl, false));
+				$this->setRedirect(KunenaRoute::_($this->baseurl, false));
 			}
 
 			return;
@@ -159,12 +162,12 @@ class KunenaAdminControllerTrash extends KunenaController
 		else
 		{
 			$this->app->enqueueMessage(Text::_('COM_KUNENA_A_NO_MESSAGES_SELECTED'), 'notice');
-			$this->setRedirect(\Joomla\Component\Kunena\Libraries\Route\KunenaRoute::_($this->baseurl, false));
+			$this->setRedirect(KunenaRoute::_($this->baseurl, false));
 
 			return;
 		}
 
-		$this->setRedirect(\Joomla\Component\Kunena\Libraries\Route\KunenaRoute::_($this->baseurl . "&layout=purge", false));
+		$this->setRedirect(KunenaRoute::_($this->baseurl . "&layout=purge", false));
 	}
 
 	/**
@@ -175,14 +178,14 @@ class KunenaAdminControllerTrash extends KunenaController
 	 * @since   Kunena 2.0
 	 *
 	 * @throws  null
-	 * @throws  Exception
+	 * @throws  \Exception
 	 */
 	public function restore()
 	{
 		if (!Session::checkToken('post'))
 		{
 			$this->app->enqueueMessage(Text::_('COM_KUNENA_ERROR_TOKEN'), 'error');
-			$this->setRedirect(\Joomla\Component\Kunena\Libraries\Route\KunenaRoute::_($this->baseurl, false));
+			$this->setRedirect(KunenaRoute::_($this->baseurl, false));
 
 			return;
 		}
@@ -195,7 +198,7 @@ class KunenaAdminControllerTrash extends KunenaController
 		if (empty($cid))
 		{
 			$this->app->enqueueMessage(Text::_('COM_KUNENA_A_NO_MESSAGES_SELECTED'), 'notice');
-			$this->setRedirect(\Joomla\Component\Kunena\Libraries\Route\KunenaRoute::_($this->baseurl, false));
+			$this->setRedirect(KunenaRoute::_($this->baseurl, false));
 
 			return;
 		}
@@ -204,11 +207,11 @@ class KunenaAdminControllerTrash extends KunenaController
 
 		if ($type == 'messages')
 		{
-			$messages = \Joomla\Component\Kunena\Libraries\Forum\Message\Helper::getMessages($cid, 'none');
+			$messages = \Kunena\Forum\Libraries\Forum\Message\Helper::getMessages($cid, 'none');
 
 			foreach ($messages as $target)
 			{
-				if ($target->publish(\Joomla\Component\Kunena\Libraries\Forum\Forum::PUBLISHED))
+				if ($target->publish(KunenaForum::PUBLISHED))
 				{
 					$nb_items++;
 				}
@@ -220,17 +223,17 @@ class KunenaAdminControllerTrash extends KunenaController
 		}
 		elseif ($type == 'topics')
 		{
-			$topics = \Joomla\Component\Kunena\Libraries\Forum\Topic\Helper::getTopics($cid, 'none');
+			$topics = \Kunena\Forum\Libraries\Forum\Topic\Helper::getTopics($cid, 'none');
 
 			foreach ($topics as $target)
 			{
-				if ($target->getState() == \Joomla\Component\Kunena\Libraries\Forum\Forum::UNAPPROVED)
+				if ($target->getState() == KunenaForum::UNAPPROVED)
 				{
-					$status = \Joomla\Component\Kunena\Libraries\Forum\Forum::UNAPPROVED;
+					$status = KunenaForum::UNAPPROVED;
 				}
 				else
 				{
-					$status = \Joomla\Component\Kunena\Libraries\Forum\Forum::PUBLISHED;
+					$status = KunenaForum::PUBLISHED;
 				}
 
 				if ($target->publish($status))
@@ -253,11 +256,11 @@ class KunenaAdminControllerTrash extends KunenaController
 			$this->app->enqueueMessage(Text::sprintf('COM_KUNENA_TRASH_ITEMS_RESTORE_DONE', $nb_items));
 		}
 
-		\Joomla\Component\Kunena\Libraries\User\Helper::recount();
-		\Joomla\Component\Kunena\Libraries\Forum\Topic\Helper::recount();
-		\Joomla\Component\Kunena\Libraries\Forum\Category\Helper::recount();
+		\Kunena\Forum\Libraries\User\Helper::recount();
+		\Kunena\Forum\Libraries\Forum\Topic\Helper::recount();
+		Helper::recount();
 
-		$this->setRedirect(\Joomla\Component\Kunena\Libraries\Route\KunenaRoute::_($this->baseurl, false));
+		$this->setRedirect(KunenaRoute::_($this->baseurl, false));
 	}
 
 	/**
@@ -267,7 +270,7 @@ class KunenaAdminControllerTrash extends KunenaController
 	 *
 	 * @since   Kunena 2.0
 	 *
-	 * @throws  Exception
+	 * @throws  \Exception
 	 * @throws  null
 	 */
 	public function cancel()
@@ -276,11 +279,11 @@ class KunenaAdminControllerTrash extends KunenaController
 
 		if ($type == 'messages')
 		{
-			$this->setRedirect(\Joomla\Component\Kunena\Libraries\Route\KunenaRoute::_($this->baseurl . "&layout=messages", false));
+			$this->setRedirect(KunenaRoute::_($this->baseurl . "&layout=messages", false));
 		}
 		else
 		{
-			$this->setRedirect(\Joomla\Component\Kunena\Libraries\Route\KunenaRoute::_($this->baseurl, false));
+			$this->setRedirect(KunenaRoute::_($this->baseurl, false));
 		}
 	}
 }

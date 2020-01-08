@@ -10,18 +10,21 @@
  * @link            https://www.kunena.org
  **/
 
-namespace Joomla\Component\Kunena\Site\Layout\Category;
+namespace Kunena\Forum\Site\Layout\Category;
 
 defined('_JEXEC') or die;
 
 use Exception;
 use Joomla\CMS\Application\CMSApplication;
 use Joomla\CMS\Session\Session;
-use Joomla\Component\Kunena\Libraries\KunenaFactory;
-use Joomla\Component\Kunena\Libraries\Layout\Layout;
-use Joomla\Component\Kunena\Libraries\Pagination\Pagination;
-use Joomla\Component\Kunena\Libraries\Route\KunenaRoute;
-use Joomla\Component\Kunena\Libraries\User\Helper;
+use Kunena\Forum\Libraries\Config;
+use Kunena\Forum\Libraries\Icons\Icons;
+use Kunena\Forum\Libraries\KunenaFactory;
+use Kunena\Forum\Libraries\Layout\Layout;
+use Kunena\Forum\Libraries\Pagination\Pagination;
+use Kunena\Forum\Libraries\Route\KunenaRoute;
+use Kunena\Forum\Libraries\Template\Template;
+use Kunena\Forum\Libraries\User\Helper;
 use function defined;
 
 /**
@@ -44,7 +47,7 @@ class KunenaLayoutCategoryIndex extends Layout
 	public $state;
 
 	/**
-	 * @var     KunenaTemplate|void
+	 * @var     Template|void
 	 * @since   Kunena 6.0
 	 *
 	 */
@@ -55,7 +58,7 @@ class KunenaLayoutCategoryIndex extends Layout
 	 *
 	 * @param   integer  $maxpages  Maximum that are allowed for pagination
 	 *
-	 * @return  KunenaPagination
+	 * @return  Pagination
 	 * @since   Kunena 6.0
 	 */
 	public function getPaginationObject($maxpages)
@@ -86,22 +89,22 @@ class KunenaLayoutCategoryIndex extends Layout
 		{
 			if (!empty($category->icon))
 			{
-				return KunenaIcons::caticon($category->icon, true, true);
+				return Icons::caticon($category->icon, true, true);
 			}
 			else
 			{
-				return KunenaIcons::caticon($caticonpath, true, true);
+				return Icons::caticon($caticonpath, true, true);
 			}
 		}
 		else
 		{
 			if (!empty($category->icon))
 			{
-				return KunenaIcons::caticon($category->icon, false, true);
+				return Icons::caticon($category->icon, false, true);
 			}
 			else
 			{
-				return KunenaIcons::caticon($caticonpath, false, true);
+				return Icons::caticon($caticonpath, false, true);
 			}
 		}
 	}
@@ -126,22 +129,22 @@ class KunenaLayoutCategoryIndex extends Layout
 		{
 			if (!empty($subcategory->icon))
 			{
-				return KunenaIcons::caticon($subcategory->icon, true, false);
+				return Icons::caticon($subcategory->icon, true, false);
 			}
 			else
 			{
-				return KunenaIcons::caticon($defaultcategoryicon, true, false);
+				return Icons::caticon($defaultcategoryicon, true, false);
 			}
 		}
 		else
 		{
 			if (!empty($subcategory->icon))
 			{
-				return KunenaIcons::caticon($subcategory->icon, false, false);
+				return Icons::caticon($subcategory->icon, false, false);
 			}
 			else
 			{
-				return KunenaIcons::caticon($defaultcategoryicon, false, false);
+				return Icons::caticon($defaultcategoryicon, false, false);
 			}
 		}
 	}

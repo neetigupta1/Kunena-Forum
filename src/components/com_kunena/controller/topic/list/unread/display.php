@@ -10,7 +10,7 @@
  * @link            https://www.kunena.org
  **/
 
-namespace Joomla\Component\Kunena\Site\Controller\Topic\KunenaList\Unread;
+namespace Kunena\Forum\Site\Controller\Topic\KunenaList\Unread;
 
 defined('_JEXEC') or die();
 
@@ -20,11 +20,14 @@ use Joomla\CMS\Date\Date;
 use Joomla\CMS\Factory;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\MVC\Controller\BaseController;
-use Joomla\Component\Kunena\Libraries\Access;
-use Joomla\Component\Kunena\Libraries\Forum\Topic\Helper;
-use Joomla\Component\Kunena\Libraries\KunenaFactory;
-use Joomla\Component\Kunena\Libraries\Pagination\Pagination;
-use Joomla\Component\Kunena\Libraries\Route\KunenaRoute;
+use Kunena\Forum\Libraries\Access;
+use Kunena\Forum\Libraries\Forum\Topic\Finder;
+use Kunena\Forum\Libraries\Forum\Topic\Helper;
+use Kunena\Forum\Libraries\KunenaFactory;
+use Kunena\Forum\Libraries\Pagination\Pagination;
+use Kunena\Forum\Libraries\Route\KunenaRoute;
+use Kunena\Forum\Libraries\Controller\KunenaControllerDisplay;
+use Kunena\Forum\Site\Models\KunenaModelTopics;
 use function defined;
 
 /**
@@ -32,7 +35,7 @@ use function defined;
  *
  * @since   Kunena 4.0
  */
-class ComponentKunenaControllerTopicListUnreadDisplay extends ComponentKunenaControllerTopicListDisplay
+class ComponentKunenaControllerTopicListUnreadDisplay extends KunenaControllerDisplay
 {
 	/**
 	 * Prepare topic list for moderators.
@@ -52,7 +55,7 @@ class ComponentKunenaControllerTopicListUnreadDisplay extends ComponentKunenaCon
 		$this->model = new KunenaModelTopics([], $this->input);
 		$this->model->initialize($this->getOptions(), $this->getOptions()->get('embedded', false));
 		$this->state    = $this->model->getState();
-		$this->me       = \Joomla\Component\Kunena\Libraries\User\Helper::getMyself();
+		$this->me       = \Kunena\Forum\Libraries\User\Helper::getMyself();
 		$this->moreUri  = null;
 		$access         = Access::getInstance();
 		$start          = $this->state->get('list.start');
@@ -100,7 +103,7 @@ class ComponentKunenaControllerTopicListUnreadDisplay extends ComponentKunenaCon
 			$controller->redirect();
 		}
 
-		$finder = new KunenaForumTopicFinder;
+		$finder = new Finder;
 
 		$this->topics = $finder
 			->start($start)

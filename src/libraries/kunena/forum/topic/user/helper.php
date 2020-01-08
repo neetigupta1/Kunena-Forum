@@ -10,13 +10,16 @@
  * @link          https://www.kunena.org
  **/
 
-namespace Joomla\Component\Kunena\Libraries\Forum\Topic\User;
+namespace Kunena\Forum\Libraries\Forum\Topic\User;
 
 defined('_JEXEC') or die();
 
 use Exception;
 use Joomla\CMS\Factory;
 use Joomla\Database\Exception\ExecutionFailureException;
+use Kunena\Forum\Libraries\Error;
+use Kunena\Forum\Libraries\Forum\Topic\Topic;
+use Kunena\Forum\Libraries\User\KunenaUser;
 use function defined;
 
 /**
@@ -27,25 +30,25 @@ use function defined;
 abstract class Helper
 {
 	/**
-	 * @var     array|KunenaForumTopicUser[]
+	 * @var     array|User[]
 	 * @since   Kunena 6.0
 	 */
 	protected static $_instances = [];
 
 	/**
-	 * @var     array|KunenaForumTopicUser[]
+	 * @var     array|User[]
 	 * @since   Kunena 6.0
 	 */
 	protected static $_topics = [];
 
 	/**
-	 * Returns KunenaForumTopicUser object.
+	 * Returns \Kunena\Forum\Libraries\Forum\Topic\TopicUser object.
 	 *
-	 * @param   KunenaForumTopic|int|null  $topic   topic
-	 * @param   mixed                      $user    user
-	 * @param   bool                       $reload  reload
+	 * @param   Topic|int|null  $topic   topic
+	 * @param   mixed           $user    user
+	 * @param   bool            $reload  reload
 	 *
-	 * @return  KunenaForumTopicUser
+	 * @return  User
 	 *
 	 * @since   Kunena 6.0
 	 *
@@ -53,17 +56,17 @@ abstract class Helper
 	 */
 	public static function get($topic = null, $user = null, $reload = false)
 	{
-		if ($topic instanceof KunenaForumTopic)
+		if ($topic instanceof Topic)
 		{
 			$topic = $topic->id;
 		}
 
 		$topic = intval($topic);
-		$user  = \Joomla\Component\Kunena\Libraries\User\Helper::get($user);
+		$user  = \Kunena\Forum\Libraries\User\Helper::get($user);
 
 		if ($topic < 1)
 		{
-			return new KunenaForumTopicUser(null, $user);
+			return new User(null, $user);
 		}
 
 		if ($reload || empty(self::$_instances [$user->userid][$topic]))
@@ -79,7 +82,7 @@ abstract class Helper
 	 * @param   bool|array  $ids   ids
 	 * @param   mixed       $user  user
 	 *
-	 * @return  KunenaForumTopicUser[]
+	 * @return  User[]
 	 *
 	 * @since   Kunena 6.0
 	 *
@@ -87,7 +90,7 @@ abstract class Helper
 	 */
 	public static function getTopics($ids = false, $user = null)
 	{
-		$user = \Joomla\Component\Kunena\Libraries\User\Helper::get($user);
+		$user = \Kunena\Forum\Libraries\User\Helper::get($user);
 
 		if ($ids === false)
 		{
@@ -101,7 +104,7 @@ abstract class Helper
 		// Convert topic objects into ids
 		foreach ($ids as $i => $id)
 		{
-			if ($id instanceof KunenaForumTopic)
+			if ($id instanceof Topic)
 			{
 				$ids[$i] = $id->id;
 			}
@@ -165,14 +168,14 @@ abstract class Helper
 		}
 		catch (ExecutionFailureException $e)
 		{
-			\Joomla\Component\Kunena\Libraries\Error::displayDatabaseError($e);
+			Error::displayDatabaseError($e);
 		}
 
 		foreach ($ids as $id)
 		{
 			if (isset($results[$id]))
 			{
-				$instance = new KunenaForumTopicUser;
+				$instance = new User;
 
 				if (!empty($results))
 				{
@@ -184,7 +187,7 @@ abstract class Helper
 			}
 			else
 			{
-				self::$_instances [$user->userid][$id] = self::$_topics [$id][$user->userid] = new KunenaForumTopicUser($id, $user->userid);
+				self::$_instances [$user->userid][$id] = self::$_topics [$id][$user->userid] = new User($id, $user->userid);
 			}
 		}
 
@@ -194,8 +197,8 @@ abstract class Helper
 	/**
 	 * Get all user ids who have participated to the given topics.
 	 *
-	 * @param   array|KunenaForumTopic[]  $topics  topics
-	 * @param   string                    $value   Row to pick up as value.
+	 * @param   array|Topic[]  $topics  topics
+	 * @param   string         $value   Row to pick up as value.
 	 *
 	 * @return  array List of [topic][userid] = value.
 	 *
@@ -210,7 +213,7 @@ abstract class Helper
 
 		foreach ($topics as $id)
 		{
-			if ($id instanceof KunenaForumTopic)
+			if ($id instanceof Topic)
 			{
 				$ids[(int) $id->id] = (int) $id->id;
 			}
@@ -239,7 +242,7 @@ abstract class Helper
 		}
 		catch (ExecutionFailureException $e)
 		{
-			\Joomla\Component\Kunena\Libraries\Error::displayDatabaseError($e);
+			Error::displayDatabaseError($e);
 		}
 
 		$list = [];
@@ -256,8 +259,8 @@ abstract class Helper
 	}
 
 	/**
-	 * @param   KunenaForumTopic  $old  old
-	 * @param   KunenaForumTopic  $new  new
+	 * @param   Topic  $old  old
+	 * @param   Topic  $new  new
 	 *
 	 * @return  boolean
 	 *
@@ -282,7 +285,7 @@ abstract class Helper
 		}
 		catch (ExecutionFailureException $e)
 		{
-			\Joomla\Component\Kunena\Libraries\Error::displayDatabaseError($e);
+			Error::displayDatabaseError($e);
 
 			return false;
 		}
@@ -307,8 +310,8 @@ abstract class Helper
 	}
 
 	/**
-	 * @param   KunenaForumTopic  $old  old
-	 * @param   KunenaForumTopic  $new  new
+	 * @param   Topic  $old  old
+	 * @param   Topic  $new  new
 	 *
 	 * @return  boolean
 	 *
@@ -350,7 +353,7 @@ abstract class Helper
 			}
 			catch (ExecutionFailureException $e)
 			{
-				\Joomla\Component\Kunena\Libraries\Error::displayDatabaseError($e);
+				Error::displayDatabaseError($e);
 
 				return false;
 			}
@@ -394,7 +397,7 @@ abstract class Helper
 		}
 		catch (ExecutionFailureException $e)
 		{
-			\Joomla\Component\Kunena\Libraries\Error::displayDatabaseError($e);
+			Error::displayDatabaseError($e);
 		}
 
 		// TODO: Is there a bug?
@@ -490,7 +493,7 @@ abstract class Helper
 		}
 		catch (ExecutionFailureException $e)
 		{
-			\Joomla\Component\Kunena\Libraries\Error::displayDatabaseError($e);
+			Error::displayDatabaseError($e);
 
 			return false;
 		}
@@ -512,7 +515,7 @@ abstract class Helper
 		}
 		catch (ExecutionFailureException $e)
 		{
-			\Joomla\Component\Kunena\Libraries\Error::displayDatabaseError($e);
+			Error::displayDatabaseError($e);
 
 			return false;
 		}
@@ -538,7 +541,7 @@ abstract class Helper
 		}
 		catch (ExecutionFailureException $e)
 		{
-			\Joomla\Component\Kunena\Libraries\Error::displayDatabaseError($e);
+			Error::displayDatabaseError($e);
 
 			return false;
 		}

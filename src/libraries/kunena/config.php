@@ -13,7 +13,7 @@
  * @link           http://www.bestofjoomla.com
  **/
 
-namespace Joomla\Component\Kunena\Libraries;
+namespace Kunena\Forum\Libraries;
 
 defined('_JEXEC') or die();
 
@@ -23,6 +23,7 @@ use Joomla\CMS\Object\CMSObject;
 use Joomla\CMS\Plugin\PluginHelper;
 use Joomla\Database\Exception\ExecutionFailureException;
 use Joomla\Registry\Registry;
+use Kunena\Forum\Libraries\Cache\Helper;
 use function defined;
 
 /**
@@ -1633,7 +1634,7 @@ class Config extends CMSObject
 		}
 		catch (ExecutionFailureException $e)
 		{
-			\Joomla\Component\Kunena\Libraries\Error::displayDatabaseError($e);
+			Error::displayDatabaseError($e);
 		}
 
 		if ($config)
@@ -1718,11 +1719,11 @@ class Config extends CMSObject
 		}
 		catch (ExecutionFailureException $e)
 		{
-			\Joomla\Component\Kunena\Libraries\Error::displayDatabaseError($e);
+			Error::displayDatabaseError($e);
 		}
 
 		// Clear cache.
-		KunenaCacheHelper::clear();
+		Helper::clear();
 	}
 
 	/**

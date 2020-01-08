@@ -10,7 +10,7 @@
  * @link            https://www.kunena.org
  **/
 
-namespace Joomla\Component\Kunena\Site\Controllers;
+namespace Kunena\Forum\Site\Controllers;
 
 defined('_JEXEC') or die();
 
@@ -18,13 +18,15 @@ use Exception;
 use Joomla\CMS\Factory;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\Session\Session;
-use Joomla\Component\Kunena\Libraries\Controller;
-use Joomla\Component\Kunena\Libraries\Error;
-use Joomla\Component\Kunena\Libraries\Forum\Forum;
-use Joomla\Component\Kunena\Libraries\Forum\Message\Helper;
-use Joomla\Component\Kunena\Libraries\KunenaFactory;
-use Joomla\Utilities\ArrayHelper;
+use Kunena\Forum\Libraries\Attachment\Finder;
+use Kunena\Forum\Libraries\Controller;
+use Kunena\Forum\Libraries\Error;
+use Kunena\Forum\Libraries\Forum\KunenaForum;
+use Kunena\Forum\Libraries\Forum\Message\Helper;
+use Kunena\Forum\Libraries\KunenaFactory;
 use Joomla\Database\Exception\ExecutionFailureException;
+use Joomla\Utilities\ArrayHelper;
+use Kunena\Forum\Libraries\Log\Log;
 use function defined;
 
 /**
@@ -71,7 +73,7 @@ class KunenaControllerTopics extends Controller
 		$ids     = array_keys($this->app->input->get('topics', [], 'post', 'array'));
 		$ids     = ArrayHelper::toInteger($ids);
 
-		$topics = \Joomla\Component\Kunena\Libraries\Forum\Topic\Helper::getTopics($ids);
+		$topics = \Kunena\Forum\Libraries\Forum\Topic\Helper::getTopics($ids);
 
 		if (!$topics)
 		{
@@ -90,7 +92,7 @@ class KunenaControllerTopics extends Controller
 					$activity = KunenaFactory::getActivityIntegration();
 					$activity->onAfterDeleteTopic($topic);
 					$message = Text::_('COM_KUNENA_BULKMSG_DELETED');
-					\Joomla\Component\Kunena\Libraries\Forum\Category\Helper::recount($topic->getCategory()->id);
+					\Kunena\Forum\Libraries\Forum\Category\Helper::recount($topic->getCategory()->id);
 				}
 				else
 				{
@@ -99,7 +101,7 @@ class KunenaControllerTopics extends Controller
 			}
 
 			// Delete attachments in each message
-			$finder = new KunenaAttachmentFinder;
+			$finder = new Finder;
 			$finder->where('mesid', 'IN', array_keys($messages));
 			$attachments = $finder->find();
 
@@ -136,9 +138,9 @@ class KunenaControllerTopics extends Controller
 			{
 				foreach ($topics as $topic)
 				{
-					KunenaLog::log(
-						KunenaLog::TYPE_MODERATION,
-						KunenaLog::LOG_TOPIC_DESTROY,
+					Log::log(
+						Log::TYPE_MODERATION,
+						Log::LOG_TOPIC_DESTROY,
 						['topic_ids' => $ids],
 						$topic->getCategory(),
 						$topic,
@@ -175,7 +177,7 @@ class KunenaControllerTopics extends Controller
 		$ids = ArrayHelper::toInteger($ids);
 
 		$message = '';
-		$topics  = \Joomla\Component\Kunena\Libraries\Forum\Topic\Helper::getTopics($ids);
+		$topics  = \Kunena\Forum\Libraries\Forum\Topic\Helper::getTopics($ids);
 
 		if (!$topics)
 		{
@@ -186,7 +188,7 @@ class KunenaControllerTopics extends Controller
 		{
 			foreach ($topics as $topic)
 			{
-				if ($topic->isAuthorised('delete') && $topic->publish(Forum::TOPIC_DELETED))
+				if ($topic->isAuthorised('delete') && $topic->publish(KunenaForum::TOPIC_DELETED))
 				{
 					$message = Text::_('COM_KUNENA_BULKMSG_DELETED');
 				}
@@ -203,9 +205,9 @@ class KunenaControllerTopics extends Controller
 			{
 				foreach ($topics as $topic)
 				{
-					KunenaLog::log(
-						KunenaLog::TYPE_MODERATION,
-						KunenaLog::LOG_TOPIC_DELETE,
+					Log::log(
+						Log::TYPE_MODERATION,
+						Log::LOG_TOPIC_DELETE,
 						['topic_ids' => $ids],
 						$topic->getCategory(),
 						$topic,
@@ -242,7 +244,7 @@ class KunenaControllerTopics extends Controller
 		$ids = ArrayHelper::toInteger($ids);
 
 		$message = '';
-		$topics  = \Joomla\Component\Kunena\Libraries\Forum\Topic\Helper::getTopics($ids);
+		$topics  = \Kunena\Forum\Libraries\Forum\Topic\Helper::getTopics($ids);
 
 		if (!$topics)
 		{
@@ -253,7 +255,7 @@ class KunenaControllerTopics extends Controller
 		{
 			foreach ($topics as $topic)
 			{
-				if ($topic->isAuthorised('undelete') && $topic->publish(Forum::PUBLISHED))
+				if ($topic->isAuthorised('undelete') && $topic->publish(KunenaForum::PUBLISHED))
 				{
 					$message = Text::_('COM_KUNENA_POST_SUCCESS_UNDELETE');
 				}
@@ -270,9 +272,9 @@ class KunenaControllerTopics extends Controller
 			{
 				foreach ($topics as $topic)
 				{
-					KunenaLog::log(
-						KunenaLog::TYPE_MODERATION,
-						KunenaLog::LOG_TOPIC_UNDELETE,
+					Log::log(
+						Log::TYPE_MODERATION,
+						Log::LOG_TOPIC_UNDELETE,
 						['topic_ids' => $ids],
 						$topic->getCategory(),
 						$topic,
@@ -309,7 +311,7 @@ class KunenaControllerTopics extends Controller
 		$ids = ArrayHelper::toInteger($ids);
 
 		$message = '';
-		$topics  = \Joomla\Component\Kunena\Libraries\Forum\Topic\Helper::getTopics($ids);
+		$topics  = \Kunena\Forum\Libraries\Forum\Topic\Helper::getTopics($ids);
 
 		if (!$topics)
 		{
@@ -320,7 +322,7 @@ class KunenaControllerTopics extends Controller
 		{
 			foreach ($topics as $topic)
 			{
-				if ($topic->isAuthorised('approve') && $topic->publish(Forum::PUBLISHED))
+				if ($topic->isAuthorised('approve') && $topic->publish(KunenaForum::PUBLISHED))
 				{
 					$message = Text::_('COM_KUNENA_MODERATE_APPROVE_SUCCESS');
 					$topic->sendNotification();
@@ -338,9 +340,9 @@ class KunenaControllerTopics extends Controller
 			{
 				foreach ($topics as $topic)
 				{
-					KunenaLog::log(
-						KunenaLog::TYPE_MODERATION,
-						KunenaLog::LOG_TOPIC_APPROVE,
+					Log::log(
+						Log::TYPE_MODERATION,
+						Log::LOG_TOPIC_APPROVE,
 						['topic_ids' => $ids],
 						$topic->getCategory(),
 						$topic,
@@ -376,7 +378,7 @@ class KunenaControllerTopics extends Controller
 		$topics_ids = array_keys($this->app->input->get('topics', [], 'post', 'array'));
 		$topics_ids = ArrayHelper::toInteger($topics_ids);
 
-		$topics = \Joomla\Component\Kunena\Libraries\Forum\Topic\Helper::getTopics($topics_ids);
+		$topics = \Kunena\Forum\Libraries\Forum\Topic\Helper::getTopics($topics_ids);
 
 		$messages_ids = array_keys($this->app->input->get('posts', [], 'post', 'array'));
 		$messages_ids = ArrayHelper::toInteger($messages_ids);
@@ -390,7 +392,7 @@ class KunenaControllerTopics extends Controller
 		}
 		else
 		{
-			$target = \Joomla\Component\Kunena\Libraries\Forum\Category\Helper::get($this->app->input->getInt('target', 0));
+			$target = \Kunena\Forum\Libraries\Forum\Category\Helper::get($this->app->input->getInt('target', 0));
 
 			if (empty($target->id))
 			{
@@ -443,9 +445,9 @@ class KunenaControllerTopics extends Controller
 			{
 				foreach ($topics as $topic)
 				{
-					KunenaLog::log(
-						KunenaLog::TYPE_MODERATION,
-						KunenaLog::LOG_TOPIC_MODERATE,
+					Log::log(
+						Log::TYPE_MODERATION,
+						Log::LOG_TOPIC_MODERATE,
 						[
 							'move'   => ['id' => $topic->id, 'mode' => 'topic'],
 							'target' => ['category_id' => $target->id],
@@ -484,17 +486,17 @@ class KunenaControllerTopics extends Controller
 		$ids = array_keys($this->app->input->get('topics', [], 'post', 'array'));
 		$ids = ArrayHelper::toInteger($ids);
 
-		$topics = \Joomla\Component\Kunena\Libraries\Forum\Topic\Helper::getTopics($ids);
+		$topics = \Kunena\Forum\Libraries\Forum\Topic\Helper::getTopics($ids);
 
-		if (\Joomla\Component\Kunena\Libraries\Forum\Topic\Helper::favorite(array_keys($topics), 0))
+		if (\Kunena\Forum\Libraries\Forum\Topic\Helper::favorite(array_keys($topics), 0))
 		{
 			if ($this->config->log_moderation)
 			{
 				foreach ($topics as $topic)
 				{
-					KunenaLog::log(
-						$this->me->userid == $topic->getAuthor()->userid ? KunenaLog::TYPE_ACTION : KunenaLog::TYPE_MODERATION,
-						KunenaLog::LOG_TOPIC_UNFAVORITE,
+					Log::log(
+						$this->me->userid == $topic->getAuthor()->userid ? Log::TYPE_ACTION : Log::TYPE_MODERATION,
+						Log::LOG_TOPIC_UNFAVORITE,
 						['topic_ids' => $ids],
 						$topic->getCategory(),
 						$topic,
@@ -536,9 +538,9 @@ class KunenaControllerTopics extends Controller
 		$ids = array_keys($this->app->input->get('topics', [], 'post', 'array'));
 		$ids = ArrayHelper::toInteger($ids);
 
-		$topics = \Joomla\Component\Kunena\Libraries\Forum\Topic\Helper::getTopics($ids);
+		$topics = \Kunena\Forum\Libraries\Forum\Topic\Helper::getTopics($ids);
 
-		if (\Joomla\Component\Kunena\Libraries\Forum\Topic\Helper::subscribe(array_keys($topics), 0, $userid))
+		if (\Kunena\Forum\Libraries\Forum\Topic\Helper::subscribe(array_keys($topics), 0, $userid))
 		{
 			$this->app->enqueueMessage(Text::_('COM_KUNENA_USER_UNSUBSCRIBE_YES'));
 		}
@@ -582,7 +584,7 @@ class KunenaControllerTopics extends Controller
 		{
 			foreach ($messages as $message)
 			{
-				if ($message->isAuthorised('approve') && $message->publish(Forum::PUBLISHED))
+				if ($message->isAuthorised('approve') && $message->publish(KunenaForum::PUBLISHED))
 				{
 					$message->sendNotification();
 					$success++;
@@ -634,7 +636,7 @@ class KunenaControllerTopics extends Controller
 		{
 			foreach ($messages as $message)
 			{
-				if ($message->isAuthorised('delete') && $message->publish(Forum::DELETED))
+				if ($message->isAuthorised('delete') && $message->publish(KunenaForum::DELETED))
 				{
 					$success++;
 				}
@@ -685,7 +687,7 @@ class KunenaControllerTopics extends Controller
 		{
 			foreach ($messages as $message)
 			{
-				if ($message->isAuthorised('undelete') && $message->publish(Forum::PUBLISHED))
+				if ($message->isAuthorised('undelete') && $message->publish(KunenaForum::PUBLISHED))
 				{
 					$success++;
 				}

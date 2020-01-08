@@ -10,11 +10,11 @@
  * @link            https://www.kunena.org
  **/
 
-namespace Joomla\Component\Kunena\Administrator;
+namespace Kunena\Forum\Administrator;
 
 defined('_JEXEC') or die();
 ?>
 
-<?php echo KunenaLayout::factory('pagination/list')->set('pagination', $this->pagination); ?>
+<?php echo \Kunena\Forum\Libraries\Layout\Layout::factory('pagination/list')->set('pagination', $this->pagination); ?>
 <input type="hidden" name="<?php echo $this->pagination->prefix ?>limitstart"
 	   value="<?php echo $this->pagination->limitstart; ?>"/>

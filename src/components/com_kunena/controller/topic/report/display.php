@@ -10,15 +10,17 @@
  * @link            https://www.kunena.org
  **/
 
-namespace Joomla\Component\Kunena\Site\Controller\Topic\Report;
+namespace Kunena\Forum\Site\Controller\Topic\Report;
 
 defined('_JEXEC') or die();
 
 use Exception;
 use Joomla\CMS\Language\Text;
-use Joomla\Component\Kunena\Libraries\Controller\Display;
-use Joomla\Component\Kunena\Libraries\Exception\Authorise;
-use Joomla\Component\Kunena\Libraries\Forum\Message\Helper;
+use Kunena\Forum\Libraries\Controller\KunenaControllerDisplay;
+use Kunena\Forum\Libraries\Exception\Authorise;
+use Kunena\Forum\Libraries\Forum\Message\Helper;
+use Kunena\Forum\Libraries\Forum\Message\Message;
+use Kunena\Forum\Libraries\Forum\Topic\Topic;
 use function defined;
 
 /**
@@ -26,7 +28,7 @@ use function defined;
  *
  * @since   Kunena 4.0
  */
-class ComponentKunenaControllerTopicReportDisplay extends Display
+class ComponentKunenaControllerTopicReportDisplay extends KunenaControllerDisplay
 {
 	/**
 	 * @var     string
@@ -35,13 +37,13 @@ class ComponentKunenaControllerTopicReportDisplay extends Display
 	protected $name = 'Topic/Report';
 
 	/**
-	 * @var     KunenaForumTopic
+	 * @var     Topic
 	 * @since   Kunena 6.0
 	 */
 	public $topic;
 
 	/**
-	 * @var     KunenaForumMessage|null
+	 * @var     Message|null
 	 * @since   Kunena 6.0
 	 */
 	public $message;
@@ -68,7 +70,7 @@ class ComponentKunenaControllerTopicReportDisplay extends Display
 		$id    = $this->input->getInt('id');
 		$mesid = $this->input->getInt('mesid');
 
-		$me = \Joomla\Component\Kunena\Libraries\User\Helper::getMyself();
+		$me = \Kunena\Forum\Libraries\User\Helper::getMyself();
 
 		if (!$this->config->reportmsg)
 		{
@@ -84,7 +86,7 @@ class ComponentKunenaControllerTopicReportDisplay extends Display
 
 		if (!$mesid)
 		{
-			$this->topic = \Joomla\Component\Kunena\Libraries\Forum\Topic\Helper::get($id);
+			$this->topic = \Kunena\Forum\Libraries\Forum\Topic\Helper::get($id);
 			$this->topic->tryAuthorise();
 		}
 		else

@@ -10,14 +10,15 @@
  * @link            https://www.kunena.org
  **/
 
-namespace Joomla\Component\Kunena\Administrator;
+namespace Kunena\Forum\Administrator\Models;
 
 defined('_JEXEC') or die();
 
-use Exception;
-use Joomla\CMS\HTML\HTMLHelper;
 use Joomla\CMS\Factory;
 use Joomla\CMS\Filesystem\Folder;
+use Joomla\CMS\HTML\HTMLHelper;
+use Kunena\Forum\Libraries\KunenaFactory;
+use Kunena\Forum\Libraries\Model;
 use RuntimeException;
 use function defined;
 
@@ -26,18 +27,18 @@ use function defined;
  *
  * @since 3.0
  */
-class KunenaAdminModelSmiley extends \Joomla\Component\Kunena\Libraries\Model
+class KunenaAdminModelSmiley extends Model
 {
 	/**
 	 * @return  mixed
 	 *
 	 * @since   Kunena 6.0
 	 *
-	 * @throws  Exception
+	 * @throws  \Exception
 	 */
 	public function getSmileyspaths()
 	{
-		$template = \Joomla\Component\Kunena\Libraries\KunenaFactory::getTemplate();
+		$template = KunenaFactory::getTemplate();
 
 		$selected = $this->getSmiley();
 
@@ -79,7 +80,7 @@ class KunenaAdminModelSmiley extends \Joomla\Component\Kunena\Libraries\Model
 	 *
 	 * @since   Kunena 6.0
 	 *
-	 * @throws  Exception
+	 * @throws  \Exception
 	 */
 	public function getSmiley()
 	{
@@ -119,7 +120,7 @@ class KunenaAdminModelSmiley extends \Joomla\Component\Kunena\Libraries\Model
 	 *
 	 * @since   Kunena 6.0
 	 *
-	 * @throws  Exception
+	 * @throws  \Exception
 	 */
 	protected function populateState()
 	{

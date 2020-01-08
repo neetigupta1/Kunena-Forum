@@ -10,19 +10,21 @@
  * @link            https://www.kunena.org
  **/
 
-namespace Joomla\Component\Kunena\Site\Controller\Topic\Item\Actions;
+namespace Kunena\Forum\Site\Controller\Topic\Item\Actions;
 
 defined('_JEXEC') or die();
 
 use Exception;
 use Joomla\CMS\Language\Text;
+use Joomla\CMS\Object\CMSObject;
 use Joomla\CMS\Plugin\PluginHelper;
 use Joomla\CMS\Session\Session;
-use Joomla\CMS\Object\CMSObject;
-use Joomla\Component\Kunena\Libraries\Controller\Display;
-use Joomla\Component\Kunena\Libraries\Exception\Authorise;
-use Joomla\Component\Kunena\Libraries\KunenaFactory;
-use Joomla\Component\Kunena\Libraries\Route\KunenaRoute;
+use Kunena\Forum\Libraries\Controller\KunenaControllerDisplay;
+use Kunena\Forum\Libraries\Exception\Authorise;
+use Kunena\Forum\Libraries\Forum\Topic\Topic;
+use Kunena\Forum\Libraries\KunenaFactory;
+use Kunena\Forum\Libraries\Layout\Layout;
+use Kunena\Forum\Libraries\Route\KunenaRoute;
 use function defined;
 
 /**
@@ -30,7 +32,7 @@ use function defined;
  *
  * @since   Kunena 4.0
  */
-class ComponentKunenaControllerTopicItemActionsDisplay extends Display
+class ComponentKunenaControllerTopicItemActionsDisplay extends KunenaControllerDisplay
 {
 	/**
 	 * @var     string
@@ -39,7 +41,7 @@ class ComponentKunenaControllerTopicItemActionsDisplay extends Display
 	protected $name = 'Topic/Item/Actions';
 
 	/**
-	 * @var     KunenaForumTopic
+	 * @var     Topic
 	 * @since   Kunena 6.0
 	 */
 	public $topic;
@@ -66,7 +68,7 @@ class ComponentKunenaControllerTopicItemActionsDisplay extends Display
 
 		$id = $this->input->getInt('id');
 
-		$this->topic = KunenaForumTopic::getInstance($id);
+		$this->topic = Topic::getInstance($id);
 
 		$catid = $this->topic->category_id;
 		$token = Session::getFormToken();
@@ -353,7 +355,7 @@ class ComponentKunenaControllerTopicItemActionsDisplay extends Display
 	 * @param   bool    $normal   Define if the button will have the class btn or btn-small
 	 * @param   string  $icon     icon
 	 *
-	 * @return  KunenaLayout
+	 * @return  Layout
 	 *
 	 * @since   Kunena 6.0
 	 *
@@ -362,7 +364,7 @@ class ComponentKunenaControllerTopicItemActionsDisplay extends Display
 	 */
 	public function getButton($url, $name, $scope, $type, $primary = false, $normal = true, $icon = '')
 	{
-		return KunenaLayout::factory('Widget/Button')
+		return Layout::factory('Widget/Button')
 			->setProperties(['url'   => KunenaRoute::_($url), 'name' => $name,
 							 'scope' => $scope, 'type' => $type, 'primary' => $primary, 'normal' => $normal, 'icon' => $icon,]
 			);

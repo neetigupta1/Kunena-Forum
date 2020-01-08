@@ -10,7 +10,7 @@
  * @link            https://www.kunena.org
 **/
 
-namespace Joomla\Component\Kunena\Site;
+namespace Kunena\Forum\Site;
 
 defined('_JEXEC') or die();
 
@@ -18,10 +18,10 @@ use Joomla\CMS\Language\Text;
 use function defined;
 
 /*
- * @var KunenaForumTopic $topic
+ * @var \Kunena\Forum\Libraries\Forum\Topic\Topic $topic
  */
 $topic  = $this->category->getLastTopic();
-$avatar = $this->config->avataroncat ? $topic->getAuthor()->getAvatarImage(\Joomla\Component\Kunena\Libraries\KunenaFactory::getTemplate()->params->get('avatarType'), 'thumb') : null;
+$avatar = $this->config->avataroncat ? $topic->getAuthor()->getAvatarImage(\Kunena\Forum\Libraries\KunenaFactory::getTemplate()->params->get('avatarType'), 'thumb') : null;
 ?>
 
 <tr>

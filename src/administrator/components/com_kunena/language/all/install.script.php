@@ -9,12 +9,18 @@
  * @link          https://www.kunena.org
  **/
 
-namespace Joomla\Component\Kunena\Administrator;
+namespace Kunena\Forum\Administrator;
 
 defined('_JEXEC') or die();
 
+use Exception;
 use Joomla\CMS\Factory;
 use Joomla\CMS\Filesystem\Folder;
+use Joomla\CMS\Installer\Adapter\FileAdapter;
+use Joomla\CMS\Installer\Installer;
+use Joomla\CMS\Language\LanguageHelper;
+use Joomla\CMS\Table\Table;
+use Kunena\Forum\Libraries\Forum\KunenaForum;
 
 /**
  * Class pkg_kunena_languagesInstallerScript
@@ -24,14 +30,16 @@ use Joomla\CMS\Filesystem\Folder;
 class pkg_kunena_languagesInstallerScript
 {
 	/**
-	 * @param   Joomla\CMS\Installer\Adapter\FileAdapter  $parent  parent
+	 * @param   FileAdapter  $parent  parent
+	 *
+	 * @return  void
 	 *
 	 * @since   Kunena 6.0
 	 */
 	public function uninstall($parent)
 	{
 		// Remove languages.
-		$languages = Joomla\CMS\Language\LanguageHelper::getKnownLanguages();
+		$languages = LanguageHelper::getKnownLanguages();
 
 		foreach ($languages as $language)
 		{
@@ -40,8 +48,8 @@ class pkg_kunena_languagesInstallerScript
 	}
 
 	/**
-	 * @param   string                                    $type    type
-	 * @param   Joomla\CMS\Installer\Adapter\FileAdapter  $parent  parent
+	 * @param   string       $type    type
+	 * @param   FileAdapter  $parent  parent
 	 *
 	 * @return  boolean
 	 *
@@ -59,14 +67,14 @@ class pkg_kunena_languagesInstallerScript
 		$app = Factory::getApplication();
 
 		// Do not install if Kunena doesn't exist.
-		if (!class_exists('KunenaForum') || !\Joomla\Component\Kunena\Libraries\Forum\Forum::isCompatible('4.0'))
+		if (!class_exists('KunenaForum') || !KunenaForum::isCompatible('4.0'))
 		{
 			$app->enqueueMessage(sprintf('Kunena %s has not been installed, aborting!', '4.0'), 'notice');
 
 			return false;
 		}
 
-		if (\Joomla\Component\Kunena\Libraries\Forum\Forum::isDev())
+		if (KunenaForum::isDev())
 		{
 			$app->enqueueMessage(sprintf('You have installed Kunena from GitHub, aborting!'), 'notice');
 
@@ -75,7 +83,7 @@ class pkg_kunena_languagesInstallerScript
 
 		// Get list of languages to be installed.
 		$source    = $parent->getParent()->getPath('source') . '/language';
-		$languages = Joomla\CMS\Language\LanguageHelper::getKnownLanguages();
+		$languages = LanguageHelper::getKnownLanguages();
 
 		$files = $parent->manifest->files;
 
@@ -105,12 +113,12 @@ class pkg_kunena_languagesInstallerScript
 		}
 
 		// Remove old K1.7 style language pack.
-		$table = Joomla\CMS\Table\Table::getInstance('extension');
+		$table = Table::getInstance('extension');
 		$id    = $table->find(['type' => 'file', 'element' => "kunena_language_pack"]);
 
 		if ($id)
 		{
-			$installer = new Joomla\CMS\Installer\Installer;
+			$installer = new Installer;
 			$installer->uninstall('file', $id);
 		}
 
@@ -125,7 +133,7 @@ class pkg_kunena_languagesInstallerScript
 	 */
 	public function uninstallLanguage($tag, $name)
 	{
-		$table = Joomla\CMS\Table\Table::getInstance('extension');
+		$table = Table::getInstance('extension');
 		$id    = $table->find(['type' => 'file', 'element' => "com_kunena_{$tag}"]);
 
 		if (!$id)
@@ -133,7 +141,7 @@ class pkg_kunena_languagesInstallerScript
 			return;
 		}
 
-		$installer = new Joomla\CMS\Installer\Installer;
+		$installer = new Installer;
 		$installer->uninstall('file', $id);
 	}
 }

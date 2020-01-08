@@ -10,7 +10,7 @@
  * @link           https://www.kunena.org
  **/
 
-namespace Joomla\Component\Kunena\Plugin\Kunena\Altauserpoints;
+namespace Kunena\Forum\Plugin\Kunena\Altauserpoints;
 
 defined('_JEXEC') or die();
 
@@ -18,10 +18,10 @@ use Exception;
 use Joomla\CMS\Factory;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\Uri\Uri;
-use Joomla\Component\Kunena\Libraries\Error;
-use Joomla\Component\Kunena\Libraries\Integration\Activity;
-use Joomla\Component\Kunena\Libraries\KunenaFactory;
-use Joomla\Component\Kunena\Libraries\Route\KunenaRoute;
+use Kunena\Forum\Libraries\Error;
+use Kunena\Forum\Libraries\Integration\Activity;
+use Kunena\Forum\Libraries\KunenaFactory;
+use Kunena\Forum\Libraries\Route\KunenaRoute;
 use Joomla\String\StringHelper;
 use RuntimeException;
 use function defined;

@@ -9,7 +9,7 @@
  * @link           https://www.kunena.org
  **/
 
-namespace Joomla\Component\Kunena\Administrator;
+namespace Kunena\Forum\Administrator\Updates\Php;
 
 defined('_JEXEC') or die();
 
@@ -26,7 +26,7 @@ use function defined;
  *
  * @since   Kunena 6.0
  *
- * @throws  KunenaInstallerException
+ * @throws  Exception
  */
 function kunena_160_2010_05_30_attachments($parent)
 {
@@ -50,7 +50,7 @@ function kunena_160_2010_05_30_attachments($parent)
 	}
 	catch (Exception $e)
 	{
-		throw new KunenaInstallerException($e->getMessage(), $e->getCode());
+		throw new Exception($e->getMessage(), $e->getCode());
 	}
 
 	// Attachments table has file location - assume we have to convert attachments
@@ -64,7 +64,7 @@ function kunena_160_2010_05_30_attachments($parent)
 	}
 	catch (Exception $e)
 	{
-		throw new KunenaInstallerException($e->getMessage(), $e->getCode());
+		throw new Exception($e->getMessage(), $e->getCode());
 	}
 
 	$collation = $db->getCollation();
@@ -106,7 +106,7 @@ function kunena_160_2010_05_30_attachments($parent)
 	}
 	catch (Exception $e)
 	{
-		throw new KunenaInstallerException($e->getMessage(), $e->getCode());
+		throw new Exception($e->getMessage(), $e->getCode());
 	}
 
 	/*
@@ -134,7 +134,7 @@ function kunena_160_2010_05_30_attachments($parent)
 	}
 	catch (Exception $e)
 	{
-		throw new KunenaInstallerException($e->getMessage(), $e->getCode());
+		throw new Exception($e->getMessage(), $e->getCode());
 	}
 
 	// By now the old attachmets table has been converted to the new Kunena 1.6 format

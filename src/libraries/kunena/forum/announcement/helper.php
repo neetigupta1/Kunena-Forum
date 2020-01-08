@@ -10,7 +10,7 @@
  * @link            https://www.kunena.org
  **/
 
-namespace Joomla\Component\Kunena\Libraries\Forum\Announcement;
+namespace Kunena\Forum\Libraries\Forum\Announcement;
 
 defined('_JEXEC') or die();
 
@@ -18,6 +18,8 @@ use Exception;
 use Joomla\CMS\Factory;
 use Joomla\CMS\Uri\Uri;
 use Joomla\Database\Exception\ExecutionFailureException;
+use Kunena\Forum\Libraries\Error;
+use Kunena\Forum\Libraries\Route\KunenaRoute;
 use function defined;
 
 /**
@@ -89,7 +91,7 @@ abstract class Helper
 	{
 		$uri = self::getUri($layout);
 
-		return \Joomla\Component\Kunena\Libraries\Route\KunenaRoute::_($uri, $xhtml);
+		return KunenaRoute::_($uri, $xhtml);
 	}
 
 	/**
@@ -158,7 +160,7 @@ abstract class Helper
 		}
 		catch (ExecutionFailureException $e)
 		{
-			\Joomla\Component\Kunena\Libraries\Error::displayDatabaseError($e);
+			Error::displayDatabaseError($e);
 		}
 
 		self::$_instances = [];
@@ -225,7 +227,7 @@ abstract class Helper
 		}
 		catch (ExecutionFailureException $e)
 		{
-			\Joomla\Component\Kunena\Libraries\Error::displayDatabaseError($e);
+			Error::displayDatabaseError($e);
 		}
 
 		return $total;

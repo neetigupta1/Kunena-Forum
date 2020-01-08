@@ -10,19 +10,20 @@
  * @link            https://www.kunena.org
  **/
 
-namespace Joomla\Component\Kunena\Administrator;
+namespace Kunena\Forum\Administrator;
 
 defined('_JEXEC') or die();
 
 use Joomla\CMS\HTML\HTMLHelper;
 use Joomla\CMS\Language\Text;
+use Kunena\Forum\Administrator\Install\KunenaVersion;
 
 ?>
 
 <div id="kunena" class="container-fluid">
 	<div class="row">
 		<div id="j-main-container" class="col-md-12" role="main">
-			<form action="<?php echo \Joomla\Component\Kunena\Libraries\Route\KunenaRoute::_('administrator/index.php?option=com_kunena&view=logs') ?>"
+			<form action="<?php echo \Kunena\Forum\Libraries\Route\KunenaRoute::_('administrator/index.php?option=com_kunena&view=logs') ?>"
 				  method="post"
 				  id="adminForm"
 				  name="adminForm">

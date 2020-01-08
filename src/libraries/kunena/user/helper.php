@@ -10,7 +10,7 @@
  * @link            https://www.kunena.org
  **/
 
-namespace Joomla\Component\Kunena\Libraries\User;
+namespace Kunena\Forum\Libraries\User;
 
 defined('_JEXEC') or die();
 
@@ -19,19 +19,23 @@ Helper::initialize();
 use BadMethodCallException;
 use Exception;
 use Joomla\CMS\Access\Access;
+use Joomla\CMS\Factory;
 use Joomla\CMS\User\User;
 use Joomla\CMS\User\UserHelper;
-use Joomla\Http\Response;
-use Joomla\Utilities\ArrayHelper;
-use Joomla\CMS\Factory;
-use Joomla\Utilities\IpHelper;
-use Joomla\Http\Http;
-use Joomla\Http\Transport\Stream as StreamTransport;
 use Joomla\Database\Exception\ExecutionFailureException;
+use Joomla\Http\Http;
+use Joomla\Http\Response;
+use Joomla\Http\Transport\Stream as StreamTransport;
+use Joomla\Utilities\ArrayHelper;
+use Joomla\Utilities\IpHelper;
+use Kunena\Forum\Libraries\Error;
+use Kunena\Forum\Libraries\KunenaFactory;
+use Kunena\Forum\Libraries\KunenaProfiler;
+use Kunena\Forum\Libraries\Log\Log;
 use function defined;
 
 /**
- * Class KunenaUserHelper
+ * Class \Kunena\Forum\Libraries\User\KunenaUserHelper
  *
  * @since   Kunena 4.0
  */
@@ -109,7 +113,7 @@ abstract class Helper
 		self::$_me = self::$_instances [$id] = new KunenaUser($id);
 
 		// Initialize avatar if configured.
-		$avatars = \Joomla\Component\Kunena\Libraries\KunenaFactory::getAvatarIntegration();
+		$avatars = KunenaFactory::getAvatarIntegration();
 		$avatars->load([$id]);
 	}
 
@@ -150,7 +154,7 @@ abstract class Helper
 	}
 
 	/**
-	 * Returns the global KunenaUser object, only creating it if it doesn't already exist.
+	 * Returns the global \Kunena\Forum\Libraries\User\KunenaUser object, only creating it if it doesn't already exist.
 	 *
 	 * @param   mixed  $identifier  The user to load - Can be an integer or string - If string, it is converted to ID
 	 *                              automatically.
@@ -164,18 +168,18 @@ abstract class Helper
 	 */
 	public static function get($identifier = null, $reload = false)
 	{
-		KUNENA_PROFILER ? \Joomla\Component\Kunena\Libraries\KunenaProfiler::instance()->start('function ' . __CLASS__ . '::' . __FUNCTION__ . '()') : null;
+		KUNENA_PROFILER ? KunenaProfiler::instance()->start('function ' . __CLASS__ . '::' . __FUNCTION__ . '()') : null;
 
 		if ($identifier === null || $identifier === false)
 		{
-			KUNENA_PROFILER ? \Joomla\Component\Kunena\Libraries\KunenaProfiler::instance()->stop('function ' . __CLASS__ . '::' . __FUNCTION__ . '()') : null;
+			KUNENA_PROFILER ? KunenaProfiler::instance()->stop('function ' . __CLASS__ . '::' . __FUNCTION__ . '()') : null;
 
 			return self::$_me;
 		}
 
-		if ($identifier instanceof \Joomla\Component\Kunena\Libraries\User\KunenaUser)
+		if ($identifier instanceof KunenaUser)
 		{
-			KUNENA_PROFILER ? \Joomla\Component\Kunena\Libraries\KunenaProfiler::instance()->stop('function ' . __CLASS__ . '::' . __FUNCTION__ . '()') : null;
+			KUNENA_PROFILER ? KunenaProfiler::instance()->stop('function ' . __CLASS__ . '::' . __FUNCTION__ . '()') : null;
 
 			return $identifier;
 		}
@@ -199,7 +203,7 @@ abstract class Helper
 		// Always return fresh user if id is anonymous/not found
 		if ($id === 0)
 		{
-			KUNENA_PROFILER ? \Joomla\Component\Kunena\Libraries\KunenaProfiler::instance()->stop('function ' . __CLASS__ . '::' . __FUNCTION__ . '()') : null;
+			KUNENA_PROFILER ? KunenaProfiler::instance()->stop('function ' . __CLASS__ . '::' . __FUNCTION__ . '()') : null;
 
 			return new KunenaUser($id);
 		}
@@ -208,11 +212,11 @@ abstract class Helper
 			self::$_instances [$id] = new KunenaUser($id);
 
 			// Preload avatar if configured.
-			$avatars = \Joomla\Component\Kunena\Libraries\KunenaFactory::getAvatarIntegration();
+			$avatars = KunenaFactory::getAvatarIntegration();
 			$avatars->load([$id]);
 		}
 
-		KUNENA_PROFILER ? \Joomla\Component\Kunena\Libraries\KunenaProfiler::instance()->stop('function ' . __CLASS__ . '::' . __FUNCTION__ . '()') : null;
+		KUNENA_PROFILER ? KunenaProfiler::instance()->stop('function ' . __CLASS__ . '::' . __FUNCTION__ . '()') : null;
 
 		return self::$_instances [$id];
 	}
@@ -228,7 +232,7 @@ abstract class Helper
 	 */
 	public static function loadUsers(array $userids = [])
 	{
-		KUNENA_PROFILER ? \Joomla\Component\Kunena\Libraries\KunenaProfiler::instance()->start('function ' . __CLASS__ . '::' . __FUNCTION__ . '()') : null;
+		KUNENA_PROFILER ? KunenaProfiler::instance()->start('function ' . __CLASS__ . '::' . __FUNCTION__ . '()') : null;
 
 		// Make sure that userids are unique and that indexes are correct
 		$e_userids = [];
@@ -261,7 +265,7 @@ abstract class Helper
 			}
 			catch (ExecutionFailureException $e)
 			{
-				\Joomla\Component\Kunena\Libraries\Error::displayDatabaseError($e);
+				Error::displayDatabaseError($e);
 			}
 
 			foreach ($results as $user)
@@ -273,7 +277,7 @@ abstract class Helper
 			}
 
 			// Preload avatars if configured
-			$avatars = \Joomla\Component\Kunena\Libraries\KunenaFactory::getAvatarIntegration();
+			$avatars = KunenaFactory::getAvatarIntegration();
 			$avatars->load($e_userids);
 		}
 
@@ -287,7 +291,7 @@ abstract class Helper
 			}
 		}
 
-		KUNENA_PROFILER ? \Joomla\Component\Kunena\Libraries\KunenaProfiler::instance()->stop('function ' . __CLASS__ . '::' . __FUNCTION__ . '()') : null;
+		KUNENA_PROFILER ? KunenaProfiler::instance()->stop('function ' . __CLASS__ . '::' . __FUNCTION__ . '()') : null;
 
 		return $list;
 	}
@@ -321,7 +325,7 @@ abstract class Helper
 		if (self::$_total === null)
 		{
 			$db     = Factory::getDBO();
-			$config = \Joomla\Component\Kunena\Libraries\KunenaFactory::getConfig();
+			$config = KunenaFactory::getConfig();
 
 			if ($config->userlist_count_users == '1')
 			{
@@ -352,7 +356,7 @@ abstract class Helper
 			}
 			catch (ExecutionFailureException $e)
 			{
-				\Joomla\Component\Kunena\Libraries\Error::displayDatabaseError($e);
+				Error::displayDatabaseError($e);
 			}
 		}
 
@@ -381,7 +385,7 @@ abstract class Helper
 		}
 		catch (ExecutionFailureException $e)
 		{
-			\Joomla\Component\Kunena\Libraries\Error::displayDatabaseError($e);
+			Error::displayDatabaseError($e);
 		}
 
 		return (int) $total;
@@ -398,7 +402,7 @@ abstract class Helper
 	 */
 	public static function getTopPosters($limit = 0)
 	{
-		$limit = $limit ? $limit : \Joomla\Component\Kunena\Libraries\KunenaFactory::getConfig()->popusercount;
+		$limit = $limit ? $limit : KunenaFactory::getConfig()->popusercount;
 
 		if (self::$_topposters < $limit)
 		{
@@ -410,7 +414,7 @@ abstract class Helper
 			$query->where($db->quoteName('ku.posts') . ' > 0');
 			$query->order($db->quoteName('ku.posts') . ' DESC');
 
-			if (\Joomla\Component\Kunena\Libraries\KunenaFactory::getConfig()->superadmin_userlist)
+			if (KunenaFactory::getConfig()->superadmin_userlist)
 			{
 				$filter = Access::getUsersByGroup(8);
 				$query->where($db->quoteName('u.id') . ' NOT IN (' . implode(',', $filter) . ')');
@@ -425,7 +429,7 @@ abstract class Helper
 			}
 			catch (ExecutionFailureException $e)
 			{
-				\Joomla\Component\Kunena\Libraries\Error::displayDatabaseError($e);
+				Error::displayDatabaseError($e);
 			}
 		}
 
@@ -521,7 +525,7 @@ abstract class Helper
 		if ($counts === null)
 		{
 			$app    = Factory::getApplication();
-			$config = \Joomla\Component\Kunena\Libraries\KunenaFactory::getConfig();
+			$config = KunenaFactory::getConfig();
 			$db     = Factory::getDbo();
 			$query  = $db->getQuery(true);
 			$query->select('COUNT(*)')
@@ -550,7 +554,7 @@ abstract class Helper
 			}
 			catch (ExecutionFailureException $e)
 			{
-				\Joomla\Component\Kunena\Libraries\Error::displayDatabaseError($e);
+				Error::displayDatabaseError($e);
 			}
 
 			$counts          = [];
@@ -575,7 +579,7 @@ abstract class Helper
 		if (self::$_online === null)
 		{
 			$app    = Factory::getApplication();
-			$config = \Joomla\Component\Kunena\Libraries\KunenaFactory::getConfig();
+			$config = KunenaFactory::getConfig();
 			$db     = Factory::getDbo();
 			$query  = $db->getQuery(true);
 			$query->select('userid, MAX(time) AS time')
@@ -606,7 +610,7 @@ abstract class Helper
 			}
 			catch (ExecutionFailureException $e)
 			{
-				\Joomla\Component\Kunena\Libraries\Error::displayDatabaseError($e);
+				Error::displayDatabaseError($e);
 			}
 		}
 
@@ -626,7 +630,7 @@ abstract class Helper
 	 */
 	public static function getStatus($user)
 	{
-		$config = \Joomla\Component\Kunena\Libraries\KunenaFactory::getConfig();
+		$config = KunenaFactory::getConfig();
 		$status = $config->user_status;
 
 		if (!$status)
@@ -702,7 +706,7 @@ abstract class Helper
 		}
 		catch (ExecutionFailureException $e)
 		{
-			\Joomla\Component\Kunena\Libraries\Error::displayDatabaseError($e);
+			Error::displayDatabaseError($e);
 
 			return false;
 		}
@@ -737,7 +741,7 @@ abstract class Helper
 		}
 		catch (ExecutionFailureException $e)
 		{
-			\Joomla\Component\Kunena\Libraries\Error::displayDatabaseError($e);
+			Error::displayDatabaseError($e);
 
 			return false;
 		}
@@ -772,7 +776,7 @@ abstract class Helper
 		}
 		catch (ExecutionFailureException $e)
 		{
-			\Joomla\Component\Kunena\Libraries\Error::displayDatabaseError($e);
+			Error::displayDatabaseError($e);
 
 			return false;
 		}
@@ -849,12 +853,12 @@ abstract class Helper
 
 		if ($response->code == '200')
 		{
-			if (\Joomla\Component\Kunena\Libraries\KunenaFactory::getConfig()->log_moderation)
+			if (KunenaFactory::getConfig()->log_moderation)
 			{
-				$log = KunenaLog::LOG_USER_REPORT_STOPFORUMSPAM;
+				$log = Log::LOG_USER_REPORT_STOPFORUMSPAM;
 
-				KunenaLog::log(
-					KunenaLog::TYPE_ACTION,
+				Log::log(
+					Log::TYPE_ACTION,
 					$log,
 					[
 						'user_ip_reported'  => $data['ip'],

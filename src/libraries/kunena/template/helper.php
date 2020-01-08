@@ -10,13 +10,12 @@
  * @link            https://www.kunena.org
  **/
 
-namespace Joomla\Component\Kunena\Libraries\Template;
+namespace Kunena\Forum\Libraries\Template;
 
 defined('_JEXEC') or die();
 
-use Exception;
-use Joomla\CMS\Language\Text;
 use Joomla\CMS\Filesystem\Folder;
+use Joomla\CMS\Language\Text;
 use stdClass;
 use function defined;
 
@@ -42,11 +41,11 @@ abstract class Helper
 	 *
 	 * @since   Kunena 6.0
 	 *
-	 * @throws  Exception
+	 * @throws  \Exception
 	 */
 	public static function isDefault($template)
 	{
-		$config         = \Joomla\Component\Kunena\Libraries\KunenaFactory::getConfig();
+		$config         = \Kunena\Forum\Libraries\KunenaFactory::getConfig();
 		$defaultemplate = $config->template;
 
 		return $defaultemplate == $template ? 1 : 0;
@@ -171,12 +170,12 @@ abstract class Helper
 
 		if ($data->version == '@kunenaversion@')
 		{
-			$data->version = \Joomla\Component\Kunena\Libraries\Forum\Forum::version();
+			$data->version = \Kunena\Forum\Libraries\Forum\KunenaForum::version();
 		}
 
 		if ($data->creationdate == '@kunenaversiondate@')
 		{
-			$data->creationdate = \Joomla\Component\Kunena\Libraries\Forum\Forum::versionDate();
+			$data->creationdate = \Kunena\Forum\Libraries\Forum\KunenaForum::versionDate();
 		}
 
 		if (!$data->version)

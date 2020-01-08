@@ -10,7 +10,7 @@
  * @link            https://www.kunena.org
  **/
 
-namespace Joomla\Component\Kunena\Site\Controllers;
+namespace Kunena\Forum\Site\Controllers;
 
 defined('_JEXEC') or die();
 
@@ -18,10 +18,10 @@ use Exception;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\Menu\AbstractMenu;
 use Joomla\CMS\MVC\Controller\BaseController;
-use Joomla\Component\Kunena\Libraries\Controller;
-use Joomla\Component\Kunena\Libraries\Error;
-use Joomla\Component\Kunena\Libraries\KunenaFactory;
-use Joomla\Component\Kunena\Libraries\Route\KunenaRoute;
+use Kunena\Forum\Libraries\Controller;
+use Kunena\Forum\Libraries\Error;
+use Kunena\Forum\Libraries\KunenaFactory;
+use Kunena\Forum\Libraries\Route\KunenaRoute;
 use function defined;
 
 /**
@@ -105,7 +105,7 @@ class KunenaControllerHome extends Controller
 		KunenaRoute::initialize();
 
 		// Run display task from our new controller
-		$controller = KunenaController::getInstance();
+		$controller = Controller::getInstance();
 		$controller->execute('display');
 
 		// Set redirect and message

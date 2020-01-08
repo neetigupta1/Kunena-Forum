@@ -10,20 +10,23 @@
  * @link            https://www.kunena.org
  **/
 
-namespace Joomla\Component\Kunena\Administrator;
+namespace Kunena\Forum\Administrator\Models;
 
 defined('_JEXEC') or die();
 
 use Exception;
-use Joomla\CMS\HTML\HTMLHelper;
 use Joomla\CMS\Factory;
+use Joomla\CMS\Filesystem\Folder;
+use Joomla\CMS\HTML\HTMLHelper;
 use Joomla\CMS\Installer\Installer;
 use Joomla\CMS\Language\LanguageHelper;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\Plugin\PluginHelper;
 use Joomla\CMS\Uri\Uri;
-use Joomla\CMS\Filesystem\Folder;
+use Kunena\Forum\Administrator\Install\KunenaVersion;
+use Kunena\Forum\Libraries\KunenaFactory;
 use Joomla\Registry\Registry;
+use Kunena\Forum\Libraries\Menu\Fix;
 use RuntimeException;
 use stdClass;
 use function defined;
@@ -414,7 +417,7 @@ class KunenaAdminModelTools extends KunenaAdminModelCpanel
 		$this->kunenaVersionInfo = KunenaVersion::getVersionHTML();
 
 		// Get Kunena default template
-		$ktemplate              = \Joomla\Component\Kunena\Libraries\KunenaFactory::getTemplate();
+		$ktemplate              = KunenaFactory::getTemplate();
 		$this->ktemplatedetails = $ktemplate->getTemplateDetails();
 		$this->ktemplateparams  = $this->getKunenaTemplateParams($ktemplate->params);
 
@@ -628,7 +631,7 @@ class KunenaAdminModelTools extends KunenaAdminModelCpanel
 	 */
 	protected function _getJoomlaMenuDetails()
 	{
-		$items = KunenaMenuFix::getAll();
+		$items = Fix::getAll();
 
 		if (!empty($items))
 		{

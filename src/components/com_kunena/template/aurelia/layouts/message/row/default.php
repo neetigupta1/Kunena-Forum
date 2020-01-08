@@ -10,7 +10,7 @@
  * @link            https://www.kunena.org
 **/
 
-namespace Joomla\Component\Kunena\Site;
+namespace Kunena\Forum\Site;
 
 defined('_JEXEC') or die();
 
@@ -26,12 +26,12 @@ $category        = $message->getCategory();
 $userTopic       = $topic->getUserTopic();
 $isReply         = $message->id != $topic->first_post_id;
 $category        = $message->getCategory();
-$this->ktemplate = \Joomla\Component\Kunena\Libraries\KunenaFactory::getTemplate();
-$config          = \Joomla\Component\Kunena\Libraries\KunenaFactory::getConfig();
-$avatar          = $config->avataroncat ? $topic->getLastPostAuthor()->getAvatarImage(\Joomla\Component\Kunena\Libraries\KunenaFactory::getTemplate()->params->get('avatarType'), 'thumb') : null;
+$this->ktemplate = \Kunena\Forum\Libraries\KunenaFactory::getTemplate();
+$config          = \Kunena\Forum\Libraries\KunenaFactory::getConfig();
+$avatar          = $config->avataroncat ? $topic->getLastPostAuthor()->getAvatarImage(\Kunena\Forum\Libraries\KunenaFactory::getTemplate()->params->get('avatarType'), 'thumb') : null;
 $cols            = empty($this->checkbox) ? 5 : 6;
 $txt             = $topic->getActions();
-$topicPages      = $topic->getPagination(null, Config::getInstance()->messages_per_page, 3);
+$topicPages      = $topic->getPagination(null, \Kunena\Forum\Libraries\Config::getInstance()->messages_per_page, 3);
 
 ?>
 <tr class="category<?php echo $this->escape($category->class_sfx) . $txt; ?>">
@@ -61,12 +61,12 @@ $topicPages      = $topic->getPagination(null, Config::getInstance()->messages_p
 			if ($topic->unread)
 			{
 				echo $this->getTopicLink($topic, 'unread', $this->escape($topic->subject) .
-					'<sup class="knewchar" dir="ltr">(' . (int) $topic->unread . ' ' . Text::_('COM_KUNENA_A_GEN_NEWCHAR') . ')</sup>', null, \Joomla\Component\Kunena\Libraries\Template\Template::getInstance()->tooltips() . ' topictitle', $category, true, true
+					'<sup class="knewchar" dir="ltr">(' . (int) $topic->unread . ' ' . Text::_('COM_KUNENA_A_GEN_NEWCHAR') . ')</sup>', null, \Kunena\Forum\Libraries\Template\Template::getInstance()->tooltips() . ' topictitle', $category, true, true
 				);
 			}
 			else
 			{
-				echo $this->getTopicLink($topic, $this->message, null, null, \Joomla\Component\Kunena\Libraries\Template\Template::getInstance()->tooltips() . ' topictitle', $category, true, false);
+				echo $this->getTopicLink($topic, $this->message, null, null, \Kunena\Forum\Libraries\Template\Template::getInstance()->tooltips() . ' topictitle', $category, true, false);
 			}
 
 			echo $this->subLayout('Widget/Rating')->set('config', $config)->set('category', $category)->set('topic', $topic)->setLayout('default'); ?>
@@ -75,29 +75,29 @@ $topicPages      = $topic->getPagination(null, Config::getInstance()->messages_p
 			<?php if ($userTopic->favorite)
 			:
 				?>
-				<span <?php echo \Joomla\Component\Kunena\Libraries\Template\Template::getInstance()->tooltips(true); ?>
-							title="<?php echo Text::_('COM_KUNENA_FAVORITE'); ?>"><?php echo KunenaIcons::star(); ?></span>
+				<span <?php echo \Kunena\Forum\Libraries\Template\Template::getInstance()->tooltips(true); ?>
+							title="<?php echo Text::_('COM_KUNENA_FAVORITE'); ?>"><?php echo \Kunena\Forum\Libraries\Icons\Icons::star(); ?></span>
 			<?php endif; ?>
 
 			<?php if ($userTopic->posts)
 			:
 				?>
-				<span <?php echo \Joomla\Component\Kunena\Libraries\Template\Template::getInstance()->tooltips(true); ?>
-							title="<?php echo Text::_('COM_KUNENA_MYPOSTS'); ?>"><?php echo KunenaIcons::flag(); ?></span>
+				<span <?php echo \Kunena\Forum\Libraries\Template\Template::getInstance()->tooltips(true); ?>
+							title="<?php echo Text::_('COM_KUNENA_MYPOSTS'); ?>"><?php echo \Kunena\Forum\Libraries\Icons\Icons::flag(); ?></span>
 			<?php endif; ?>
 
 			<?php if ($topic->attachments)
 			:
 				?>
-				<span <?php echo \Joomla\Component\Kunena\Libraries\Template\Template::getInstance()->tooltips(true); ?>
-							title="<?php echo Text::_('COM_KUNENA_ATTACH'); ?>"><?php echo KunenaIcons::attach(); ?></span>
+				<span <?php echo \Kunena\Forum\Libraries\Template\Template::getInstance()->tooltips(true); ?>
+							title="<?php echo Text::_('COM_KUNENA_ATTACH'); ?>"><?php echo \Kunena\Forum\Libraries\Icons\Icons::attach(); ?></span>
 			<?php endif; ?>
 
 			<?php if ($topic->poll_id && $category->allow_polls)
 			:
 				?>
-				<span <?php echo \Joomla\Component\Kunena\Libraries\Template\Template::getInstance()->tooltips(true); ?>
-							title="<?php echo Text::_('COM_KUNENA_ADMIN_POLLS'); ?>"><?php echo KunenaIcons::poll(); ?></span>
+				<span <?php echo \Kunena\Forum\Libraries\Template\Template::getInstance()->tooltips(true); ?>
+							title="<?php echo Text::_('COM_KUNENA_ADMIN_POLLS'); ?>"><?php echo \Kunena\Forum\Libraries\Icons\Icons::poll(); ?></span>
 			<?php endif; ?>
 		</div>
 
@@ -109,7 +109,7 @@ $topicPages      = $topic->getPagination(null, Config::getInstance()->messages_p
 				<?php echo $topic->getFirstPostTime()->toKunena('config_post_dateformat'); ?>,
 			<?php endif; ?>
 			<?php echo Text::_('COM_KUNENA_BY') ?>
-			<?php echo $topic->getAuthor()->getLink(null, Text::sprintf('COM_KUNENA_VIEW_USER_LINK_TITLE', $topic->getFirstPostAuthor()->getName()), '', '', \Joomla\Component\Kunena\Libraries\Template\Template::getInstance()->tooltips(), $category->id); ?>
+			<?php echo $topic->getAuthor()->getLink(null, Text::sprintf('COM_KUNENA_VIEW_USER_LINK_TITLE', $topic->getFirstPostAuthor()->getName()), '', '', \Kunena\Forum\Libraries\Template\Template::getInstance()->tooltips(), $category->id); ?>
 			<div class="float-right">
 				<?php /** TODO: New Feature - LABELS
 					   * <span class="label label-info">
@@ -120,7 +120,7 @@ $topicPages      = $topic->getPagination(null, Config::getInstance()->messages_p
 					?>
 					<span class="label label-warning">
 							<span data-toggle="tooltip"
-								  title="<?php echo Text::_('COM_KUNENA_LOCKED'); ?>"><?php echo KunenaIcons::lock(); ?></span>
+								  title="<?php echo Text::_('COM_KUNENA_LOCKED'); ?>"><?php echo \Kunena\Forum\Libraries\Icons\Icons::lock(); ?></span>
 						</span>
 				<?php endif; ?>
 			</div>
@@ -155,7 +155,7 @@ $topicPages      = $topic->getPagination(null, Config::getInstance()->messages_p
 			:
 				?>
 			<div class="col-xs-6 col-md-3">
-				<?php echo $author->getLink($avatar, Text::sprintf('COM_KUNENA_VIEW_USER_LINK_TITLE', $topic->getLastPostAuthor()->getName()), '', '', \Joomla\Component\Kunena\Libraries\Template\Template::getInstance()->tooltips(), $category->id, $config->avataredit); ?>
+				<?php echo $author->getLink($avatar, Text::sprintf('COM_KUNENA_VIEW_USER_LINK_TITLE', $topic->getLastPostAuthor()->getName()), '', '', \Kunena\Forum\Libraries\Template\Template::getInstance()->tooltips(), $category->id, $config->avataredit); ?>
 			</div>
 			<div class="col-xs-6 col-md-9">
 			<?php else
@@ -164,8 +164,8 @@ $topicPages      = $topic->getPagination(null, Config::getInstance()->messages_p
 				?>
 				<div class="col-md-12">
 			<?php endif; ?>
-					<span class="lastpostlink"><?php echo $this->getTopicLink($topic, 'last', Text::_('COM_KUNENA_GEN_LAST_POST'), null, \Joomla\Component\Kunena\Libraries\Template\Template::getInstance()->tooltips(), $category, false, true); ?>
-						<?php echo ' ' . Text::_('COM_KUNENA_BY') . ' ' . $topic->getLastPostAuthor()->getLink(null, Text::sprintf('COM_KUNENA_VIEW_USER_LINK_TITLE', $topic->getLastPostAuthor()->getName()), '', '', \Joomla\Component\Kunena\Libraries\Template\Template::getInstance()->tooltips(), $category->id); ?>
+					<span class="lastpostlink"><?php echo $this->getTopicLink($topic, 'last', Text::_('COM_KUNENA_GEN_LAST_POST'), null, \Kunena\Forum\Libraries\Template\Template::getInstance()->tooltips(), $category, false, true); ?>
+						<?php echo ' ' . Text::_('COM_KUNENA_BY') . ' ' . $topic->getLastPostAuthor()->getLink(null, Text::sprintf('COM_KUNENA_VIEW_USER_LINK_TITLE', $topic->getLastPostAuthor()->getName()), '', '', \Kunena\Forum\Libraries\Template\Template::getInstance()->tooltips(), $category->id); ?>
 						</span>
 					<br>
 					<span class="datepost"><?php echo $topic->getLastPostTime()->toKunena('config_post_dateformat'); ?></span>

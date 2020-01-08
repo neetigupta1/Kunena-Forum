@@ -9,19 +9,25 @@
  * @link           https://www.kunena.org
  **/
 
-namespace Joomla\Component\Kunena\Libraries;
+namespace Kunena\Forum\Libraries;
 
 defined('_JEXEC') or die();
 
 use Exception;
+use Joomla\CMS\Application\CMSApplicationInterface;
 use Joomla\CMS\Factory;
 use Joomla\CMS\Language\Text;
+use Joomla\CMS\Log\Log;
 use Joomla\CMS\MVC\Controller\BaseController;
 use Joomla\CMS\Plugin\PluginHelper;
-use Joomla\CMS\Uri\Uri;
-use Joomla\CMS\Log\Log;
 use Joomla\CMS\Router\Route;
-use Joomla\CMS\Application\CMSApplicationInterface;
+use Joomla\CMS\Uri\Uri;
+use Kunena\Forum\Administrator\Install\KunenaVersion;
+use Kunena\Forum\Libraries\Exception\Authorise;
+use Kunena\Forum\Libraries\Response\ResponseJson;
+use Kunena\Forum\Libraries\Route\KunenaRoute;
+use Kunena\Forum\Libraries\User\Helper;
+use Kunena\Forum\Libraries\User\KunenaUser;
 use function defined;
 
 /**
@@ -59,8 +65,8 @@ class Controller extends BaseController
 	public function __construct($config = [])
 	{
 		parent::__construct($config);
-		$this->profiler = \Joomla\Component\Kunena\Libraries\KunenaProfiler::instance('Kunena');
-		$this->me       = \Joomla\Component\Kunena\Libraries\User\Helper::getMyself();
+		$this->profiler = KunenaProfiler::instance('Kunena');
+		$this->me       = Helper::getMyself();
 
 		// Save user profile if it didn't exist.
 		if ($this->me->userid && !$this->me->exists())
@@ -80,7 +86,7 @@ class Controller extends BaseController
 	 * @param   string  $prefix  prefix
 	 * @param   mixed   $config  config
 	 *
-	 * @return  KunenaController
+	 * @return  Controller
 	 *
 	 * @since   Kunena 6.0
 	 *
@@ -136,17 +142,17 @@ class Controller extends BaseController
 		if ($app->isClient('administrator'))
 		{
 			$class = $prefix . 'AdminController' . ucfirst($view);
-			\Joomla\Component\Kunena\Libraries\KunenaFactory::loadLanguage('com_kunena.controllers', 'admin');
-			\Joomla\Component\Kunena\Libraries\KunenaFactory::loadLanguage('com_kunena.models', 'admin');
-			\Joomla\Component\Kunena\Libraries\KunenaFactory::loadLanguage('com_kunena.sys', 'admin');
-			\Joomla\Component\Kunena\Libraries\KunenaFactory::loadLanguage('com_kunena', 'site');
+			KunenaFactory::loadLanguage('com_kunena.controllers', 'admin');
+			KunenaFactory::loadLanguage('com_kunena.models', 'admin');
+			KunenaFactory::loadLanguage('com_kunena.sys', 'admin');
+			KunenaFactory::loadLanguage('com_kunena', 'site');
 		}
 		else
 		{
 			$class = $prefix . 'Controller' . ucfirst($view);
-			\Joomla\Component\Kunena\Libraries\KunenaFactory::loadLanguage('com_kunena.controllers');
-			\Joomla\Component\Kunena\Libraries\KunenaFactory::loadLanguage('com_kunena.models');
-			\Joomla\Component\Kunena\Libraries\KunenaFactory::loadLanguage('com_kunena.sys', 'admin');
+			KunenaFactory::loadLanguage('com_kunena.controllers');
+			KunenaFactory::loadLanguage('com_kunena.models');
+			KunenaFactory::loadLanguage('com_kunena.sys', 'admin');
 		}
 
 		if (class_exists($class))
@@ -209,15 +215,15 @@ class Controller extends BaseController
 			if ($task != 'display')
 			{
 				// Make sure that Kunena is online before running any tasks (doesn't affect admins).
-				if (!\Joomla\Component\Kunena\Libraries\Forum\Forum::enabled(true))
+				if (!\Kunena\Forum\Libraries\Forum\KunenaForum::enabled(true))
 				{
-					throw new \Joomla\Component\Kunena\Libraries\Exception\Authorise(Text::_('COM_KUNENA_FORUM_IS_OFFLINE'), 503);
+					throw new \Kunena\Forum\Libraries\Exception\Authorise(Text::_('COM_KUNENA_FORUM_IS_OFFLINE'), 503);
 				}
 
 				// If forum is for registered users only, prevent guests from accessing tasks.
 				if ($this->config->regonly && !$this->me->exists())
 				{
-					throw new \Joomla\Component\Kunena\Libraries\Exception\Authorise(Text::_('COM_KUNENA_LOGIN_NOTIFICATION'), 403);
+					throw new \Kunena\Forum\Libraries\Exception\Authorise(Text::_('COM_KUNENA_LOGIN_NOTIFICATION'), 403);
 				}
 			}
 			*/
@@ -251,7 +257,7 @@ class Controller extends BaseController
 				if (!$this->redirect)
 				{
 					// On exceptions always return back to the referrer page.
-					$this->setRedirect(\Joomla\Component\Kunena\Libraries\Route\KunenaRoute::getReferrer());
+					$this->setRedirect(KunenaRoute::getReferrer());
 				}
 			}
 
@@ -269,7 +275,7 @@ class Controller extends BaseController
 				// Otherwise return back to the referrer.
 				else
 				{
-					$redirect = \Joomla\Component\Kunena\Libraries\Route\KunenaRoute::getReferrer();
+					$redirect = KunenaRoute::getReferrer();
 				}
 
 				$this->setRedirect($redirect);
@@ -282,14 +288,14 @@ class Controller extends BaseController
 		header('Content-type: application/json', true);
 
 		// Create JSON response and set the redirect.
-		$response           = new KunenaResponseJson($content, null, false, !empty($this->redirect));
+		$response           = new ResponseJson($content, null, false, !empty($this->redirect));
 		$response->location = $this->redirect;
 
 		// In case of an error we want to set HTTP error code.
 		if ($content instanceof Exception)
 		{
 			// We want to wrap the exception to be able to display correct HTTP status code.
-			$exception = new \Joomla\Component\Kunena\Libraries\Exception\Authorise($content->getMessage(), $content->getCode(), $content);
+			$exception = new Authorise($content->getMessage(), $content->getCode(), $content);
 			header('HTTP/1.1 ' . $exception->getResponseStatus(), true);
 		}
 
@@ -353,7 +359,7 @@ class Controller extends BaseController
 	public function display($cachable = false, $urlparams = false)
 	{
 		KUNENA_PROFILER ? $this->profiler->mark('beforeDisplay') : null;
-		KUNENA_PROFILER ? \Joomla\Component\Kunena\Libraries\KunenaProfiler::instance()->start('function ' . __CLASS__ . '::' . __FUNCTION__ . '()') : null;
+		KUNENA_PROFILER ? KunenaProfiler::instance()->start('function ' . __CLASS__ . '::' . __FUNCTION__ . '()') : null;
 
 		// Get the document object.
 		$document = Factory::getApplication()->getDocument();
@@ -366,11 +372,11 @@ class Controller extends BaseController
 		if ($this->app->isClient('administrator'))
 		{
 			// Load admin language files
-			\Joomla\Component\Kunena\Libraries\KunenaFactory::loadLanguage('com_kunena.install', 'admin');
-			\Joomla\Component\Kunena\Libraries\KunenaFactory::loadLanguage('com_kunena.views', 'admin');
+			KunenaFactory::loadLanguage('com_kunena.install', 'admin');
+			KunenaFactory::loadLanguage('com_kunena.views', 'admin');
 
 			// Load last to get deprecated language files to work
-			\Joomla\Component\Kunena\Libraries\KunenaFactory::loadLanguage('com_kunena', 'admin');
+			KunenaFactory::loadLanguage('com_kunena', 'admin');
 
 			// Version warning, disable J4 for now.
 			require_once KPATH_ADMIN . '/install/version.php';
@@ -380,23 +386,23 @@ class Controller extends BaseController
 		else
 		{
 			// Load site language files
-			\Joomla\Component\Kunena\Libraries\KunenaFactory::loadLanguage('com_kunena.views');
-			\Joomla\Component\Kunena\Libraries\KunenaFactory::loadLanguage('com_kunena.templates');
+			KunenaFactory::loadLanguage('com_kunena.views');
+			KunenaFactory::loadLanguage('com_kunena.templates');
 
 			// Load last to get deprecated language files to work
-			\Joomla\Component\Kunena\Libraries\KunenaFactory::loadLanguage('com_kunena');
+			KunenaFactory::loadLanguage('com_kunena');
 
 			$menu   = $this->app->getMenu();
 			$active = $menu->getActive();
 
 			// Check if menu item was correctly routed
-			$routed = $menu->getItem(\Joomla\Component\Kunena\Libraries\Route\KunenaRoute::getItemID());
+			$routed = $menu->getItem(KunenaRoute::getItemID());
 
 			if ($vFormat == 'html' && !empty($routed->id) && (empty($active->id) || $active->id != $routed->id))
 			{
 				// Routing has been changed, redirect
 				// FIXME: check possible redirect loops!
-				$route    = \Joomla\Component\Kunena\Libraries\Route\KunenaRoute::_(null, false);
+				$route    = KunenaRoute::_(null, false);
 				$activeId = !empty($active->id) ? $active->id : 0;
 				Log::add("Redirect from " . Uri::getInstance()->toString(['path', 'query']) . " ({$activeId}) to {$route} ($routed->id)", Log::DEBUG, 'kunena');
 				$this->app->redirect($route);
@@ -408,7 +414,7 @@ class Controller extends BaseController
 			if (isset($active->language) && $active->language != '*') {
 				$language = Factory::getApplication()->getDocument()->getLanguage();
 				if (strtolower($active->language) != strtolower($language)) {
-					$route = \Joomla\Component\Kunena\Libraries\Route\KunenaRoute::_(null, false);
+					$route = \Kunena\Forum\Libraries\Route\KunenaRoute::_(null, false);
 					Log::add("Language redirect from ".Uri::getInstance()->toString(array('path', 'query'))." to {$route}", Log::DEBUG, 'kunena');
 					$this->redirect ($route);
 				}
@@ -425,7 +431,7 @@ class Controller extends BaseController
 				$common = $this->getView('common', $vFormat);
 				$model  = $this->getModel('common');
 				$common->setModel($model, true);
-				$view->ktemplate = $common->ktemplate = \Joomla\Component\Kunena\Libraries\KunenaFactory::getTemplate();
+				$view->ktemplate = $common->ktemplate = KunenaFactory::getTemplate();
 				$view->common    = $common;
 			}
 
@@ -455,7 +461,7 @@ class Controller extends BaseController
 			}
 		}
 
-		KUNENA_PROFILER ? \Joomla\Component\Kunena\Libraries\KunenaProfiler::instance()->stop('function ' . __CLASS__ . '::' . __FUNCTION__ . '()') : null;
+		KUNENA_PROFILER ? KunenaProfiler::instance()->stop('function ' . __CLASS__ . '::' . __FUNCTION__ . '()') : null;
 
 		return $this;
 	}
@@ -522,6 +528,6 @@ class Controller extends BaseController
 	 */
 	protected function setRedirectBack($default = null, $anchor = null)
 	{
-		$this->setRedirect(\Joomla\Component\Kunena\Libraries\Route\KunenaRoute::getReferrer($default, $anchor));
+		$this->setRedirect(KunenaRoute::getReferrer($default, $anchor));
 	}
 }

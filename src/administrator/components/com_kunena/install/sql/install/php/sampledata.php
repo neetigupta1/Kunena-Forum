@@ -9,14 +9,16 @@
  * @link           https://www.kunena.org
  **/
 
-namespace Joomla\Component\Kunena\Administrator;
+namespace Kunena\Forum\Administrator\Install\Sql\Install\Php;
 
 defined('_JEXEC') or die();
 
+use Exception;
+use Joomla\CMS\Date\Date;
 use Joomla\CMS\Factory;
 use Joomla\CMS\Language\Text;
-use Joomla\CMS\Date\Date;
 use Joomla\Database\Exception\ExecutionFailureException;
+use Kunena\Forum\Libraries\Route\KunenaRoute;
 use function defined;
 
 // This file contains initial sample data for the forum
@@ -46,7 +48,7 @@ class KText
  *
  * @since   Kunena 6.0
  *
- * @throws  KunenaInstallerException
+ * @throws Exception
  */
 function installSampleData()
 {
@@ -174,9 +176,9 @@ function installSampleData()
 	$section       = KText::_('COM_KUNENA_SAMPLEDATA_SECTION_TITLE');
 	$cat1          = KText::_('COM_KUNENA_SAMPLEDATA_CATEGORY1_TITLE');
 	$cat2          = KText::_('COM_KUNENA_SAMPLEDATA_CATEGORY2_TITLE');
-	$section_alias = \Joomla\Component\Kunena\Libraries\Route\KunenaRoute::stringURLSafe(KText::_('COM_KUNENA_SAMPLEDATA_SECTION_TITLE'), 'main-forum');
-	$cat1_alias    = \Joomla\Component\Kunena\Libraries\Route\KunenaRoute::stringURLSafe(KText::_('COM_KUNENA_SAMPLEDATA_CATEGORY1_TITLE'), 'welcome-mat');
-	$cat2_alias    = \Joomla\Component\Kunena\Libraries\Route\KunenaRoute::stringURLSafe(KText::_('COM_KUNENA_SAMPLEDATA_CATEGORY2_TITLE'), 'suggestion-box');
+	$section_alias = KunenaRoute::stringURLSafe(KText::_('COM_KUNENA_SAMPLEDATA_SECTION_TITLE'), 'main-forum');
+	$cat1_alias    = KunenaRoute::stringURLSafe(KText::_('COM_KUNENA_SAMPLEDATA_CATEGORY1_TITLE'), 'welcome-mat');
+	$cat2_alias    = KunenaRoute::stringURLSafe(KText::_('COM_KUNENA_SAMPLEDATA_CATEGORY2_TITLE'), 'suggestion-box');
 
 	$aliasquery = "INSERT INTO `#__kunena_aliases` (`alias`, `type`, `item`, `state`) VALUES
 		({$db->quote($section_alias)}, 'catid', '1', 1),
@@ -227,7 +229,7 @@ function installSampleData()
 			}
 			catch (ExecutionFailureException $e)
 			{
-				throw new KunenaInstallerException($e->getMessage(), $e->getCode());
+				throw new Exception($e->getMessage(), $e->getCode());
 			}
 
 			if ($query[0] == 'kunena_categories')
@@ -249,7 +251,7 @@ function installSampleData()
 				}
 				catch (ExecutionFailureException $e)
 				{
-					throw new KunenaInstallerException($e->getMessage(), $e->getCode());
+					throw new Exception($e->getMessage(), $e->getCode());
 				}
 
 				$db->setQuery($aliasquery);
@@ -260,7 +262,7 @@ function installSampleData()
 				}
 				catch (ExecutionFailureException $e)
 				{
-					throw new KunenaInstallerException($e->getMessage(), $e->getCode());
+					throw new Exception($e->getMessage(), $e->getCode());
 				}
 			}
 
@@ -280,7 +282,7 @@ function installSampleData()
 	}
 	catch (ExecutionFailureException $e)
 	{
-		throw new KunenaInstallerException($e->getMessage(), $e->getCode());
+		throw new Exception($e->getMessage(), $e->getCode());
 	}
 
 	return $counter;

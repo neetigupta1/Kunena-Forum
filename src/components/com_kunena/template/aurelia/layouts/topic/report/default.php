@@ -10,7 +10,7 @@
  * @link            https://www.kunena.org
 **/
 
-namespace Joomla\Component\Kunena\Site;
+namespace Kunena\Forum\Site;
 
 defined('_JEXEC') or die();
 
@@ -20,7 +20,7 @@ use function defined;
 
 ?>
 
-<form method="post" action="<?php echo \Joomla\Component\Kunena\Libraries\Route\KunenaRoute::_('index.php?option=com_kunena'); ?>" class="form-horizontal">
+<form method="post" action="<?php echo \Kunena\Forum\Libraries\Route\KunenaRoute::_('index.php?option=com_kunena'); ?>" class="form-horizontal">
 	<input type="hidden" name="view" value="topic"/>
 	<input type="hidden" name="task" value="report"/>
 	<input type="hidden" name="catid" value="<?php echo (int) $this->category->id; ?>"/>

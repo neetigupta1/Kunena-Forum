@@ -10,14 +10,16 @@
  * @link          https://www.kunena.org
  **/
 
-namespace Joomla\Component\Kunena\Libraries\Log;
+namespace Kunena\Forum\Libraries\Log;
 
 defined('_JEXEC') or die();
 
 use Exception;
 use Joomla\CMS\Date\Date;
-use Joomla\Database\QueryInterface;
 use Joomla\Database\Exception\ExecutionFailureException;
+use Joomla\Database\QueryInterface;
+use Kunena\Forum\Libraries\Collection\Collection;
+use Kunena\Forum\Libraries\Error;
 use function defined;
 
 /**
@@ -25,7 +27,7 @@ use function defined;
  *
  * @since 5.0
  */
-class Finder extends KunenaDatabaseObjectFinder
+class Finder extends \Kunena\Forum\Libraries\Database\Object\Finder
 {
 	/**
 	 * @var     string
@@ -116,7 +118,7 @@ class Finder extends KunenaDatabaseObjectFinder
 	/**
 	 * Get log entries.
 	 *
-	 * @return  array|KunenaCollection
+	 * @return  array|Collection
 	 *
 	 * @since   Kunena 5.0
 	 *
@@ -137,11 +139,11 @@ class Finder extends KunenaDatabaseObjectFinder
 
 		try
 		{
-			$results = new KunenaCollection((array) $this->db->loadObjectList('id'));
+			$results = new Collection((array) $this->db->loadObjectList('id'));
 		}
 		catch (ExecutionFailureException $e)
 		{
-			\Joomla\Component\Kunena\Libraries\Error::displayDatabaseError($e);
+			Error::displayDatabaseError($e);
 		}
 
 		return $results;

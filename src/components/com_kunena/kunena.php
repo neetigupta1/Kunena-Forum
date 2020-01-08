@@ -9,30 +9,30 @@
  * @link           https://www.kunena.org
  **/
 
-namespace Joomla\Component\Kunena\Site;
+namespace Kunena\Forum\Site;
 
 defined('_JEXEC') or die();
 
 use Exception;
 use Joomla\CMS\Factory;
 use Joomla\CMS\Language\Text;
-use Joomla\CMS\Uri\Uri;
 use Joomla\CMS\Log\Log;
 use Joomla\CMS\Plugin\PluginHelper;
-use Joomla\Component\Kunena\Libraries\Controller;
-use Joomla\Component\Kunena\Libraries\Controller\Application;
-use Joomla\Component\Kunena\Libraries\Error;
-use Joomla\Component\Kunena\Libraries\Forum\Forum;
-use Joomla\Component\Kunena\Libraries\KunenaFactory;
-use Joomla\Component\Kunena\Libraries\KunenaProfiler;
-use Joomla\Component\Kunena\Libraries\Route\KunenaRoute;
-use Joomla\Component\Kunena\Libraries\User\Helper;
-use Joomla\Component\Kunena\Libraries\Config;
+use Joomla\CMS\Uri\Uri;
+use Kunena\Forum\Libraries\Config;
+use Kunena\Forum\Libraries\Controller;
+use Kunena\Forum\Libraries\Controller\KunenaControllerApplication;
+use Kunena\Forum\Libraries\Error;
+use Kunena\Forum\Libraries\Forum\KunenaForum;
+use Kunena\Forum\Libraries\KunenaFactory;
+use Kunena\Forum\Libraries\KunenaProfiler;
+use Kunena\Forum\Libraries\Route\KunenaRoute;
+use Kunena\Forum\Libraries\User\Helper;
 use stdClass;
 use function defined;
 
 // Display offline message if Kunena hasn't been fully installed.
-if (!class_exists('KunenaForum') || !Forum::isCompatible('4.0') || !Forum::installed())
+if (!class_exists('KunenaForum') || !KunenaForum::isCompatible('4.0') || !KunenaForum::installed())
 {
 	$lang = Factory::getLanguage();
 	$lang->load('com_kunena.install', JPATH_ADMINISTRATOR . '/components/com_kunena', 'en-GB');
@@ -74,7 +74,7 @@ if (!Config::getInstance()->access_component)
 require_once KPATH_SITE . '/router.php';
 
 // Initialize Kunena Framework.
-Forum::setup();
+KunenaForum::setup();
 
 // Initialize custom error handlers.
 Error::initialize();
@@ -111,7 +111,7 @@ $task    = $input->getCmd('task', 'display');
 PluginHelper::importPlugin('kunena');
 
 // Get HMVC controller and if exists, execute it.
-$controller = Application::getInstance($view, $subview, $task, $input, $app);
+$controller = KunenaControllerApplication::getInstance($view, $subview, $task, $input, $app);
 
 if ($controller)
 {

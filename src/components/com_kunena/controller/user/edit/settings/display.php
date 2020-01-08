@@ -10,14 +10,13 @@
  * @link            https://www.kunena.org
  **/
 
-namespace Joomla\Component\Kunena\Site\Controller\User\Edit;
+namespace Kunena\Forum\Site\Controller\User\Edit;
 
 defined('_JEXEC') or die();
 
-use Exception;
 use Joomla\CMS\HTML\HTMLHelper;
 use Joomla\CMS\Language\Text;
-use Joomla\Component\Kunena\Libraries\KunenaFactory;
+use Kunena\Forum\Libraries\KunenaFactory;
 use StdClass;
 use function defined;
 
@@ -147,7 +146,7 @@ class ComponentKunenaControllerUserEditSettingsDisplay extends ComponentKunenaCo
 	 *
 	 * @since   Kunena 6.0
 	 *
-	 * @throws  Exception
+	 * @throws  \Exception
 	 */
 	protected function prepareDocument()
 	{

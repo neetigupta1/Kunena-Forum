@@ -10,13 +10,14 @@
  * @link            https://www.kunena.org
  **/
 
-namespace Joomla\Component\Kunena\Administrator;
+namespace Kunena\Forum\Administrator;
 
 defined('_JEXEC') or die();
 
 use Joomla\CMS\Factory;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\Uri\Uri;
+use Kunena\Forum\Administrator\Install\KunenaVersion;
 
 $document = Factory::getApplication()->getDocument();
 $document->addStyleSheet(Uri::base(true) . '/components/com_kunena/media/css/admin.css');
@@ -63,7 +64,7 @@ if (Factory::getLanguage()->isRTL())
 					<td><?php echo Text::_('COM_KUNENA_STATS_TOTAL_TOPICS'); ?></td>
 					<td><strong><?php echo $this->topicCount; ?></strong></td>
 					<td><?php echo Text::_('COM_KUNENA_STATS_LATEST_MEMBER'); ?> </td>
-					<td><strong><?php echo \Joomla\Component\Kunena\Libraries\KunenaFactory::getUser(intval($this->lastUserId))->getName(); ?></strong>
+					<td><strong><?php echo \Kunena\Forum\Libraries\KunenaFactory::getUser(intval($this->lastUserId))->getName(); ?></strong>
 					</td>
 				</tr>
 				<tr>

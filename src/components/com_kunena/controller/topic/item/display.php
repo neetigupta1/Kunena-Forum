@@ -10,28 +10,32 @@
  * @link            https://www.kunena.org
  **/
 
-namespace Joomla\Component\Kunena\Site\Controller\Topic\Item;
+namespace Kunena\Forum\Site\Controller\Topic\Item;
 
 defined('_JEXEC') or die();
 
 use Exception;
 use Joomla\CMS\Factory;
+use Joomla\CMS\Filesystem\File;
 use Joomla\CMS\HTML\HTMLHelper;
 use Joomla\CMS\Language\Text;
-use Joomla\CMS\Plugin\PluginHelper;
-use Joomla\CMS\Uri\Uri;
 use Joomla\CMS\MVC\Controller\BaseController;
 use Joomla\CMS\Object\CMSObject;
-use Joomla\CMS\Filesystem\File;
-use Joomla\Component\Kunena\Libraries\Access;
-use Joomla\Component\Kunena\Libraries\Attachment\Helper;
-use Joomla\Component\Kunena\Libraries\Controller\Display;
-use Joomla\Component\Kunena\Libraries\Html\Parser;
-use Joomla\Component\Kunena\Libraries\KunenaFactory;
-use Joomla\Component\Kunena\Libraries\Pagination\Pagination;
-use Joomla\Component\Kunena\Libraries\Route\KunenaRoute;
-use Joomla\Component\Kunena\Libraries\Template\Template;
+use Joomla\CMS\Plugin\PluginHelper;
+use Joomla\CMS\Uri\Uri;
+use Kunena\Forum\Libraries\Access;
+use Kunena\Forum\Libraries\Attachment\Helper;
+use Kunena\Forum\Libraries\Controller\KunenaControllerDisplay;
+use Kunena\Forum\Libraries\Forum\Category\Category;
+use Kunena\Forum\Libraries\Forum\Topic\Topic;
+use Kunena\Forum\Libraries\Html\Parser;
+use Kunena\Forum\Libraries\KunenaFactory;
+use Kunena\Forum\Libraries\KunenaPrivate\Message\Finder;
+use Kunena\Forum\Libraries\Pagination\Pagination;
+use Kunena\Forum\Libraries\Route\KunenaRoute;
+use Kunena\Forum\Libraries\Template\Template;
 use Joomla\Registry\Registry;
+use Kunena\Forum\Libraries\User\KunenaUser;
 use stdClass;
 use function defined;
 
@@ -40,7 +44,7 @@ use function defined;
  *
  * @since   Kunena 4.0
  */
-class ComponentKunenaControllerTopicItemDisplay extends Display
+class ComponentKunenaControllerTopicItemDisplay extends KunenaControllerDisplay
 {
 	/**
 	 * @var     string
@@ -55,19 +59,19 @@ class ComponentKunenaControllerTopicItemDisplay extends Display
 	public $me;
 
 	/**
-	 * @var     KunenaForumCategory
+	 * @var     Category
 	 * @since   Kunena 6.0
 	 */
 	public $category;
 
 	/**
-	 * @var     KunenaForumTopic
+	 * @var     Topic
 	 * @since   Kunena 6.0
 	 */
 	public $topic;
 
 	/**
-	 * @var     KunenaPagination
+	 * @var     Pagination
 	 * @since   Kunena 6.0
 	 */
 	public $pagination;
@@ -113,7 +117,7 @@ class ComponentKunenaControllerTopicItemDisplay extends Display
 			$limit = $this->config->messages_per_page;
 		}
 
-		$this->me = \Joomla\Component\Kunena\Libraries\User\Helper::getMyself();
+		$this->me = \Kunena\Forum\Libraries\User\Helper::getMyself();
 
 		$allowed = md5(serialize(Access::getInstance()->getAllowedCategories()));
 		$cache   = Factory::getCache('com_kunena', 'output');
@@ -133,20 +137,20 @@ class ComponentKunenaControllerTopicItemDisplay extends Display
 		if ($mesid)
 		{
 			// If message was set, use it to find the current topic.
-			$this->message = \Joomla\Component\Kunena\Libraries\Forum\Message\Helper::get($mesid);
+			$this->message = \Kunena\Forum\Libraries\Forum\Message\Helper::get($mesid);
 			$this->topic   = $this->message->getTopic();
 		}
 		else
 		{
-			// Note that redirect loops throw RuntimeException because of we added KunenaForumTopic::getTopic() call!
-			$this->topic   = \Joomla\Component\Kunena\Libraries\Forum\Topic\Helper::get($id)->getTopic();
-			$this->message = \Joomla\Component\Kunena\Libraries\Forum\Message\Helper::get($this->topic->first_post_id);
+			// Note that redirect loops throw RuntimeException because of we added \Kunena\Forum\Libraries\Forum\Topic\Topic::getTopic() call!
+			$this->topic   = \Kunena\Forum\Libraries\Forum\Topic\Helper::get($id)->getTopic();
+			$this->message = \Kunena\Forum\Libraries\Forum\Message\Helper::get($this->topic->first_post_id);
 		}
 
 		// Load also category (prefer the URI variable if available).
 		if ($catid && $catid != $this->topic->category_id)
 		{
-			$this->category = \Joomla\Component\Kunena\Libraries\Forum\Category\Helper::get($catid);
+			$this->category = \Kunena\Forum\Libraries\Forum\Category\Helper::get($catid);
 			$this->category->tryAuthorise();
 		}
 		else
@@ -172,7 +176,7 @@ class ComponentKunenaControllerTopicItemDisplay extends Display
 
 		// Load messages from the current page and set the pagination.
 		$hold   = Access::getInstance()->getAllowedHold($this->me, $this->category->id, false);
-		$finder = new KunenaForumMessageFinder;
+		$finder = new \Kunena\Forum\Libraries\Forum\Message\Finder;
 		$finder
 			->where('thread', '=', $this->topic->id)
 			->filterByHold($hold);
@@ -191,7 +195,7 @@ class ComponentKunenaControllerTopicItemDisplay extends Display
 
 		if ($this->me->exists())
 		{
-			$pmFinder = new KunenaPrivateMessageFinder;
+			$pmFinder = new Finder;
 			$pmFinder->filterByMessageIds(array_keys($this->messages))->order('id');
 
 			if (!$this->me->isModerator($this->category))
@@ -295,14 +299,14 @@ class ComponentKunenaControllerTopicItemDisplay extends Display
 		$tmp5->{'name'}                 = Uri::getInstance()->toString(['scheme', 'host', 'port']) . $this->topic->getPermaUrl();
 		$data->mainEntityOfPage         = $tmp5;
 
-		if ($this->category->allow_ratings && $this->config->ratingenabled && \Joomla\Component\Kunena\Libraries\Forum\Topic\Rate\Helper::getCount($this->topic->id) > 0)
+		if ($this->category->allow_ratings && $this->config->ratingenabled && \Kunena\Forum\Libraries\Forum\Topic\Rate\Helper::getCount($this->topic->id) > 0)
 		{
 			$data->aggregateRating  = [];
 			$tmp3                   = new CMSObject;
 			$tmp3->{'@type'}        = "AggregateRating";
 			$tmp3->{'itemReviewed'} = $this->headerText;
-			$tmp3->{'ratingValue'}  = \Joomla\Component\Kunena\Libraries\Forum\Topic\Rate\Helper::getSelected($this->topic->id) > 0 ? \Joomla\Component\Kunena\Libraries\Forum\Topic\Rate\Helper::getSelected($this->topic->id) : 5;
-			$tmp3->{'reviewCount'}  = \Joomla\Component\Kunena\Libraries\Forum\Topic\Rate\Helper::getCount($this->topic->id);
+			$tmp3->{'ratingValue'}  = \Kunena\Forum\Libraries\Forum\Topic\Rate\Helper::getSelected($this->topic->id) > 0 ? \Kunena\Forum\Libraries\Forum\Topic\Rate\Helper::getSelected($this->topic->id) : 5;
+			$tmp3->{'reviewCount'}  = \Kunena\Forum\Libraries\Forum\Topic\Rate\Helper::getCount($this->topic->id);
 			$data->aggregateRating  = $tmp3;
 		}
 
@@ -323,7 +327,7 @@ class ComponentKunenaControllerTopicItemDisplay extends Display
 	protected function prepareMessages($mesid)
 	{
 		// Get thank yous for all messages in the page
-		$thankyous = \Joomla\Component\Kunena\Libraries\Forum\Message\Thankyou\Helper::getByMessage($this->messages);
+		$thankyous = \Kunena\Forum\Libraries\Forum\Message\Thankyou\Helper::getByMessage($this->messages);
 
 		// First collect ids and users.
 		$threaded       = ($this->layout == 'indented' || $this->layout == 'threaded');
@@ -378,7 +382,7 @@ class ComponentKunenaControllerTopicItemDisplay extends Display
 		}
 
 		// Prefetch all users/avatars to avoid user by user queries during template iterations
-		\Joomla\Component\Kunena\Libraries\User\Helper::loadUsers($userlist);
+		\Kunena\Forum\Libraries\User\Helper::loadUsers($userlist);
 
 		// Prefetch attachments.
 		Helper::getByMessage($this->messages);

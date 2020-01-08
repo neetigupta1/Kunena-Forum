@@ -10,13 +10,14 @@
  * @link            https://www.kunena.org
  **/
 
-namespace Joomla\Component\Kunena\Site\Controller\Widget\Announcement;
+namespace Kunena\Forum\Site\Controller\Widget\Announcement;
 
 defined('_JEXEC') or die();
 
 use Exception;
-use Joomla\Component\Kunena\Libraries\Controller\Display;
-use Joomla\Component\Kunena\Libraries\Forum\Announcement\Helper;
+use Kunena\Forum\Libraries\Config;
+use Kunena\Forum\Libraries\Controller\KunenaControllerDisplay;
+use Kunena\Forum\Libraries\Forum\Announcement\Helper;
 use function defined;
 
 /**
@@ -24,7 +25,7 @@ use function defined;
  *
  * @since   Kunena 4.0
  */
-class ComponentKunenaControllerWidgetAnnouncementDisplay extends Display
+class ComponentKunenaControllerWidgetAnnouncementDisplay extends KunenaControllerDisplay
 {
 	/**
 	 * @var     string

@@ -10,21 +10,24 @@
  * @link            https://www.kunena.org
  **/
 
-namespace Joomla\Component\Kunena\Site\Controller\Topic\KunenaList\Recent;
+namespace Kunena\Forum\Site\Controller\Topic\KunenaList\Recent;
 
 defined('_JEXEC') or die();
 
 use Exception;
 use Joomla\CMS\Date\Date;
 use Joomla\CMS\Factory;
-use Joomla\CMS\Language\Text;
-use Joomla\CMS\Uri\Uri;
-use Joomla\CMS\MVC\Controller\BaseController;
 use Joomla\CMS\Filesystem\File;
-use Joomla\Component\Kunena\Libraries\Forum\Category\Helper;
-use Joomla\Component\Kunena\Libraries\KunenaFactory;
-use Joomla\Component\Kunena\Libraries\Pagination\Pagination;
-use Joomla\Component\Kunena\Libraries\Route\KunenaRoute;
+use Joomla\CMS\Language\Text;
+use Joomla\CMS\MVC\Controller\BaseController;
+use Joomla\CMS\Uri\Uri;
+use Kunena\Forum\Libraries\Forum\Category\Helper;
+use Kunena\Forum\Libraries\Forum\Topic\Finder;
+use Kunena\Forum\Libraries\KunenaFactory;
+use Kunena\Forum\Libraries\Pagination\Pagination;
+use Kunena\Forum\Libraries\Route\KunenaRoute;
+use Kunena\Forum\Libraries\Controller\KunenaControllerDisplay;
+use Kunena\Forum\Site\Models\KunenaModelTopics;
 use function defined;
 
 /**
@@ -32,7 +35,7 @@ use function defined;
  *
  * @since   Kunena 4.0
  */
-class ComponentKunenaControllerTopicListRecentDisplay extends ComponentKunenaControllerTopicListDisplay
+class ComponentKunenaControllerTopicListRecentDisplay extends KunenaControllerDisplay
 {
 	/**
 	 * Prepare recent topics list.
@@ -52,7 +55,7 @@ class ComponentKunenaControllerTopicListRecentDisplay extends ComponentKunenaCon
 		$this->model = new KunenaModelTopics([], $this->input);
 		$this->model->initialize($this->getOptions(), $this->getOptions()->get('embedded', false));
 		$this->state    = $this->model->getState();
-		$this->me       = \Joomla\Component\Kunena\Libraries\User\Helper::getMyself();
+		$this->me       = \Kunena\Forum\Libraries\User\Helper::getMyself();
 		$this->moreUri  = null;
 		$holding        = $this->getOptions()->get('topics_deletedtopics');
 		$this->embedded = $this->getOptions()->get('embedded', true);
@@ -117,7 +120,7 @@ class ComponentKunenaControllerTopicListRecentDisplay extends ComponentKunenaCon
 		$authorise   = 'read';
 		$order       = 'last_post_time';
 
-		$finder = new KunenaForumTopicFinder;
+		$finder = new Finder;
 		$finder->filterByMoved(false);
 
 		switch ($this->state->get('list.mode'))

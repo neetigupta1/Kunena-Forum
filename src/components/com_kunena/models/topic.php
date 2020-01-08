@@ -10,20 +10,20 @@
  * @link            https://www.kunena.org
  **/
 
-namespace Joomla\Component\Kunena\Site\Models;
+namespace Kunena\Forum\Site\Models;
 
 defined('_JEXEC') or die();
 
 use Exception;
-use Joomla\Component\Kunena\Libraries\Access;
-use Joomla\Component\Kunena\Libraries\Attachment\Helper;
-use Joomla\Component\Kunena\Libraries\Forum\Topic\Poll\Poll;
-use Joomla\Component\Kunena\Libraries\KunenaFactory;
-use Joomla\Component\Kunena\Libraries\Forum\Message;
-use Joomla\Component\Kunena\Libraries\Forum\Topic;
-use Joomla\Component\Kunena\Libraries\Model;
-use Joomla\Component\Kunena\Libraries\Forum\Category;
-use Joomla\Component\Kunena\Libraries\User;
+use Kunena\Forum\Libraries\Access;
+use Kunena\Forum\Libraries\Attachment\Helper;
+use Kunena\Forum\Libraries\Forum\Category;
+use Kunena\Forum\Libraries\Forum\Message;
+use Kunena\Forum\Libraries\Forum\Topic;
+use Kunena\Forum\Libraries\Forum\Topic\Poll\Poll;
+use Kunena\Forum\Libraries\KunenaFactory;
+use Kunena\Forum\Libraries\Model;
+use Kunena\Forum\Libraries\User;
 use function defined;
 
 /**
@@ -147,7 +147,7 @@ class KunenaModelTopic extends Model
 	}
 
 	/**
-	 * @return  boolean|KunenaForumTopic
+	 * @return  boolean|Topic\Topic
 	 *
 	 * @since   Kunena 6.0
 	 *
@@ -192,7 +192,7 @@ class KunenaModelTopic extends Model
 	}
 
 	/**
-	 * @return  array|boolean|Message[]
+	 * @return  array|boolean|Message\Message[]
 	 *
 	 * @since   Kunena 6.0
 	 *

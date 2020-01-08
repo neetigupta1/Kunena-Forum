@@ -10,21 +10,21 @@
  * @link            https://www.kunena.org
  **/
 
-namespace Joomla\Component\Kunena\Plugin\Kunena\Kunena;
+namespace Kunena\Forum\Plugin\Kunena\Kunena;
 
 defined('_JEXEC') or die();
 
 use Exception;
-use Joomla\Component\Kunena\Libraries\Config;
-use Joomla\Component\Kunena\Libraries\Image\Helper;
-use Joomla\Component\Kunena\Libraries\Image\KunenaImage;
-use Joomla\Component\Kunena\Libraries\KunenaFactory;
-use Joomla\Component\Kunena\Libraries\Route\KunenaRoute;
-use Joomla\Component\Kunena\Libraries\Integration\Avatar;
+use Kunena\Forum\Libraries\Config;
+use Kunena\Forum\Libraries\Image\Helper;
+use Kunena\Forum\Libraries\Image\KunenaImage;
+use Kunena\Forum\Libraries\Integration\Avatar;
+use Kunena\Forum\Libraries\KunenaFactory;
+use Kunena\Forum\Libraries\Route\KunenaRoute;
 use function defined;
 
 /**
- * Class \Joomla\Component\Kunena\Libraries\Integration\Avatar
+ * Class \Kunena\Forum\Libraries\Integration\Avatar
  *
  * @since   Kunena 6.0
  */

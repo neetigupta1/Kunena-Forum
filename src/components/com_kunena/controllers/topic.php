@@ -10,7 +10,7 @@
  * @link            https://www.kunena.org
  **/
 
-namespace Joomla\Component\Kunena\Site\Controllers;
+namespace Kunena\Forum\Site\Controllers;
 
 defined('_JEXEC') or die();
 
@@ -24,21 +24,29 @@ use Joomla\CMS\Language\Text;
 use Joomla\CMS\Mail\Mail;
 use Joomla\CMS\Mail\MailHelper;
 use Joomla\CMS\Plugin\PluginHelper;
-use Joomla\CMS\Uri\Uri;
 use Joomla\CMS\Session\Session;
-use Joomla\Component\Kunena\Libraries\Access;
-use Joomla\Component\Kunena\Libraries\Controller;
-use Joomla\Component\Kunena\Libraries\Error;
-use Joomla\Component\Kunena\Libraries\Forum\Forum;
-use Joomla\Component\Kunena\Libraries\Html\Parser;
-use Joomla\Component\Kunena\Libraries\Image\KunenaImage;
-use Joomla\Component\Kunena\Libraries\KunenaFactory;
-use Joomla\Component\Kunena\Libraries\Route\KunenaRoute;
-use Joomla\Component\Kunena\Libraries\Template\Template;
-use Joomla\Component\Kunena\Libraries\User\Helper;
+use Joomla\CMS\Uri\Uri;
+use Kunena\Forum\Libraries\Access;
+use Kunena\Forum\Libraries\Attachment\Attachment;
+use Kunena\Forum\Libraries\Config;
+use Kunena\Forum\Libraries\Controller;
+use Kunena\Forum\Libraries\Email\Email;
+use Kunena\Forum\Libraries\Error;
+use Kunena\Forum\Libraries\Forum\KunenaForum;
+use Kunena\Forum\Libraries\Forum\Message\Message;
+use Kunena\Forum\Libraries\Html\Parser;
+use Kunena\Forum\Libraries\Image\KunenaImage;
+use Kunena\Forum\Libraries\KunenaFactory;
+use Kunena\Forum\Libraries\KunenaPrivate\Message\Finder;
+use Kunena\Forum\Libraries\Layout\Layout;
+use Kunena\Forum\Libraries\Log\Log;
+use Kunena\Forum\Libraries\Route\KunenaRoute;
+use Kunena\Forum\Libraries\Template\Template;
+use Kunena\Forum\Libraries\Upload\Upload;
+use Kunena\Forum\Libraries\User\Helper;
+use Joomla\Database\Exception\ExecutionFailureException;
 use Joomla\Registry\Registry;
 use Joomla\Utilities\ArrayHelper;
-use Joomla\Database\Exception\ExecutionFailureException;
 use RuntimeException;
 use stdClass;
 use function defined;
@@ -95,7 +103,7 @@ class KunenaControllerTopic extends Controller
 		}
 
 		$mes_id      = $this->input->getInt('mes_id', 0);
-		$attachments = \Joomla\Component\Kunena\Libraries\Attachment\Helper::getByMessage($mes_id);
+		$attachments = \Kunena\Forum\Libraries\Attachment\Helper::getByMessage($mes_id);
 		$list        = [];
 
 		foreach ($attachments as $attach)
@@ -157,13 +165,13 @@ class KunenaControllerTopic extends Controller
 
 		if ($attach_id > 0)
 		{
-			$instance        = \Joomla\Component\Kunena\Libraries\Attachment\Helper::get($attach_id);
+			$instance        = \Kunena\Forum\Libraries\Attachment\Helper::get($attach_id);
 			$instance_userid = $instance->userid;
 		}
 		else
 		{
 			$attachs_id      = explode(',', $attachs_id);
-			$instances       = \Joomla\Component\Kunena\Libraries\Attachment\Helper::getById($attachs_id);
+			$instances       = \Kunena\Forum\Libraries\Attachment\Helper::getById($attachs_id);
 			$attachment      = $instances[] = array_pop($instances);
 			$instance_userid = $attachment->userid;
 		}
@@ -257,7 +265,7 @@ class KunenaControllerTopic extends Controller
 
 		$attach_id = $this->input->getInt('file_id', 0);
 		$success   = [];
-		$instance  = \Joomla\Component\Kunena\Libraries\Attachment\Helper::get($attach_id);
+		$instance  = \Kunena\Forum\Libraries\Attachment\Helper::get($attach_id);
 
 		if (Helper::getMyself()->userid == $instance->userid || Helper::getMyself()->isAdmin() || Helper::getMyself()->isModerator())
 		{
@@ -306,7 +314,7 @@ class KunenaControllerTopic extends Controller
 			throw new RuntimeException(Text::_('Bad Request'), 400);
 		}
 
-		$upload = KunenaUpload::getInstance();
+		$upload = Upload::getInstance();
 
 		// We are converting all exceptions into JSON.
 		try
@@ -322,13 +330,13 @@ class KunenaControllerTopic extends Controller
 
 			if ($mesid)
 			{
-				$message = \Joomla\Component\Kunena\Libraries\Forum\Message\Helper::get($mesid);
+				$message = \Kunena\Forum\Libraries\Forum\Message\Helper::get($mesid);
 				$message->tryAuthorise('attachment.create');
 				$category = $message->getCategory();
 			}
 			else
 			{
-				$category = \Joomla\Component\Kunena\Libraries\Forum\Category\Helper::get($catid);
+				$category = \Kunena\Forum\Libraries\Forum\Category\Helper::get($catid);
 
 				if ($category->id)
 				{
@@ -355,7 +363,7 @@ class KunenaControllerTopic extends Controller
 			];
 
 			// Upload!
-			$upload->addExtensions(\Joomla\Component\Kunena\Libraries\Attachment\Helper::getExtensions($category->id, $me->userid));
+			$upload->addExtensions(\Kunena\Forum\Libraries\Attachment\Helper::getExtensions($category->id, $me->userid));
 			$response = (object) $upload->ajaxUpload($options);
 
 			if (!empty($response->completed))
@@ -363,7 +371,7 @@ class KunenaControllerTopic extends Controller
 				// We have it all, lets create the attachment.
 				$uploadFile = $upload->getProtectedFile();
 				list($basename, $extension) = $upload->splitFilename();
-				$attachment = new KunenaAttachment;
+				$attachment = new Attachment;
 				$attachment->bind(
 					[
 						'mesid'         => 0,
@@ -491,7 +499,7 @@ class KunenaControllerTopic extends Controller
 		if (!$this->id)
 		{
 			// Create topic
-			$category = \Joomla\Component\Kunena\Libraries\Forum\Category\Helper::get($this->catid);
+			$category = \Kunena\Forum\Libraries\Forum\Category\Helper::get($this->catid);
 
 			try
 			{
@@ -510,7 +518,7 @@ class KunenaControllerTopic extends Controller
 		else
 		{
 			// Reply topic
-			$parent = \Joomla\Component\Kunena\Libraries\Forum\Message\Helper::get($this->id);
+			$parent = \Kunena\Forum\Libraries\Forum\Message\Helper::get($this->id);
 
 			try
 			{
@@ -767,9 +775,9 @@ class KunenaControllerTopic extends Controller
 
 		if ($this->me->isModerator($category) && $this->config->log_moderation)
 		{
-			KunenaLog::log(
-				KunenaLog::TYPE_ACTION,
-				$isNew ? KunenaLog::LOG_TOPIC_CREATE : KunenaLog::LOG_POST_CREATE,
+			Log::log(
+				Log::TYPE_ACTION,
+				$isNew ? Log::LOG_TOPIC_CREATE : Log::LOG_POST_CREATE,
 				['mesid' => $message->id, 'parent_id' => $this->id],
 				$category,
 				$topic
@@ -863,7 +871,7 @@ class KunenaControllerTopic extends Controller
 			$this->app->enqueueMessage(Text::_('COM_KUNENA_POST_SUCCESS_POSTED'));
 		}
 
-		$category = \Joomla\Component\Kunena\Libraries\Forum\Category\Helper::get($this->return);
+		$category = \Kunena\Forum\Libraries\Forum\Category\Helper::get($this->return);
 
 		if ($message->isAuthorised('read', null, false) && $this->id)
 		{
@@ -1000,7 +1008,7 @@ class KunenaControllerTopic extends Controller
 	{
 		$this->id = $this->app->input->getInt('mesid', 0);
 
-		$message = \Joomla\Component\Kunena\Libraries\Forum\Message\Helper::get($this->id);
+		$message = \Kunena\Forum\Libraries\Forum\Message\Helper::get($this->id);
 		$topic   = $message->getTopic();
 		$fields  = [
 			'name'              => $this->app->input->getString('authorname', $message->name),
@@ -1132,14 +1140,14 @@ class KunenaControllerTopic extends Controller
 
 				try
 				{
-					$message->publish(Forum::DELETED);
+					$message->publish(KunenaForum::DELETED);
 				}
 				catch (Exception $e)
 				{
 					$this->app->enqueueMessage($e->getMessage(), 'notice');
 				}
 
-				if ($message->publish(Forum::DELETED))
+				if ($message->publish(KunenaForum::DELETED))
 				{
 					$this->app->enqueueMessage(Text::_('COM_KUNENA_POST_SUCCESS_DELETE'));
 				}
@@ -1182,9 +1190,9 @@ class KunenaControllerTopic extends Controller
 
 		if ($this->config->log_moderation)
 		{
-			KunenaLog::log(
-				$isMine ? KunenaLog::TYPE_ACTION : KunenaLog::TYPE_MODERATION,
-				KunenaLog::LOG_POST_EDIT,
+			Log::log(
+				$isMine ? Log::TYPE_ACTION : Log::TYPE_MODERATION,
+				Log::LOG_POST_EDIT,
 				['mesid' => $message->id, 'reason' => $fields['modified_reason']],
 				$topic->getCategory(),
 				$topic,
@@ -1355,7 +1363,7 @@ class KunenaControllerTopic extends Controller
 			return;
 		}
 
-		$message = \Joomla\Component\Kunena\Libraries\Forum\Message\Helper::get($this->mesid);
+		$message = \Kunena\Forum\Libraries\Forum\Message\Helper::get($this->mesid);
 
 		if (!$message->isAuthorised($type))
 		{
@@ -1365,8 +1373,8 @@ class KunenaControllerTopic extends Controller
 			return;
 		}
 
-		$category            = \Joomla\Component\Kunena\Libraries\Forum\Category\Helper::get($this->catid);
-		$thankyou            = \Joomla\Component\Kunena\Libraries\Forum\Message\Thankyou\Helper::get($this->mesid);
+		$category            = \Kunena\Forum\Libraries\Forum\Category\Helper::get($this->catid);
+		$thankyou            = \Kunena\Forum\Libraries\Forum\Message\Thankyou\Helper::get($this->mesid);
 		$activityIntegration = KunenaFactory::getActivityIntegration();
 
 		if ($type == 'thankyou')
@@ -1387,9 +1395,9 @@ class KunenaControllerTopic extends Controller
 
 			if ($this->config->log_moderation)
 			{
-				KunenaLog::log(
-					KunenaLog::TYPE_ACTION,
-					KunenaLog::LOG_POST_THANKYOU,
+				Log::log(
+					Log::TYPE_ACTION,
+					Log::LOG_POST_THANKYOU,
 					['mesid' => $message->id],
 					$category,
 					$message->getTopic(),
@@ -1419,9 +1427,9 @@ class KunenaControllerTopic extends Controller
 
 			if ($this->config->log_moderation)
 			{
-				KunenaLog::log(
-					KunenaLog::TYPE_MODERATION,
-					KunenaLog::LOG_POST_UNTHANKYOU,
+				Log::log(
+					Log::TYPE_MODERATION,
+					Log::LOG_POST_UNTHANKYOU,
 					['mesid' => $message->id, 'userid' => $userid],
 					$category,
 					$message->getTopic(),
@@ -1467,7 +1475,7 @@ class KunenaControllerTopic extends Controller
 			return;
 		}
 
-		$topic = \Joomla\Component\Kunena\Libraries\Forum\Topic\Helper::get($this->id);
+		$topic = \Kunena\Forum\Libraries\Forum\Topic\Helper::get($this->id);
 
 		if ($topic->isAuthorised('read') && $topic->subscribe(1))
 		{
@@ -1503,7 +1511,7 @@ class KunenaControllerTopic extends Controller
 			return;
 		}
 
-		$topic = \Joomla\Component\Kunena\Libraries\Forum\Topic\Helper::get($this->id);
+		$topic = \Kunena\Forum\Libraries\Forum\Topic\Helper::get($this->id);
 
 		if ($topic->isAuthorised('read') && $topic->subscribe(0))
 		{
@@ -1539,7 +1547,7 @@ class KunenaControllerTopic extends Controller
 			return;
 		}
 
-		$topic = \Joomla\Component\Kunena\Libraries\Forum\Topic\Helper::get($this->id);
+		$topic = \Kunena\Forum\Libraries\Forum\Topic\Helper::get($this->id);
 
 		if ($topic->isAuthorised('read') && $topic->favorite(1))
 		{
@@ -1575,7 +1583,7 @@ class KunenaControllerTopic extends Controller
 			return;
 		}
 
-		$topic = \Joomla\Component\Kunena\Libraries\Forum\Topic\Helper::get($this->id);
+		$topic = \Kunena\Forum\Libraries\Forum\Topic\Helper::get($this->id);
 
 		if ($topic->isAuthorised('read') && $topic->favorite(0))
 		{
@@ -1611,7 +1619,7 @@ class KunenaControllerTopic extends Controller
 			return;
 		}
 
-		$topic = \Joomla\Component\Kunena\Libraries\Forum\Topic\Helper::get($this->id);
+		$topic = \Kunena\Forum\Libraries\Forum\Topic\Helper::get($this->id);
 
 		if (!$topic->isAuthorised('sticky'))
 		{
@@ -1623,9 +1631,9 @@ class KunenaControllerTopic extends Controller
 
 			if ($this->config->log_moderation)
 			{
-				KunenaLog::log(
-					KunenaLog::TYPE_MODERATION,
-					KunenaLog::LOG_TOPIC_STICKY,
+				Log::log(
+					Log::TYPE_MODERATION,
+					Log::LOG_TOPIC_STICKY,
 					[],
 					$topic->getCategory(),
 					$topic
@@ -1662,7 +1670,7 @@ class KunenaControllerTopic extends Controller
 			return;
 		}
 
-		$topic = \Joomla\Component\Kunena\Libraries\Forum\Topic\Helper::get($this->id);
+		$topic = \Kunena\Forum\Libraries\Forum\Topic\Helper::get($this->id);
 
 		if (!$topic->isAuthorised('sticky'))
 		{
@@ -1674,9 +1682,9 @@ class KunenaControllerTopic extends Controller
 
 			if ($this->config->log_moderation)
 			{
-				KunenaLog::log(
-					KunenaLog::TYPE_MODERATION,
-					KunenaLog::LOG_TOPIC_UNSTICKY,
+				Log::log(
+					Log::TYPE_MODERATION,
+					Log::LOG_TOPIC_UNSTICKY,
 					[],
 					$topic->getCategory(),
 					$topic
@@ -1713,7 +1721,7 @@ class KunenaControllerTopic extends Controller
 			return;
 		}
 
-		$topic = \Joomla\Component\Kunena\Libraries\Forum\Topic\Helper::get($this->id);
+		$topic = \Kunena\Forum\Libraries\Forum\Topic\Helper::get($this->id);
 
 		if (!$topic->isAuthorised('lock'))
 		{
@@ -1725,9 +1733,9 @@ class KunenaControllerTopic extends Controller
 
 			if ($this->config->log_moderation)
 			{
-				KunenaLog::log(
-					KunenaLog::TYPE_MODERATION,
-					KunenaLog::LOG_TOPIC_LOCK,
+				Log::log(
+					Log::TYPE_MODERATION,
+					Log::LOG_TOPIC_LOCK,
 					[],
 					$topic->getCategory(),
 					$topic
@@ -1764,7 +1772,7 @@ class KunenaControllerTopic extends Controller
 			return;
 		}
 
-		$topic = \Joomla\Component\Kunena\Libraries\Forum\Topic\Helper::get($this->id);
+		$topic = \Kunena\Forum\Libraries\Forum\Topic\Helper::get($this->id);
 
 		if (!$topic->isAuthorised('lock'))
 		{
@@ -1776,9 +1784,9 @@ class KunenaControllerTopic extends Controller
 
 			if ($this->config->log_moderation)
 			{
-				KunenaLog::log(
-					KunenaLog::TYPE_MODERATION,
-					KunenaLog::LOG_TOPIC_UNLOCK,
+				Log::log(
+					Log::TYPE_MODERATION,
+					Log::LOG_TOPIC_UNLOCK,
 					[],
 					$topic->getCategory(),
 					$topic
@@ -1818,18 +1826,18 @@ class KunenaControllerTopic extends Controller
 		if ($this->mesid)
 		{
 			// Delete message
-			$message = $target = \Joomla\Component\Kunena\Libraries\Forum\Message\Helper::get($this->mesid);
+			$message = $target = \Kunena\Forum\Libraries\Forum\Message\Helper::get($this->mesid);
 			$topic   = $message->getTopic();
-			$log     = KunenaLog::LOG_POST_DELETE;
-			$hold    = Forum::DELETED;
+			$log     = Log::LOG_POST_DELETE;
+			$hold    = KunenaForum::DELETED;
 			$msg     = Text::_('COM_KUNENA_POST_SUCCESS_DELETE');
 		}
 		else
 		{
 			// Delete topic
-			$topic = $target = \Joomla\Component\Kunena\Libraries\Forum\Topic\Helper::get($this->id);
-			$log   = KunenaLog::LOG_TOPIC_DELETE;
-			$hold  = Forum::TOPIC_DELETED;
+			$topic = $target = \Kunena\Forum\Libraries\Forum\Topic\Helper::get($this->id);
+			$log   = Log::LOG_TOPIC_DELETE;
+			$hold  = KunenaForum::TOPIC_DELETED;
 			$msg   = Text::_('COM_KUNENA_TOPIC_SUCCESS_DELETE');
 		}
 
@@ -1839,8 +1847,8 @@ class KunenaControllerTopic extends Controller
 		{
 			if ($this->config->log_moderation)
 			{
-				KunenaLog::log(
-					$this->me->isModerator($category) ? KunenaLog::TYPE_MODERATION : KunenaLog::TYPE_ACTION,
+				Log::log(
+					$this->me->isModerator($category) ? Log::TYPE_MODERATION : Log::TYPE_ACTION,
 					$log,
 					isset($message) ? ['mesid' => $message->id] : [],
 					$category,
@@ -1857,10 +1865,10 @@ class KunenaControllerTopic extends Controller
 
 		if (!$target->isAuthorised('read'))
 		{
-			if ($target instanceof KunenaForumMessage && $target->getTopic()->isAuthorised('read'))
+			if ($target instanceof Message && $target->getTopic()->isAuthorised('read'))
 			{
 				$target = $target->getTopic();
-				$target = \Joomla\Component\Kunena\Libraries\Forum\Message\Helper::get($target->last_post_id);
+				$target = \Kunena\Forum\Libraries\Forum\Message\Helper::get($target->last_post_id);
 			}
 			else
 			{
@@ -1892,27 +1900,27 @@ class KunenaControllerTopic extends Controller
 		if ($this->mesid)
 		{
 			// Undelete message
-			$message = $target = \Joomla\Component\Kunena\Libraries\Forum\Message\Helper::get($this->mesid);
+			$message = $target = \Kunena\Forum\Libraries\Forum\Message\Helper::get($this->mesid);
 			$topic   = $message->getTopic();
-			$log     = KunenaLog::LOG_POST_UNDELETE;
+			$log     = Log::LOG_POST_UNDELETE;
 			$msg     = Text::_('COM_KUNENA_POST_SUCCESS_UNDELETE');
 		}
 		else
 		{
 			// Undelete topic
-			$topic = $target = \Joomla\Component\Kunena\Libraries\Forum\Topic\Helper::get($this->id);
-			$log   = KunenaLog::LOG_TOPIC_UNDELETE;
+			$topic = $target = \Kunena\Forum\Libraries\Forum\Topic\Helper::get($this->id);
+			$log   = Log::LOG_TOPIC_UNDELETE;
 			$msg   = Text::_('COM_KUNENA_TOPIC_SUCCESS_UNDELETE');
 		}
 
 		$category = $topic->getCategory();
 
-		if ($target->isAuthorised('undelete') && $target->publish(Forum::PUBLISHED))
+		if ($target->isAuthorised('undelete') && $target->publish(KunenaForum::PUBLISHED))
 		{
 			if ($this->config->log_moderation)
 			{
-				KunenaLog::log(
-					$this->me->isModerator($category) ? KunenaLog::TYPE_MODERATION : KunenaLog::TYPE_ACTION,
+				Log::log(
+					$this->me->isModerator($category) ? Log::TYPE_MODERATION : Log::TYPE_ACTION,
 					$log,
 					isset($message) ? ['mesid' => $message->id] : [],
 					$category,
@@ -1951,9 +1959,9 @@ class KunenaControllerTopic extends Controller
 		if ($this->mesid)
 		{
 			// Delete message
-			$message = $target = \Joomla\Component\Kunena\Libraries\Forum\Message\Helper::get($this->mesid);
-			$log     = KunenaLog::LOG_POST_DESTROY;
-			$topic   = \Joomla\Component\Kunena\Libraries\Forum\Topic\Helper::get($target->getTopic());
+			$message = $target = \Kunena\Forum\Libraries\Forum\Message\Helper::get($this->mesid);
+			$log     = Log::LOG_POST_DESTROY;
+			$topic   = \Kunena\Forum\Libraries\Forum\Topic\Helper::get($target->getTopic());
 
 			if ($topic->attachments > 0)
 			{
@@ -1964,8 +1972,8 @@ class KunenaControllerTopic extends Controller
 		else
 		{
 			// Delete topic
-			$topic = $target = \Joomla\Component\Kunena\Libraries\Forum\Topic\Helper::get($this->id);
-			$log   = KunenaLog::LOG_TOPIC_DESTROY;
+			$topic = $target = \Kunena\Forum\Libraries\Forum\Topic\Helper::get($this->id);
+			$log   = Log::LOG_TOPIC_DESTROY;
 		}
 
 		$category = $topic->getCategory();
@@ -1974,8 +1982,8 @@ class KunenaControllerTopic extends Controller
 		{
 			if ($this->config->log_moderation)
 			{
-				KunenaLog::log(
-					$this->me->isModerator($category) ? KunenaLog::TYPE_MODERATION : KunenaLog::TYPE_ACTION,
+				Log::log(
+					$this->me->isModerator($category) ? Log::TYPE_MODERATION : Log::TYPE_ACTION,
 					$log,
 					isset($message) ? ['mesid' => $message->id] : [],
 					$category,
@@ -2029,27 +2037,27 @@ class KunenaControllerTopic extends Controller
 		if ($this->mesid)
 		{
 			// Approve message
-			$target  = \Joomla\Component\Kunena\Libraries\Forum\Message\Helper::get($this->mesid);
+			$target  = \Kunena\Forum\Libraries\Forum\Message\Helper::get($this->mesid);
 			$message = $target;
-			$log     = KunenaLog::LOG_POST_APPROVE;
+			$log     = Log::LOG_POST_APPROVE;
 		}
 		else
 		{
 			// Approve topic
-			$target  = \Joomla\Component\Kunena\Libraries\Forum\Topic\Helper::get($this->id);
-			$message = \Joomla\Component\Kunena\Libraries\Forum\Message\Helper::get($target->first_post_id);
-			$log     = KunenaLog::LOG_TOPIC_APPROVE;
+			$target  = \Kunena\Forum\Libraries\Forum\Topic\Helper::get($this->id);
+			$message = \Kunena\Forum\Libraries\Forum\Message\Helper::get($target->first_post_id);
+			$log     = Log::LOG_TOPIC_APPROVE;
 		}
 
 		$topic    = $message->getTopic();
 		$category = $topic->getCategory();
 
-		if ($target->isAuthorised('approve') && $target->publish(Forum::PUBLISHED))
+		if ($target->isAuthorised('approve') && $target->publish(KunenaForum::PUBLISHED))
 		{
 			if ($this->config->log_moderation)
 			{
-				KunenaLog::log(
-					$this->me->isModerator($category) ? KunenaLog::TYPE_MODERATION : KunenaLog::TYPE_ACTION,
+				Log::log(
+					$this->me->isModerator($category) ? Log::TYPE_MODERATION : Log::TYPE_ACTION,
 					$log,
 					['mesid' => $message->id],
 					$category,
@@ -2108,22 +2116,22 @@ class KunenaControllerTopic extends Controller
 
 		if ($messageId)
 		{
-			$message = $object = \Joomla\Component\Kunena\Libraries\Forum\Message\Helper::get($messageId);
+			$message = $object = \Kunena\Forum\Libraries\Forum\Message\Helper::get($messageId);
 			$topic   = $message->getTopic();
 		}
 		else
 		{
-			$topic   = $object = \Joomla\Component\Kunena\Libraries\Forum\Topic\Helper::get($topicId);
-			$message = \Joomla\Component\Kunena\Libraries\Forum\Message\Helper::get($topic->first_post_id);
+			$topic   = $object = \Kunena\Forum\Libraries\Forum\Topic\Helper::get($topicId);
+			$message = \Kunena\Forum\Libraries\Forum\Message\Helper::get($topic->first_post_id);
 		}
 
 		if ($targetTopic)
 		{
-			$target = \Joomla\Component\Kunena\Libraries\Forum\Topic\Helper::get($targetTopic);
+			$target = \Kunena\Forum\Libraries\Forum\Topic\Helper::get($targetTopic);
 		}
 		else
 		{
-			$target = \Joomla\Component\Kunena\Libraries\Forum\Category\Helper::get($targetCategory);
+			$target = \Kunena\Forum\Libraries\Forum\Category\Helper::get($targetCategory);
 		}
 
 		$error        = null;
@@ -2145,7 +2153,7 @@ class KunenaControllerTopic extends Controller
 			$topic_emoticon = $this->app->input->getInt('topic_emoticon', null);
 			$keep_poll      = $this->app->input->getInt('keep_poll', false);
 
-			if ($object instanceof KunenaForumMessage)
+			if ($object instanceof Message)
 			{
 				$mode = $this->app->input->getWord('mode', 'selected');
 
@@ -2174,9 +2182,9 @@ class KunenaControllerTopic extends Controller
 
 			if ($this->config->log_moderation)
 			{
-				KunenaLog::log(
-					KunenaLog::TYPE_MODERATION,
-					$messageId ? KunenaLog::LOG_POST_MODERATE : KunenaLog::LOG_TOPIC_MODERATE,
+				Log::log(
+					Log::TYPE_MODERATION,
+					$messageId ? Log::LOG_POST_MODERATE : Log::LOG_TOPIC_MODERATE,
 					[
 						'move'    => ['id' => $topicId, 'mesid' => $messageId, 'mode' => isset($mode) ? $mode : 'topic'],
 						'target'  => ['category_id' => $targetCategory, 'topic_id' => $targetTopic],
@@ -2256,15 +2264,15 @@ class KunenaControllerTopic extends Controller
 		// Get target object for the report
 		if ($this->mesid)
 		{
-			$message = $target = \Joomla\Component\Kunena\Libraries\Forum\Message\Helper::get($this->mesid);
+			$message = $target = \Kunena\Forum\Libraries\Forum\Message\Helper::get($this->mesid);
 			$topic   = $target->getTopic();
-			$log     = KunenaLog::LOG_POST_REPORT;
+			$log     = Log::LOG_POST_REPORT;
 		}
 		else
 		{
-			$topic   = $target = \Joomla\Component\Kunena\Libraries\Forum\Topic\Helper::get($this->id);
-			$message = \Joomla\Component\Kunena\Libraries\Forum\Message\Helper::get($topic->first_post_id);
-			$log     = KunenaLog::LOG_TOPIC_REPORT;
+			$topic   = $target = \Kunena\Forum\Libraries\Forum\Topic\Helper::get($this->id);
+			$message = \Kunena\Forum\Libraries\Forum\Message\Helper::get($topic->first_post_id);
+			$log     = Log::LOG_TOPIC_REPORT;
 		}
 
 		if (!$target->isAuthorised('read'))
@@ -2288,8 +2296,8 @@ class KunenaControllerTopic extends Controller
 
 		if ($this->config->log_moderation)
 		{
-			KunenaLog::log(
-				KunenaLog::TYPE_REPORT,
+			Log::log(
+				Log::TYPE_REPORT,
 				$log,
 				[
 					'mesid'   => $message->id,
@@ -2340,7 +2348,7 @@ class KunenaControllerTopic extends Controller
 				$mail->addReplyTo($this->me->email, $this->me->username);
 
 				// Render the email.
-				$layout = KunenaLayout::factory('Email/Report')->debug(false)
+				$layout = Layout::factory('Email/Report')->debug(false)
 					->set('mail', $mail)
 					->set('message', $message)
 					->set('me', $this->me)
@@ -2371,7 +2379,7 @@ class KunenaControllerTopic extends Controller
 					}
 				}
 
-				KunenaEmail::send($mail, $receivers);
+				Email::send($mail, $receivers);
 
 				$this->app->enqueueMessage(Text::_('COM_KUNENA_REPORT_SUCCESS'));
 			}
@@ -2406,7 +2414,7 @@ class KunenaControllerTopic extends Controller
 		$id    = $this->app->input->getInt('id', 0);
 		$catid = $this->app->input->getInt('catid', 0);
 
-		$topic = \Joomla\Component\Kunena\Libraries\Forum\Topic\Helper::get($id);
+		$topic = \Kunena\Forum\Libraries\Forum\Topic\Helper::get($id);
 		$poll  = $topic->getPoll();
 
 		if (!$topic->isAuthorised('poll.vote'))
@@ -2463,14 +2471,14 @@ class KunenaControllerTopic extends Controller
 			return;
 		}
 
-		$topic = \Joomla\Component\Kunena\Libraries\Forum\Topic\Helper::get($this->id);
+		$topic = \Kunena\Forum\Libraries\Forum\Topic\Helper::get($this->id);
 		$topic->resetvotes();
 
 		if ($this->config->log_moderation)
 		{
-			KunenaLog::log(
-				KunenaLog::TYPE_MODERATION,
-				KunenaLog::LOG_POLL_MODERATE,
+			Log::log(
+				Log::TYPE_MODERATION,
+				Log::LOG_POLL_MODERATE,
 				[],
 				$topic->getCategory(),
 				$topic,
@@ -2579,7 +2587,7 @@ class KunenaControllerTopic extends Controller
 	/**
 	 * Save private data from message
 	 *
-	 * @param   KunenaForumMessage  $message message
+	 * @param   Message  $message message
 	 *
 	 * @return  void
 	 *
@@ -2587,7 +2595,7 @@ class KunenaControllerTopic extends Controller
 	 *
 	 * @throws  Exception
 	 */
-	protected function postPrivate(KunenaForumMessage $message)
+	protected function postPrivate(Message $message)
 	{
 		if (!$this->me->userid)
 		{
@@ -2606,7 +2614,7 @@ class KunenaControllerTopic extends Controller
 		$parent             = $message->getParent();
 		$author             = $message->getAuthor();
 		$pAuthor            = $parent->getAuthor();
-		$private            = new KunenaPrivateMessage;
+		$private            = new \Kunena\Forum\Libraries\KunenaPrivate\Message;
 		$private->author_id = $author->userid;
 		$private->subject   = $message->subject;
 		$private->body      = $body;
@@ -2640,9 +2648,9 @@ class KunenaControllerTopic extends Controller
 			Error::displayDatabaseError($e);
 		}
 
-		KunenaLog::log(
-			KunenaLog::TYPE_ACTION,
-			KunenaLog::LOG_PRIVATE_POST_CREATE,
+		Log::log(
+			Log::TYPE_ACTION,
+			Log::LOG_PRIVATE_POST_CREATE,
 			['id' => $private->id, 'mesid' => $message->id],
 			$message->getCategory(),
 			$message->getTopic(),
@@ -2653,7 +2661,7 @@ class KunenaControllerTopic extends Controller
 	/**
 	 * Load private data information when edit message
 	 *
-	 * @param   KunenaForumMessage  $message message
+	 * @param   Message  $message message
 	 *
 	 * @return  void
 	 *
@@ -2661,7 +2669,7 @@ class KunenaControllerTopic extends Controller
 	 *
 	 * @throws  Exception
 	 */
-	protected function editPrivate(KunenaForumMessage $message)
+	protected function editPrivate(Message $message)
 	{
 		if (!$this->me->userid)
 		{
@@ -2670,7 +2678,7 @@ class KunenaControllerTopic extends Controller
 
 		$body      = (string) $this->input->getRaw('private');
 		$attachIds = $this->input->get('attachment_private', [], 'array');
-		$finder    = new KunenaPrivateMessageFinder;
+		$finder    = new Finder;
 		$finder
 			->filterByMessage($message)
 			->where('parent_id', '=', 0)

@@ -10,18 +10,18 @@
  * See COPYRIGHT.php for copyright notices and details.
  */
 
-namespace Joomla\Component\Kunena\Plugin\Kunena\Easysocial;
+namespace Kunena\Forum\Plugin\Kunena\Easysocial;
 
 defined('_JEXEC') or die('Unauthorized Access');
 
 use Exception;
-use Joomla\Component\Kunena\Libraries\Access;
-use Joomla\Component\Kunena\Libraries\Integration\Activity;
-use Joomla\Component\Kunena\Libraries\KunenaFactory;
-use Joomla\Component\Kunena\Libraries\User\Helper;
-use Joomla\String\StringHelper;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\Uri\Uri;
+use Kunena\Forum\Libraries\Access;
+use Kunena\Forum\Libraries\Integration\Activity;
+use Kunena\Forum\Libraries\KunenaFactory;
+use Kunena\Forum\Libraries\User\Helper;
+use Joomla\String\StringHelper;
 use function defined;
 
 /**

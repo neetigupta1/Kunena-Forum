@@ -10,7 +10,7 @@
  * @link            https://www.kunena.org
 **/
 
-namespace Joomla\Component\Kunena\Site;
+namespace Kunena\Forum\Site;
 
 defined('_JEXEC') or die();
 
@@ -68,11 +68,11 @@ $view    = Factory::getApplication()->input->getWord('view');
 		->set('display', true); ?>
 </div>
 
-<form action="<?php echo \Joomla\Component\Kunena\Libraries\Route\KunenaRoute::_('index.php?option=com_kunena&view=topics'); ?>" method="post"
+<form action="<?php echo \Kunena\Forum\Libraries\Route\KunenaRoute::_('index.php?option=com_kunena&view=topics'); ?>" method="post"
       name="ktopicsform" id="ktopicsform">
 	<?php echo HTMLHelper::_('form.token'); ?>
 
-	<table class="table<?php echo \Joomla\Component\Kunena\Libraries\Template\Template::getInstance()->borderless(); ?>">
+	<table class="table<?php echo \Kunena\Forum\Libraries\Template\Template::getInstance()->borderless(); ?>">
 		<thead>
 		<?php if (empty($this->messages)): ?>
 			<tr>
@@ -82,7 +82,7 @@ $view    = Factory::getApplication()->input->getWord('view');
 			<th scope="col" class="center hidden-xs-down">
 				<a id="forumtop"> </a>
 				<a href="#forumbottom" rel="nofollow">
-					<?php echo KunenaIcons::arrowdown(); ?>
+					<?php echo \Kunena\Forum\Libraries\Icons\Icons::arrowdown(); ?>
 				</a>
 			</th>
 			<th scope="col" class="hidden-xs-down"><?php echo Text::_('COM_KUNENA_GEN_SUBJECT'); ?></th>
@@ -103,7 +103,7 @@ $view    = Factory::getApplication()->input->getWord('view');
 					<a id="forumbottom"> </a>
 					<a href="#forumtop" rel="nofollow">
 						<span class="dropdown-divider"></span>
-						<?php echo KunenaIcons::arrowup(); ?>
+						<?php echo \Kunena\Forum\Libraries\Icons\Icons::arrowup(); ?>
 					</a>
 				</th>
 				<?php if (!empty($this->actions)) : ?>

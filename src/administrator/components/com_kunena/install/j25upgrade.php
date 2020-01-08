@@ -9,7 +9,7 @@
  * @link           https://www.kunena.org
  **/
 
-namespace Joomla\Component\Kunena\Administrator;
+namespace Kunena\Forum\Administrator\Install;
 
 defined('_JEXEC') or die();
 
@@ -100,7 +100,7 @@ class jUpgradeComponentKunena extends jUpgradeExtensions
 	 *
 	 * @since   Kunena 1.6.4
 	 *
-	 * @throws  Exception
+	 * @throws  \Exception
 	 */
 	protected function copyTable_kunena_categories($table)
 	{
@@ -168,7 +168,7 @@ class jUpgradeComponentKunena extends jUpgradeExtensions
 	 *
 	 * @since   Kunena 3.0.4
 	 *
-	 * @throws  Exception
+	 * @throws  \Exception
 	 */
 	protected function convertParamsHook(&$object)
 	{
@@ -225,7 +225,7 @@ class jUpgradeComponentKunena extends jUpgradeExtensions
 	 *
 	 * @since   Kunena 1.6.4
 	 *
-	 * @throws  Exception
+	 * @throws  \Exception
 	 */
 	protected function migrateExtensionCustom()
 	{

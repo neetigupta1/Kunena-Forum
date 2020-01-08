@@ -10,7 +10,7 @@
  * @link            https://www.kunena.org
  **/
 
-namespace Joomla\Component\Kunena\Site\Models;
+namespace Kunena\Forum\Site\Models;
 
 defined('_JEXEC') or die();
 
@@ -18,16 +18,16 @@ use Exception;
 use Joomla\CMS\Factory;
 use Joomla\CMS\HTML\HTMLHelper;
 use Joomla\CMS\Language\Text;
-use Joomla\Component\Kunena\Administrator\Models\KunenaAdminModelCategories;
-use Joomla\Component\Kunena\Libraries\Access;
-use Joomla\Component\Kunena\Libraries\Error;
-use Joomla\Component\Kunena\Libraries\Forum\Message\Helper;
-use Joomla\Component\Kunena\Libraries\Forum\Topic\Topic;
-use Joomla\Component\Kunena\Libraries\KunenaFactory;
+use Kunena\Forum\Administrator\Models\KunenaAdminModelCategories;
+use Kunena\Forum\Libraries\Access;
+use Kunena\Forum\Libraries\Error;
+use Kunena\Forum\Libraries\Forum;
+use Kunena\Forum\Libraries\Forum\Category;
+use Kunena\Forum\Libraries\Forum\Message\Helper;
+use Kunena\Forum\Libraries\Forum\Topic\Topic;
+use Kunena\Forum\Libraries\KunenaFactory;
+use Kunena\Forum\Libraries\User;
 use Joomla\Database\Exception\ExecutionFailureException;
-use Joomla\Component\Kunena\Libraries\Forum\Category;
-use Joomla\Component\Kunena\Libraries\Forum;
-use Joomla\Component\Kunena\Libraries\User;
 use function defined;
 
 require_once KPATH_ADMIN . '/models/categories.php';
@@ -171,7 +171,7 @@ class KunenaModelCategory extends KunenaAdminModelCategories
 	}
 
 	/**
-	 * @return  array|boolean|Category[]
+	 * @return  array|boolean|Category\Category[]
 	 *
 	 * @since   Kunena 6.0
 	 *
@@ -338,7 +338,7 @@ class KunenaModelCategory extends KunenaAdminModelCategories
 	}
 
 	/**
-	 * @return  Category
+	 * @return  Category\Category
 	 *
 	 * @since   Kunena 6.0
 	 *

@@ -10,16 +10,16 @@
  * @link            https://www.kunena.org
  **/
 
-namespace Joomla\Component\Kunena\Plugin\Kunena\Comprofiler;
+namespace Kunena\Forum\Plugin\Kunena\Comprofiler;
 
 defined('_JEXEC') or die();
 
 use Exception;
 use Joomla\CMS\HTML\HTMLHelper;
 use Joomla\CMS\Language\Text;
-use Joomla\Component\Kunena\Libraries\Database\KunenaDatabaseObject;
-use Joomla\Component\Kunena\Libraries\Forum\Category\Category;
-use Joomla\Component\Kunena\Libraries\Tree;
+use Kunena\Forum\Libraries\Database\KunenaDatabaseObject;
+use Kunena\Forum\Libraries\Forum\Category\Category;
+use Kunena\Forum\Libraries\Tree;
 use function defined;
 
 require_once dirname(__FILE__) . '/integration.php';
@@ -273,7 +273,7 @@ class KunenaAccessComprofiler
 	/**
 	 * Authorise list of categories.
 	 *
-	 * Function accepts array of id indexed KunenaForumCategory objects and removes unauthorised
+	 * Function accepts array of id indexed \Kunena\Forum\Libraries\Forum\Category\Category objects and removes unauthorised
 	 * categories from the list.
 	 *
 	 * Results for the current user are saved into session.

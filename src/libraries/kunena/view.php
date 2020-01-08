@@ -9,11 +9,10 @@
  * @link           https://www.kunena.org
  **/
 
-namespace Joomla\Component\Kunena\Libraries;
+namespace Kunena\Forum\Libraries;
 
 defined('_JEXEC') or die();
 
-use ComponentKunenaControllerSearchFormDisplay;
 use Exception;
 use Joomla\CMS\Application\CMSApplication;
 use Joomla\CMS\Document\Document;
@@ -21,6 +20,14 @@ use Joomla\CMS\Factory;
 use Joomla\CMS\HTML\HTMLHelper;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\MVC\View\HtmlView;
+use Kunena\Forum\Libraries\Forum\Category\Category;
+use Kunena\Forum\Libraries\Forum\Message\Message;
+use Kunena\Forum\Libraries\Forum\Topic\Topic;
+use Kunena\Forum\Libraries\Html\Parser;
+use Kunena\Forum\Libraries\Layout\Layout;
+use Kunena\Forum\Libraries\Path\KunenaPath;
+use Kunena\Forum\Libraries\User\Helper;
+use Kunena\Forum\Site\Controllers\KunenaControllerSearch;
 use LogicException;
 use function defined;
 
@@ -44,7 +51,7 @@ class View extends HtmlView
 	public $app = null;
 
 	/**
-	 * @var     KunenaUser|null
+	 * @var     \Kunena\Forum\Libraries\User\KunenaUser|null
 	 * @since   Kunena 6.0
 	 */
 	public $me = null;
@@ -90,18 +97,18 @@ class View extends HtmlView
 	 *
 	 * @since   Kunena 6.0
 	 *
-	 * @throws  Exception
+	 * @throws  \Exception
 	 */
 	public function __construct($config = [])
 	{
 		$name           = isset($config['name']) ? $config['name'] : $this->getName();
 		$this->document = Factory::getApplication()->getDocument();
 		$this->document->setBase('');
-		$this->profiler  = \Joomla\Component\Kunena\Libraries\KunenaProfiler::instance('Kunena');
+		$this->profiler  = KunenaProfiler::instance('Kunena');
 		$this->app       = Factory::getApplication();
-		$this->me        = \Joomla\Component\Kunena\Libraries\User\Helper::getMyself();
-		$this->config    = \Joomla\Component\Kunena\Libraries\KunenaFactory::getConfig();
-		$this->ktemplate = \Joomla\Component\Kunena\Libraries\KunenaFactory::getTemplate();
+		$this->me        = Helper::getMyself();
+		$this->config    = KunenaFactory::getConfig();
+		$this->ktemplate = KunenaFactory::getTemplate();
 
 		// Set the default template search path
 		if ($this->app->isClient('site') && !isset($config['template_path']))
@@ -111,7 +118,7 @@ class View extends HtmlView
 
 		if ($this->app->isClient('administrator'))
 		{
-			$templateAdmin = \Joomla\Component\Kunena\Libraries\KunenaFactory::getAdminTemplate();
+			$templateAdmin = KunenaFactory::getAdminTemplate();
 			$templateAdmin->initialize();
 
 			$config['template_path'] = $templateAdmin->getTemplatePaths($name);
@@ -139,7 +146,7 @@ class View extends HtmlView
 	 *
 	 * @since   Kunena 6.0
 	 *
-	 * @throws  Exception
+	 * @throws  \Exception
 	 */
 	public function displayAll()
 	{
@@ -159,7 +166,7 @@ class View extends HtmlView
 	 *
 	 * @since   Kunena 6.0
 	 *
-	 * @throws  Exception
+	 * @throws  \Exception
 	 */
 	public function displayLayout($layout = null, $tpl = null)
 	{
@@ -248,7 +255,7 @@ class View extends HtmlView
 	 *
 	 * @since   Kunena 6.0
 	 *
-	 * @throws  Exception
+	 * @throws  \Exception
 	 */
 	public function displayError($messages = [], $code = 404)
 	{
@@ -299,7 +306,7 @@ class View extends HtmlView
 	 *
 	 * @since   Kunena 6.0
 	 *
-	 * @throws  Exception
+	 * @throws  \Exception
 	 */
 	public function setTitle($title)
 	{
@@ -330,7 +337,7 @@ class View extends HtmlView
 			}
 			else
 			{
-				$title = $title . ' - ' . \Joomla\Component\Kunena\Libraries\KunenaFactory::getConfig()->board_title;
+				$title = $title . ' - ' . KunenaFactory::getConfig()->board_title;
 			}
 
 			$this->document->setTitle($title);
@@ -344,7 +351,7 @@ class View extends HtmlView
 	 *
 	 * @since   Kunena 6.0
 	 *
-	 * @throws  Exception
+	 * @throws  \Exception
 	 */
 	public function displayNoAccess($errors = [])
 	{
@@ -364,7 +371,7 @@ class View extends HtmlView
 	 *
 	 * @since   Kunena 6.0
 	 *
-	 * @throws  Exception
+	 * @throws  \Exception
 	 */
 	public function displayModulePosition($position)
 	{
@@ -378,7 +385,7 @@ class View extends HtmlView
 	 *
 	 * @since   Kunena 6.0
 	 *
-	 * @throws  Exception
+	 * @throws  \Exception
 	 */
 	public function getModulePosition($position)
 	{
@@ -404,7 +411,7 @@ class View extends HtmlView
 	 *
 	 * @since   Kunena 6.0
 	 *
-	 * @throws  Exception
+	 * @throws  \Exception
 	 */
 	public function isModulePosition($position)
 	{
@@ -422,11 +429,11 @@ class View extends HtmlView
 	 *
 	 * @since   Kunena 6.0
 	 *
-	 * @throws  Exception
+	 * @throws  \Exception
 	 */
 	public function parse($text, $len = 0, $parent)
 	{
-		if ($this instanceof ComponentKunenaControllerSearchFormDisplay)
+		if ($this instanceof KunenaControllerSearch)
 		{
 			$parent_object = $parent;
 		}
@@ -435,7 +442,7 @@ class View extends HtmlView
 			$parent_object = $this;
 		}
 
-		return \Joomla\Component\Kunena\Libraries\Html\Parser::parseBBCode($text, $parent_object, $len);
+		return Parser::parseBBCode($text, $parent_object, $len);
 	}
 
 	/**
@@ -449,7 +456,7 @@ class View extends HtmlView
 	 *
 	 * @since   Kunena 6.0
 	 *
-	 * @throws  Exception
+	 * @throws  \Exception
 	 * @throws  LogicException
 	 */
 	public function render($layout, $tpl, array $hmvcParams = [])
@@ -483,7 +490,7 @@ class View extends HtmlView
 		}
 
 		// Support new layouts.
-		$hmvc = KunenaLayout::factory($layout);
+		$hmvc = Layout::factory($layout);
 
 		if ($hmvc->getPath())
 		{
@@ -515,7 +522,7 @@ class View extends HtmlView
 	 *
 	 * @since   Kunena 6.0
 	 *
-	 * @throws  Exception
+	 * @throws  \Exception
 	 */
 	public function loadTemplateFile($tpl = null, $hmvcParams = null)
 	{
@@ -595,18 +602,18 @@ class View extends HtmlView
 	}
 
 	/**
-	 * @param  \Joomla\Component\Kunena\Libraries\Forum\Category\Category  $category  category
-	 * @param   null                 $content   content
-	 * @param   null                 $title     title
-	 * @param   null                 $class     class
+	 * @param   Category  $category  category
+	 * @param   null      $content   content
+	 * @param   null      $title     title
+	 * @param   null      $class     class
 	 *
 	 * @return  mixed
 	 *
 	 * @since   Kunena 6.0
 	 *
-	 * @throws  Exception
+	 * @throws  \Exception
 	 */
-	public function getCategoryLink(KunenaForumCategory $category, $content = null, $title = null, $class = null)
+	public function getCategoryLink(Category $category, $content = null, $title = null, $class = null)
 	{
 		if (!$content)
 		{
@@ -622,34 +629,34 @@ class View extends HtmlView
 	}
 
 	/**
-	 * @param   KunenaForumTopic          $topic     topic
-	 * @param   null                      $action    action
-	 * @param   null                      $content   content
-	 * @param   null                      $title     title
-	 * @param   null                      $class     class
-	 * @param   KunenaForumCategory|null  $category  category
+	 * @param   Topic          $topic     topic
+	 * @param   null           $action    action
+	 * @param   null           $content   content
+	 * @param   null           $title     title
+	 * @param   null           $class     class
+	 * @param   Category|null  $category  category
 	 *
 	 * @return  mixed
 	 *
 	 * @since   Kunena 6.0
 	 *
-	 * @throws  Exception
+	 * @throws  \Exception
 	 * @throws  null
 	 */
-	public function getTopicLink(KunenaForumTopic $topic, $action = null, $content = null, $title = null, $class = null, KunenaForumCategory $category = null)
+	public function getTopicLink(Topic $topic, $action = null, $content = null, $title = null, $class = null, Category $category = null)
 	{
 		$uri = $topic->getUri($category ? $category : (isset($this->category) ? $this->category : $topic->category_id), $action);
 
 		if (!$content)
 		{
-			$content = \Joomla\Component\Kunena\Libraries\Html\Parser::parseText($topic->subject);
+			$content = Parser::parseText($topic->subject);
 		}
 
 		$rel = '';
 
 		if ($title === null)
 		{
-			if ($action instanceof KunenaForumMessage)
+			if ($action instanceof Message)
 			{
 				$title = Text::sprintf('COM_KUNENA_TOPIC_MESSAGE_LINK_TITLE', $this->escape($topic->subject));
 			}

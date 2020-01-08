@@ -10,13 +10,17 @@
  * @link          https://www.kunena.org
  **/
 
-namespace Joomla\Component\Kunena\Libraries\Layout;
+namespace Kunena\Forum\Libraries\Layout;
 
 defined('_JEXEC') or die();
 
 use Exception;
 use Joomla\CMS\Factory;
 use Joomla\Input\Input;
+use Kunena\Forum\Libraries\Controller\KunenaControllerDisplay;
+use Kunena\Forum\Libraries\KunenaFactory;
+use Kunena\Forum\Libraries\Request\Request;
+use Kunena\Forum\Libraries\Route\KunenaRoute;
 use function defined;
 
 /**
@@ -26,20 +30,20 @@ use function defined;
  *
  * @since   Kunena 6.0
  */
-class Page extends \Joomla\Component\Kunena\Libraries\Layout
+class Page extends Layout
 {
 	/**
 	 * Returns layout class.
 	 *
 	 * <code>
 	 *    // Output pagination/pages layout with current cart instance.
-	 *    echo KunenaLayout::factory('Pagination/Pages')->set('pagination', $this->pagination);
+	 *    echo \Kunena\Forum\Libraries\Layout\Layout::factory('Pagination/Pages')->set('pagination', $this->pagination);
 	 * </code>
 	 *
 	 * @param   mixed   $paths  String or array of strings.
 	 * @param   string  $base   Base path.
 	 *
-	 * @return  KunenaLayout
+	 * @return  Layout
 	 *
 	 * @since   Kunena 6.0
 	 *
@@ -54,11 +58,11 @@ class Page extends \Joomla\Component\Kunena\Libraries\Layout
 		// Add all paths for the template overrides.
 		if ($app->isClient('administrator'))
 		{
-			$template = \Joomla\Component\Kunena\Libraries\KunenaFactory::getAdminTemplate();
+			$template = KunenaFactory::getAdminTemplate();
 		}
 		else
 		{
-			$template = \Joomla\Component\Kunena\Libraries\KunenaFactory::getTemplate();
+			$template = KunenaFactory::getTemplate();
 		}
 
 		$templatePaths = [];
@@ -110,7 +114,7 @@ class Page extends \Joomla\Component\Kunena\Libraries\Layout
 		}
 
 		// Create default layout object.
-		return new KunenaLayoutPage($path, $templatePaths);
+		return new Layout($path, $templatePaths);
 	}
 
 	/**
@@ -120,7 +124,7 @@ class Page extends \Joomla\Component\Kunena\Libraries\Layout
 	 * @param   mixed  $input    input
 	 * @param   mixed  $options  options
 	 *
-	 * @return  KunenaLayout
+	 * @return  Layout
 	 *
 	 * @since   Kunena 6.0
 	 *
@@ -144,7 +148,7 @@ class Page extends \Joomla\Component\Kunena\Libraries\Layout
 	 */
 	public function request($path, Input $input = null, $options = null)
 	{
-		return \Joomla\Component\Kunena\Libraries\Request\Request::factory($path . '/Display', $input, $options ? $options : $this->getOptions())
+		return Request::factory($path . '/Display', $input, $options ? $options : $this->getOptions())
 			->setPrimary()->set('layout', $this->getLayout());
 	}
 
@@ -165,7 +169,7 @@ class Page extends \Joomla\Component\Kunena\Libraries\Layout
 	{
 		if ($ignore)
 		{
-			$active = \Joomla\Component\Kunena\Libraries\Route\KunenaRoute::$active;
+			$active = KunenaRoute::$active;
 			$view   = isset($active->query['view']) ? $active->query['view'] : '';
 			$layout = isset($active->query['layout']) ? $active->query['layout'] : 'default';
 
@@ -175,7 +179,7 @@ class Page extends \Joomla\Component\Kunena\Libraries\Layout
 			}
 		}
 
-		$this->breadcrumb->addItem($text, \Joomla\Component\Kunena\Libraries\Route\KunenaRoute::normalize($uri));
+		$this->breadcrumb->addItem($text, KunenaRoute::normalize($uri));
 
 		return $this;
 	}

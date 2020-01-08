@@ -10,7 +10,7 @@
  * @link            https://www.kunena.org
 **/
 
-namespace Joomla\Component\Kunena\Site;
+namespace Kunena\Forum\Site;
 
 defined('_JEXEC') or die();
 
@@ -25,7 +25,7 @@ $signature            = $this->profile->getSignature();
 $attachments          = $message->getAttachments();
 $attachs              = $message->getNbAttachments();
 $avatarname           = $this->profile->getname();
-$config               = Config::getInstance();
+$config               = \Kunena\Forum\Libraries\Config::getInstance();
 $subjectlengthmessage = $this->ktemplate->params->get('SubjectLengthMessage', 20);
 $str_counts           = substr_count($this->topic->subject, 'solved');
 
@@ -43,12 +43,12 @@ $list = [];
 
 	<small class="text-muted float-right">
 		<?php if ($this->ipLink && !empty($this->message->ip)) : ?>
-			<?php echo KunenaIcons::ip(); ?>
+			<?php echo \Kunena\Forum\Libraries\Icons\Icons::ip(); ?>
 			<span class="ip"> <?php echo $this->ipLink; ?> </span>
 		<?php endif; ?>
-		<?php echo KunenaIcons::clock(); ?>
+		<?php echo \Kunena\Forum\Libraries\Icons\Icons::clock(); ?>
 		<?php echo $message->getTime()->toSpan('config_post_dateformat', 'config_post_dateformat_hover'); ?>
-		<?php if ($message->modified_time) : ?> - <?php echo KunenaIcons::edit() . ' ' . $message->getModifiedTime()->toSpan('config_post_dateformat', 'config_post_dateformat_hover'); endif; ?>
+		<?php if ($message->modified_time) : ?> - <?php echo \Kunena\Forum\Libraries\Icons\Icons::edit() . ' ' . $message->getModifiedTime()->toSpan('config_post_dateformat', 'config_post_dateformat_hover'); endif; ?>
 		<a href="#<?php echo $this->message->id; ?>" id="<?php echo $this->message->id; ?>"
 		   rel="canonical">#<?php echo $this->numLink; ?></a>
 		<span class="visible-xs"><?php echo Text::_('COM_KUNENA_BY') . ' ' . $message->getAuthor()->getLink(); ?></span>
@@ -57,9 +57,9 @@ $list = [];
 	<div class="shadow-none p-4 mb-5 rounded">
 		<div class="mykmsg-header">
 			<?php
-			$title   = \Joomla\Component\Kunena\Libraries\Forum\Message\Message::getInstance()->getsubstr($this->escape($message->subject), 0, $subjectlengthmessage);
+			$title   = \Kunena\Forum\Libraries\Forum\Message\Message::getInstance()->getsubstr($this->escape($message->subject), 0, $subjectlengthmessage);
 			$langstr = $isReply ? 'COM_KUNENA_MESSAGE_REPLIED_NEW' : 'COM_KUNENA_MESSAGE_CREATED_NEW';
-			echo Text::sprintf($langstr, $message->getAuthor()->getLink(), $this->getTopicLink($topic, 'first', null, null, \Joomla\Component\Kunena\Libraries\Template\Template::getInstance()->tooltips() . ' topictitle', $category, true, false)); ?>
+			echo Text::sprintf($langstr, $message->getAuthor()->getLink(), $this->getTopicLink($topic, 'first', null, null, \Kunena\Forum\Libraries\Template\Template::getInstance()->tooltips() . ' topictitle', $category, true, false)); ?>
 		</div>
 		<div class="kmsg">
 			<?php if (!$this->me->userid && !$isReply) :
@@ -77,9 +77,9 @@ $list = [];
 	</div>
 <?php if ($this->config->reportmsg && $this->me->exists()) : ?>
 	<div class="report pb-5">
-		<?php echo KunenaLayout::factory('Widget/Button')
+		<?php echo \Kunena\Forum\Libraries\Layout\Layout::factory('Widget/Button')
 			->setProperties(['url'   => '#report' . $message->id . '', 'name' => 'report', 'scope' => 'message',
-			                 'type'  => 'user', 'id' => 'btn_report', 'normal' => '', 'icon' => KunenaIcons::reportname(),
+			                 'type'  => 'user', 'id' => 'btn_report', 'normal' => '', 'icon' => \Kunena\Forum\Libraries\Icons\Icons::reportname(),
 			                 'modal' => 'modal', 'pullright' => 'pullright',]); ?>
 	</div>
 	<?php if ($this->me->isModerator($this->topic->getCategory()) || $this->config->user_report || !$this->config->user_report && $this->me->userid != $this->message->userid) : ?>
@@ -135,11 +135,11 @@ $list = [];
 	{
 		if ($attachs->image > 1)
 		{
-			echo KunenaLayout::factory('BBCode/Image')->set('title', Text::_('COM_KUNENA_SHOWIMGFORGUEST_HIDEIMG_MULTIPLES'))->setLayout('unauthorised');
+			echo \Kunena\Forum\Libraries\Layout\Layout::factory('BBCode/Image')->set('title', Text::_('COM_KUNENA_SHOWIMGFORGUEST_HIDEIMG_MULTIPLES'))->setLayout('unauthorised');
 		}
 		else
 		{
-			echo KunenaLayout::factory('BBCode/Image')->set('title', Text::_('COM_KUNENA_SHOWIMGFORGUEST_HIDEIMG_SIMPLE'))->setLayout('unauthorised');
+			echo \Kunena\Forum\Libraries\Layout\Layout::factory('BBCode/Image')->set('title', Text::_('COM_KUNENA_SHOWIMGFORGUEST_HIDEIMG_SIMPLE'))->setLayout('unauthorised');
 		}
 	}
 
@@ -147,11 +147,11 @@ $list = [];
 	{
 		if ($attachs->file > 1)
 		{
-			echo KunenaLayout::factory('BBCode/Image')->set('title', Text::_('COM_KUNENA_SHOWIMGFORGUEST_HIDEFILE_MULTIPLES'))->setLayout('unauthorised');
+			echo \Kunena\Forum\Libraries\Layout\Layout::factory('BBCode/Image')->set('title', Text::_('COM_KUNENA_SHOWIMGFORGUEST_HIDEFILE_MULTIPLES'))->setLayout('unauthorised');
 		}
 		else
 		{
-			echo KunenaLayout::factory('BBCode/Image')->set('title', Text::_('COM_KUNENA_SHOWIMGFORGUEST_HIDEFILE_SIMPLE'))->setLayout('unauthorised');
+			echo \Kunena\Forum\Libraries\Layout\Layout::factory('BBCode/Image')->set('title', Text::_('COM_KUNENA_SHOWIMGFORGUEST_HIDEFILE_SIMPLE'))->setLayout('unauthorised');
 		}
 	}
 endif; ?>
@@ -161,8 +161,8 @@ endif; ?>
 
 	if ($message->modified_time)
 	{
-		$datehover = 'title="' . \Joomla\Component\Kunena\Libraries\KunenaDate::getInstance($message->modified_time)->toKunena('config_post_dateformat_hover') . '"';
-		$dateshown = \Joomla\Component\Kunena\Libraries\KunenaDate::getInstance($message->modified_time)->toKunena('config_post_dateformat') . ' ';
+		$datehover = 'title="' . \Kunena\Forum\Libraries\KunenaDate::getInstance($message->modified_time)->toKunena('config_post_dateformat_hover') . '"';
+		$dateshown = \Kunena\Forum\Libraries\KunenaDate::getInstance($message->modified_time)->toKunena('config_post_dateformat') . ' ';
 	}
 	?>
 	<div class="alert alert-info hidden-xs-down" <?php echo $datehover ?>>
@@ -182,7 +182,7 @@ endif; ?>
 			if (!empty($this->thankyou_delete[$userid]))
 			{
 				$list[] = $thank . ' <a title="' . Text::_('COM_KUNENA_BUTTON_THANKYOU_REMOVE_LONG') . '" href="'
-					. $this->thankyou_delete[$userid] . '">' . KunenaIcons::cancel() . '</a>';
+					. $this->thankyou_delete[$userid] . '">' . \Kunena\Forum\Libraries\Icons\Icons::cancel() . '</a>';
 			}
 			else
 			{
@@ -190,7 +190,7 @@ endif; ?>
 			}
 		}
 
-		echo KunenaIcons::thumbsup() . Text::_('COM_KUNENA_THANKYOU') . ': ' . implode(', ', $list) . ' ';
+		echo \Kunena\Forum\Libraries\Icons\Icons::thumbsup() . Text::_('COM_KUNENA_THANKYOU') . ': ' . implode(', ', $list) . ' ';
 		if ($this->more_thankyou)
 		{
 			echo Text::sprintf('COM_KUNENA_THANKYOU_MORE_USERS', $this->more_thankyou);

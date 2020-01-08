@@ -9,15 +9,15 @@
  * @link           https://www.kunena.org
  **/
 
-namespace Joomla\Component\Kunena\Libraries;
+namespace Kunena\Forum\Libraries;
 
 defined('_JEXEC') or die();
 
 use DateTimeZone;
 use Exception;
+use Joomla\CMS\Date\Date;
 use Joomla\CMS\Factory;
 use Joomla\CMS\Language\Text;
-use Joomla\CMS\Date\Date;
 use function defined;
 
 /**
@@ -37,7 +37,7 @@ class KunenaDate extends Date
 	 */
 	public static function getInstance($date = 'now', $tz = null)
 	{
-		return new \Joomla\Component\Kunena\Libraries\KunenaDate($date, $tz);
+		return new KunenaDate($date, $tz);
 	}
 
 	/**
@@ -89,7 +89,7 @@ class KunenaDate extends Date
 		if (preg_match('/^config_/', $mode) == 1)
 		{
 			$option = substr($mode, 7);
-			$mode   = \Joomla\Component\Kunena\Libraries\KunenaFactory::getConfig()->$option;
+			$mode   = KunenaFactory::getConfig()->$option;
 		}
 
 		$modearr    = explode('_', $mode);
@@ -182,7 +182,7 @@ class KunenaDate extends Date
 	 */
 	public function toTimeAgo()
 	{
-		KUNENA_PROFILER ? \Joomla\Component\Kunena\Libraries\KunenaProfiler::instance()->start('function ' . __CLASS__ . '::' . __FUNCTION__ . '()') : null;
+		KUNENA_PROFILER ? KunenaProfiler::instance()->start('function ' . __CLASS__ . '::' . __FUNCTION__ . '()') : null;
 		$chunks = [
 			'y' => [Text::_('COM_KUNENA_DATE_YEAR'), Text::_('COM_KUNENA_DATE_YEARS')],
 			'm' => [Text::_('COM_KUNENA_DATE_MONTH'), Text::_('COM_KUNENA_DATE_MONTHS')],
@@ -237,7 +237,7 @@ class KunenaDate extends Date
 			$output = Text::sprintf('COM_KUNENA_LIB_TIME_AGO', trim($output));
 		}
 
-		KUNENA_PROFILER ? \Joomla\Component\Kunena\Libraries\KunenaProfiler::instance()->stop('function ' . __CLASS__ . '::' . __FUNCTION__ . '()') : null;
+		KUNENA_PROFILER ? KunenaProfiler::instance()->stop('function ' . __CLASS__ . '::' . __FUNCTION__ . '()') : null;
 
 		return $output;
 	}

@@ -10,23 +10,26 @@
  * @link            https://www.kunena.org
  **/
 
-namespace Joomla\Component\Kunena\Site\Controller\User\item;
+namespace Kunena\Forum\Site\Controller\User\item;
 
 defined('_JEXEC') or die();
 
 use Exception;
 use Joomla\CMS\Factory;
-use Joomla\CMS\Language\Text;
-use Joomla\CMS\Uri\Uri;
-use Joomla\CMS\MVC\Controller\BaseController;
 use Joomla\CMS\Filesystem\File;
+use Joomla\CMS\Language\Text;
+use Joomla\CMS\MVC\Controller\BaseController;
+use Joomla\CMS\Uri\Uri;
 use Joomla\CMS\User\User;
-use Joomla\Component\Kunena\Libraries\Controller\Display;
-use Joomla\Component\Kunena\Libraries\Exception\Authorise;
-use Joomla\Component\Kunena\Libraries\KunenaFactory;
-use Joomla\Component\Kunena\Libraries\Route\KunenaRoute;
-use Joomla\Component\Kunena\Libraries\User\Helper;
+use Kunena\Forum\Libraries\Controller\KunenaControllerDisplay;
+use Kunena\Forum\Libraries\Exception\Authorise;
+use Kunena\Forum\Libraries\KunenaFactory;
+use Kunena\Forum\Libraries\Route\KunenaRoute;
+use Kunena\Forum\Libraries\User\Ban;
+use Kunena\Forum\Libraries\User\Helper;
 use Joomla\Utilities\ArrayHelper;
+use Kunena\Forum\Libraries\User\KunenaUser;
+use Kunena\Forum\Site\Models\KunenaModelUser;
 use function defined;
 
 /**
@@ -34,7 +37,7 @@ use function defined;
  *
  * @since   Kunena 4.0
  */
-class ComponentKunenaControllerUserItemDisplay extends Display
+class ComponentKunenaControllerUserItemDisplay extends KunenaControllerDisplay
 {
 	/**
 	 * @var     KunenaUser
@@ -115,7 +118,7 @@ class ComponentKunenaControllerUserItemDisplay extends Display
 
 		$this->avatar  = $this->profile->getAvatarImage(KunenaFactory::getTemplate()->params->get('avatarType'), 'post');
 		$this->banInfo = $this->config->showbannedreason
-			? KunenaUserBan::getInstanceByUserid($this->profile->userid)
+			? Ban::getInstanceByUserid($this->profile->userid)
 			: null;
 
 		// Update profile hits.

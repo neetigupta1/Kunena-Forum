@@ -10,34 +10,34 @@
  * @link          https://www.kunena.org
  **/
 
-namespace Joomla\Component\Kunena\Site\View\Topic;
+namespace Kunena\Forum\Site\View\Topic;
 
 defined('_JEXEC') or die();
 
 use Exception;
-use Joomla\CMS\Plugin\PluginHelper;
-use Joomla\CMS\Router\Route;
-use Joomla\Component\Kunena\Libraries\Html\Parser;
-use Joomla\Component\Kunena\Libraries\KunenaDate;
-use Joomla\Component\Kunena\Libraries\KunenaFactory;
-use Joomla\Component\Kunena\Libraries\Pagination\Pagination;
-use Joomla\Component\Kunena\Libraries\Request\Request;
-use Joomla\Component\Kunena\Libraries\Route\KunenaRoute;
-use Joomla\Component\Kunena\Libraries\User\Helper;
-use Joomla\Component\Kunena\Libraries\View;
-use Joomla\Component\Kunena\Libraries\Forum\Message;
-use Joomla\Component\Kunena\Libraries\Forum\Topic;
-use Joomla\Component\Kunena\Libraries\Forum\Category;
-use Joomla\Component\Kunena\Libraries\Attachment;
-use Joomla\Input\Input;
-use Joomla\Registry\Registry;
-use Joomla\String\StringHelper;
 use Joomla\CMS\Factory;
 use Joomla\CMS\HTML\HTMLHelper;
 use Joomla\CMS\Language\Text;
+use Joomla\CMS\Object\CMSObject;
+use Joomla\CMS\Plugin\PluginHelper;
+use Joomla\CMS\Router\Route;
 use Joomla\CMS\Session\Session;
 use Joomla\CMS\Uri\Uri;
-use Joomla\CMS\Object\CMSObject;
+use Kunena\Forum\Libraries\Attachment;
+use Kunena\Forum\Libraries\Forum\Category;
+use Kunena\Forum\Libraries\Forum\Message;
+use Kunena\Forum\Libraries\Forum\Topic;
+use Kunena\Forum\Libraries\Html\Parser;
+use Kunena\Forum\Libraries\KunenaDate;
+use Kunena\Forum\Libraries\KunenaFactory;
+use Kunena\Forum\Libraries\Pagination\Pagination;
+use Kunena\Forum\Libraries\Request\Request;
+use Kunena\Forum\Libraries\Route\KunenaRoute;
+use Kunena\Forum\Libraries\User\Helper;
+use Kunena\Forum\Libraries\View;
+use Joomla\Input\Input;
+use Joomla\Registry\Registry;
+use Joomla\String\StringHelper;
 use LogicException;
 use function defined;
 
@@ -97,7 +97,7 @@ class html extends View
 	 *
 	 * @since   Kunena 6.0
 	 *
-	 * @throws  Exception
+	 * @throws  \Exception
 	 * @throws  null
 	 */
 	public function displayDefault($tpl = null)
@@ -220,7 +220,7 @@ class html extends View
 	 *
 	 * @since   Kunena 6.0
 	 *
-	 * @throws  Exception
+	 * @throws  \Exception
 	 */
 	public function displayUnread($tpl = null)
 	{
@@ -245,7 +245,7 @@ class html extends View
 	 *
 	 * @since   Kunena 6.0
 	 *
-	 * @throws  Exception
+	 * @throws  \Exception
 	 * @throws  null
 	 */
 	public function displayFlat($tpl = null)
@@ -262,7 +262,7 @@ class html extends View
 	 *
 	 * @since   Kunena 6.0
 	 *
-	 * @throws  Exception
+	 * @throws  \Exception
 	 * @throws  null
 	 */
 	public function displayThreaded($tpl = null)
@@ -279,7 +279,7 @@ class html extends View
 	 *
 	 * @since   Kunena 6.0
 	 *
-	 * @throws  Exception
+	 * @throws  \Exception
 	 * @throws  null
 	 */
 	public function displayIndented($tpl = null)
@@ -297,7 +297,7 @@ class html extends View
 	 * @since   Kunena 6.0
 	 *
 	 * @throws  null
-	 * @throws  Exception
+	 * @throws  \Exception
 	 */
 	protected function DisplayCreate($tpl = null)
 	{
@@ -395,7 +395,7 @@ class html extends View
 	 * @since   Kunena 6.0
 	 *
 	 * @throws  null
-	 * @throws  Exception
+	 * @throws  \Exception
 	 */
 	protected function DisplayReply($tpl = null)
 	{
@@ -467,7 +467,7 @@ class html extends View
 	 * @since   Kunena 6.0
 	 *
 	 * @throws  null
-	 * @throws  Exception
+	 * @throws  \Exception
 	 */
 	protected function displayEdit($tpl = null)
 	{
@@ -540,7 +540,7 @@ class html extends View
 	 *
 	 * @since   Kunena 6.0
 	 *
-	 * @throws  Exception
+	 * @throws  \Exception
 	 */
 	public function displayMessageProfile()
 	{
@@ -552,7 +552,7 @@ class html extends View
 	 *
 	 * @since   Kunena 6.0
 	 *
-	 * @throws  Exception
+	 * @throws  \Exception
 	 */
 	public function getMessageProfileBox()
 	{
@@ -656,7 +656,7 @@ class html extends View
 	 *
 	 * @since   Kunena 6.0
 	 *
-	 * @throws  Exception
+	 * @throws  \Exception
 	 */
 	public function displayMessageContents()
 	{
@@ -668,7 +668,7 @@ class html extends View
 	 *
 	 * @since   Kunena 6.0
 	 *
-	 * @throws  Exception
+	 * @throws  \Exception
 	 */
 	public function displayTopicActions()
 	{
@@ -680,7 +680,7 @@ class html extends View
 	 *
 	 * @since   Kunena 6.0
 	 *
-	 * @throws  Exception
+	 * @throws  \Exception
 	 */
 	public function getTopicActions()
 	{
@@ -775,7 +775,7 @@ class html extends View
 	 *
 	 * @since   Kunena 6.0
 	 *
-	 * @throws  Exception
+	 * @throws  \Exception
 	 */
 	public function displayMessageActions()
 	{
@@ -787,7 +787,7 @@ class html extends View
 	 *
 	 * @since   Kunena 6.0
 	 *
-	 * @throws  Exception
+	 * @throws  \Exception
 	 */
 	public function getMessageActions()
 	{
@@ -868,7 +868,7 @@ class html extends View
 	 *
 	 * @since   Kunena 6.0
 	 *
-	 * @throws  Exception
+	 * @throws  \Exception
 	 * @throws  null
 	 */
 	public function displayMessage($id, $message, $template = null)
@@ -1051,7 +1051,7 @@ class html extends View
 	 *
 	 * @since   Kunena 6.0
 	 *
-	 * @throws  Exception
+	 * @throws  \Exception
 	 */
 	public function fillMessageInfo($matches)
 	{
@@ -1081,7 +1081,7 @@ class html extends View
 	 *
 	 * @since   Kunena 6.0
 	 *
-	 * @throws  Exception
+	 * @throws  \Exception
 	 * @throws  null
 	 */
 	public function displayMessages($template = null)
@@ -1099,7 +1099,7 @@ class html extends View
 	 *
 	 * @since   Kunena 6.0
 	 *
-	 * @throws  Exception
+	 * @throws  \Exception
 	 * @throws  null
 	 */
 	public function getPaginationObject($maxpages)
@@ -1125,7 +1125,7 @@ class html extends View
 	 *
 	 * @since   Kunena 6.0
 	 *
-	 * @throws  Exception
+	 * @throws  \Exception
 	 * @throws  null
 	 */
 	public function getPagination($maxpages)
@@ -1155,7 +1155,7 @@ class html extends View
 	 *
 	 * @since   Kunena 6.0
 	 *
-	 * @throws  Exception
+	 * @throws  \Exception
 	 */
 	public function displayThreadHistory()
 	{
@@ -1202,7 +1202,7 @@ class html extends View
 	 *
 	 * @since   Kunena 6.0
 	 *
-	 * @throws  Exception
+	 * @throws  \Exception
 	 * @throws  null
 	 */
 	protected function redirectBack($anchor = '')
@@ -1316,7 +1316,7 @@ class html extends View
 	 *
 	 * @since   Kunena 6.0
 	 *
-	 * @throws  Exception
+	 * @throws  \Exception
 	 */
 	protected function _prepareDocument($type)
 	{
@@ -1508,7 +1508,7 @@ class html extends View
 	 *
 	 * @since   Kunena 6.0
 	 *
-	 * @throws  Exception
+	 * @throws  \Exception
 	 */
 	public function setTitle($title)
 	{
@@ -1595,7 +1595,7 @@ class html extends View
 	/**
 	 * Display layout from current layout.
 	 *
-	 * By using $this->subLayout() instead of KunenaLayout::factory() you can make your template files both
+	 * By using $this->subLayout() instead of \Kunena\Forum\Libraries\Layout\Layout::factory() you can make your template files both
 	 * easier to read and gain some context awareness -- for example possibility to use setLayout().
 	 *
 	 * @param   string  $path  path
@@ -1614,7 +1614,7 @@ class html extends View
 	/**
 	 * Display arbitrary MVC triad from current layout.
 	 *
-	 * By using $this->subRequest() instead of \Joomla\Component\Kunena\Libraries\Request\Request::factory() you can
+	 * By using $this->subRequest() instead of \Kunena\Forum\Libraries\Request\Request::factory() you can
 	 * make your template files both easier to read and gain some context awareness.
 	 *
 	 * @param   string  $path     path

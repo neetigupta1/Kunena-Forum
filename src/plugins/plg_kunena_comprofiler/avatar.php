@@ -10,17 +10,17 @@
  * @link            https://www.kunena.org
  **/
 
-namespace Joomla\Component\Kunena\Plugin\Kunena\Comprofiler;
+namespace Kunena\Forum\Plugin\Kunena\Comprofiler;
 
 defined('_JEXEC') or die();
 
 use Exception;
-use Joomla\Component\Kunena\Libraries\Integration\Avatar;
-use Joomla\Component\Kunena\Libraries\KunenaFactory;
+use Kunena\Forum\Libraries\Integration\Avatar;
+use Kunena\Forum\Libraries\KunenaFactory;
 use function defined;
 
 /**
- * Class \Joomla\Component\Kunena\Libraries\Integration\AvatarComprofiler
+ * Class \Kunena\Forum\Libraries\Integration\AvatarComprofiler
  *
  * @since   Kunena 6.0
  */
@@ -33,7 +33,7 @@ class AvatarComprofiler extends Avatar
 	protected $params = null;
 
 	/**
-	 * \Joomla\Component\Kunena\Libraries\Integration\AvatarComprofiler constructor.
+	 * \Kunena\Forum\Libraries\Integration\AvatarComprofiler constructor.
 	 *
 	 * @param   object  $params params
 	 *

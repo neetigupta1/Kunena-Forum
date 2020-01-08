@@ -10,16 +10,18 @@
  * @link            https://www.kunena.org
  **/
 
-namespace Joomla\Component\Kunena\Site\Layout\Topic\Edit;
+namespace Kunena\Forum\Site\Layout\Topic\Edit;
 
 defined('_JEXEC') or die;
 
 use Exception;
-use Joomla\CMS\Language\Text;
-use Joomla\CMS\HTML\HTMLHelper;
 use Joomla\CMS\Filesystem\Folder;
-use Joomla\Component\Kunena\Libraries\KunenaFactory;
-use Joomla\Component\Kunena\Libraries\Layout\Layout;
+use Joomla\CMS\HTML\HTMLHelper;
+use Joomla\CMS\Language\Text;
+use Kunena\Forum\Libraries\Config;
+use Kunena\Forum\Libraries\KunenaFactory;
+use Kunena\Forum\Libraries\Layout\Layout;
+use Kunena\Forum\Libraries\Template\Template;
 use function defined;
 
 /**
@@ -36,7 +38,7 @@ class KunenaLayoutTopicEditEditor extends Layout
 	public $config;
 
 	/**
-	 * @var     KunenaTemplate
+	 * @var     Template
 	 * @since   Kunena 6.0
 	 */
 	public $ktemplate;

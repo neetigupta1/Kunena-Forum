@@ -10,7 +10,7 @@
  * @link            https://www.kunena.org
  **/
 
-namespace Joomla\Component\Kunena\Libraries\Layout;
+namespace Kunena\Forum\Libraries\Layout;
 
 defined('_JEXEC') or die();
 
@@ -19,8 +19,13 @@ use InvalidArgumentException;
 use Joomla\CMS\Factory;
 use Joomla\CMS\Layout\BaseLayout;
 use Joomla\CMS\Log\Log;
-use Joomla\Component\Kunena\Libraries\Compat\LayoutBase;
+use Kunena\Forum\Libraries\Compat\LayoutBase;
 use Joomla\Input\Input;
+use Kunena\Forum\Libraries\Config;
+use Kunena\Forum\Libraries\Controller\KunenaControllerDisplay;
+use Kunena\Forum\Libraries\KunenaFactory;
+use Kunena\Forum\Libraries\Path\KunenaPath;
+use Kunena\Forum\Libraries\Request\Request;
 use RuntimeException;
 use Throwable;
 use function defined;
@@ -32,8 +37,8 @@ use function defined;
  * any layout file.
  *
  * <code>
- *    echo KunenaLayout::factory('Pagination')->set('pagination', $this->pagination);
- *    echo KunenaLayout::factory('Pagination/Footer')->set('pagination', $this->pagination);
+ *    echo \Kunena\Forum\Libraries\Layout\Layout::factory('Pagination')->set('pagination', $this->pagination);
+ *    echo \Kunena\Forum\Libraries\Layout\Layout::factory('Pagination/Footer')->set('pagination', $this->pagination);
  * </code>
  *
  * Individual layout classes are located in /components/com_kunena/layout,
@@ -44,7 +49,7 @@ use function defined;
  * Default layout can be overridden by ->setLayout():
  *
  * <code>
- *    echo KunenaLayout::factory('Pagination')->set('pagination', $this->pagination)->setLayout('mini');
+ *    echo \Kunena\Forum\Libraries\Layout\Layout::factory('Pagination')->set('pagination', $this->pagination)->setLayout('mini');
  * </code>
  *
  * @see     KunenaRequest
@@ -272,7 +277,7 @@ class Base extends LayoutBase
 	 *
 	 * @param   string  $layout  The layout name.
 	 *
-	 * @return  KunenaLayout|KunenaLayoutBase
+	 * @return  Layout|LayoutBase
 	 *
 	 * @since   Kunena 6.0
 	 */
@@ -399,7 +404,7 @@ class Base extends LayoutBase
 	 *
 	 * @param   array  $data  data
 	 *
-	 * @return  KunenaLayoutBase Instance of $this to allow chaining.
+	 * @return  LayoutBase Instance of $this to allow chaining.
 	 *
 	 * @since    Kunena 6.0
 	 */
@@ -423,7 +428,7 @@ class Base extends LayoutBase
 	 */
 	public function addStyleSheet($filename)
 	{
-		return \Joomla\Component\Kunena\Libraries\KunenaFactory::getTemplate()->addStyleSheet($filename);
+		return KunenaFactory::getTemplate()->addStyleSheet($filename);
 	}
 
 	/**
@@ -439,7 +444,7 @@ class Base extends LayoutBase
 	 */
 	public function addScript($filename)
 	{
-		return \Joomla\Component\Kunena\Libraries\KunenaFactory::getTemplate()->addScript($filename);
+		return KunenaFactory::getTemplate()->addScript($filename);
 	}
 
 	/**
@@ -456,7 +461,7 @@ class Base extends LayoutBase
 	 */
 	public function addScriptDeclaration($content, $type = 'text/javascript')
 	{
-		return \Joomla\Component\Kunena\Libraries\KunenaFactory::getTemplate()->addScriptDeclaration($content, $type);
+		return KunenaFactory::getTemplate()->addScriptDeclaration($content, $type);
 	}
 
 	/**
@@ -474,7 +479,7 @@ class Base extends LayoutBase
 	 */
 	public function addScriptOptions($key, $options, $merge = true)
 	{
-		return \Joomla\Component\Kunena\Libraries\KunenaFactory::getTemplate()->addScriptOptions($key, $options, $merge);
+		return KunenaFactory::getTemplate()->addScriptOptions($key, $options, $merge);
 	}
 
 	/**
@@ -494,7 +499,7 @@ class Base extends LayoutBase
 	 *
 	 * @param   string  $path  The paths queue.
 	 *
-	 * @return  KunenaLayout|KunenaLayoutBase
+	 * @return  Layout|LayoutBase
 	 *
 	 * @since   Kunena 6.0
 	 */
@@ -510,7 +515,7 @@ class Base extends LayoutBase
 	 *
 	 * @param   array  $paths  The paths queue.
 	 *
-	 * @return  KunenaLayout|KunenaLayoutBase
+	 * @return  Layout|LayoutBase
 	 *
 	 * @since   Kunena 6.0
 	 */
@@ -570,7 +575,7 @@ class Base extends LayoutBase
 	 * @param   string  $property  The name of the property.
 	 * @param   mixed   $value     The value of the property to set.
 	 *
-	 * @return  KunenaLayout|KunenaLayoutBase
+	 * @return  Layout|LayoutBase
 	 *
 	 * @since   Kunena 6.0
 	 */
@@ -626,7 +631,7 @@ class Base extends LayoutBase
 	 *
 	 * @param   mixed  $properties  Either an associative array or another object.
 	 *
-	 * @return  KunenaLayout|KunenaLayoutBase
+	 * @return  Layout|LayoutBase
 	 *
 	 * @since   Kunena 6.0
 	 *
@@ -677,12 +682,12 @@ class Base extends LayoutBase
 	/**
 	 * Display layout from current layout.
 	 *
-	 * By using $this->subLayout() instead of KunenaLayout::factory() you can make your template files both
+	 * By using $this->subLayout() instead of \Kunena\Forum\Libraries\Layout\Layout::factory() you can make your template files both
 	 * easier to read and gain some context awareness -- for example possibility to use setLayout().
 	 *
 	 * @param   string  $path  path
 	 *
-	 * @return  BaseLayout|KunenaLayout
+	 * @return  BaseLayout|Layout
 	 *
 	 * @since   Kunena 6.0
 	 *
@@ -700,13 +705,13 @@ class Base extends LayoutBase
 	 *
 	 * <code>
 	 *    // Output pagination/pages layout with current cart instance.
-	 *    echo KunenaLayout::factory('Pagination/Pages')->set('pagination', $this->pagination);
+	 *    echo \Kunena\Forum\Libraries\Layout\Layout::factory('Pagination/Pages')->set('pagination', $this->pagination);
 	 * </code>
 	 *
 	 * @param   mixed   $paths  String or array of strings.
 	 * @param   string  $base   Base path.
 	 *
-	 * @return  KunenaLayout
+	 * @return  Layout
 	 *
 	 * @since   Kunena 6.0
 	 *
@@ -721,11 +726,11 @@ class Base extends LayoutBase
 		// Add all paths for the template overrides.
 		if ($app->isClient('administrator'))
 		{
-			$template = \Joomla\Component\Kunena\Libraries\KunenaFactory::getAdminTemplate();
+			$template = KunenaFactory::getAdminTemplate();
 		}
 		else
 		{
-			$template = \Joomla\Component\Kunena\Libraries\KunenaFactory::getTemplate();
+			$template = KunenaFactory::getTemplate();
 		}
 
 		$templatePaths = [];
@@ -777,26 +782,26 @@ class Base extends LayoutBase
 		}
 
 		// Create default layout object.
-		return new KunenaLayout($path, $templatePaths);
+		return new Layout($path, $templatePaths);
 	}
 
 	/**
 	 * Display arbitrary MVC triad from current layout.
 	 *
-	 * By using $this->subRequest() instead of \Joomla\Component\Kunena\Libraries\Request\Request::factory() you can make your template files both
+	 * By using $this->subRequest() instead of \Kunena\Forum\Libraries\Request\Request::factory() you can make your template files both
 	 * easier to read and gain some context awareness.
 	 *
 	 * @param   string  $path     path
 	 * @param   Input   $input    input
 	 * @param   mixed   $options  options
 	 *
-	 * @return  KunenaControllerDisplay|KunenaLayout
+	 * @return  KunenaControllerDisplay|Layout
 	 *
 	 * @since   Kunena 6.0
 	 */
 	public function subRequest($path, Input $input = null, $options = null)
 	{
-		return \Joomla\Component\Kunena\Libraries\Request\Request::factory($path . '/Display', $input, $options)
+		return Request::factory($path . '/Display', $input, $options)
 			->setLayout($this->getLayout());
 	}
 }

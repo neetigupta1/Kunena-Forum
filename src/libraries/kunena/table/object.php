@@ -10,7 +10,7 @@
  * @link          https://www.kunena.org
  **/
 
-namespace Joomla\Component\Kunena\Libraries\Table;
+namespace Kunena\Forum\Libraries\Table;
 
 defined('_JEXEC') or die();
 
@@ -18,8 +18,9 @@ use Closure;
 use InvalidArgumentException;
 use Joomla\CMS\Factory;
 use Joomla\CMS\Table\Table;
-use Joomla\Database\QueryInterface;
 use Joomla\Database\DatabaseDriver;
+use Joomla\Database\QueryInterface;
+use Kunena\Forum\Libraries\Database\KunenaDatabaseObject;
 use RuntimeException;
 use UnexpectedValueException;
 use function defined;

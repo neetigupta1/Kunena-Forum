@@ -10,7 +10,7 @@
  * @link          https://www.kunena.org
  **/
 
-namespace Joomla\Component\Kunena\Administrator;
+namespace Kunena\Forum\Administrator\Models;
 
 defined('_JEXEC') or die();
 
@@ -18,6 +18,11 @@ use Exception;
 use Joomla\CMS\Date\Date;
 use Joomla\CMS\Factory;
 use Joomla\CMS\MVC\Model\ListModel;
+use Kunena\Forum\Libraries\Access;
+use Kunena\Forum\Libraries\Log\Finder;
+use Kunena\Forum\Libraries\Log\Log;
+use Kunena\Forum\Libraries\User\Helper;
+use Kunena\Forum\Libraries\User\KunenaUser;
 use stdClass;
 use function defined;
 
@@ -50,7 +55,7 @@ class KunenaAdminModelStatistics extends ListModel
 			];
 		}
 
-		$this->me = \Joomla\Component\Kunena\Libraries\User\Helper::getMyself();
+		$this->me = Helper::getMyself();
 
 		parent::__construct($config);
 	}
@@ -114,7 +119,7 @@ class KunenaAdminModelStatistics extends ListModel
 	 *
 	 * @param   string  $field  field
 	 *
-	 * @return  KunenaLogFinder
+	 * @return  Finder
 	 *
 	 * @since   Kunena 6.0
 	 *
@@ -133,7 +138,7 @@ class KunenaAdminModelStatistics extends ListModel
 
 		// Create a new query object.
 		$db     = $this->getDbo();
-		$finder = new KunenaLogFinder;
+		$finder = new Finder;
 
 		// Filter by username or name.
 		$filter = $this->getState('filter.user');
@@ -156,7 +161,7 @@ class KunenaAdminModelStatistics extends ListModel
 			$finder->filterByTime($start, $stop);
 		}
 
-		$access = \Joomla\Component\Kunena\Libraries\Access::getInstance();
+		$access = Access::getInstance();
 		$finder->where($field, 'IN', array_keys($access->getAdmins() + $access->getModerators()));
 		$finder->where('type', '!=', 3);
 
@@ -177,7 +182,7 @@ class KunenaAdminModelStatistics extends ListModel
 	/**
 	 * Method to get User objects of data items.
 	 *
-	 * @return  KunenaUser  List of KunenaUser objects found.
+	 * @return  KunenaUser  List of \Kunena\Forum\Libraries\User\KunenaUser objects found.
 	 *
 	 * @since   Kunena 3.1
 	 *
@@ -194,7 +199,7 @@ class KunenaAdminModelStatistics extends ListModel
 			return $this->cache[$store];
 		}
 
-		$access  = \Joomla\Component\Kunena\Libraries\Access::getInstance();
+		$access  = Access::getInstance();
 		$userIds = array_keys($access->getAdmins() + $access->getModerators());
 
 		$data = [];
@@ -223,28 +228,28 @@ class KunenaAdminModelStatistics extends ListModel
 
 			switch ($item->operation)
 			{
-				case KunenaLog::LOG_TOPIC_CREATE:
-				case KunenaLog::LOG_POST_CREATE:
+				case Log::LOG_TOPIC_CREATE:
+				case Log::LOG_POST_CREATE:
 					$class->posts += $item->count;
 					break;
 
-				case KunenaLog::LOG_TOPIC_MODERATE:
-				case KunenaLog::LOG_POST_MODERATE:
+				case Log::LOG_TOPIC_MODERATE:
+				case Log::LOG_POST_MODERATE:
 					$class->moves += $item->count;
 					break;
 
-				case KunenaLog::LOG_TOPIC_EDIT:
-				case KunenaLog::LOG_POST_EDIT:
-					// Case KunenaLog::LOG_PRIVATE_POST_EDIT:
-					if ($item->type == KunenaLog::TYPE_MODERATION)
+				case Log::LOG_TOPIC_EDIT:
+				case Log::LOG_POST_EDIT:
+					// Case \Kunena\Forum\Libraries\Log\Log::LOG_PRIVATE_POST_EDIT:
+					if ($item->type == Log::TYPE_MODERATION)
 					{
 						$class->edits += $item->count;
 					}
 					break;
 
-				case KunenaLog::LOG_POST_DELETE:
-					// Case KunenaLog::LOG_PRIVATE_POST_DELETE:
-					if ($item->type == KunenaLog::TYPE_MODERATION)
+				case Log::LOG_POST_DELETE:
+					// Case \Kunena\Forum\Libraries\Log\Log::LOG_PRIVATE_POST_DELETE:
+					if ($item->type == Log::TYPE_MODERATION)
 					{
 						$class->deletes += $item->count;
 					}
@@ -277,7 +282,7 @@ class KunenaAdminModelStatistics extends ListModel
 
 			switch ($item->operation)
 			{
-				case KunenaLog::LOG_POST_THANKYOU:
+				case Log::LOG_POST_THANKYOU:
 					$class->thanks += $item->count;
 					break;
 			}
@@ -285,7 +290,7 @@ class KunenaAdminModelStatistics extends ListModel
 
 		unset($items);
 
-		\Joomla\Component\Kunena\Libraries\User\Helper::loadUsers($userIds);
+		Helper::loadUsers($userIds);
 
 		// Add the items to the internal cache.
 		$this->cache[$store] = $data;

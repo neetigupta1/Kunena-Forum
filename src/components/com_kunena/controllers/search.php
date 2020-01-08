@@ -10,12 +10,11 @@
  * @link            https://www.kunena.org
  **/
 
-namespace Joomla\Component\Kunena\Site\Controllers;
+namespace Kunena\Forum\Site\Controllers;
 
 defined('_JEXEC') or die();
 
-use Exception;
-use Joomla\Component\Kunena\Libraries\Controller;
+use Kunena\Forum\Libraries\Controller;
 use function defined;
 
 /**
@@ -30,7 +29,7 @@ class KunenaControllerSearch extends Controller
 	 *
 	 * @since   Kunena 6.0
 	 *
-	 * @throws  Exception
+	 * @throws  \Exception
 	 */
 	public function __construct($config = [])
 	{

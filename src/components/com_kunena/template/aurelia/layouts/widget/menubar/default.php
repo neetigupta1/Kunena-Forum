@@ -10,7 +10,7 @@
  * @link            https://www.kunena.org
 **/
 
-namespace Joomla\Component\Kunena\Site;
+namespace Kunena\Forum\Site;
 
 defined('_JEXEC') or die();
 use function defined;
@@ -28,7 +28,7 @@ use function defined;
 	</div>
 	<button class="navbar-toggler float-right" aria-expanded="false" aria-controls="knav-usercollapse"
 			aria-label="Toggle navigation" type="button" data-target=".knav-usercollapse" data-toggle="collapse">
-		<?php echo KunenaIcons::user(); ?>
+		<?php echo \Kunena\Forum\Libraries\Icons\Icons::user(); ?>
 	</button>
 	<div class="knav-usercollapse navbar-collapse collapse">
 		<?php echo $this->subRequest('Widget/Login'); ?>

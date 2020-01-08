@@ -10,16 +10,15 @@
  * @link            https://www.kunena.org
  **/
 
-namespace Joomla\Component\Kunena\Site\Controller\Topic\Form\History;
+namespace Kunena\Forum\Site\Controller\Topic\Form\History;
 
 defined('_JEXEC') or die();
 
-use Exception;
 use Joomla\CMS\Factory;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\Plugin\PluginHelper;
-use Joomla\Component\Kunena\Libraries\Attachment\Helper;
-use Joomla\Component\Kunena\Libraries\Controller\Display;
+use Kunena\Forum\Libraries\Attachment\Helper;
+use Kunena\Forum\Libraries\Controller\KunenaControllerDisplay;
 use Joomla\Registry\Registry;
 use function defined;
 
@@ -30,7 +29,7 @@ use function defined;
  *
  * @since   Kunena 4.0
  */
-class ComponentKunenaControllerTopicFormHistoryDisplay extends Display
+class ComponentKunenaControllerTopicFormHistoryDisplay extends KunenaControllerDisplay
 {
 	/**
 	 * @var     string
@@ -45,18 +44,18 @@ class ComponentKunenaControllerTopicFormHistoryDisplay extends Display
 	 *
 	 * @since   Kunena 6.0
 	 *
-	 * @throws  Exception
+	 * @throws  \Exception
 	 */
 	protected function before()
 	{
 		parent::before();
 
 		$id       = $this->input->getInt('id');
-		$this->me = \Joomla\Component\Kunena\Libraries\User\Helper::getMyself();
+		$this->me = \Kunena\Forum\Libraries\User\Helper::getMyself();
 
-		$this->topic    = \Joomla\Component\Kunena\Libraries\Forum\Topic\Helper::get($id);
+		$this->topic    = \Kunena\Forum\Libraries\Forum\Topic\Helper::get($id);
 		$this->category = $this->topic->getCategory();
-		$this->history  = \Joomla\Component\Kunena\Libraries\Forum\Message\Helper::getMessagesByTopic(
+		$this->history  = \Kunena\Forum\Libraries\Forum\Message\Helper::getMessagesByTopic(
 			$this->topic, 0, (int) $this->config->historylimit, 'DESC'
 		);
 
@@ -73,7 +72,7 @@ class ComponentKunenaControllerTopicFormHistoryDisplay extends Display
 
 		if ($this->me->exists())
 		{
-			$pmFinder = new KunenaPrivateMessageFinder;
+			$pmFinder = new \Kunena\Forum\Libraries\KunenaPrivate\Message\Finder;
 			$pmFinder->filterByMessageIds(array_keys($messages))->order('id');
 
 			if (!$this->me->isModerator($this->category))
@@ -102,7 +101,7 @@ class ComponentKunenaControllerTopicFormHistoryDisplay extends Display
 
 		$this->history = $messages;
 
-		\Joomla\Component\Kunena\Libraries\User\Helper::loadUsers($userlist);
+		\Kunena\Forum\Libraries\User\Helper::loadUsers($userlist);
 
 		// Run events
 		$params = new Registry;

@@ -10,7 +10,7 @@
  * @link          https://www.kunena.org
  **/
 
-namespace Joomla\Component\Kunena\Libraries\Controller;
+namespace Kunena\Forum\Libraries\Controller;
 
 defined('_JEXEC') or die();
 
@@ -19,8 +19,11 @@ use InvalidArgumentException;
 use Joomla\CMS\Document\Document;
 use Joomla\CMS\Factory;
 use Joomla\CMS\Language\Text;
-use Joomla\CMS\Layout\BaseLayout;
-
+use Kunena\Forum\Libraries\Exception\Authorise;
+use Kunena\Forum\Libraries\Layout\Layout;
+use Kunena\Forum\Libraries\Layout\Base;
+use Kunena\Forum\Libraries\Config;
+use Kunena\Forum\Libraries\KunenaProfiler;
 use function defined;
 
 /**
@@ -28,10 +31,10 @@ use function defined;
  *
  * @since   Kunena 6.0
  */
-abstract class Display extends Base
+abstract class KunenaControllerDisplay extends KunenaControllerBase
 {
 	/**
-	 * @var     null|KunenaLayout
+	 * @var     null|Layout
 	 * @since   Kunena 6.0
 	 */
 	public $output = null;
@@ -64,7 +67,7 @@ abstract class Display extends Base
 	 * @var     Document
 	 * @since   Kunena 6.0
 	 */
-	private $document;
+	protected $document;
 
 	/**
 	 * @internal
@@ -95,18 +98,18 @@ abstract class Display extends Base
 		{
 			$output = $this->execute();
 		}
-		catch (KunenaExceptionAuthorise $e)
+		catch (Authorise $e)
 		{
 			if (!$this->primary)
 			{
-				return (string) KunenaLayout::factory('Empty');
+				return (string) Layout::factory('Empty');
 			}
 
 			$document = Factory::getApplication()->getDocument();
 			$document->setTitle($e->getResponseStatus());
 			Factory::getApplication()->setHeader('Status', $e->getResponseStatus(), true);
 			Factory::getApplication()->sendHeaders();
-			$output = KunenaLayout::factory('Misc/Default', 'pages')
+			$output = Layout::factory('Misc/Default', 'pages')
 				->set('header', $e->getResponseStatus())
 				->set('body', $e->getMessage());
 		}
@@ -122,7 +125,7 @@ abstract class Display extends Base
 			$document->setTitle($title);
 			Factory::getApplication()->setHeader('Status', $title, true);
 			Factory::getApplication()->sendHeaders();
-			$output = KunenaLayout::factory('Misc/Default', 'pages')
+			$output = Layout::factory('Misc/Default', 'pages')
 				->set('header', $title)
 				->set('body', $e->getMessage());
 		}
@@ -133,7 +136,7 @@ abstract class Display extends Base
 	/**
 	 * @see     KunenaControllerBase::execute()
 	 *
-	 * @return  BaseLayout|KunenaLayout|null
+	 * @return  Layout|null
 	 *
 	 * @since   Kunena 6.0
 	 *
@@ -141,7 +144,7 @@ abstract class Display extends Base
 	 */
 	public function execute()
 	{
-		KUNENA_PROFILER ? \Joomla\Component\Kunena\Libraries\KunenaProfiler::instance()->start('function ' . get_class($this) . '::' . __FUNCTION__ . '()') : null;
+		KUNENA_PROFILER ? KunenaProfiler::instance()->start('function ' . get_class($this) . '::' . __FUNCTION__ . '()') : null;
 
 		try
 		{
@@ -150,9 +153,9 @@ abstract class Display extends Base
 
 			if ($result === false)
 			{
-				KUNENA_PROFILER ? \Joomla\Component\Kunena\Libraries\KunenaProfiler::instance()->stop('function ' . get_class($this) . '::' . __FUNCTION__ . '()') : null;
+				KUNENA_PROFILER ? KunenaProfiler::instance()->stop('function ' . get_class($this) . '::' . __FUNCTION__ . '()') : null;
 
-				return KunenaLayout::factory('Empty')->setOptions($this->getOptions());
+				return Layout::factory('Empty')->setOptions($this->getOptions());
 			}
 
 			// Display layout with given parameters.
@@ -161,20 +164,20 @@ abstract class Display extends Base
 			// Run after executing action.
 			$this->after();
 		}
-		catch (KunenaExceptionAuthorise $e)
+		catch (Authorise $e)
 		{
 			if ($this->primary)
 			{
-				KUNENA_PROFILER ? \Joomla\Component\Kunena\Libraries\KunenaProfiler::instance()->stop('function ' . get_class($this) . '::' . __FUNCTION__ . '()') : null;
+				KUNENA_PROFILER ? KunenaProfiler::instance()->stop('function ' . get_class($this) . '::' . __FUNCTION__ . '()') : null;
 				throw $e;
 			}
 			else
 			{
-				$this->output = KunenaLayout::factory('Empty')->setOptions($this->getOptions());
+				$this->output = Layout::factory('Empty')->setOptions($this->getOptions());
 			}
 		}
 
-		KUNENA_PROFILER ? \Joomla\Component\Kunena\Libraries\KunenaProfiler::instance()->stop('function ' . get_class($this) . '::' . __FUNCTION__ . '()') : null;
+		KUNENA_PROFILER ? KunenaProfiler::instance()->stop('function ' . get_class($this) . '::' . __FUNCTION__ . '()') : null;
 
 		return $this->output;
 	}
@@ -202,7 +205,7 @@ abstract class Display extends Base
 	/**
 	 * Initialize and display the layout.
 	 *
-	 * @return  BaseLayout|KunenaLayout
+	 * @return  Base|Layout
 	 *
 	 * @since   Kunena 6.0
 	 *
@@ -211,7 +214,7 @@ abstract class Display extends Base
 	protected function display()
 	{
 		// Display layout with given parameters.
-		$content = KunenaLayout::factory($this->name)
+		$content = Layout::factory($this->name)
 			->setProperties($this->getProperties())
 			->setOptions($this->getOptions());
 
@@ -297,7 +300,7 @@ abstract class Display extends Base
 	 *
 	 * @param   string  $layout  The layout name.
 	 *
-	 * @return  KunenaControllerDisplay|KunenaLayout
+	 * @return  KunenaControllerDisplay|Layout
 	 *
 	 * @since   Kunena 6.0
 	 */
@@ -394,7 +397,7 @@ abstract class Display extends Base
 			}
 			else
 			{
-				$title = $title . ' - ' . \Joomla\Component\Kunena\Libraries\KunenaFactory::getConfig()->board_title;
+				$title = $title . ' - ' . $this->config->board_title;
 			}
 		}
 

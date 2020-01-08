@@ -10,7 +10,7 @@
  * @link          https://www.kunena.org
  **/
 
-namespace Joomla\Component\Kunena\Libraries\Attachment;
+namespace Kunena\Forum\Libraries\Attachment;
 
 defined('_JEXEC') or die();
 
@@ -18,7 +18,10 @@ use Exception;
 use Joomla\CMS\Factory;
 use Joomla\CMS\Filesystem\File;
 use Joomla\Database\Exception\ExecutionFailureException;
-use Joomla\Component\Kunena\Libraries\Attachment\Attachment;
+use Kunena\Forum\Libraries\Config;
+use Kunena\Forum\Libraries\Error;
+use Kunena\Forum\Libraries\Forum\Message\Message;
+use Kunena\Forum\Libraries\KunenaFactory;
 use RuntimeException;
 use function defined;
 
@@ -168,7 +171,7 @@ abstract class Helper
 		}
 		catch (RuntimeException $e)
 		{
-			\Joomla\Component\Kunena\Libraries\Error::displayDatabaseError($e);
+			Error::displayDatabaseError($e);
 		}
 
 		foreach ($ids as $id)
@@ -263,7 +266,7 @@ abstract class Helper
 		}
 		catch (RuntimeException $e)
 		{
-			\Joomla\Component\Kunena\Libraries\Error::displayDatabaseError($e);
+			Error::displayDatabaseError($e);
 		}
 
 		foreach ($ids as $mesid)
@@ -309,7 +312,7 @@ abstract class Helper
 
 			foreach ($ids as $id)
 			{
-				if ($id instanceof KunenaForumMessage)
+				if ($id instanceof Message)
 				{
 					$id = $id->id;
 				}
@@ -446,11 +449,11 @@ abstract class Helper
 	{
 		if ($category !== null)
 		{
-			$category = \Joomla\Component\Kunena\Libraries\Forum\Category\Helper::get($category);
+			$category = \Kunena\Forum\Libraries\Forum\Category\Helper::get($category);
 		}
 
-		$user   = \Joomla\Component\Kunena\Libraries\User\Helper::get($user);
-		$config = \Joomla\Component\Kunena\Libraries\KunenaFactory::getConfig();
+		$user   = \Kunena\Forum\Libraries\User\Helper::get($user);
+		$config = KunenaFactory::getConfig();
 		$types  = explode(',', $config->imagetypes);
 
 		foreach ($types as &$type)
@@ -522,9 +525,9 @@ abstract class Helper
 	 */
 	public static function getFileExtensions($category = null, $user = null)
 	{
-		$category = \Joomla\Component\Kunena\Libraries\Forum\Category\Helper::get($category);
-		$user     = \Joomla\Component\Kunena\Libraries\User\Helper::get($user);
-		$config   = \Joomla\Component\Kunena\Libraries\KunenaFactory::getConfig();
+		$category = \Kunena\Forum\Libraries\Forum\Category\Helper::get($category);
+		$user     = \Kunena\Forum\Libraries\User\Helper::get($user);
+		$config   = KunenaFactory::getConfig();
 		$types    = explode(',', $config->filetypes);
 
 		foreach ($types as &$type)
@@ -609,7 +612,7 @@ abstract class Helper
 		}
 		catch (ExecutionFailureException $e)
 		{
-			\Joomla\Component\Kunena\Libraries\Error::displayDatabaseError($e);
+			Error::displayDatabaseError($e);
 
 			return false;
 		}
@@ -638,7 +641,7 @@ abstract class Helper
 		}
 		catch (ExecutionFailureException $e)
 		{
-			\Joomla\Component\Kunena\Libraries\Error::displayDatabaseError($e);
+			Error::displayDatabaseError($e);
 
 			return false;
 		}
@@ -726,7 +729,7 @@ abstract class Helper
 		}
 		catch (RuntimeException $e)
 		{
-			\Joomla\Component\Kunena\Libraries\Error::displayDatabaseError($e);
+			Error::displayDatabaseError($e);
 		}
 
 		$list = [];
@@ -774,7 +777,7 @@ abstract class Helper
 		}
 		catch (RuntimeException $e)
 		{
-			\Joomla\Component\Kunena\Libraries\Error::displayDatabaseError($e);
+			Error::displayDatabaseError($e);
 		}
 
 		return $attachments;

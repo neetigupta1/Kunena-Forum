@@ -10,7 +10,7 @@
  * @link            https://www.kunena.org
  **/
 
-namespace Joomla\Component\Kunena\Administrator;
+namespace Kunena\Forum\Administrator;
 
 defined('_JEXEC') or die();
 
@@ -18,6 +18,7 @@ use Joomla\CMS\HTML\HTMLHelper;
 use Joomla\CMS\Factory;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\Uri\Uri;
+use Kunena\Forum\Administrator\Install\KunenaVersion;
 
 HTMLHelper::_('behavior.multiselect');
 HTMLHelper::_('dropdown.init');
@@ -36,7 +37,7 @@ Factory::getApplication()->getDocument()->addScript(Uri::root() . 'administrator
 					<?php echo Text::_('COM_KUNENA_CPANEL_LABEL_CATEGORIES') ?>
 					: <?php echo $this->escape($this->category->name); ?></div>
 				<hr class="hr-condensed">
-				<form action="<?php echo \Joomla\Component\Kunena\Libraries\Route\KunenaRoute::_('administrator/index.php?option=com_kunena&view=categories') ?>"
+				<form action="<?php echo \Kunena\Forum\Libraries\Route\KunenaRoute::_('administrator/index.php?option=com_kunena&view=categories') ?>"
 				      method="post" id="adminForm"
 				      name="adminForm">
 					<input type="hidden" name="task" value="save"/>

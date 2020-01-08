@@ -10,14 +10,14 @@
  * @link            https://www.kunena.org
  **/
 
-namespace Joomla\Component\Kunena\Administrator;
+namespace Kunena\Forum\Administrator\Views;
 
 defined('_JEXEC') or die();
 
-use Exception;
 use Joomla\CMS\HTML\HTMLHelper;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\Toolbar\ToolbarHelper;
+use Kunena\Forum\Libraries\View;
 use function defined;
 
 /**
@@ -25,7 +25,7 @@ use function defined;
  *
  * @since   Kunena 6.0
  */
-class KunenaAdminViewAttachments extends \Joomla\Component\Kunena\Libraries\View
+class KunenaAdminViewAttachments extends View
 {
 	/**
 	 * @param   null  $tpl  tpl
@@ -34,7 +34,7 @@ class KunenaAdminViewAttachments extends \Joomla\Component\Kunena\Libraries\View
 	 *
 	 * @since   Kunena 6.0
 	 *
-	 * @throws  Exception
+	 * @throws  \Exception
 	 */
 	public function display($tpl = null)
 	{

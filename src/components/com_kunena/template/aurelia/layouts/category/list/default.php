@@ -10,7 +10,7 @@
  * @link            https://www.kunena.org
 **/
 
-namespace Joomla\Component\Kunena\Site;
+namespace Kunena\Forum\Site;
 
 defined('_JEXEC') or die();
 
@@ -21,7 +21,7 @@ use function defined;
 ?>
 <div class="row">
 	<div class="col-md-12">
-		<form action="<?php echo \Joomla\Component\Kunena\Libraries\Route\KunenaRoute::_('index.php?option=com_kunena&view=category') ?>" method="post"
+		<form action="<?php echo \Kunena\Forum\Libraries\Route\KunenaRoute::_('index.php?option=com_kunena&view=category') ?>" method="post"
 		      name="kcategoryform" id="kcategoryform">
 			<input type="hidden" name="userid" value="<?php echo $this->user->userid; ?>"/>
 			<?php echo HTMLHelper::_('form.token'); ?>
@@ -52,7 +52,7 @@ use function defined;
 				<?php endif; ?>
 			</h3>
 
-			<table class="table table-striped<?php echo \Joomla\Component\Kunena\Libraries\Template\Template::getInstance()->borderless(); ?>">
+			<table class="table table-striped<?php echo \Kunena\Forum\Libraries\Template\Template::getInstance()->borderless(); ?>">
 
 				<?php if (!empty($this->actions) && !empty($this->categories)) : ?>
 					<thead>

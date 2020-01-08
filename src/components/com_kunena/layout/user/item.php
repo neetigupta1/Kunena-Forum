@@ -10,7 +10,7 @@
  * @link            https://www.kunena.org
  **/
 
-namespace Joomla\Component\Kunena\Site\Layout\User;
+namespace Kunena\Forum\Site\Layout\User;
 
 defined('_JEXEC') or die;
 
@@ -18,10 +18,13 @@ use Exception;
 use Joomla\CMS\Factory;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\Plugin\PluginHelper;
-use Joomla\Component\Kunena\Libraries\Access;
-use Joomla\Component\Kunena\Libraries\Forum\Forum;
-use Joomla\Component\Kunena\Libraries\Layout\Layout;
+use Kunena\Forum\Libraries\Access;
+use Kunena\Forum\Libraries\Config;
+use Kunena\Forum\Libraries\Forum\KunenaForum;
+use Kunena\Forum\Libraries\Layout\Layout;
 use Joomla\Input\Input;
+use Kunena\Forum\Libraries\User\Ban;
+use Kunena\Forum\Libraries\User\KunenaUser;
 use stdClass;
 use function defined;
 
@@ -67,7 +70,7 @@ class KunenaLayoutUserItem extends Layout
 	 */
 	public function getTabs()
 	{
-		$banInfo   = KunenaUserBan::getInstanceByUserid($this->user->id, true);
+		$banInfo   = Ban::getInstanceByUserid($this->user->id, true);
 		$myProfile = $this->profile->isMyself();
 		$moderator = $this->me->isModerator();
 
@@ -289,7 +292,7 @@ class KunenaLayoutUserItem extends Layout
 
 		PluginHelper::importPlugin('kunena');
 
-		$plugins = Factory::getApplication()->triggerEvent('onKunenaUserTabs', [$tabs]);
+		$plugins = Factory::getApplication()->triggerEvent('on\Kunena\Forum\Libraries\User\KunenaUserTabs', [$tabs]);
 
 		$tabs = $tabs + $plugins;
 
@@ -319,7 +322,7 @@ class KunenaLayoutUserItem extends Layout
 			'filter_order_Dir'    => 'desc',
 		];
 
-		Forum::display('topics', 'posts', 'embed', $params);
+		KunenaForum::display('topics', 'posts', 'embed', $params);
 	}
 
 	/**
@@ -345,7 +348,7 @@ class KunenaLayoutUserItem extends Layout
 			'filter_order_Dir'    => 'desc',
 		];
 
-		Forum::display('topics', 'posts', 'embed', $params);
+		KunenaForum::display('topics', 'posts', 'embed', $params);
 	}
 
 	/**
@@ -371,7 +374,7 @@ class KunenaLayoutUserItem extends Layout
 			'filter_order_Dir'    => 'desc',
 		];
 
-		Forum::display('topics', 'posts', 'embed', $params);
+		KunenaForum::display('topics', 'posts', 'embed', $params);
 	}
 
 	/**
@@ -397,7 +400,7 @@ class KunenaLayoutUserItem extends Layout
 			'filter_order_Dir'    => 'desc',
 		];
 
-		Forum::display('topics', 'posts', 'embed', $params);
+		KunenaForum::display('topics', 'posts', 'embed', $params);
 	}
 
 	/**
@@ -423,7 +426,7 @@ class KunenaLayoutUserItem extends Layout
 			'filter_order_Dir'    => 'desc',
 		];
 
-		Forum::display('topics', 'user', 'embed', $params);
+		KunenaForum::display('topics', 'user', 'embed', $params);
 	}
 
 	/**
@@ -454,7 +457,7 @@ class KunenaLayoutUserItem extends Layout
 			'filter_order_Dir'    => 'desc',
 		];
 
-		Forum::display('topics', 'user', 'embed', $params);
+		KunenaForum::display('topics', 'user', 'embed', $params);
 	}
 
 	/**
@@ -481,6 +484,6 @@ class KunenaLayoutUserItem extends Layout
 			'filter_order_Dir' => 'desc',
 		];
 
-		Forum::display('category', 'user', 'embed', $params);
+		KunenaForum::display('category', 'user', 'embed', $params);
 	}
 }

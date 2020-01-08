@@ -10,7 +10,7 @@
  * @link            https://www.kunena.org
  **/
 
-namespace Joomla\Component\Kunena\Site\Controller\Category\Subscriptions;
+namespace Kunena\Forum\Site\Controller\Category\Subscriptions;
 
 defined('_JEXEC') or die();
 
@@ -19,9 +19,10 @@ use Joomla\CMS\Factory;
 use Joomla\CMS\HTML\HTMLHelper;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\Pagination\Pagination;
-use Joomla\Component\Kunena\Libraries\Controller\Display;
-use Joomla\Component\Kunena\Libraries\Exception\Authorise;
-use Joomla\Component\Kunena\Libraries\Forum\Category\Helper;
+use Kunena\Forum\Libraries\Controller\KunenaControllerDisplay;
+use Kunena\Forum\Libraries\Exception\Authorise;
+use Kunena\Forum\Libraries\Forum\Category\Helper;
+use Kunena\Forum\Site\Models\KunenaModelCategory;
 use function defined;
 
 /**
@@ -29,7 +30,7 @@ use function defined;
  *
  * @since   Kunena 4.0
  */
-class ComponentKunenaControllerCategorySubscriptionsDisplay extends Display
+class ComponentKunenaControllerCategorySubscriptionsDisplay extends KunenaControllerDisplay
 {
 	/**
 	 * @var     string
@@ -44,7 +45,7 @@ class ComponentKunenaControllerCategorySubscriptionsDisplay extends Display
 	public $total;
 
 	/**
-	 * @var     KunenaPagination
+	 * @var     Pagination
 	 * @since   Kunena 6.0
 	 */
 	public $pagination;
@@ -74,14 +75,14 @@ class ComponentKunenaControllerCategorySubscriptionsDisplay extends Display
 		$this->model->initialize($this->getOptions(), $this->getOptions()->get('embedded', false));
 		$this->state = $this->model->getState();
 
-		$me = \Joomla\Component\Kunena\Libraries\User\Helper::getMyself();
+		$me = \Kunena\Forum\Libraries\User\Helper::getMyself();
 
 		if (!$me->exists())
 		{
 			throw new Authorise(Text::_('COM_KUNENA_NO_ACCESS'), 401);
 		}
 
-		$this->user = \Joomla\Component\Kunena\Libraries\User\Helper::get($this->state->get('user'));
+		$this->user = \Kunena\Forum\Libraries\User\Helper::get($this->state->get('user'));
 
 		$limit = $this->input->getInt('limit', 0);
 
@@ -113,7 +114,7 @@ class ComponentKunenaControllerCategorySubscriptionsDisplay extends Display
 		}
 
 		// Pre-fetch topics (also display unauthorized topics as they are in allowed categories).
-		$topics = \Joomla\Component\Kunena\Libraries\Forum\Topic\Helper::getTopics($topicIds, 'none');
+		$topics = \Kunena\Forum\Libraries\Forum\Topic\Helper::getTopics($topicIds, 'none');
 
 		// Pre-fetch users (and get last post ids for moderators).
 		foreach ($topics as $topic)
@@ -122,8 +123,8 @@ class ComponentKunenaControllerCategorySubscriptionsDisplay extends Display
 			$postIds[$topic->id]               = $topic->last_post_id;
 		}
 
-		\Joomla\Component\Kunena\Libraries\User\Helper::loadUsers($userIds);
-		\Joomla\Component\Kunena\Libraries\Forum\Message\Helper::getMessages($postIds);
+		\Kunena\Forum\Libraries\User\Helper::loadUsers($userIds);
+		\Kunena\Forum\Libraries\Forum\Message\Helper::getMessages($postIds);
 
 		// Pre-fetch user related stuff.
 		if ($me->exists() && !$me->isBanned())

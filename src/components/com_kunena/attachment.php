@@ -9,7 +9,7 @@
  * @link           https://www.kunena.org
  **/
 
-namespace Joomla\Component\Kunena\Site;
+namespace Kunena\Forum\Site;
 
 /*
  * A light application to serve attachments to the users. Will only partially initialize Joomla to gain some speed.
@@ -35,7 +35,7 @@ use Joomla\CMS\Factory;
 use Joomla\CMS\Session\Session;
 use Joomla\Input\Input;
 use Joomla\Registry\Registry;
-use function defined;
+use Kunena\Forum\Site\Controller\Application\Attachment\ComponentKunenaControllerApplicationAttachmentDefaultDisplay;
 
 // Set base directory. This should usually work even with symbolic linked Kunena.
 /**

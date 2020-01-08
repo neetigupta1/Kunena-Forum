@@ -10,13 +10,13 @@
  * @link            https://www.kunena.org
 **/
 
-namespace Joomla\Component\Kunena\Site;
+namespace Kunena\Forum\Site;
 
 defined('_JEXEC') or die();
 
 use function defined;
 
-if (Config::getInstance()->lightbox != 1)
+if (\Kunena\Forum\Libraries\Config::getInstance()->lightbox != 1)
 {
 	return false;
 }

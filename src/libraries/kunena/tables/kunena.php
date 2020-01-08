@@ -10,11 +10,12 @@
  * @link          https://www.kunena.org
  **/
 
-namespace Joomla\Component\Kunena\Libraries\Tables;
+namespace Kunena\Forum\Libraries\Tables;
 
 use Exception;
 use InvalidArgumentException;
 use Joomla\CMS\Table\Table;
+use Kunena\Forum\Libraries\Error;
 use RuntimeException;
 use UnexpectedValueException;
 use function defined;
@@ -130,7 +131,7 @@ abstract class KunenaTable extends Table
 			// Catch any database errors.
 			$this->_db->transactionRollback();
 
-			\Joomla\Component\Kunena\Libraries\Error::displayDatabaseError($e);
+			Error::displayDatabaseError($e);
 
 			return false;
 		}

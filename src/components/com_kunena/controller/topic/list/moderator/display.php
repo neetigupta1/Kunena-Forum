@@ -10,7 +10,7 @@
  * @link            https://www.kunena.org
  **/
 
-namespace Joomla\Component\Kunena\Site\Controller\Topic\KunenaList\Moderator;
+namespace Kunena\Forum\Site\Controller\Topic\KunenaList\Moderator;
 
 defined('_JEXEC') or die();
 
@@ -18,10 +18,12 @@ use Exception;
 use Joomla\CMS\Component\ComponentHelper;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\MVC\Controller\BaseController;
-use Joomla\Component\Kunena\Libraries\Access;
-use Joomla\Component\Kunena\Libraries\Forum\Category\Helper;
-use Joomla\Component\Kunena\Libraries\Pagination\Pagination;
-use Joomla\Component\Kunena\Libraries\Route\KunenaRoute;
+use Kunena\Forum\Libraries\Access;
+use Kunena\Forum\Libraries\Forum\Category\Helper;
+use Kunena\Forum\Libraries\Forum\Topic\Finder;
+use Kunena\Forum\Libraries\Pagination\Pagination;
+use Kunena\Forum\Libraries\Route\KunenaRoute;
+use Kunena\Forum\Libraries\Controller\KunenaControllerDisplay;
 use function defined;
 
 /**
@@ -29,7 +31,7 @@ use function defined;
  *
  * @since   Kunena 4.0
  */
-class ComponentKunenaControllerTopicListModeratorDisplay extends ComponentKunenaControllerTopicListDisplay
+class ComponentKunenaControllerTopicListModeratorDisplay extends KunenaControllerDisplay
 {
 	/**
 	 * Prepare topic list for moderators.
@@ -45,7 +47,7 @@ class ComponentKunenaControllerTopicListModeratorDisplay extends ComponentKunena
 	{
 		parent::before();
 
-		$this->me       = \Joomla\Component\Kunena\Libraries\User\Helper::getMyself();
+		$this->me       = \Kunena\Forum\Libraries\User\Helper::getMyself();
 		$access         = Access::getInstance();
 		$this->moreUri  = null;
 		$this->embedded = $this->getOptions()->get('embedded', true);
@@ -100,7 +102,7 @@ class ComponentKunenaControllerTopicListModeratorDisplay extends ComponentKunena
 
 		$categories = Helper::getCategories($categoryIds, $reverse);
 
-		$finder = new KunenaForumTopicFinder;
+		$finder = new Finder;
 		$finder
 			->filterByCategories($categories)
 			->filterAnsweredBy(array_keys($access->getModerators() + $access->getAdmins()), true)

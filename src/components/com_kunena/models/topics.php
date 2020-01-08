@@ -10,21 +10,20 @@
  * @link            https://www.kunena.org
  **/
 
-namespace Joomla\Component\Kunena\Site\Models;
+namespace Kunena\Forum\Site\Models;
 
 defined('_JEXEC') or die();
 
-use Exception;
 use Joomla\CMS\Factory;
 use Joomla\CMS\HTML\HTMLHelper;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\Plugin\PluginHelper;
-use Joomla\Component\Kunena\Libraries\Access;
-use Joomla\Component\Kunena\Libraries\Forum\Message\Helper;
-use Joomla\Component\Kunena\Libraries\KunenaFactory;
-use Joomla\Component\Kunena\Libraries\Model;
-use Joomla\Component\Kunena\Libraries\Forum\Category;
-use Joomla\Component\Kunena\Libraries\Forum\Topic;
+use Kunena\Forum\Libraries\Access;
+use Kunena\Forum\Libraries\Forum\Category;
+use Kunena\Forum\Libraries\Forum\Message\Helper;
+use Kunena\Forum\Libraries\Forum\Topic;
+use Kunena\Forum\Libraries\KunenaFactory;
+use Kunena\Forum\Libraries\Model;
 use function defined;
 
 /**
@@ -69,7 +68,7 @@ class KunenaModelTopics extends Model
 	 *
 	 * @since   Kunena 6.0
 	 *
-	 * @throws  Exception
+	 * @throws  \Exception
 	 */
 	protected function populateState()
 	{
@@ -243,7 +242,7 @@ class KunenaModelTopics extends Model
 	 * @since   Kunena 6.0
 	 *
 	 * @throws  null
-	 * @throws  Exception
+	 * @throws  \Exception
 	 */
 	public function getTopics()
 	{
@@ -294,7 +293,7 @@ class KunenaModelTopics extends Model
 	 *
 	 * @since   Kunena 6.0
 	 *
-	 * @throws  Exception
+	 * @throws  \Exception
 	 * @throws  null
 	 */
 	protected function getRecentTopics()
@@ -389,7 +388,7 @@ class KunenaModelTopics extends Model
 	 *
 	 * @since   Kunena 6.0
 	 *
-	 * @throws  Exception
+	 * @throws  \Exception
 	 * @throws  null
 	 */
 	protected function getUserTopics()
@@ -452,7 +451,7 @@ class KunenaModelTopics extends Model
 	 *
 	 * @since   Kunena 6.0
 	 *
-	 * @throws  Exception
+	 * @throws  \Exception
 	 * @throws  null
 	 */
 	protected function getPosts()
@@ -462,7 +461,7 @@ class KunenaModelTopics extends Model
 		$start = $this->getState('list.start');
 		$limit = $this->getState('list.limit');
 
-		// Time will be calculated inside \Joomla\Component\Kunena\Libraries\Forum\Message\Helper::getLatestMessages()
+		// Time will be calculated inside \Kunena\Forum\Libraries\Forum\Message\Helper::getLatestMessages()
 		$time = $this->getState('list.time');
 
 		$params              = [];
@@ -512,7 +511,7 @@ class KunenaModelTopics extends Model
 	 *
 	 * @since   Kunena 6.0
 	 *
-	 * @throws  Exception
+	 * @throws  \Exception
 	 */
 	protected function _common(array $userlist = [], array $postlist = [])
 	{
@@ -531,7 +530,7 @@ class KunenaModelTopics extends Model
 			// Prefetch all users/avatars to avoid user by user queries during template iterations
 			if (!empty($userlist))
 			{
-				\Joomla\Component\Kunena\Libraries\User\Helper::loadUsers($userlist);
+				\Kunena\Forum\Libraries\User\Helper::loadUsers($userlist);
 			}
 
 			Topic\Helper::getUserTopics(array_keys($this->topics));
@@ -551,7 +550,7 @@ class KunenaModelTopics extends Model
 	 * @since   Kunena 6.0
 	 *
 	 * @throws  null
-	 * @throws  Exception
+	 * @throws  \Exception
 	 */
 	public function getMessages()
 	{
@@ -568,7 +567,7 @@ class KunenaModelTopics extends Model
 	 *
 	 * @since   Kunena 6.0
 	 *
-	 * @throws  Exception
+	 * @throws  \Exception
 	 * @throws  null
 	 */
 	public function getTotal()
@@ -586,7 +585,7 @@ class KunenaModelTopics extends Model
 	 *
 	 * @since   Kunena 6.0
 	 *
-	 * @throws  Exception
+	 * @throws  \Exception
 	 * @throws  null
 	 */
 	public function getTopicActions()
@@ -677,7 +676,7 @@ class KunenaModelTopics extends Model
 	 * @since   Kunena 6.0
 	 *
 	 * @throws  null
-	 * @throws  Exception
+	 * @throws  \Exception
 	 */
 	public function getPostActions()
 	{

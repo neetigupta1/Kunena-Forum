@@ -9,7 +9,7 @@
  * @license         https://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link            https://www.kunena.org
  **/
-namespace Joomla\Component\Kunena\Libraries\Html;
+namespace Kunena\Forum\Libraries\Html;
 
 defined('_JEXEC') or die();
 
@@ -19,6 +19,11 @@ use Joomla\CMS\Plugin\PluginHelper;
 use Joomla\Database\Exception\ExecutionFailureException;
 use Joomla\Registry\Registry;
 use Joomla\String\StringHelper;
+use Kunena\Forum\Libraries\Bbcode\KunenaBbcode;
+use Kunena\Forum\Libraries\Error;
+use Kunena\Forum\Libraries\Image\KunenaImage;
+use Kunena\Forum\Libraries\KunenaFactory;
+use Kunena\Forum\Libraries\KunenaProfiler;
 use stdClass;
 
 /**
@@ -71,11 +76,11 @@ abstract class Parser
 		}
 		catch (ExecutionFailureException $e)
 		{
-			\Joomla\Component\Kunena\Libraries\Error::displayDatabaseError($e);
+			Error::displayDatabaseError($e);
 		}
 
 		$smileyArray = [];
-		$template    = \Joomla\Component\Kunena\Libraries\KunenaFactory::getTemplate();
+		$template    = KunenaFactory::getTemplate();
 
 		foreach ($smilies as $smiley)
 		{
@@ -91,7 +96,7 @@ abstract class Parser
 			}
 			else
 			{
-				$smileyProperties = \Joomla\Component\Kunena\Libraries\Image\KunenaImage::getImageFileProperties($template->getSmileyPath($smiley->file));
+				$smileyProperties = KunenaImage::getImageFileProperties($template->getSmileyPath($smiley->file));
 				$emoticon         = new stdClass;
 				$emoticon->path   = $template->getSmileyPath($smiley->file);
 				$emoticon->width  = $smileyProperties->width;
@@ -167,7 +172,7 @@ abstract class Parser
 	 */
 	public static function &prepareContent(&$content, $target = 'body')
 	{
-		$config       = \Joomla\Component\Kunena\Libraries\KunenaFactory::getConfig()->getPlugin('plg_system_kunena');
+		$config       = KunenaFactory::getConfig()->getPlugin('plg_system_kunena');
 		$events       = (int) $config->get('jcontentevents', false);
 		$event_target = (array) $config->get('jcontentevent_target', []);
 
@@ -216,7 +221,7 @@ abstract class Parser
 			return false;
 		}
 
-		KUNENA_PROFILER ? \Joomla\Component\Kunena\Libraries\KunenaProfiler::instance()->start('function ' . __CLASS__ . '::' . __FUNCTION__ . '()') : null;
+		KUNENA_PROFILER ? KunenaProfiler::instance()->start('function ' . __CLASS__ . '::' . __FUNCTION__ . '()') : null;
 
 		$bbcode         = KunenaBbcode::getInstance(self::$relative);
 		$bbcode->parent = $parent;
@@ -226,7 +231,7 @@ abstract class Parser
 		$txt = $bbcode->Parse($txt);
 		$txt = self::prepareContent($txt, $target);
 
-		KUNENA_PROFILER ? \Joomla\Component\Kunena\Libraries\KunenaProfiler::instance()->stop('function ' . __CLASS__ . '::' . __FUNCTION__ . '()') : null;
+		KUNENA_PROFILER ? KunenaProfiler::instance()->stop('function ' . __CLASS__ . '::' . __FUNCTION__ . '()') : null;
 
 		return $txt;
 	}
