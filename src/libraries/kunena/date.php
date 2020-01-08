@@ -37,7 +37,7 @@ class KunenaDate extends Date
 	 */
 	public static function getInstance($date = 'now', $tz = null)
 	{
-		return new KunenaDate($date, $tz);
+		return new \Joomla\Component\Kunena\Libraries\KunenaDate($date, $tz);
 	}
 
 	/**

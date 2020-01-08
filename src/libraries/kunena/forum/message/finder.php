@@ -231,7 +231,7 @@ class Finder extends KunenaDatabaseObjectFinder
 	{
 		$results = parent::find();
 
-		return KunenaForumMessageHelper::getMessages($results, $access);
+		return \Joomla\Component\Kunena\Libraries\Forum\Message\Helper::getMessages($results, $access);
 	}
 
 	/**

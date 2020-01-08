@@ -10,10 +10,11 @@
  * @link            https://www.kunena.org
  **/
 
-namespace Joomla\Component\Kunena\Site;
+namespace Joomla\Component\Kunena\Site\View\Category;
 
 defined('_JEXEC') or die();
 
+use Joomla\Component\Kunena\Libraries\View;
 use function defined;
 
 /**
@@ -21,7 +22,7 @@ use function defined;
  *
  * @since   Kunena 6.0
  */
-class KunenaViewCategory extends KunenaView
+class html extends View
 {
 	/**
 	 * @param   null  $tpl  tpl

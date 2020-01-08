@@ -26,7 +26,7 @@ use function defined;
  *
  * @since 3.0
  */
-class KunenaAdminModelSmiley extends KunenaModel
+class KunenaAdminModelSmiley extends \Joomla\Component\Kunena\Libraries\Model
 {
 	/**
 	 * @return  mixed

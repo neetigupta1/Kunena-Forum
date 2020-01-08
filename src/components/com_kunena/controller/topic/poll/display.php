@@ -10,12 +10,16 @@
  * @link            https://www.kunena.org
  **/
 
-namespace Joomla\Component\Kunena\Site;
+namespace Joomla\Component\Kunena\Site\Controller\Topic\Poll;
 
 defined('_JEXEC') or die();
 
 use Exception;
 use Joomla\CMS\Language\Text;
+use Joomla\Component\Kunena\Libraries\Controller\Display;
+use Joomla\Component\Kunena\Libraries\Html\Parser;
+use Joomla\Component\Kunena\Libraries\KunenaFactory;
+use Joomla\Component\Kunena\Libraries\User\Helper;
 use function defined;
 
 /**
@@ -23,7 +27,7 @@ use function defined;
  *
  * @since   Kunena 4.0
  */
-class ComponentKunenaControllerTopicPollDisplay extends KunenaControllerDisplay
+class ComponentKunenaControllerTopicPollDisplay extends Display
 {
 	/**
 	 * @var     KunenaUser
@@ -71,8 +75,8 @@ class ComponentKunenaControllerTopicPollDisplay extends KunenaControllerDisplay
 
 		$this->topic    = \Joomla\Component\Kunena\Libraries\Forum\Topic\Helper::get($this->input->getInt('id'));
 		$this->category = $this->topic->getCategory();
-		$this->config   = \Joomla\Component\Kunena\Libraries\KunenaFactory::getConfig();
-		$this->me       = \Joomla\Component\Kunena\Libraries\User\Helper::getMyself();
+		$this->config   = KunenaFactory::getConfig();
+		$this->me       = Helper::getMyself();
 
 		// Need to check if poll is allowed in this category.
 		$this->topic->tryAuthorise('poll.read');
@@ -119,7 +123,7 @@ class ComponentKunenaControllerTopicPollDisplay extends KunenaControllerDisplay
 					$userids_votes[] = $userid;
 				}
 
-				$loaded_users = \Joomla\Component\Kunena\Libraries\User\Helper::loadUsers($userids_votes);
+				$loaded_users = Helper::loadUsers($userids_votes);
 
 				$i = 0;
 
@@ -169,7 +173,7 @@ class ComponentKunenaControllerTopicPollDisplay extends KunenaControllerDisplay
 			}
 			else
 			{
-				$this->setTitle(Text::_('COM_KUNENA_POLL_NAME') . ' ' . \Joomla\Component\Kunena\Libraries\Html\Parser::parseText($this->poll->title));
+				$this->setTitle(Text::_('COM_KUNENA_POLL_NAME') . ' ' . Parser::parseText($this->poll->title));
 			}
 
 			if (!empty($params_keywords))
@@ -179,7 +183,7 @@ class ComponentKunenaControllerTopicPollDisplay extends KunenaControllerDisplay
 			}
 			else
 			{
-				$this->setKeywords(Text::_('COM_KUNENA_POLL_NAME') . ' ' . \Joomla\Component\Kunena\Libraries\Html\Parser::parseText($this->poll->title));
+				$this->setKeywords(Text::_('COM_KUNENA_POLL_NAME') . ' ' . Parser::parseText($this->poll->title));
 			}
 
 			if (!empty($params_description))
@@ -189,7 +193,7 @@ class ComponentKunenaControllerTopicPollDisplay extends KunenaControllerDisplay
 			}
 			else
 			{
-				$this->setDescription(Text::_('COM_KUNENA_POLL_NAME') . ' ' . \Joomla\Component\Kunena\Libraries\Html\Parser::parseText($this->poll->title));
+				$this->setDescription(Text::_('COM_KUNENA_POLL_NAME') . ' ' . Parser::parseText($this->poll->title));
 			}
 		}
 	}

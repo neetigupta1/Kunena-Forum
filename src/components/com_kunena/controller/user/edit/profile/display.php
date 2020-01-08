@@ -10,7 +10,7 @@
  * @link            https://www.kunena.org
  **/
 
-namespace Joomla\Component\Kunena\Site;
+namespace Joomla\Component\Kunena\Site\Controller\User\Edit\Profile;
 
 defined('_JEXEC') or die();
 

@@ -10,12 +10,13 @@
  * @link            https://www.kunena.org
  **/
 
-namespace Joomla\Component\Kunena\Site;
+namespace Joomla\Component\Kunena\Site\Layout\Topic;
 
 defined('_JEXEC') or die;
 
 use Joomla\CMS\HTML\HTMLHelper;
 use Joomla\CMS\Language\Text;
+use Joomla\Component\Kunena\Libraries\Layout\Layout;
 use function defined;
 
 /**
@@ -23,7 +24,7 @@ use function defined;
  *
  * @since   Kunena 4.0
  */
-class KunenaLayoutTopicList extends KunenaLayout
+class KunenaLayoutTopicList extends Layout
 {
 	/**
 	 * Method to return HTML select list for time filter

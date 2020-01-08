@@ -25,7 +25,7 @@ use function defined;
  *
  * @since   Kunena 1.X
  */
-class KunenaAdminViewStats extends KunenaView
+class KunenaAdminViewStats extends \Joomla\Component\Kunena\Libraries\View
 {
 	/**
 	 * @internal param null $tpl
@@ -44,7 +44,7 @@ class KunenaAdminViewStats extends KunenaView
 		$document = Factory::getApplication()->getDocument();
 		$document->setTitle(Text::_('COM_KUNENA_STAT_FORUMSTATS') . ' - ' . $this->config->board_title);
 
-		$kunena_stats = KunenaForumStatistics::getInstance();
+		$kunena_stats = \Joomla\Component\Kunena\Libraries\Forum\Statistics::getInstance();
 		$kunena_stats->loadAll(true);
 		$this->kunena_stats = $kunena_stats;
 

@@ -10,13 +10,16 @@
  * @link            https://www.kunena.org
  **/
 
-namespace Joomla\Component\Kunena\Site;
+namespace Joomla\Component\Kunena\Site\Controller\Application\Topic\Unread;
 
 defined('_JEXEC') or die();
 
 use Exception;
 use Joomla\CMS\Factory;
 
+use Joomla\Component\Kunena\Libraries\ControllerApplicationDisplay;
+use Joomla\Component\Kunena\Libraries\Forum\Message\Helper;
+use Joomla\Component\Kunena\Libraries\KunenaFactory;
 use function defined;
 
 /**
@@ -24,7 +27,7 @@ use function defined;
  *
  * @since   Kunena 4.0
  */
-class ComponentKunenaControllerApplicationTopicUnreadDisplay extends KunenaControllerApplicationDisplay
+class ComponentKunenaControllerApplicationTopicUnreadDisplay extends ControllerApplicationDisplay
 {
 	/**
 	 * Return true if layout exists.
@@ -37,7 +40,7 @@ class ComponentKunenaControllerApplicationTopicUnreadDisplay extends KunenaContr
 	 */
 	public function exists()
 	{
-		return \Joomla\Component\Kunena\Libraries\KunenaFactory::getTemplate()->isHmvc();
+		return KunenaFactory::getTemplate()->isHmvc();
 	}
 
 	/**
@@ -61,7 +64,7 @@ class ComponentKunenaControllerApplicationTopicUnreadDisplay extends KunenaContr
 		$topic->tryAuthorise();
 
 		\Joomla\Component\Kunena\Libraries\Forum\Topic\Helper::fetchNewStatus([$topic->id => $topic]);
-		$message = KunenaForumMessageHelper::get($topic->lastread ? $topic->lastread : $topic->last_post_id);
+		$message = Helper::get($topic->lastread ? $topic->lastread : $topic->last_post_id);
 		$message->tryAuthorise();
 
 		while (@ob_end_clean())

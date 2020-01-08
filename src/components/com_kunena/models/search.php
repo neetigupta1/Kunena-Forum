@@ -10,7 +10,7 @@
  * @link            https://www.kunena.org
  **/
 
-namespace Joomla\Component\Kunena\Site;
+namespace Joomla\Component\Kunena\Site\Models;
 
 defined('_JEXEC') or die();
 
@@ -19,6 +19,12 @@ use DateTime;
 use Exception;
 use Joomla\CMS\Factory;
 use Joomla\CMS\Language\Text;
+use Joomla\Component\Kunena\Libraries\Forum\Message\Helper;
+use Joomla\Component\Kunena\Libraries\KunenaFactory;
+use Joomla\Component\Kunena\Libraries\Model;
+use Joomla\Component\Kunena\Libraries\Route\KunenaRoute;
+use Joomla\Component\Kunena\Libraries\Forum\Topic;
+use Joomla\Component\Kunena\Libraries\User;
 use Joomla\String\StringHelper;
 use Joomla\Utilities\ArrayHelper;
 
@@ -29,7 +35,7 @@ use function defined;
  *
  * @since   Kunena 2.0
  */
-class KunenaModelSearch extends KunenaModel
+class KunenaModelSearch extends Model
 {
 	/**
 	 * @var     null
@@ -235,7 +241,7 @@ class KunenaModelSearch extends KunenaModel
 			switch ($this->getState('query.searchdate'))
 			{
 				case 'lastvisit' :
-					$time = \Joomla\Component\Kunena\Libraries\KunenaFactory::GetSession()->lasttime;
+					$time = KunenaFactory::GetSession()->lasttime;
 					break;
 				case 'all' :
 					break;
@@ -429,7 +435,7 @@ class KunenaModelSearch extends KunenaModel
 		];
 		$limitstart = $this->getState('list.start');
 		$limit      = $this->getState('list.limit');
-		list($this->total, $this->messages) = KunenaForumMessageHelper::getLatestMessages($this->getState('query.catids'), $limitstart, $limit, $params);
+		list($this->total, $this->messages) = Helper::getLatestMessages($this->getState('query.catids'), $limitstart, $limit, $params);
 
 		if ($this->total < $limitstart)
 		{
@@ -447,7 +453,7 @@ class KunenaModelSearch extends KunenaModel
 
 		if ($topicids)
 		{
-			$topics = \Joomla\Component\Kunena\Libraries\Forum\Topic\Helper::getTopics($topicids);
+			$topics = Topic\Helper::getTopics($topicids);
 
 			foreach ($topics as $topic)
 			{
@@ -455,8 +461,8 @@ class KunenaModelSearch extends KunenaModel
 			}
 		}
 
-		\Joomla\Component\Kunena\Libraries\User\Helper::loadUsers($userids);
-		KunenaForumMessageHelper::loadLocation($this->messages);
+		User\Helper::loadUsers($userids);
+		Helper::loadLocation($this->messages);
 
 		if (empty($this->messages))
 		{
@@ -523,7 +529,7 @@ class KunenaModelSearch extends KunenaModel
 	 */
 	public function getSearchURL($view, $searchword = '', $limitstart = 0, $limit = 0, $params = '', $xhtml = true)
 	{
-		$config   = \Joomla\Component\Kunena\Libraries\KunenaFactory::getConfig();
+		$config   = KunenaFactory::getConfig();
 		$limitstr = "";
 
 		if ($limitstart > 0)
@@ -541,6 +547,6 @@ class KunenaModelSearch extends KunenaModel
 			$searchword = '&query=' . urlencode($searchword);
 		}
 
-		return \Joomla\Component\Kunena\Libraries\Route\KunenaRoute::_("index.php?option=com_kunena&view={$view}{$searchword}{$params}{$limitstr}", $xhtml);
+		return KunenaRoute::_("index.php?option=com_kunena&view={$view}{$searchword}{$params}{$limitstr}", $xhtml);
 	}
 }

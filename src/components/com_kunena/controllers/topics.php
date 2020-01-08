@@ -10,7 +10,7 @@
  * @link            https://www.kunena.org
  **/
 
-namespace Joomla\Component\Kunena\Site;
+namespace Joomla\Component\Kunena\Site\Controllers;
 
 defined('_JEXEC') or die();
 
@@ -18,6 +18,11 @@ use Exception;
 use Joomla\CMS\Factory;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\Session\Session;
+use Joomla\Component\Kunena\Libraries\Controller;
+use Joomla\Component\Kunena\Libraries\Error;
+use Joomla\Component\Kunena\Libraries\Forum\Forum;
+use Joomla\Component\Kunena\Libraries\Forum\Message\Helper;
+use Joomla\Component\Kunena\Libraries\KunenaFactory;
 use Joomla\Utilities\ArrayHelper;
 use Joomla\Database\Exception\ExecutionFailureException;
 use function defined;
@@ -27,7 +32,7 @@ use function defined;
  *
  * @since   Kunena 2.0
  */
-class KunenaControllerTopics extends KunenaController
+class KunenaControllerTopics extends Controller
 {
 	/**
 	 * @return  void
@@ -75,14 +80,14 @@ class KunenaControllerTopics extends KunenaController
 		}
 		else
 		{
-			$messages = KunenaForumMessageHelper::getMessagesByTopics($ids);
+			$messages = Helper::getMessagesByTopics($ids);
 
 			foreach ($topics as $topic)
 			{
 				if ($topic->isAuthorised('permdelete') && $topic->delete())
 				{
 					// Activity integration
-					$activity = \Joomla\Component\Kunena\Libraries\KunenaFactory::getActivityIntegration();
+					$activity = KunenaFactory::getActivityIntegration();
 					$activity->onAfterDeleteTopic($topic);
 					$message = Text::_('COM_KUNENA_BULKMSG_DELETED');
 					\Joomla\Component\Kunena\Libraries\Forum\Category\Helper::recount($topic->getCategory()->id);
@@ -118,7 +123,7 @@ class KunenaControllerTopics extends KunenaController
 				}
 				catch (ExecutionFailureException $e)
 				{
-					\Joomla\Component\Kunena\Libraries\Error::displayDatabaseError($e);
+					Error::displayDatabaseError($e);
 
 					return false;
 				}
@@ -181,7 +186,7 @@ class KunenaControllerTopics extends KunenaController
 		{
 			foreach ($topics as $topic)
 			{
-				if ($topic->isAuthorised('delete') && $topic->publish(\Joomla\Component\Kunena\Libraries\Forum\Forum::TOPIC_DELETED))
+				if ($topic->isAuthorised('delete') && $topic->publish(Forum::TOPIC_DELETED))
 				{
 					$message = Text::_('COM_KUNENA_BULKMSG_DELETED');
 				}
@@ -248,7 +253,7 @@ class KunenaControllerTopics extends KunenaController
 		{
 			foreach ($topics as $topic)
 			{
-				if ($topic->isAuthorised('undelete') && $topic->publish(\Joomla\Component\Kunena\Libraries\Forum\Forum::PUBLISHED))
+				if ($topic->isAuthorised('undelete') && $topic->publish(Forum::PUBLISHED))
 				{
 					$message = Text::_('COM_KUNENA_POST_SUCCESS_UNDELETE');
 				}
@@ -315,7 +320,7 @@ class KunenaControllerTopics extends KunenaController
 		{
 			foreach ($topics as $topic)
 			{
-				if ($topic->isAuthorised('approve') && $topic->publish(\Joomla\Component\Kunena\Libraries\Forum\Forum::PUBLISHED))
+				if ($topic->isAuthorised('approve') && $topic->publish(Forum::PUBLISHED))
 				{
 					$message = Text::_('COM_KUNENA_MODERATE_APPROVE_SUCCESS');
 					$topic->sendNotification();
@@ -376,7 +381,7 @@ class KunenaControllerTopics extends KunenaController
 		$messages_ids = array_keys($this->app->input->get('posts', [], 'post', 'array'));
 		$messages_ids = ArrayHelper::toInteger($messages_ids);
 
-		$messages = KunenaForumMessageHelper::getMessages($messages_ids);
+		$messages = Helper::getMessages($messages_ids);
 
 		if (!$topics && !$messages)
 		{
@@ -567,7 +572,7 @@ class KunenaControllerTopics extends KunenaController
 		$ids = ArrayHelper::toInteger($ids);
 
 		$success  = 0;
-		$messages = KunenaForumMessageHelper::getMessages($ids);
+		$messages = Helper::getMessages($ids);
 
 		if (!$messages)
 		{
@@ -577,7 +582,7 @@ class KunenaControllerTopics extends KunenaController
 		{
 			foreach ($messages as $message)
 			{
-				if ($message->isAuthorised('approve') && $message->publish(\Joomla\Component\Kunena\Libraries\Forum\Forum::PUBLISHED))
+				if ($message->isAuthorised('approve') && $message->publish(Forum::PUBLISHED))
 				{
 					$message->sendNotification();
 					$success++;
@@ -619,7 +624,7 @@ class KunenaControllerTopics extends KunenaController
 		$ids = ArrayHelper::toInteger($ids);
 
 		$success  = 0;
-		$messages = KunenaForumMessageHelper::getMessages($ids);
+		$messages = Helper::getMessages($ids);
 
 		if (!$messages)
 		{
@@ -629,7 +634,7 @@ class KunenaControllerTopics extends KunenaController
 		{
 			foreach ($messages as $message)
 			{
-				if ($message->isAuthorised('delete') && $message->publish(\Joomla\Component\Kunena\Libraries\Forum\Forum::DELETED))
+				if ($message->isAuthorised('delete') && $message->publish(Forum::DELETED))
 				{
 					$success++;
 				}
@@ -670,7 +675,7 @@ class KunenaControllerTopics extends KunenaController
 		$ids = ArrayHelper::toInteger($ids);
 
 		$success  = 0;
-		$messages = KunenaForumMessageHelper::getMessages($ids);
+		$messages = Helper::getMessages($ids);
 
 		if (!$messages)
 		{
@@ -680,7 +685,7 @@ class KunenaControllerTopics extends KunenaController
 		{
 			foreach ($messages as $message)
 			{
-				if ($message->isAuthorised('undelete') && $message->publish(\Joomla\Component\Kunena\Libraries\Forum\Forum::PUBLISHED))
+				if ($message->isAuthorised('undelete') && $message->publish(Forum::PUBLISHED))
 				{
 					$success++;
 				}
@@ -721,7 +726,7 @@ class KunenaControllerTopics extends KunenaController
 		$ids = ArrayHelper::toInteger($ids);
 
 		$success  = 0;
-		$messages = KunenaForumMessageHelper::getMessages($ids);
+		$messages = Helper::getMessages($ids);
 
 		if (!$messages)
 		{

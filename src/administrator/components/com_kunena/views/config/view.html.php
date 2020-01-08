@@ -26,7 +26,7 @@ use function defined;
  *
  * @since K1.X
  */
-class KunenaAdminViewConfig extends KunenaView
+class KunenaAdminViewConfig extends \Joomla\Component\Kunena\Libraries\View
 {
 	/**
 	 * @return  void

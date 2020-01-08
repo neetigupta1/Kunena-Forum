@@ -10,12 +10,16 @@
  * @link            https://www.kunena.org
  **/
 
-namespace Joomla\Component\Kunena\Site;
+namespace Joomla\Component\Kunena\Site\Controller\Widget\Statistics;
 
 defined('_JEXEC') or die();
 
 use Exception;
 use Joomla\CMS\Language\Text;
+use Joomla\Component\Kunena\Libraries\Controller\Display;
+use Joomla\Component\Kunena\Libraries\Exception\Authorise;
+use Joomla\Component\Kunena\Libraries\Forum\Statistics;
+use Joomla\Component\Kunena\Libraries\KunenaFactory;
 use function defined;
 
 /**
@@ -23,7 +27,7 @@ use function defined;
  *
  * @since   Kunena 4.0
  */
-class ComponentKunenaControllerWidgetStatisticsDisplay extends KunenaControllerDisplay
+class ComponentKunenaControllerWidgetStatisticsDisplay extends Display
 {
 	/**
 	 * @var     string
@@ -67,15 +71,15 @@ class ComponentKunenaControllerWidgetStatisticsDisplay extends KunenaControllerD
 
 		if (!$this->config->get('showstats'))
 		{
-			throw new KunenaExceptionAuthorise(Text::_('COM_KUNENA_NO_ACCESS'), '404');
+			throw new Authorise(Text::_('COM_KUNENA_NO_ACCESS'), '404');
 		}
 
-		$statistics = KunenaForumStatistics::getInstance();
+		$statistics = Statistics::getInstance();
 		$statistics->loadGeneral();
 		$this->setProperties($statistics);
 
-		$this->latestMemberLink = \Joomla\Component\Kunena\Libraries\KunenaFactory::getUser(intval($this->lastUserId))->getLink(null, null, '');
-		$this->statisticsUrl    = \Joomla\Component\Kunena\Libraries\KunenaFactory::getProfile()->getStatisticsURL();
+		$this->latestMemberLink = KunenaFactory::getUser(intval($this->lastUserId))->getLink(null, null, '');
+		$this->statisticsUrl    = KunenaFactory::getProfile()->getStatisticsURL();
 
 		return true;
 	}

@@ -10,12 +10,14 @@
  * @link            https://www.kunena.org
  **/
 
-namespace Joomla\Component\Kunena\Site;
+namespace Joomla\Component\Kunena\Site\Controller\User\Ban\History;
 
 defined('_JEXEC') or die();
 
 use Exception;
 use Joomla\CMS\Language\Text;
+use Joomla\Component\Kunena\Libraries\Controller\Display;
+use Joomla\Component\Kunena\Libraries\User\Helper;
 use function defined;
 
 /**
@@ -23,7 +25,7 @@ use function defined;
  *
  * @since   Kunena 4.0
  */
-class ComponentKunenaControllerUserBanHistoryDisplay extends KunenaControllerDisplay
+class ComponentKunenaControllerUserBanHistoryDisplay extends Display
 {
 	/**
 	 * @var     string
@@ -70,8 +72,8 @@ class ComponentKunenaControllerUserBanHistoryDisplay extends KunenaControllerDis
 
 		$userid = $this->input->getInt('userid');
 
-		$this->me      = \Joomla\Component\Kunena\Libraries\User\Helper::getMyself();
-		$this->profile = \Joomla\Component\Kunena\Libraries\User\Helper::get($userid);
+		$this->me      = Helper::getMyself();
+		$this->profile = Helper::get($userid);
 		$this->profile->tryAuthorise('ban');
 
 		$this->banHistory = KunenaUserBan::getUserHistory($this->profile->userid);

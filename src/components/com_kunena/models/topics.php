@@ -10,7 +10,7 @@
  * @link            https://www.kunena.org
  **/
 
-namespace Joomla\Component\Kunena\Site;
+namespace Joomla\Component\Kunena\Site\Models;
 
 defined('_JEXEC') or die();
 
@@ -19,6 +19,12 @@ use Joomla\CMS\Factory;
 use Joomla\CMS\HTML\HTMLHelper;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\Plugin\PluginHelper;
+use Joomla\Component\Kunena\Libraries\Access;
+use Joomla\Component\Kunena\Libraries\Forum\Message\Helper;
+use Joomla\Component\Kunena\Libraries\KunenaFactory;
+use Joomla\Component\Kunena\Libraries\Model;
+use Joomla\Component\Kunena\Libraries\Forum\Category;
+use Joomla\Component\Kunena\Libraries\Forum\Topic;
 use function defined;
 
 /**
@@ -26,7 +32,7 @@ use function defined;
  *
  * @since   Kunena 2.0
  */
-class KunenaModelTopics extends KunenaModel
+class KunenaModelTopics extends Model
 {
 	/**
 	 * @var     boolean
@@ -89,7 +95,7 @@ class KunenaModelTopics extends KunenaModel
 		}
 		elseif ($userid > 0)
 		{
-			$userid = \Joomla\Component\Kunena\Libraries\KunenaFactory::getUser($userid)->userid;
+			$userid = KunenaFactory::getUser($userid)->userid;
 		}
 		else
 		{
@@ -304,7 +310,7 @@ class KunenaModelTopics extends KunenaModel
 		}
 		elseif ($time == 0)
 		{
-			$time = \Joomla\Component\Kunena\Libraries\KunenaFactory::getSession()->lasttime;
+			$time = KunenaFactory::getSession()->lasttime;
 		}
 		else
 		{
@@ -337,7 +343,7 @@ class KunenaModelTopics extends KunenaModel
 				$where = 'AND tt.posts=1';
 				break;
 			case 'unapproved' :
-				$allowed = \Joomla\Component\Kunena\Libraries\Forum\Category\Helper::getCategories(false, false, 'topic.approve');
+				$allowed = Category\Helper::getCategories(false, false, 'topic.approve');
 
 				if (empty($allowed))
 				{
@@ -349,7 +355,7 @@ class KunenaModelTopics extends KunenaModel
 				$where   = "AND tt.category_id IN ({$allowed})";
 				break;
 			case 'deleted' :
-				$allowed = \Joomla\Component\Kunena\Libraries\Forum\Category\Helper::getCategories(false, false, 'topic.undelete');
+				$allowed = Category\Helper::getCategories(false, false, 'topic.undelete');
 
 				if (empty($allowed))
 				{
@@ -373,7 +379,7 @@ class KunenaModelTopics extends KunenaModel
 			'hold'      => $hold,
 			'where'     => $where];
 
-		list($this->total, $this->topics) = \Joomla\Component\Kunena\Libraries\Forum\Topic\Helper::getLatestTopics($latestcategory, $limitstart, $limit, $params);
+		list($this->total, $this->topics) = Topic\Helper::getLatestTopics($latestcategory, $limitstart, $limit, $params);
 
 		$this->_common();
 	}
@@ -436,7 +442,7 @@ class KunenaModelTopics extends KunenaModel
 			'favorited'  => $favorites,
 			'subscribed' => $subscriptions];
 
-		list($this->total, $this->topics) = \Joomla\Component\Kunena\Libraries\Forum\Topic\Helper::getLatestTopics($latestcategory, $limitstart, $limit, $params);
+		list($this->total, $this->topics) = Topic\Helper::getLatestTopics($latestcategory, $limitstart, $limit, $params);
 
 		$this->_common();
 	}
@@ -456,7 +462,7 @@ class KunenaModelTopics extends KunenaModel
 		$start = $this->getState('list.start');
 		$limit = $this->getState('list.limit');
 
-		// Time will be calculated inside KunenaForumMessageHelper::getLatestMessages()
+		// Time will be calculated inside \Joomla\Component\Kunena\Libraries\Forum\Message\Helper::getLatestMessages()
 		$time = $this->getState('list.time');
 
 		$params              = [];
@@ -464,7 +470,7 @@ class KunenaModelTopics extends KunenaModel
 		$params['reverse']   = !$this->getState('list.categories.in');
 		$params['starttime'] = $time;
 		$params['user']      = $this->getState('user');
-		list($this->total, $this->messages) = KunenaForumMessageHelper::getLatestMessages($this->getState('list.categories'), $start, $limit, $params);
+		list($this->total, $this->messages) = Helper::getLatestMessages($this->getState('list.categories'), $start, $limit, $params);
 
 		$topicids = [];
 
@@ -485,7 +491,7 @@ class KunenaModelTopics extends KunenaModel
 				break;
 		}
 
-		$this->topics = \Joomla\Component\Kunena\Libraries\Forum\Topic\Helper::getTopics($topicids, $authorise);
+		$this->topics = Topic\Helper::getTopics($topicids, $authorise);
 
 		$userlist = $postlist = [];
 
@@ -528,13 +534,13 @@ class KunenaModelTopics extends KunenaModel
 				\Joomla\Component\Kunena\Libraries\User\Helper::loadUsers($userlist);
 			}
 
-			\Joomla\Component\Kunena\Libraries\Forum\Topic\Helper::getUserTopics(array_keys($this->topics));
-			$lastreadlist = \Joomla\Component\Kunena\Libraries\Forum\Topic\Helper::fetchNewStatus($this->topics);
+			Topic\Helper::getUserTopics(array_keys($this->topics));
+			$lastreadlist = Topic\Helper::fetchNewStatus($this->topics);
 
 			// Fetch last / new post positions when user can see unapproved or deleted posts
-			if ($postlist || $lastreadlist || ($this->me->userid && ($this->me->isAdmin() || \Joomla\Component\Kunena\Libraries\Access::getInstance()->getModeratorStatus())))
+			if ($postlist || $lastreadlist || ($this->me->userid && ($this->me->isAdmin() || Access::getInstance()->getModeratorStatus())))
 			{
-				KunenaForumMessageHelper::loadLocation($postlist + $lastpostlist + $lastreadlist);
+				Helper::loadLocation($postlist + $lastpostlist + $lastreadlist);
 			}
 		}
 	}

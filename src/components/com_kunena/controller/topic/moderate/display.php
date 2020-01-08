@@ -10,7 +10,7 @@
  * @link            https://www.kunena.org
  **/
 
-namespace Joomla\Component\Kunena\Site;
+namespace Joomla\Component\Kunena\Site\Controller\Topic\Moderate;
 
 defined('_JEXEC') or die();
 
@@ -18,6 +18,11 @@ use Exception;
 use Joomla\CMS\Factory;
 use Joomla\CMS\HTML\HTMLHelper;
 use Joomla\CMS\Language\Text;
+use Joomla\Component\Kunena\Libraries\Controller\Display;
+use Joomla\Component\Kunena\Libraries\Error;
+use Joomla\Component\Kunena\Libraries\Exception\Authorise;
+use Joomla\Component\Kunena\Libraries\Forum\Message\Helper;
+use Joomla\Component\Kunena\Libraries\Template\Template;
 use Joomla\Database\Exception\ExecutionFailureException;
 use function defined;
 
@@ -26,7 +31,7 @@ use function defined;
  *
  * @since   Kunena 4.0
  */
-class ComponentKunenaControllerTopicModerateDisplay extends KunenaControllerDisplay
+class ComponentKunenaControllerTopicModerateDisplay extends Display
 {
 	/**
 	 * @var     string
@@ -95,14 +100,14 @@ class ComponentKunenaControllerTopicModerateDisplay extends KunenaControllerDisp
 		}
 		else
 		{
-			$this->message = KunenaForumMessageHelper::get($mesid);
+			$this->message = Helper::get($mesid);
 			$this->message->tryAuthorise('move');
 			$this->topic = $this->message->getTopic();
 		}
 
 		if ($this->config->read_only)
 		{
-			throw new KunenaExceptionAuthorise(Text::_('COM_KUNENA_NO_ACCESS'), '401');
+			throw new Authorise(Text::_('COM_KUNENA_NO_ACCESS'), '401');
 		}
 
 		$this->category = $this->topic->getCategory();
@@ -114,7 +119,7 @@ class ComponentKunenaControllerTopicModerateDisplay extends KunenaControllerDisp
 			Text::_('COM_KUNENA_TITLE_MODERATE_TOPIC') :
 			Text::_('COM_KUNENA_TITLE_MODERATE_MESSAGE');
 
-		$this->template = \Joomla\Component\Kunena\Libraries\Template\Template::getInstance();
+		$this->template = Template::getInstance();
 		$this->template->setCategoryIconset($this->topic->getCategory()->iconset);
 		$this->topicIcons = $this->template->getTopicIcons(false);
 
@@ -156,7 +161,7 @@ class ComponentKunenaControllerTopicModerateDisplay extends KunenaControllerDisp
 			}
 			catch (ExecutionFailureException $e)
 			{
-				\Joomla\Component\Kunena\Libraries\Error::displayDatabaseError($e);
+				Error::displayDatabaseError($e);
 
 				return;
 			}

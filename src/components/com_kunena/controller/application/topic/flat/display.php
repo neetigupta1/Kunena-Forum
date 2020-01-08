@@ -10,7 +10,7 @@
  * @link            https://www.kunena.org
  **/
 
-namespace Joomla\Component\Kunena\Site;
+namespace Joomla\Component\Kunena\Site\Controller\Application\Topic\Flat;
 
 defined('_JEXEC') or die();
 
@@ -22,7 +22,7 @@ use function defined;
  *
  * @since   Kunena 4.0
  */
-class ComponentKunenaControllerApplicationTopicFlatDisplay extends KunenaControllerApplicationDisplay
+class ComponentKunenaControllerApplicationTopicFlatDisplay extends \Joomla\Component\Kunena\Libraries\Controller\Application\Display
 {
 	/**
 	 * Return true if layout exists.

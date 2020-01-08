@@ -10,11 +10,20 @@
  * @link            https://www.kunena.org
  **/
 
-namespace Joomla\Component\Kunena\Site;
+namespace Joomla\Component\Kunena\Site\Models;
 
 defined('_JEXEC') or die();
 
 use Exception;
+use Joomla\Component\Kunena\Libraries\Access;
+use Joomla\Component\Kunena\Libraries\Attachment\Helper;
+use Joomla\Component\Kunena\Libraries\Forum\Topic\Poll\Poll;
+use Joomla\Component\Kunena\Libraries\KunenaFactory;
+use Joomla\Component\Kunena\Libraries\Forum\Message;
+use Joomla\Component\Kunena\Libraries\Forum\Topic;
+use Joomla\Component\Kunena\Libraries\Model;
+use Joomla\Component\Kunena\Libraries\Forum\Category;
+use Joomla\Component\Kunena\Libraries\User;
 use function defined;
 
 /**
@@ -22,7 +31,7 @@ use function defined;
  *
  * @since   Kunena 2.0
  */
-class KunenaModelTopic extends KunenaModel
+class KunenaModelTopic extends Model
 {
 	/**
 	 * @var     boolean
@@ -63,7 +72,7 @@ class KunenaModelTopic extends KunenaModel
 		$layout = $this->me->getTopicLayout();
 		$this->setState('layout', $layout);
 
-		$template          = \Joomla\Component\Kunena\Libraries\KunenaFactory::getTemplate();
+		$template          = KunenaFactory::getTemplate();
 		$profile_location  = $template->params->get('avatarPosition', 'left');
 		$profile_direction = $profile_location == 'left' || $profile_location == 'right' ? 'vertical' : 'horizontal';
 		$this->setState('profile.location', $profile_location);
@@ -78,7 +87,7 @@ class KunenaModelTopic extends KunenaModel
 		$id = $this->getInt('mesid', 0);
 		$this->setState('item.mesid', $id);
 
-		$access = \Joomla\Component\Kunena\Libraries\Access::getInstance();
+		$access = Access::getInstance();
 		$value  = $access->getAllowedHold($this->me, $catid);
 		$this->setState('hold', $value);
 
@@ -126,7 +135,7 @@ class KunenaModelTopic extends KunenaModel
 	}
 
 	/**
-	 * @return  KunenaForumCategory
+	 * @return  Category\Helper
 	 *
 	 * @since   Kunena 6.0
 	 *
@@ -134,7 +143,7 @@ class KunenaModelTopic extends KunenaModel
 	 */
 	public function getCategory()
 	{
-		return \Joomla\Component\Kunena\Libraries\Forum\Category\Helper::get($this->getState('item.catid'));
+		return Category\Helper::get($this->getState('item.catid'));
 	}
 
 	/**
@@ -153,13 +162,13 @@ class KunenaModelTopic extends KunenaModel
 			if ($mesid)
 			{
 				// Find actual topic by fetching current message
-				$message = KunenaForumMessageHelper::get($mesid);
-				$topic   = \Joomla\Component\Kunena\Libraries\Forum\Topic\Helper::get($message->thread);
+				$message = Message\Helper::get($mesid);
+				$topic   = Topic\Helper::get($message->thread);
 				$this->setState('list.start', intval($topic->getPostLocation($mesid) / $this->getState('list.limit')) * $this->getState('list.limit'));
 			}
 			else
 			{
-				$topic = \Joomla\Component\Kunena\Libraries\Forum\Topic\Helper::get($this->getState('item.id'));
+				$topic = Topic\Helper::get($this->getState('item.id'));
 				$ids   = [];
 
 				// If topic has been moved, find the new topic
@@ -172,7 +181,7 @@ class KunenaModelTopic extends KunenaModel
 					}
 
 					$ids[$topic->moved_id] = 1;
-					$topic                 = \Joomla\Component\Kunena\Libraries\Forum\Topic\Helper::get($topic->moved_id);
+					$topic                 = Topic\Helper::get($topic->moved_id);
 				}
 			}
 
@@ -183,7 +192,7 @@ class KunenaModelTopic extends KunenaModel
 	}
 
 	/**
-	 * @return  array|boolean|KunenaForumMessage[]
+	 * @return  array|boolean|Message[]
 	 *
 	 * @since   Kunena 6.0
 	 *
@@ -195,12 +204,12 @@ class KunenaModelTopic extends KunenaModel
 		{
 			$layout         = $this->getState('layout');
 			$threaded       = ($layout == 'indented' || $layout == 'threaded');
-			$this->messages = KunenaForumMessageHelper::getMessagesByTopic($this->getState('item.id'),
+			$this->messages = Message\Helper::getMessagesByTopic($this->getState('item.id'),
 				$this->getState('list.start'), $this->getState('list.limit'), $this->getState('list.direction'), $this->getState('hold'), $threaded
 			);
 
 			// Get thankyous for all messages in the page
-			$thankyous = KunenaForumMessageThankyouHelper::getByMessage($this->messages);
+			$thankyous = Message\Thankyou\Helper::getByMessage($this->messages);
 
 			// First collect ids and users
 			$userlist       = [];
@@ -254,10 +263,10 @@ class KunenaModelTopic extends KunenaModel
 			}
 
 			// Prefetch all users/avatars to avoid user by user queries during template iterations
-			\Joomla\Component\Kunena\Libraries\User\Helper::loadUsers($userlist);
+			User\Helper::loadUsers($userlist);
 
 			// Get attachments
-			KunenaAttachmentHelper::getByMessage($this->messages);
+			Helper::getByMessage($this->messages);
 		}
 
 		return $this->messages;
@@ -394,7 +403,7 @@ class KunenaModelTopic extends KunenaModel
 	}
 
 	/**
-	 * @return  KunenaForumTopicPoll
+	 * @return  Poll
 	 *
 	 * @since   Kunena 6.0
 	 *

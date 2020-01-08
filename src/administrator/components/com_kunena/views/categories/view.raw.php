@@ -23,7 +23,7 @@ use function defined;
  *
  * @since   Kunena 5.0
  */
-class KunenaAdminViewCategories extends KunenaView
+class KunenaAdminViewCategories extends \Joomla\Component\Kunena\Libraries\View
 {
 	/**
 	 * @return  void

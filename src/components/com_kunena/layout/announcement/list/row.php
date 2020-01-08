@@ -10,11 +10,12 @@
  * @link            https://www.kunena.org
  **/
 
-namespace Joomla\Component\Kunena\Site;
+namespace Joomla\Component\Kunena\Site\Layout\Announcement\Kunenalist;
 
 defined('_JEXEC') or die;
 
 use Exception;
+use Joomla\Component\Kunena\Libraries\Layout\Layout;
 use function defined;
 
 /**
@@ -22,7 +23,7 @@ use function defined;
  *
  * @since   Kunena 4.0
  */
-class KunenaLayoutAnnouncementListRow extends KunenaLayout
+class KunenaLayoutAnnouncementListRow extends Layout
 {
 	/**
 	 * @var     KunenaForumAnnouncement

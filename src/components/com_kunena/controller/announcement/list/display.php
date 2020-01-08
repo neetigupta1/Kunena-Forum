@@ -10,13 +10,17 @@
  * @link            https://www.kunena.org
  **/
 
-namespace Joomla\Component\Kunena\Site;
+namespace Joomla\Component\Kunena\Site\Controller\Announement\Kunenalist;
 
 defined('_JEXEC') or die();
 
 use Exception;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\MVC\Controller\BaseController;
+use Joomla\Component\Kunena\Libraries\Controller\Display;
+use Joomla\Component\Kunena\Libraries\Forum\Announcement\Helper;
+use Joomla\Component\Kunena\Libraries\Pagination\Pagination;
+use Joomla\Component\Kunena\Libraries\Route\KunenaRoute;
 use function defined;
 
 /**
@@ -24,7 +28,7 @@ use function defined;
  *
  * @since   Kunena 4.0
  */
-class ComponentKunenaControllerAnnouncementListDisplay extends KunenaControllerDisplay
+class ComponentKunenaControllerAnnouncementListDisplay extends Display
 {
 	/**
 	 * @var     string
@@ -64,9 +68,9 @@ class ComponentKunenaControllerAnnouncementListDisplay extends KunenaControllerD
 
 		if (!$Itemid && $this->config->sef_redirect)
 		{
-			$itemid     = \Joomla\Component\Kunena\Libraries\Route\KunenaRoute::fixMissingItemID();
+			$itemid     = KunenaRoute::fixMissingItemID();
 			$controller = BaseController::getInstance("kunena");
-			$controller->setRedirect(\Joomla\Component\Kunena\Libraries\Route\KunenaRoute::_("index.php?option=com_kunena&view=announcement&layout=list&Itemid={$itemid}", false));
+			$controller->setRedirect(KunenaRoute::_("index.php?option=com_kunena&view=announcement&layout=list&Itemid={$itemid}", false));
 			$controller->redirect();
 		}
 
@@ -83,8 +87,8 @@ class ComponentKunenaControllerAnnouncementListDisplay extends KunenaControllerD
 		}
 
 		$moderator           = \Joomla\Component\Kunena\Libraries\User\Helper::getMyself()->isModerator();
-		$this->pagination    = new KunenaPagination(KunenaForumAnnouncementHelper::getCount(!$moderator), $limitstart, $limit);
-		$this->announcements = KunenaForumAnnouncementHelper::getAnnouncements(
+		$this->pagination    = new Pagination(Helper::getCount(!$moderator), $limitstart, $limit);
+		$this->announcements = Helper::getAnnouncements(
 			$this->pagination->limitstart,
 			$this->pagination->limit,
 			!$moderator

@@ -10,13 +10,17 @@
  * @link            https://www.kunena.org
  **/
 
-namespace Joomla\Component\Kunena\Site;
+namespace Joomla\Component\Kunena\Site\Models;
 
 defined('_JEXEC') or die();
 
 use Exception;
 use Joomla\CMS\HTML\HTMLHelper;
 use Joomla\CMS\Language\Text;
+use Joomla\Component\Kunena\Libraries\Forum;
+use Joomla\Component\Kunena\Libraries\Forum\Announcement\Announcement;
+use Joomla\Component\Kunena\Libraries\Model;
+use Joomla\Component\Kunena\Libraries\User\Helper;
 use function defined;
 
 /**
@@ -24,7 +28,7 @@ use function defined;
  *
  * @since   Kunena 2.0
  */
-class KunenaModelAnnouncement extends KunenaModel
+class KunenaModelAnnouncement extends Model
 {
 	/**
 	 * @var     boolean
@@ -62,17 +66,17 @@ class KunenaModelAnnouncement extends KunenaModel
 	}
 
 	/**
-	 * @return  KunenaForumAnnouncement
+	 * @return  Announcement
 	 *
 	 * @since   Kunena 6.0
 	 */
 	public function getNewAnnouncement()
 	{
-		return new KunenaForumAnnouncement;
+		return new Announcement;
 	}
 
 	/**
-	 * @return  KunenaForumAnnouncement
+	 * @return  Announcement
 	 *
 	 * @since   Kunena 6.0
 	 *
@@ -80,7 +84,7 @@ class KunenaModelAnnouncement extends KunenaModel
 	 */
 	public function getAnnouncement()
 	{
-		return KunenaForumAnnouncementHelper::get($this->getState('item.id'));
+		return Forum\Announcement\Helper::get($this->getState('item.id'));
 	}
 
 	/**
@@ -99,7 +103,7 @@ class KunenaModelAnnouncement extends KunenaModel
 	}
 
 	/**
-	 * @return  KunenaForumAnnouncement[]
+	 * @return  Announcement[]
 	 *
 	 * @since   Kunena 6.0
 	 *
@@ -110,7 +114,7 @@ class KunenaModelAnnouncement extends KunenaModel
 		$start = $this->getState('list.start');
 		$limit = $this->getState('list.limit');
 
-		$this->total = KunenaForumAnnouncementHelper::getCount(!$this->me->isModerator());
+		$this->total = Forum\Announcement\Helper::getCount(!$this->me->isModerator());
 
 		// If out of range, use last page
 		if ($limit && $this->total < $start)
@@ -118,7 +122,7 @@ class KunenaModelAnnouncement extends KunenaModel
 			$start = intval($this->total / $limit) * $limit;
 		}
 
-		$announces = KunenaForumAnnouncementHelper::getAnnouncements($start, $limit, !$this->me->isModerator());
+		$announces = Forum\Announcement\Helper::getAnnouncements($start, $limit, !$this->me->isModerator());
 
 		if ($this->total < $start)
 		{
@@ -138,7 +142,7 @@ class KunenaModelAnnouncement extends KunenaModel
 	public function getannouncementActions()
 	{
 		$actions = [];
-		$user    = \Joomla\Component\Kunena\Libraries\User\Helper::getMyself();
+		$user    = Helper::getMyself();
 
 		if ($user->isModerator())
 		{

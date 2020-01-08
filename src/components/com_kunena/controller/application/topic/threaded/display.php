@@ -10,11 +10,13 @@
  * @link            https://www.kunena.org
  **/
 
-namespace Joomla\Component\Kunena\Site;
+namespace Joomla\Component\Kunena\Site\Controller\Application\Topic\Threaded;
 
 defined('_JEXEC') or die();
 
 use Exception;
+use Joomla\Component\Kunena\Libraries\Controller\Application\Display;
+use Joomla\Component\Kunena\Libraries\User\Helper;
 use function defined;
 
 /**
@@ -22,7 +24,7 @@ use function defined;
  *
  * @since   Kunena 4.0
  */
-class ComponentKunenaControllerApplicationTopicThreadedDisplay extends KunenaControllerApplicationDisplay
+class ComponentKunenaControllerApplicationTopicThreadedDisplay extends Display
 {
 	/**
 	 * Return true if layout exists.
@@ -53,7 +55,7 @@ class ComponentKunenaControllerApplicationTopicThreadedDisplay extends KunenaCon
 	protected function before()
 	{
 		$layout = $this->input->getWord('layout');
-		\Joomla\Component\Kunena\Libraries\User\Helper::getMyself()->setTopicLayout($layout);
+		Helper::getMyself()->setTopicLayout($layout);
 
 		parent::before();
 	}

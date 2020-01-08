@@ -196,7 +196,7 @@ class Message extends KunenaDatabaseObject
 		{
 			$this->_attachments->setKey($this->id)->save();
 			$ids         = $this->_attachments->getMapped();
-			$attachments = KunenaAttachmentHelper::getById($ids, 'none');
+			$attachments = \Joomla\Component\Kunena\Libraries\Attachment\Helper::getById($ids, 'none');
 
 			foreach ($attachments as $attachment)
 			{

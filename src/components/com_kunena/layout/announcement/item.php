@@ -10,11 +10,14 @@
  * @link            https://www.kunena.org
  **/
 
-namespace Joomla\Component\Kunena\Site;
+namespace Joomla\Component\Kunena\Site\Layout\Announcement;
 
 defined('_JEXEC') or die;
 
 use Exception;
+use Joomla\Component\Kunena\Libraries\Forum\Announcement\Helper;
+use Joomla\Component\Kunena\Libraries\Layout\Layout;
+use Joomla\Component\Kunena\Libraries\Route\KunenaRoute;
 use function defined;
 
 /**
@@ -22,7 +25,7 @@ use function defined;
  *
  * @since   Kunena 4.0
  */
-class KunenaLayoutAnnouncementItem extends KunenaLayout
+class KunenaLayoutAnnouncementItem extends Layout
 {
 	/**
 	 * @var     array
@@ -62,7 +65,7 @@ class KunenaLayoutAnnouncementItem extends KunenaLayout
 
 		if ($this->buttons)
 		{
-			$this->buttons['cpanel'] = $this->getButton(KunenaForumAnnouncementHelper::getUri('list'), 'list', 'announcement', 'communication');
+			$this->buttons['cpanel'] = $this->getButton(Helper::getUri('list'), 'list', 'announcement', 'communication');
 		}
 
 		return $this->buttons;
@@ -88,6 +91,6 @@ class KunenaLayoutAnnouncementItem extends KunenaLayout
 	public function getButton($url, $name, $scope, $type, $id = null, $normal = true)
 	{
 		return KunenaLayout::factory('Widget/Announcement/Button')
-			->setProperties(['url' => \Joomla\Component\Kunena\Libraries\Route\KunenaRoute::_($url), 'name' => $name, 'scope' => $scope, 'type' => $type, 'id' => $id, 'normal' => $normal]);
+			->setProperties(['url' => KunenaRoute::_($url), 'name' => $name, 'scope' => $scope, 'type' => $type, 'id' => $id, 'normal' => $normal]);
 	}
 }

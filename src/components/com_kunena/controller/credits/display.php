@@ -10,7 +10,7 @@
  * @link            https://www.kunena.org
  **/
 
-namespace Joomla\Component\Kunena\Site;
+namespace Joomla\Component\Kunena\Site\Controller\Credits;
 
 defined('_JEXEC') or die();
 
@@ -19,6 +19,9 @@ use Joomla\CMS\Factory;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\MVC\Controller\BaseController;
 use Joomla\CMS\Plugin\PluginHelper;
+use Joomla\Component\Kunena\Libraries\Controller\Display;
+use Joomla\Component\Kunena\Libraries\KunenaFactory;
+use Joomla\Component\Kunena\Libraries\Route\KunenaRoute;
 use function defined;
 
 /**
@@ -26,7 +29,7 @@ use function defined;
  *
  * @since  4.0
  */
-class ComponentKunenaControllerCreditsDisplay extends KunenaControllerDisplay
+class ComponentKunenaControllerCreditsDisplay extends Display
 {
 	/**
 	 * @var     string
@@ -75,20 +78,20 @@ class ComponentKunenaControllerCreditsDisplay extends KunenaControllerDisplay
 		if (PluginHelper::isEnabled('kunena', 'powered'))
 		{
 			$this->baseurl = 'index.php?option=com_kunena';
-			$this->app->redirect(\Joomla\Component\Kunena\Libraries\Route\KunenaRoute::_($this->baseurl, false));
+			$this->app->redirect(KunenaRoute::_($this->baseurl, false));
 		}
 
 		$Itemid = Factory::getApplication()->input->getCmd('Itemid');
 
 		if (!$Itemid && $this->config->sef_redirect)
 		{
-			$itemid     = \Joomla\Component\Kunena\Libraries\Route\KunenaRoute::fixMissingItemID();
+			$itemid     = KunenaRoute::fixMissingItemID();
 			$controller = BaseController::getInstance("kunena");
-			$controller->setRedirect(\Joomla\Component\Kunena\Libraries\Route\KunenaRoute::_("index.php?option=com_kunena&view=credits&Itemid={$itemid}", false));
+			$controller->setRedirect(KunenaRoute::_("index.php?option=com_kunena&view=credits&Itemid={$itemid}", false));
 			$controller->redirect();
 		}
 
-		$this->logo = \Joomla\Component\Kunena\Libraries\KunenaFactory::getTemplate()->getImagePath('icons/kunena-logo-48-white.png');
+		$this->logo = KunenaFactory::getTemplate()->getImagePath('icons/kunena-logo-48-white.png');
 
 		$this->intro = Text::sprintf('COM_KUNENA_CREDITS_INTRODUCTION', 'https://www.kunena.org/team');
 

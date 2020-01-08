@@ -25,7 +25,7 @@ use function defined;
  *
  * @since   Kunena 1.X
  */
-class KunenaAdminViewSmilies extends KunenaView
+class KunenaAdminViewSmilies extends \Joomla\Component\Kunena\Libraries\View
 {
 	/**
 	 * @param   null  $tpl  tpl

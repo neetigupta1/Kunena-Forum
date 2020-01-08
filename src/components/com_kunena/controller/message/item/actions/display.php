@@ -10,7 +10,7 @@
  * @link            https://www.kunena.org
  **/
 
-namespace Joomla\Component\Kunena\Site;
+namespace Joomla\Component\Kunena\Site\Controller\Message\Item\Actions;
 
 defined('_JEXEC') or die();
 
@@ -22,6 +22,12 @@ use Joomla\CMS\Session\Session;
 use Joomla\CMS\Uri\Uri;
 use Joomla\CMS\Object\CMSObject;
 use Joomla\CMS\Plugin\PluginHelper;
+use Joomla\Component\Kunena\Libraries\Controller\Display;
+use Joomla\Component\Kunena\Libraries\Forum\Message\Message;
+use Joomla\Component\Kunena\Libraries\KunenaFactory;
+use Joomla\Component\Kunena\Libraries\Login;
+use Joomla\Component\Kunena\Libraries\Route\KunenaRoute;
+use Joomla\Component\Kunena\Libraries\User\Helper;
 use function defined;
 
 /**
@@ -29,7 +35,7 @@ use function defined;
  *
  * @since   Kunena 4.0
  */
-class ComponentKunenaControllerMessageItemActionsDisplay extends KunenaControllerDisplay
+class ComponentKunenaControllerMessageItemActionsDisplay extends Display
 {
 	/**
 	 * @var     string
@@ -70,9 +76,9 @@ class ComponentKunenaControllerMessageItemActionsDisplay extends KunenaControlle
 		parent::before();
 
 		$mesid = $this->input->getInt('mesid');
-		$me    = \Joomla\Component\Kunena\Libraries\User\Helper::getMyself();
+		$me    = Helper::getMyself();
 
-		$this->message = KunenaForumMessage::getInstance($mesid);
+		$this->message = Message::getInstance($mesid);
 		$this->topic   = $this->message->getTopic();
 
 		$id     = $this->message->thread;
@@ -85,7 +91,7 @@ class ComponentKunenaControllerMessageItemActionsDisplay extends KunenaControlle
 		$this->messageButtons = new CMSObject;
 		$this->message_closed = null;
 
-		$ktemplate     = \Joomla\Component\Kunena\Libraries\KunenaFactory::getTemplate();
+		$ktemplate     = KunenaFactory::getTemplate();
 		$fullactions   = $ktemplate->params->get('fullactions');
 		$topicicontype = $ktemplate->params->get('topicicontype');
 
@@ -224,7 +230,7 @@ class ComponentKunenaControllerMessageItemActionsDisplay extends KunenaControlle
 				($me->exists() ? Text::_('COM_KUNENA_REPLY_USER_REPLY_DISABLED') : ' ');
 		}
 
-		$login = KunenaLogin::getInstance();
+		$login = Login::getInstance();
 
 		if (!$this->message->isAuthorised('reply') && !$this->message_closed && $login->enabled() && !$this->message->hold
 			&& !$this->config->read_only || !$this->message->isAuthorised('reply') && !$this->topic->locked && $login->enabled()
@@ -688,7 +694,7 @@ class ComponentKunenaControllerMessageItemActionsDisplay extends KunenaControlle
 	public function getButton($url, $name, $scope, $type, $id = null, $normal = true, $icon = '')
 	{
 		return KunenaLayout::factory('Widget/Button')
-			->setProperties(['url'  => \Joomla\Component\Kunena\Libraries\Route\KunenaRoute::_($url), 'name' => $name, 'scope' => $scope,
+			->setProperties(['url'  => KunenaRoute::_($url), 'name' => $name, 'scope' => $scope,
 							 'type' => $type, 'id' => 'btn_' . $id, 'normal' => $normal, 'icon' => $icon]
 			);
 	}

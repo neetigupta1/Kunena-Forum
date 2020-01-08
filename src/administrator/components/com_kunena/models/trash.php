@@ -27,7 +27,7 @@ use function defined;
  *
  * @since   Kunena 2.0
  */
-class KunenaAdminModelTrash extends KunenaModel
+class KunenaAdminModelTrash extends \Joomla\Component\Kunena\Libraries\Model
 {
 	/**
 	 * @var     boolean
@@ -322,7 +322,7 @@ class KunenaAdminModelTrash extends KunenaModel
 		$db->setQuery($query);
 		$ids = $db->loadColumn();
 
-		return KunenaForumMessageHelper::getMessages($ids, 'none');
+		return \Joomla\Component\Kunena\Libraries\Forum\Message\Helper::getMessages($ids, 'none');
 	}
 
 	/**
@@ -366,7 +366,7 @@ class KunenaAdminModelTrash extends KunenaModel
 		}
 		elseif ($type == 'messages')
 		{
-			$items = KunenaForumMessageHelper::getMessages($ids, 'none');
+			$items = \Joomla\Component\Kunena\Libraries\Forum\Message\Helper::getMessages($ids, 'none');
 		}
 
 		return $items;

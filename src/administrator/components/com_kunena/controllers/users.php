@@ -354,7 +354,7 @@ class KunenaAdminControllerUsers extends KunenaController
 		{
 			foreach ($cid as $id)
 			{
-				list($total, $messages) = KunenaForumMessageHelper::getLatestMessages(false, 0, 0, ['starttime' => '-1', 'user' => $id]);
+				list($total, $messages) = \Joomla\Component\Kunena\Libraries\Forum\Message\Helper::getLatestMessages(false, 0, 0, ['starttime' => '-1', 'user' => $id]);
 
 				foreach ($messages as $mes)
 				{
@@ -439,7 +439,7 @@ class KunenaAdminControllerUsers extends KunenaController
 		{
 			foreach ($uids as $id)
 			{
-				list($total, $messages) = KunenaForumMessageHelper::getLatestMessages(false, 0, 0, ['starttime' => '-1', 'user' => $id]);
+				list($total, $messages) = \Joomla\Component\Kunena\Libraries\Forum\Message\Helper::getLatestMessages(false, 0, 0, ['starttime' => '-1', 'user' => $id]);
 
 				foreach ($messages as $object)
 				{

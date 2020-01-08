@@ -21,6 +21,6 @@ use function defined;
  *
  * @since   Kunena 2.0
  */
-class KunenaAdminModelStats extends KunenaModel
+class KunenaAdminModelStats extends \Joomla\Component\Kunena\Libraries\Model
 {
 }

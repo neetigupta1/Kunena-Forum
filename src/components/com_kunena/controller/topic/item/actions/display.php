@@ -10,7 +10,7 @@
  * @link            https://www.kunena.org
  **/
 
-namespace Joomla\Component\Kunena\Site;
+namespace Joomla\Component\Kunena\Site\Controller\Topic\Item\Actions;
 
 defined('_JEXEC') or die();
 
@@ -19,6 +19,10 @@ use Joomla\CMS\Language\Text;
 use Joomla\CMS\Plugin\PluginHelper;
 use Joomla\CMS\Session\Session;
 use Joomla\CMS\Object\CMSObject;
+use Joomla\Component\Kunena\Libraries\Controller\Display;
+use Joomla\Component\Kunena\Libraries\Exception\Authorise;
+use Joomla\Component\Kunena\Libraries\KunenaFactory;
+use Joomla\Component\Kunena\Libraries\Route\KunenaRoute;
 use function defined;
 
 /**
@@ -26,7 +30,7 @@ use function defined;
  *
  * @since   Kunena 4.0
  */
-class ComponentKunenaControllerTopicItemActionsDisplay extends KunenaControllerDisplay
+class ComponentKunenaControllerTopicItemActionsDisplay extends Display
 {
 	/**
 	 * @var     string
@@ -71,7 +75,7 @@ class ComponentKunenaControllerTopicItemActionsDisplay extends KunenaControllerD
 		$layout = "index.php?option=com_kunena&view=topic&layout=%s&catid={$catid}&id={$id}";
 
 		$userTopic          = $this->topic->getUserTopic();
-		$this->template     = \Joomla\Component\Kunena\Libraries\KunenaFactory::getTemplate();
+		$this->template     = KunenaFactory::getTemplate();
 		$this->topicButtons = new CMSObject;
 
 		$fullactions     = $this->template->params->get('fullactions');
@@ -81,7 +85,7 @@ class ComponentKunenaControllerTopicItemActionsDisplay extends KunenaControllerD
 
 		if ($this->config->read_only)
 		{
-			throw new KunenaExceptionAuthorise(Text::_('COM_KUNENA_NO_ACCESS'), '401');
+			throw new Authorise(Text::_('COM_KUNENA_NO_ACCESS'), '401');
 		}
 
 		if ($this->topic->isAuthorised('reply'))
@@ -359,7 +363,7 @@ class ComponentKunenaControllerTopicItemActionsDisplay extends KunenaControllerD
 	public function getButton($url, $name, $scope, $type, $primary = false, $normal = true, $icon = '')
 	{
 		return KunenaLayout::factory('Widget/Button')
-			->setProperties(['url'   => \Joomla\Component\Kunena\Libraries\Route\KunenaRoute::_($url), 'name' => $name,
+			->setProperties(['url'   => KunenaRoute::_($url), 'name' => $name,
 							 'scope' => $scope, 'type' => $type, 'primary' => $primary, 'normal' => $normal, 'icon' => $icon,]
 			);
 	}

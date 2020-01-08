@@ -10,10 +10,11 @@
  * @link            https://www.kunena.org
  **/
 
-namespace Joomla\Component\Kunena\Site;
+namespace Joomla\Component\Kunena\Site\Models;
 
 defined('_JEXEC') or die();
 
+use Joomla\Component\Kunena\Libraries\Model;
 use function defined;
 
 /**
@@ -21,7 +22,7 @@ use function defined;
  *
  * @since   Kunena 2.0
  */
-class KunenaModelCommon extends KunenaModel
+class KunenaModelCommon extends Model
 {
 	/**
 	 * @return  void

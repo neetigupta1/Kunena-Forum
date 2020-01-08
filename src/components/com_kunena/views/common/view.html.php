@@ -10,7 +10,7 @@
  * @link            https://www.kunena.org
  **/
 
-namespace Joomla\Component\Kunena\Site;
+namespace Joomla\Component\Kunena\Site\View\Common;
 
 defined('_JEXEC') or die();
 
@@ -19,6 +19,20 @@ use Joomla\CMS\Factory;
 use Joomla\CMS\HTML\HTMLHelper;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\Uri\Uri;
+use Joomla\Component\Kunena\Libraries\Access;
+use Joomla\Component\Kunena\Libraries\Exception\Authorise;
+use Joomla\Component\Kunena\Libraries\Forum\Category\Helper;
+use Joomla\Component\Kunena\Libraries\Forum\Statistics;
+use Joomla\Component\Kunena\Libraries\Html\Parser;
+use Joomla\Component\Kunena\Libraries\KunenaDate;
+use Joomla\Component\Kunena\Libraries\KunenaFactory;
+use Joomla\Component\Kunena\Libraries\Login;
+use Joomla\Component\Kunena\Libraries\Route\KunenaRoute;
+use Joomla\Component\Kunena\Libraries\View;
+use Joomla\Component\Kunena\Libraries\Forum\Topic;
+use Joomla\Component\Kunena\Libraries\Forum\Announcement;
+use Joomla\Component\Kunena\Libraries\User;
+use Joomla\Component\Kunena\Libraries\Menu;
 use Joomla\Registry\Registry;
 use StdClass;
 use function defined;
@@ -28,7 +42,7 @@ use function defined;
  *
  * @since   Kunena 6.0
  */
-class KunenaViewCommon extends KunenaView
+class html extends View
 {
 	/**
 	 * @var     integer
@@ -65,7 +79,7 @@ class KunenaViewCommon extends KunenaView
 		{
 			if (!$layout)
 			{
-				throw new KunenaExceptionAuthorise(Text::_('COM_KUNENA_NO_PAGE'), 404);
+				throw new Authorise(Text::_('COM_KUNENA_NO_PAGE'), 404);
 			}
 		}
 
@@ -87,7 +101,7 @@ class KunenaViewCommon extends KunenaView
 
 		if (empty($this->html))
 		{
-			$this->body = \Joomla\Component\Kunena\Libraries\Html\Parser::parseBBCode($this->body);
+			$this->body = Parser::parseBBCode($this->body);
 		}
 
 		$result = $this->loadTemplateFile($tpl);
@@ -113,7 +127,7 @@ class KunenaViewCommon extends KunenaView
 
 		if ($this->config->showannouncement > 0)
 		{
-			$items              = KunenaForumAnnouncementHelper::getAnnouncements();
+			$items              = Announcement\Helper::getAnnouncements();
 			$this->announcement = array_pop($items);
 
 			if (!$this->announcement)
@@ -138,7 +152,7 @@ class KunenaViewCommon extends KunenaView
 
 			if ($this->announcement && $this->announcement->isAuthorised('read'))
 			{
-				$this->annListUrl = KunenaForumAnnouncementHelper::getUri('list');
+				$this->annListUrl = Announcement\Helper::getUri('list');
 				$this->showdate   = $this->announcement->showdate;
 
 				$result = $this->loadTemplateFile($tpl);
@@ -175,7 +189,7 @@ class KunenaViewCommon extends KunenaView
 			return;
 		}
 
-		$allowed = md5(serialize(\Joomla\Component\Kunena\Libraries\Access::getInstance()->getAllowedCategories()));
+		$allowed = md5(serialize(Access::getInstance()->getAllowedCategories()));
 		$cache   = Factory::getCache('com_kunena', 'output');
 
 		if ($cache->start("{$this->ktemplate->name}.common.jump.{$allowed}", 'com_kunena.template'))
@@ -222,12 +236,12 @@ class KunenaViewCommon extends KunenaView
 
 		if (empty($this->pathway))
 		{
-			\Joomla\Component\Kunena\Libraries\KunenaFactory::loadLanguage('com_kunena.sys', 'admin');
+			KunenaFactory::loadLanguage('com_kunena.sys', 'admin');
 
 			if ($catid)
 			{
-				$parents         = \Joomla\Component\Kunena\Libraries\Forum\Category\Helper::getParents($catid);
-				$parents[$catid] = \Joomla\Component\Kunena\Libraries\Forum\Category\Helper::get($catid);
+				$parents         = Helper::getParents($catid);
+				$parents[$catid] = Helper::get($catid);
 
 				// Remove categories from pathway if menu item contains/excludes them
 				if (!empty($active->query['catid']) && isset($parents[$active->query['catid']]))
@@ -245,18 +259,18 @@ class KunenaViewCommon extends KunenaView
 
 				foreach ($parents as $parent)
 				{
-					$pathway->addItem($this->escape($parent->name), \Joomla\Component\Kunena\Libraries\Route\KunenaRoute::normalize("index.php?option=com_kunena&view=category&catid={$parent->id}"));
+					$pathway->addItem($this->escape($parent->name), KunenaRoute::normalize("index.php?option=com_kunena&view=category&catid={$parent->id}"));
 				}
 			}
 
 			if ($view == 'announcement')
 			{
-				$pathway->addItem(Text::_('COM_KUNENA_ANN_ANNOUNCEMENTS'), \Joomla\Component\Kunena\Libraries\Route\KunenaRoute::normalize("index.php?option=com_kunena&view=announcement&layout=list"));
+				$pathway->addItem(Text::_('COM_KUNENA_ANN_ANNOUNCEMENTS'), KunenaRoute::normalize("index.php?option=com_kunena&view=announcement&layout=list"));
 			}
 			elseif ($id)
 			{
-				$topic = \Joomla\Component\Kunena\Libraries\Forum\Topic\Helper::get($id);
-				$pathway->addItem($this->escape($topic->subject), \Joomla\Component\Kunena\Libraries\Route\KunenaRoute::normalize("index.php?option=com_kunena&view=category&catid={$catid}&id={$topic->id}"));
+				$topic = Topic\Helper::get($id);
+				$pathway->addItem($this->escape($topic->subject), KunenaRoute::normalize("index.php?option=com_kunena&view=category&catid={$catid}&id={$topic->id}"));
 			}
 
 			if ($view == 'topic')
@@ -293,7 +307,7 @@ class KunenaViewCommon extends KunenaView
 		{
 			$item       = new StdClass;
 			$item->name = $this->escape($pitem->name);
-			$item->link = \Joomla\Component\Kunena\Libraries\Route\KunenaRoute::_($pitem->link);
+			$item->link = KunenaRoute::_($pitem->link);
 
 			if ($item->link)
 			{
@@ -330,9 +344,9 @@ class KunenaViewCommon extends KunenaView
 			return;
 		}
 
-		$users = \Joomla\Component\Kunena\Libraries\User\Helper::getOnlineUsers();
-		\Joomla\Component\Kunena\Libraries\User\Helper::loadUsers(array_keys($users));
-		$onlineusers = \Joomla\Component\Kunena\Libraries\User\Helper::getOnlineCount();
+		$users = User\Helper::getOnlineUsers();
+		User\Helper::loadUsers(array_keys($users));
+		$onlineusers = User\Helper::getOnlineCount();
 
 		$who = '<strong>' . $onlineusers['user'] . ' </strong>';
 
@@ -365,7 +379,7 @@ class KunenaViewCommon extends KunenaView
 
 		foreach ($users as $userid => $usertime)
 		{
-			$user = \Joomla\Component\Kunena\Libraries\User\Helper::get($userid);
+			$user = User\Helper::get($userid);
 
 			if (!$user->showOnline)
 			{
@@ -417,12 +431,12 @@ class KunenaViewCommon extends KunenaView
 			return;
 		}
 
-		$kunena_stats = KunenaForumStatistics::getInstance();
+		$kunena_stats = Statistics::getInstance();
 		$kunena_stats->loadGeneral();
 
 		$this->kunena_stats     = $kunena_stats;
-		$this->latestMemberLink = \Joomla\Component\Kunena\Libraries\KunenaFactory::getUser(intval($this->lastUserId))->getLink();
-		$this->statisticsUrl    = \Joomla\Component\Kunena\Libraries\Route\KunenaRoute::_('index.php?option=com_kunena&view=statistics');
+		$this->latestMemberLink = KunenaFactory::getUser(intval($this->lastUserId))->getLink();
+		$this->statisticsUrl    = KunenaRoute::_('index.php?option=com_kunena&view=statistics');
 		$this->statisticsLink   = $this->getStatsLink($this->config->board_title . ' ' . Text::_('COM_KUNENA_STAT_FORUMSTATS'), '');
 		$this->usercountLink    = $this->getUserlistLink('', $this->memberCount);
 		$this->userlistLink     = $this->getUserlistLink('', Text::_('COM_KUNENA_STAT_USERLIST') . ' &raquo;');
@@ -457,7 +471,7 @@ class KunenaViewCommon extends KunenaView
 		{
 			if ($catid > 0)
 			{
-				$category = \Joomla\Component\Kunena\Libraries\Forum\Category\Helper::get($catid);
+				$category = Helper::get($catid);
 
 				if ($category->pub_access == 0 && $category->parent)
 				{
@@ -500,9 +514,9 @@ class KunenaViewCommon extends KunenaView
 		}
 
 		$this->params            = $this->state->get('params');
-		$private                 = \Joomla\Component\Kunena\Libraries\KunenaFactory::getPrivateMessaging();
+		$private                 = KunenaFactory::getPrivateMessaging();
 		$this->pm_link           = $private->getInboxURL();
-		$this->announcesListLink = KunenaForumAnnouncementHelper::getUrl('list');
+		$this->announcesListLink = Announcement\Helper::getUrl('list');
 		$result                  = $this->loadTemplateFile($tpl);
 
 		echo $result;
@@ -517,7 +531,7 @@ class KunenaViewCommon extends KunenaView
 	 */
 	public function getMenu()
 	{
-		$basemenu = \Joomla\Component\Kunena\Libraries\Route\KunenaRoute::getMenu();
+		$basemenu = KunenaRoute::getMenu();
 
 		if (!$basemenu)
 		{
@@ -530,7 +544,7 @@ class KunenaViewCommon extends KunenaView
 		$this->parameters->set('startLevel', $basemenu->level + 1);
 		$this->parameters->set('endLevel', $basemenu->level + $this->ktemplate->params->get('menu_levels', 1));
 
-		$this->list      = KunenaMenuHelper::getList($this->parameters);
+		$this->list      = Menu\Helper::getList($this->parameters);
 		$this->menu      = $this->app->getMenu();
 		$this->active    = $this->menu->getActive();
 		$this->active_id = isset($this->active) ? $this->active->id : $this->menu->getDefault()->id;
@@ -570,7 +584,7 @@ class KunenaViewCommon extends KunenaView
 		{
 			$this->moduleHtml = $this->getModulePosition('kunena_profilebox');
 
-			$login = KunenaLogin::getInstance();
+			$login = Login::getInstance();
 
 			if ($my->get('guest'))
 			{
@@ -605,7 +619,7 @@ class KunenaViewCommon extends KunenaView
 				// Announcements
 				if ($this->me->isModerator())
 				{
-					$this->announcementsLink = '<a href="' . KunenaForumAnnouncementHelper::getUrl('list') . '">' . Text::_('COM_KUNENA_ANN_ANNOUNCEMENTS') . '</a>';
+					$this->announcementsLink = '<a href="' . Announcement\Helper::getUrl('list') . '">' . Text::_('COM_KUNENA_ANN_ANNOUNCEMENTS') . '</a>';
 				}
 			}
 
@@ -652,7 +666,7 @@ class KunenaViewCommon extends KunenaView
 	public function getPrivateMessageLink()
 	{
 		// Private messages
-		$private = \Joomla\Component\Kunena\Libraries\KunenaFactory::getPrivateMessaging();
+		$private = KunenaFactory::getPrivateMessaging();
 
 		if ($private)
 		{
@@ -673,7 +687,7 @@ class KunenaViewCommon extends KunenaView
 	 */
 	public function getUserlistURL($action = '', $xhtml = true)
 	{
-		$profile = \Joomla\Component\Kunena\Libraries\KunenaFactory::getProfile();
+		$profile = KunenaFactory::getProfile();
 
 		return $profile->getUserListURL($action, $xhtml);
 	}
@@ -693,11 +707,11 @@ class KunenaViewCommon extends KunenaView
 	 */
 	private function getRSSURL($params = '', $xhtml = true)
 	{
-		$mode = \Joomla\Component\Kunena\Libraries\KunenaFactory::getConfig()->rss_type;
+		$mode = KunenaFactory::getConfig()->rss_type;
 
-		if (!empty(\Joomla\Component\Kunena\Libraries\KunenaFactory::getConfig()->rss_feedburner_url))
+		if (!empty(KunenaFactory::getConfig()->rss_feedburner_url))
 		{
-			return \Joomla\Component\Kunena\Libraries\KunenaFactory::getConfig()->rss_feedburner_url;
+			return KunenaFactory::getConfig()->rss_feedburner_url;
 		}
 		else
 		{
@@ -714,7 +728,7 @@ class KunenaViewCommon extends KunenaView
 					break;
 			}
 
-			return \Joomla\Component\Kunena\Libraries\Route\KunenaRoute::_("index.php?option=com_kunena&view=topics&layout=default&{$rss_type}{$params}?format=feed&type=rss", $xhtml);
+			return KunenaRoute::_("index.php?option=com_kunena&view=topics&layout=default&{$rss_type}{$params}?format=feed&type=rss", $xhtml);
 		}
 	}
 
@@ -749,14 +763,14 @@ class KunenaViewCommon extends KunenaView
 	 */
 	public function getStatsLink($name, $class = '', $rel = 'follow')
 	{
-		$my = \Joomla\Component\Kunena\Libraries\KunenaFactory::getUser();
+		$my = KunenaFactory::getUser();
 
-		if (\Joomla\Component\Kunena\Libraries\KunenaFactory::getConfig()->statslink_allowed == 0 && $my->userid == 0)
+		if (KunenaFactory::getConfig()->statslink_allowed == 0 && $my->userid == 0)
 		{
 			return false;
 		}
 
-		return '<a href="' . \Joomla\Component\Kunena\Libraries\Route\KunenaRoute::_('index.php?option=com_kunena&view=statistics') . '" rel="' . $rel . '" class="' . $class . '">' . $name . '</a>';
+		return '<a href="' . KunenaRoute::_('index.php?option=com_kunena&view=statistics') . '" rel="' . $rel . '" class="' . $class . '">' . $name . '</a>';
 	}
 
 	/**
@@ -773,11 +787,11 @@ class KunenaViewCommon extends KunenaView
 	 */
 	public function getUserlistLink($action, $name, $rel = 'nofollow', $class = '')
 	{
-		$my = \Joomla\Component\Kunena\Libraries\KunenaFactory::getUser();
+		$my = KunenaFactory::getUser();
 
 		if ($name == $this->memberCount)
 		{
-			$link = \Joomla\Component\Kunena\Libraries\KunenaFactory::getProfile()->getUserListURL($action);
+			$link = KunenaFactory::getProfile()->getUserListURL($action);
 
 			if ($link)
 			{
@@ -788,13 +802,13 @@ class KunenaViewCommon extends KunenaView
 				return $name;
 			}
 		}
-		elseif ($my->userid == 0 && !\Joomla\Component\Kunena\Libraries\KunenaFactory::getConfig()->userlist_allowed)
+		elseif ($my->userid == 0 && !KunenaFactory::getConfig()->userlist_allowed)
 		{
 			return false;
 		}
 		else
 		{
-			$link = \Joomla\Component\Kunena\Libraries\KunenaFactory::getProfile()->getUserListURL($action);
+			$link = KunenaFactory::getProfile()->getUserListURL($action);
 
 			return '<a href="' . $link . '" rel="' . $rel . '" class="' . $class . '">' . $name . '</a>';
 		}

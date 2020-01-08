@@ -10,7 +10,7 @@
  * @link            https://www.kunena.org
  **/
 
-namespace Joomla\Component\Kunena\Site;
+namespace Joomla\Component\Kunena\Site\Models;
 
 defined('_JEXEC') or die();
 
@@ -18,7 +18,16 @@ use Exception;
 use Joomla\CMS\Factory;
 use Joomla\CMS\HTML\HTMLHelper;
 use Joomla\CMS\Language\Text;
+use Joomla\Component\Kunena\Administrator\Models\KunenaAdminModelCategories;
+use Joomla\Component\Kunena\Libraries\Access;
+use Joomla\Component\Kunena\Libraries\Error;
+use Joomla\Component\Kunena\Libraries\Forum\Message\Helper;
+use Joomla\Component\Kunena\Libraries\Forum\Topic\Topic;
+use Joomla\Component\Kunena\Libraries\KunenaFactory;
 use Joomla\Database\Exception\ExecutionFailureException;
+use Joomla\Component\Kunena\Libraries\Forum\Category;
+use Joomla\Component\Kunena\Libraries\Forum;
+use Joomla\Component\Kunena\Libraries\User;
 use function defined;
 
 require_once KPATH_ADMIN . '/models/categories.php';
@@ -61,7 +70,7 @@ class KunenaModelCategory extends KunenaAdminModelCategories
 	protected $actionMove = false;
 
 	/**
-	 * @var     KunenaForumTopic
+	 * @var     Topic
 	 * @since   Kunena 6.0
 	 */
 	protected $total;
@@ -89,7 +98,7 @@ class KunenaModelCategory extends KunenaAdminModelCategories
 		}
 		elseif ($userid > 0)
 		{
-			$userid = \Joomla\Component\Kunena\Libraries\KunenaFactory::getUser($userid)->userid;
+			$userid = KunenaFactory::getUser($userid)->userid;
 		}
 		else
 		{
@@ -153,8 +162,8 @@ class KunenaModelCategory extends KunenaAdminModelCategories
 		if ($this->items === false)
 		{
 			$this->items = [];
-			$user        = \Joomla\Component\Kunena\Libraries\KunenaFactory::getUser();
-			list($total, $categories) = \Joomla\Component\Kunena\Libraries\Forum\Category\Helper::getLatestSubscriptions($user->userid);
+			$user        = KunenaFactory::getUser();
+			list($total, $categories) = Category\Helper::getLatestSubscriptions($user->userid);
 			$this->items = $categories;
 		}
 
@@ -162,7 +171,7 @@ class KunenaModelCategory extends KunenaAdminModelCategories
 	}
 
 	/**
-	 * @return  array|boolean|KunenaForumCategory[]
+	 * @return  array|boolean|Category[]
 	 *
 	 * @since   Kunena 6.0
 	 *
@@ -180,12 +189,12 @@ class KunenaModelCategory extends KunenaAdminModelCategories
 
 			if ($layout == 'user')
 			{
-				$categories[0] = \Joomla\Component\Kunena\Libraries\Forum\Category\Helper::getSubscriptions();
+				$categories[0] = Category\Helper::getSubscriptions();
 				$flat          = true;
 			}
 			elseif ($catid)
 			{
-				$categories[0] = \Joomla\Component\Kunena\Libraries\Forum\Category\Helper::getCategories($catid);
+				$categories[0] = Category\Helper::getCategories($catid);
 
 				if (empty($categories[0]))
 				{
@@ -194,7 +203,7 @@ class KunenaModelCategory extends KunenaAdminModelCategories
 			}
 			else
 			{
-				$categories[0] = \Joomla\Component\Kunena\Libraries\Forum\Category\Helper::getChildren();
+				$categories[0] = Category\Helper::getChildren();
 			}
 
 			if ($flat)
@@ -203,7 +212,7 @@ class KunenaModelCategory extends KunenaAdminModelCategories
 			}
 			else
 			{
-				$allsubcats = \Joomla\Component\Kunena\Libraries\Forum\Category\Helper::getChildren(array_keys($categories [0]), 1);
+				$allsubcats = Category\Helper::getChildren(array_keys($categories [0]), 1);
 			}
 
 			if (empty($allsubcats))
@@ -211,7 +220,7 @@ class KunenaModelCategory extends KunenaAdminModelCategories
 				return [];
 			}
 
-			\Joomla\Component\Kunena\Libraries\Forum\Category\Helper::getNewTopics(array_keys($allsubcats));
+			Category\Helper::getNewTopics(array_keys($allsubcats));
 
 			$modcats      = [];
 			$lastpostlist = [];
@@ -247,7 +256,7 @@ class KunenaModelCategory extends KunenaAdminModelCategories
 			}
 
 			// Prefetch topics
-			$topics = \Joomla\Component\Kunena\Libraries\Forum\Topic\Helper::getTopics($topiclist);
+			$topics = Forum\Topic\Helper::getTopics($topiclist);
 
 			foreach ($topics as $topic)
 			{
@@ -283,7 +292,7 @@ class KunenaModelCategory extends KunenaAdminModelCategories
 				}
 				catch (ExecutionFailureException $e)
 				{
-					\Joomla\Component\Kunena\Libraries\Error::displayDatabaseError($e);
+					Error::displayDatabaseError($e);
 				}
 
 				foreach ($pending as $item)
@@ -296,14 +305,14 @@ class KunenaModelCategory extends KunenaAdminModelCategories
 			}
 
 			// Fix last post position when user can see unapproved or deleted posts
-			if ($lastpostlist && !$topic_ordering && ($this->me->isAdmin() || \Joomla\Component\Kunena\Libraries\Access::getInstance()->getModeratorStatus()))
+			if ($lastpostlist && !$topic_ordering && ($this->me->isAdmin() || Access::getInstance()->getModeratorStatus()))
 			{
-				KunenaForumMessageHelper::getMessages($lastpostlist);
-				KunenaForumMessageHelper::loadLocation($lastpostlist);
+				Helper::getMessages($lastpostlist);
+				Helper::loadLocation($lastpostlist);
 			}
 
 			// Prefetch all users/avatars to avoid user by user queries during template iterations
-			\Joomla\Component\Kunena\Libraries\User\Helper::loadUsers($userlist);
+			User\Helper::loadUsers($userlist);
 
 			if ($flat)
 			{
@@ -329,7 +338,7 @@ class KunenaModelCategory extends KunenaAdminModelCategories
 	}
 
 	/**
-	 * @return  KunenaForumCategory
+	 * @return  Category
 	 *
 	 * @since   Kunena 6.0
 	 *
@@ -337,7 +346,7 @@ class KunenaModelCategory extends KunenaAdminModelCategories
 	 */
 	public function getCategory()
 	{
-		return \Joomla\Component\Kunena\Libraries\Forum\Category\Helper::get($this->getState('item.id'));
+		return Category\Helper::get($this->getState('item.id'));
 	}
 
 	/**
@@ -359,7 +368,7 @@ class KunenaModelCategory extends KunenaAdminModelCategories
 
 			$topic_ordering = $this->getCategory()->topic_ordering;
 
-			$access = \Joomla\Component\Kunena\Libraries\Access::getInstance();
+			$access = Access::getInstance();
 			$hold   = $format == 'feed' ? 0 : $access->getAllowedHold($this->me, $catid);
 			$moved  = $format == 'feed' ? 0 : 1;
 			$params = [
@@ -387,10 +396,10 @@ class KunenaModelCategory extends KunenaAdminModelCategories
 
 			if ($format == 'feed')
 			{
-				$catid = array_keys(\Joomla\Component\Kunena\Libraries\Forum\Category\Helper::getChildren($catid, 100) + [$catid => 1]);
+				$catid = array_keys(Category\Helper::getChildren($catid, 100) + [$catid => 1]);
 			}
 
-			list($this->total, $this->topics) = \Joomla\Component\Kunena\Libraries\Forum\Topic\Helper::getLatestTopics($catid, $limitstart, $limit, $params);
+			list($this->total, $this->topics) = Forum\Topic\Helper::getLatestTopics($catid, $limitstart, $limit, $params);
 
 			if ($this->total > 0)
 			{
@@ -408,16 +417,16 @@ class KunenaModelCategory extends KunenaAdminModelCategories
 				// Prefetch all users/avatars to avoid user by user queries during template iterations
 				if (!empty($userlist))
 				{
-					\Joomla\Component\Kunena\Libraries\User\Helper::loadUsers($userlist);
+					User\Helper::loadUsers($userlist);
 				}
 
-				\Joomla\Component\Kunena\Libraries\Forum\Topic\Helper::getUserTopics(array_keys($this->topics));
-				$lastreadlist = \Joomla\Component\Kunena\Libraries\Forum\Topic\Helper::fetchNewStatus($this->topics);
+				Forum\Topic\Helper::getUserTopics(array_keys($this->topics));
+				$lastreadlist = Forum\Topic\Helper::fetchNewStatus($this->topics);
 
 				// Fetch last / new post positions when user can see unapproved or deleted posts
-				if ($lastreadlist || $this->me->isAdmin() || \Joomla\Component\Kunena\Libraries\Access::getInstance()->getModeratorStatus())
+				if ($lastreadlist || $this->me->isAdmin() || Access::getInstance()->getModeratorStatus())
 				{
-					KunenaForumMessageHelper::loadLocation($lastpostlist + $lastreadlist);
+					Helper::loadLocation($lastpostlist + $lastreadlist);
 				}
 			}
 		}

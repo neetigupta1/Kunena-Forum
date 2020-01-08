@@ -27,7 +27,7 @@ use function defined;
  *
  * @since   Kunena 6.0
  */
-class KunenaAdminViewStatistics extends KunenaView
+class KunenaAdminViewStatistics extends \Joomla\Component\Kunena\Libraries\View
 {
 	/**
 	 * @param   null  $tpl  tpl

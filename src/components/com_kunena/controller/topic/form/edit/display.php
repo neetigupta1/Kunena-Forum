@@ -10,7 +10,7 @@
  * @link            https://www.kunena.org
  **/
 
-namespace Joomla\Component\Kunena\Site;
+namespace Joomla\Component\Kunena\Site\Controller\Topic\Form\Edit;
 
 defined('_JEXEC') or die();
 
@@ -18,6 +18,11 @@ use Exception;
 use Joomla\CMS\Factory;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\Plugin\PluginHelper;
+use Joomla\Component\Kunena\Libraries\Attachment\Helper;
+use Joomla\Component\Kunena\Libraries\Controller\Display;
+use Joomla\Component\Kunena\Libraries\Exception\Authorise;
+use Joomla\Component\Kunena\Libraries\KunenaFactory;
+use Joomla\Component\Kunena\Libraries\Template\Template;
 use Joomla\Registry\Registry;
 use function defined;
 
@@ -26,7 +31,7 @@ use function defined;
  *
  * @since   Kunena 4.0
  */
-class ComponentKunenaControllerTopicFormEditDisplay extends KunenaControllerDisplay
+class ComponentKunenaControllerTopicFormEditDisplay extends Display
 {
 	/**
 	 * @var     string
@@ -53,8 +58,8 @@ class ComponentKunenaControllerTopicFormEditDisplay extends KunenaControllerDisp
 		$saved       = $this->app->getUserState('com_kunena.postfields');
 
 		$this->me       = \Joomla\Component\Kunena\Libraries\User\Helper::getMyself();
-		$this->template = \Joomla\Component\Kunena\Libraries\KunenaFactory::getTemplate();
-		$this->message  = KunenaForumMessageHelper::get($mesid);
+		$this->template = KunenaFactory::getTemplate();
+		$this->message  = \Joomla\Component\Kunena\Libraries\Forum\Message\Helper::get($mesid);
 		$this->message->tryAuthorise('edit');
 
 		$this->topic    = $this->message->getTopic();
@@ -69,7 +74,7 @@ class ComponentKunenaControllerTopicFormEditDisplay extends KunenaControllerDisp
 
 		if ($this->config->read_only)
 		{
-			throw new KunenaExceptionAuthorise(Text::_('COM_KUNENA_NO_ACCESS'), '401');
+			throw new Authorise(Text::_('COM_KUNENA_NO_ACCESS'), '401');
 		}
 
 		$categories        = \Joomla\Component\Kunena\Libraries\Forum\Category\Helper::getCategories();
@@ -92,8 +97,8 @@ class ComponentKunenaControllerTopicFormEditDisplay extends KunenaControllerDisp
 			}
 		}
 
-		\Joomla\Component\Kunena\Libraries\Template\Template::getInstance()->addScriptOptions('com_kunena.arrayanynomousbox', json_encode($arrayanynomousbox));
-		\Joomla\Component\Kunena\Libraries\Template\Template::getInstance()->addScriptOptions('com_kunena.pollcategoriesid', json_encode($arraypollcatid));
+		Template::getInstance()->addScriptOptions('com_kunena.arrayanynomousbox', json_encode($arrayanynomousbox));
+		Template::getInstance()->addScriptOptions('com_kunena.pollcategoriesid', json_encode($arraypollcatid));
 
 		$doc = Factory::getApplication()->getDocument();
 		$doc->setMetaData('robots', 'nofollow, noindex');
@@ -138,7 +143,7 @@ class ComponentKunenaControllerTopicFormEditDisplay extends KunenaControllerDisp
 			$this->poll = $this->topic->getPoll();
 		}
 
-		$this->allowedExtensions = KunenaAttachmentHelper::getExtensions($this->category);
+		$this->allowedExtensions = Helper::getExtensions($this->category);
 
 		if ($saved)
 		{

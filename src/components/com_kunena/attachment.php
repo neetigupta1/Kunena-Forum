@@ -28,7 +28,6 @@ if (version_compare(PHP_VERSION, '7.2', '<'))
  */
 define('_JEXEC', 1);
 
-use ComponentKunenaControllerApplicationAttachmentDefaultDisplay;
 use Exception;
 use Joomla\Application\Web\WebClient;
 use Joomla\CMS\Application\WebApplication;

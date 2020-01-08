@@ -10,7 +10,7 @@
  * @link            https://www.kunena.org
  **/
 
-namespace Joomla\Component\Kunena\Site;
+namespace Joomla\Component\Kunena\Site\Controller\User\edit;
 
 defined('_JEXEC') or die();
 
@@ -18,6 +18,10 @@ use Exception;
 use Joomla\CMS\Factory;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\User\User;
+use Joomla\Component\Kunena\Libraries\Controller\Display;
+use Joomla\Component\Kunena\Libraries\Exception\Authorise;
+use Joomla\Component\Kunena\Libraries\KunenaFactory;
+use Joomla\Component\Kunena\Libraries\User\Helper;
 use function defined;
 
 /**
@@ -25,7 +29,7 @@ use function defined;
  *
  * @since   Kunena 4.0
  */
-class ComponentKunenaControllerUserEditDisplay extends KunenaControllerDisplay
+class ComponentKunenaControllerUserEditDisplay extends Display
 {
 	/**
 	 * @var     string
@@ -59,17 +63,17 @@ class ComponentKunenaControllerUserEditDisplay extends KunenaControllerDisplay
 		parent::before();
 
 		// If profile integration is disabled, this view doesn't exist.
-		$integration = \Joomla\Component\Kunena\Libraries\KunenaFactory::getProfile();
+		$integration = KunenaFactory::getProfile();
 
 		if (get_class($integration) == 'KunenaProfileNone')
 		{
-			throw new KunenaExceptionAuthorise(Text::_('COM_KUNENA_PROFILE_DISABLED'), 404);
+			throw new Authorise(Text::_('COM_KUNENA_PROFILE_DISABLED'), 404);
 		}
 
 		$userid = $this->input->getInt('userid');
 
 		$this->user    = Factory::getUser($userid);
-		$this->profile = \Joomla\Component\Kunena\Libraries\User\Helper::get($userid);
+		$this->profile = Helper::get($userid);
 		$this->profile->tryAuthorise('edit');
 
 		$this->headerText = Text::sprintf('COM_KUNENA_VIEW_USER_DEFAULT', $this->profile->getName());

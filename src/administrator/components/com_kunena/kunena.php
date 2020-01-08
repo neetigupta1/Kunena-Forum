@@ -15,26 +15,29 @@ defined('_JEXEC') or die();
 
 use Joomla\CMS\Factory;
 use Joomla\CMS\Language\Text;
-use Joomla\Component\Kunena\Libraries\Exception\KunenaExceptionAuthorise;
-use Joomla\Component\Kunena\Libraries\KunenaForum;
+use Joomla\Component\Kunena\Administrator\Install\Controller\KunenaControllerInstall;
+use Joomla\Component\Kunena\Libraries\Controller;
+use Joomla\Component\Kunena\Libraries\Error;
+use Joomla\Component\Kunena\Libraries\Exception\Authorise;
+use Joomla\Component\Kunena\Libraries\Forum\Forum;
 use Joomla\Component\Kunena\Libraries\KunenaProfiler;
 use function defined;
 
 // Access check.
 if (!Factory::getApplication()->getIdentity()->authorise('core.manage', 'com_kunena'))
 {
-	throw new KunenaExceptionAuthorise(Text::_('COM_KUNENA_NO_ACCESS'), 401);
+	throw new Authorise(Text::_('COM_KUNENA_NO_ACCESS'), 401);
 }
 
 // Display time it took to create the entire page in the footer.
-$kunena_profiler = \Joomla\Component\Kunena\Libraries\KunenaProfiler::instance('Kunena');
+$kunena_profiler = KunenaProfiler::instance('Kunena');
 $kunena_profiler->start('Total Time');
 KUNENA_PROFILER ? $kunena_profiler->mark('afterLoad') : null;
 
 $app = Factory::getApplication();
 
 // Safety check to prevent fatal error if 'System - Kunena Forum' plug-in has been disabled.
-if ($app->input->getCmd('view') == 'install' || !class_exists('KunenaForum') || !\Joomla\Component\Kunena\Libraries\Forum\Forum::isCompatible('4.0'))
+if ($app->input->getCmd('view') == 'install' || !class_exists('KunenaForum') || !Forum::isCompatible('4.0'))
 {
 	// Run installer instead..
 	require_once __DIR__ . '/install/controller.php';
@@ -66,18 +69,18 @@ if ($app->input->getCmd('view') == 'uninstall')
 }
 
 // Initialize Kunena Framework.
-\Joomla\Component\Kunena\Libraries\Forum\Forum::setup();
+Forum::setup();
 
 // Initialize custom error handlers.
-\Joomla\Component\Kunena\Administrator\\Joomla\Component\Kunena\Libraries\Error::initialize();
+Error::initialize();
 
 // Kunena has been successfully installed: Load our main controller.
-$controller = \Joomla\Component\Kunena\Administrator\Install\Controller\KunenaController::getInstance();
+$controller = Controller::getInstance();
 $controller->execute($app->input->getCmd('task'));
 $controller->redirect();
 
 // Remove custom error handlers.
-\Joomla\Component\Kunena\Administrator\\Joomla\Component\Kunena\Libraries\Error::cleanup();
+Error::cleanup();
 
 // Display profiler information.
 $kunena_profiler->stop('Total Time');

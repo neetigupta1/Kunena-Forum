@@ -10,7 +10,7 @@
  * @link            https://www.kunena.org
  **/
 
-namespace Joomla\Component\Kunena\Site;
+namespace Joomla\Component\Kunena\Site\Controller\Category\Index\Actions;
 
 defined('_JEXEC') or die();
 
@@ -18,6 +18,10 @@ use Exception;
 use Joomla\CMS\Session\Session;
 use Joomla\CMS\Object\CMSObject;
 use Joomla\CMS\Plugin\PluginHelper;
+use Joomla\Component\Kunena\Libraries\Controller\Display;
+use Joomla\Component\Kunena\Libraries\KunenaFactory;
+use Joomla\Component\Kunena\Libraries\Route\KunenaRoute;
+use Joomla\Component\Kunena\Libraries\User\Helper;
 use function defined;
 
 /**
@@ -25,7 +29,7 @@ use function defined;
  *
  * @since   Kunena 4.0
  */
-class ComponentKunenaControllerCategoryIndexActionsDisplay extends KunenaControllerDisplay
+class ComponentKunenaControllerCategoryIndexActionsDisplay extends Display
 {
 	/**
 	 * @var     string
@@ -60,7 +64,7 @@ class ComponentKunenaControllerCategoryIndexActionsDisplay extends KunenaControl
 		parent::before();
 
 		$catid = $this->input->getInt('id');
-		$me    = \Joomla\Component\Kunena\Libraries\User\Helper::getMyself();
+		$me    = Helper::getMyself();
 
 		$this->category = KunenaForumCategory::getInstance($catid);
 
@@ -69,7 +73,7 @@ class ComponentKunenaControllerCategoryIndexActionsDisplay extends KunenaControl
 		$task   = "index.php?option=com_kunena&view=category&task=%s&catid={$catid}&{$token}=1";
 		$layout = "index.php?option=com_kunena&view=topic&layout=%s&catid={$catid}";
 
-		$this->template        = \Joomla\Component\Kunena\Libraries\KunenaFactory::getTemplate();
+		$this->template        = KunenaFactory::getTemplate();
 		$this->categoryButtons = new CMSObject;
 
 		// Is user allowed to post new topic?
@@ -131,6 +135,6 @@ class ComponentKunenaControllerCategoryIndexActionsDisplay extends KunenaControl
 	public function getButton($url, $name, $scope, $type, $id = null)
 	{
 		return KunenaLayout::factory('Widget/Button')
-			->setProperties(['url' => \Joomla\Component\Kunena\Libraries\Route\KunenaRoute::_($url), 'name' => $name, 'scope' => $scope, 'type' => $type, 'id' => $id]);
+			->setProperties(['url' => KunenaRoute::_($url), 'name' => $name, 'scope' => $scope, 'type' => $type, 'id' => $id]);
 	}
 }

@@ -10,7 +10,7 @@
  * @link            https://www.kunena.org
  **/
 
-namespace Joomla\Component\Kunena\Site;
+namespace Joomla\Component\Kunena\Site\Controller\Topic\Item\Message;
 
 defined('_JEXEC') or die();
 
@@ -18,6 +18,11 @@ use Exception;
 use Joomla\CMS\HTML\HTMLHelper;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\Session\Session;
+use Joomla\Component\Kunena\Libraries\Controller\Display;
+use Joomla\Component\Kunena\Libraries\KunenaFactory;
+use Joomla\Component\Kunena\Libraries\Route\KunenaRoute;
+use Joomla\Component\Kunena\Libraries\Template\Template;
+use Joomla\Component\Kunena\Libraries\User\Helper;
 use function defined;
 
 /**
@@ -25,7 +30,7 @@ use function defined;
  *
  * @since   Kunena 4.0
  */
-class ComponentKunenaControllerTopicItemMessageDisplay extends KunenaControllerDisplay
+class ComponentKunenaControllerTopicItemMessageDisplay extends Display
 {
 	/**
 	 * @var     string
@@ -91,16 +96,16 @@ class ComponentKunenaControllerTopicItemMessageDisplay extends KunenaControllerD
 
 		$mesid = $this->input->getInt('mesid', 0);
 
-		$this->me       = \Joomla\Component\Kunena\Libraries\User\Helper::getMyself();
+		$this->me       = Helper::getMyself();
 		$this->location = $this->input->getInt('location', 0);
 		$this->detail   = $this->input->get('detail', false);
-		$this->message  = KunenaForumMessageHelper::get($mesid);
+		$this->message  = \Joomla\Component\Kunena\Libraries\Forum\Message\Helper::get($mesid);
 		$this->message->tryAuthorise();
 
 		$this->topic     = $this->message->getTopic();
 		$this->category  = $this->topic->getCategory();
 		$this->profile   = $this->message->getAuthor();
-		$this->ktemplate = \Joomla\Component\Kunena\Libraries\KunenaFactory::getTemplate();
+		$this->ktemplate = KunenaFactory::getTemplate();
 
 		if ($this->topic->unread)
 		{
@@ -111,7 +116,7 @@ class ComponentKunenaControllerTopicItemMessageDisplay extends KunenaControllerD
 
 		if ($this->message->isAuthorised('reply') && $this->me->canDoCaptcha() && $this->config->quickreply)
 		{
-			$this->captchaDisplay = \Joomla\Component\Kunena\Libraries\Template\Template::getInstance()->recaptcha();
+			$this->captchaDisplay = Template::getInstance()->recaptcha();
 			$this->captchaEnabled = true;
 		}
 		else
@@ -148,13 +153,13 @@ class ComponentKunenaControllerTopicItemMessageDisplay extends KunenaControllerD
 					$userids_thankyous[] = $userid;
 				}
 
-				$loaded_users = \Joomla\Component\Kunena\Libraries\User\Helper::loadUsers($userids_thankyous);
+				$loaded_users = Helper::loadUsers($userids_thankyous);
 
 				foreach ($loaded_users as $userid => $user)
 				{
 					if ($this->message->isAuthorised('unthankyou') && $this->me->isModerator($this->message->getCategory()))
 					{
-						$this->thankyou_delete[$userid] = \Joomla\Component\Kunena\Libraries\Route\KunenaRoute::_(sprintf($task, "unthankyou&userid={$userid}"));
+						$this->thankyou_delete[$userid] = KunenaRoute::_(sprintf($task, "unthankyou&userid={$userid}"));
 					}
 
 					$this->thankyou[$userid] = $loaded_users[$userid]->getLink();

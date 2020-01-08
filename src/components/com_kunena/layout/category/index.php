@@ -10,13 +10,18 @@
  * @link            https://www.kunena.org
  **/
 
-namespace Joomla\Component\Kunena\Site;
+namespace Joomla\Component\Kunena\Site\Layout\Category;
 
 defined('_JEXEC') or die;
 
 use Exception;
 use Joomla\CMS\Application\CMSApplication;
 use Joomla\CMS\Session\Session;
+use Joomla\Component\Kunena\Libraries\KunenaFactory;
+use Joomla\Component\Kunena\Libraries\Layout\Layout;
+use Joomla\Component\Kunena\Libraries\Pagination\Pagination;
+use Joomla\Component\Kunena\Libraries\Route\KunenaRoute;
+use Joomla\Component\Kunena\Libraries\User\Helper;
 use function defined;
 
 /**
@@ -24,7 +29,7 @@ use function defined;
  *
  * @since   Kunena 4.0
  */
-class KunenaLayoutCategoryIndex extends KunenaLayout
+class KunenaLayoutCategoryIndex extends Layout
 {
 	/**
 	 * @var     integer
@@ -55,7 +60,7 @@ class KunenaLayoutCategoryIndex extends KunenaLayout
 	 */
 	public function getPaginationObject($maxpages)
 	{
-		$pagination = new KunenaPagination($this->total, $this->state->get('list.start'), $this->state->get('list.limit'));
+		$pagination = new Pagination($this->total, $this->state->get('list.start'), $this->state->get('list.limit'));
 		$pagination->setDisplayedPages($maxpages);
 
 		return $pagination;
@@ -74,7 +79,7 @@ class KunenaLayoutCategoryIndex extends KunenaLayout
 	 */
 	public function getCategoryIcon($category)
 	{
-		$template    = \Joomla\Component\Kunena\Libraries\KunenaFactory::getTemplate();
+		$template    = KunenaFactory::getTemplate();
 		$caticonpath = $template->params->get('DefaultCategoryicon');
 
 		if ($category->getNewCount())
@@ -114,7 +119,7 @@ class KunenaLayoutCategoryIndex extends KunenaLayout
 	 */
 	public function getSmallCategoryIcon($subcategory)
 	{
-		$this->ktemplate     = \Joomla\Component\Kunena\Libraries\KunenaFactory::getTemplate();
+		$this->ktemplate     = KunenaFactory::getTemplate();
 		$defaultcategoryicon = $this->ktemplate->params->get('DefaultCategoryicon');
 
 		if ($subcategory->getNewCount())
@@ -157,11 +162,11 @@ class KunenaLayoutCategoryIndex extends KunenaLayout
 	public function getMarkReadButtonURL($category_id, $numTopics)
 	{
 		// Is user allowed to mark forums as read?
-		if (\Joomla\Component\Kunena\Libraries\User\Helper::getMyself()->exists() && $numTopics)
+		if (Helper::getMyself()->exists() && $numTopics)
 		{
 			$token = '&' . Session::getFormToken() . '=1';
 
-			return \Joomla\Component\Kunena\Libraries\Route\KunenaRoute::_("index.php?option=com_kunena&view=category&task=markread&catid={$category_id}{$token}");
+			return KunenaRoute::_("index.php?option=com_kunena&view=category&task=markread&catid={$category_id}{$token}");
 		}
 
 		return;
@@ -188,11 +193,11 @@ class KunenaLayoutCategoryIndex extends KunenaLayout
 
 			if (CMSApplication::getInstance('site')->get('sef_suffix'))
 			{
-				return \Joomla\Component\Kunena\Libraries\Route\KunenaRoute::_("index.php?option=com_kunena&view=category&format=feed&layout=default{$params}") . '?format=feed&type=rss';
+				return KunenaRoute::_("index.php?option=com_kunena&view=category&format=feed&layout=default{$params}") . '?format=feed&type=rss';
 			}
 			else
 			{
-				return \Joomla\Component\Kunena\Libraries\Route\KunenaRoute::_("index.php?option=com_kunena&view=category&format=feed&type=rss&layout=default{$params}", $xhtml);
+				return KunenaRoute::_("index.php?option=com_kunena&view=category&format=feed&type=rss&layout=default{$params}", $xhtml);
 			}
 		}
 

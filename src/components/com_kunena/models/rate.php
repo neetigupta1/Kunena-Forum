@@ -10,14 +10,16 @@
  * @link            https://www.kunena.org
  **/
 
-namespace Joomla\Component\Kunena\Site;
+namespace Joomla\Component\Kunena\Site\Models;
 
 defined('_JEXEC') or die();
 
 use Exception;
 use Joomla\CMS\HTML\HTMLHelper;
 use Joomla\CMS\Language\Text;
-
+use Joomla\Component\Kunena\Libraries\Forum\Topic\Rate\Helper;
+use Joomla\Component\Kunena\Libraries\Forum\Topic\Rate\Rate;
+use Joomla\Component\Kunena\Libraries\Model;
 use function defined;
 
 /**
@@ -25,7 +27,7 @@ use function defined;
  *
  * @since   Kunena 2.0
  */
-class KunenaModelRate extends KunenaModel
+class KunenaModelRate extends Model
 {
 	/**
 	 * @return  void
@@ -57,7 +59,7 @@ class KunenaModelRate extends KunenaModel
 	}
 
 	/**
-	 * @return  KunenaForumTopicRate
+	 * @return  Rate
 	 *
 	 * @since   Kunena 6.0
 	 *
@@ -65,7 +67,7 @@ class KunenaModelRate extends KunenaModel
 	 */
 	public function getNewRate()
 	{
-		return new KunenaForumTopicRate;
+		return new Rate;
 	}
 
 	/**
@@ -77,7 +79,7 @@ class KunenaModelRate extends KunenaModel
 	 */
 	public function getRate()
 	{
-		return KunenaForumTopicRateHelper::get($this->getState('item.topicid'));
+		return Helper::get($this->getState('item.topicid'));
 	}
 
 	/**

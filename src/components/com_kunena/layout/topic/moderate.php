@@ -10,7 +10,7 @@
  * @link            https://www.kunena.org
  **/
 
-namespace Joomla\Component\Kunena\Site;
+namespace Joomla\Component\Kunena\Site\Layout\Topic;
 
 defined('_JEXEC') or die;
 
@@ -18,6 +18,8 @@ use Exception;
 use Joomla\CMS\Factory;
 use Joomla\CMS\HTML\HTMLHelper;
 use Joomla\CMS\Language\Text;
+use Joomla\Component\Kunena\Libraries\Forum\Topic\Helper;
+use Joomla\Component\Kunena\Libraries\Layout\Layout;
 use function defined;
 
 /**
@@ -25,7 +27,7 @@ use function defined;
  *
  * @since   Kunena 4.0
  */
-class KunenaLayoutTopicModerate extends KunenaLayout
+class KunenaLayoutTopicModerate extends Layout
 {
 	/**
 	 * @var     KunenaForumMessage
@@ -76,7 +78,7 @@ class KunenaLayoutTopicModerate extends KunenaLayout
 		$params = [
 			'orderby' => 'tt.last_post_time DESC',
 			'where'   => " AND tt.id != {$db->quote($this->topic->id)} "];
-		list($total, $topics) = \Joomla\Component\Kunena\Libraries\Forum\Topic\Helper::getLatestTopics($this->category->id, 0, 30, $params);
+		list($total, $topics) = Helper::getLatestTopics($this->category->id, 0, 30, $params);
 
 		foreach ($topics as $topic)
 		{

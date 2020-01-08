@@ -10,7 +10,7 @@
  * @link            https://www.kunena.org
  **/
 
-namespace Joomla\Component\Kunena\Site;
+namespace Joomla\Component\Kunena\Site\Controller\Application\Ajax;
 
 defined('_JEXEC') or die();
 
@@ -18,6 +18,11 @@ use Exception;
 use Joomla\CMS\Factory;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\Session\Session;
+use Joomla\Component\Kunena\Libraries\Controller\Application\Display;
+use Joomla\Component\Kunena\Libraries\Exception\Authorise;
+use Joomla\Component\Kunena\Libraries\KunenaFactory;
+use Joomla\Component\Kunena\Libraries\Request\Request;
+use Joomla\Component\Kunena\Libraries\User\Helper;
 use function defined;
 
 
@@ -26,7 +31,7 @@ use function defined;
  *
  * @since   Kunena 4.0
  */
-class ComponentKunenaControllerApplicationAjaxDefaultDisplay extends KunenaControllerApplicationDisplay
+class ComponentKunenaControllerApplicationAjaxDefaultDisplay extends Display
 {
 	/**
 	 * Return true if layout exists.
@@ -39,7 +44,7 @@ class ComponentKunenaControllerApplicationAjaxDefaultDisplay extends KunenaContr
 	 */
 	public function exists()
 	{
-		return \Joomla\Component\Kunena\Libraries\KunenaFactory::getTemplate()->isHmvc();
+		return KunenaFactory::getTemplate()->isHmvc();
 	}
 
 	/**
@@ -59,7 +64,7 @@ class ComponentKunenaControllerApplicationAjaxDefaultDisplay extends KunenaContr
 		if (!method_exists($this, $function))
 		{
 			// Invalid page request.
-			throw new KunenaExceptionAuthorise(Text::_('COM_KUNENA_NO_ACCESS'), 404);
+			throw new Authorise(Text::_('COM_KUNENA_NO_ACCESS'), 404);
 		}
 
 		// Run before executing action.
@@ -67,22 +72,22 @@ class ComponentKunenaControllerApplicationAjaxDefaultDisplay extends KunenaContr
 
 		if ($result === false)
 		{
-			$content = new KunenaExceptionAuthorise(Text::_('COM_KUNENA_NO_ACCESS'), 404);
+			$content = new Authorise(Text::_('COM_KUNENA_NO_ACCESS'), 404);
 		}
 		elseif (!Session::checkToken())
 		{
 			// Invalid access token.
-			$content = new KunenaExceptionAuthorise(Text::_('COM_KUNENA_ERROR_TOKEN'), 403);
+			$content = new Authorise(Text::_('COM_KUNENA_ERROR_TOKEN'), 403);
 		}
 		elseif ($this->config->board_offline && !$this->me->isAdmin())
 		{
 			// Forum is offline.
-			$content = new KunenaExceptionAuthorise(Text::_('COM_KUNENA_FORUM_IS_OFFLINE'), 503);
+			$content = new Authorise(Text::_('COM_KUNENA_FORUM_IS_OFFLINE'), 503);
 		}
 		elseif ($this->config->regonly && !$this->me->exists())
 		{
 			// Forum is for registered users only.
-			$content = new KunenaExceptionAuthorise(Text::_('COM_KUNENA_LOGIN_NOTIFICATION'), 401);
+			$content = new Authorise(Text::_('COM_KUNENA_LOGIN_NOTIFICATION'), 401);
 		}
 		else
 		{
@@ -90,7 +95,7 @@ class ComponentKunenaControllerApplicationAjaxDefaultDisplay extends KunenaContr
 
 			try
 			{
-				$content = KunenaRequest::factory($display, $this->input, $this->options)
+				$content = Request::factory($display, $this->input, $this->options)
 					->setPrimary()->execute()->render();
 			}
 			catch (Exception $e)
@@ -114,15 +119,15 @@ class ComponentKunenaControllerApplicationAjaxDefaultDisplay extends KunenaContr
 	protected function before()
 	{
 		// Load language files.
-		\Joomla\Component\Kunena\Libraries\KunenaFactory::loadLanguage('com_kunena.sys', 'admin');
-		\Joomla\Component\Kunena\Libraries\KunenaFactory::loadLanguage('com_kunena.templates');
-		\Joomla\Component\Kunena\Libraries\KunenaFactory::loadLanguage('com_kunena.models');
-		\Joomla\Component\Kunena\Libraries\KunenaFactory::loadLanguage('com_kunena.views');
+		KunenaFactory::loadLanguage('com_kunena.sys', 'admin');
+		KunenaFactory::loadLanguage('com_kunena.templates');
+		KunenaFactory::loadLanguage('com_kunena.models');
+		KunenaFactory::loadLanguage('com_kunena.views');
 
-		$this->me       = \Joomla\Component\Kunena\Libraries\User\Helper::getMyself();
+		$this->me       = Helper::getMyself();
 		$this->config   = Config::getInstance();
 		$this->document = Factory::getApplication()->getDocument();
-		$this->template = \Joomla\Component\Kunena\Libraries\KunenaFactory::getTemplate();
+		$this->template = KunenaFactory::getTemplate();
 		$this->template->initialize();
 	}
 
@@ -172,7 +177,7 @@ class ComponentKunenaControllerApplicationAjaxDefaultDisplay extends KunenaContr
 		if (!$response->success)
 		{
 			// We want to wrap the exception to be able to display correct HTTP status code.
-			$error = new KunenaExceptionAuthorise($response->message, $response->code);
+			$error = new Authorise($response->message, $response->code);
 			header('HTTP/1.1 ' . $error->getResponseStatus(), true);
 		}
 

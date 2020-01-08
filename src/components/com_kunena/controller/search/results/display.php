@@ -10,13 +10,18 @@
  * @link            https://www.kunena.org
  **/
 
-namespace Joomla\Component\Kunena\Site;
+namespace Joomla\Component\Kunena\Site\Controller\Search\Results;
 
 defined('_JEXEC') or die();
 
 use Exception;
 use Joomla\CMS\Factory;
 use Joomla\CMS\Language\Text;
+use Joomla\Component\Kunena\Libraries\Access;
+use Joomla\Component\Kunena\Libraries\Controller\Display;
+use Joomla\Component\Kunena\Libraries\Pagination\Pagination;
+use Joomla\Component\Kunena\Libraries\Route\KunenaRoute;
+use Joomla\Component\Kunena\Libraries\User\Helper;
 use function defined;
 
 /**
@@ -24,7 +29,7 @@ use function defined;
  *
  * @since   Kunena 4.0
  */
-class ComponentKunenaControllerSearchResultsDisplay extends KunenaControllerDisplay
+class ComponentKunenaControllerSearchResultsDisplay extends Display
 {
 	/**
 	 * @var     string
@@ -69,11 +74,11 @@ class ComponentKunenaControllerSearchResultsDisplay extends KunenaControllerDisp
 		$this->model->initialize($this->getOptions(), $this->getOptions()->get('embedded', false));
 		$this->state = $this->model->getState();
 
-		$this->me               = \Joomla\Component\Kunena\Libraries\User\Helper::getMyself();
+		$this->me               = Helper::getMyself();
 		$this->message_ordering = $this->me->getMessageOrdering();
 
 		$this->searchwords = $this->model->getSearchWords();
-		$this->isModerator = ($this->me->isAdmin() || \Joomla\Component\Kunena\Libraries\Access::getInstance()->getModeratorStatus());
+		$this->isModerator = ($this->me->isAdmin() || Access::getInstance()->getModeratorStatus());
 
 		$this->results = [];
 		$this->total   = $this->model->getTotal();
@@ -90,7 +95,7 @@ class ComponentKunenaControllerSearchResultsDisplay extends KunenaControllerDisp
 				{
 					if ($value['relation'] == 'canonical')
 					{
-						$canonicalUrl               = \Joomla\Component\Kunena\Libraries\Route\KunenaRoute::_('index.php?option=com_kunena&view=search');
+						$canonicalUrl               = KunenaRoute::_('index.php?option=com_kunena&view=search');
 						$doc->_links[$canonicalUrl] = $value;
 						unset($doc->_links[$key]);
 						break;
@@ -99,7 +104,7 @@ class ComponentKunenaControllerSearchResultsDisplay extends KunenaControllerDisp
 			}
 		}
 
-		$this->pagination = new KunenaPagination(
+		$this->pagination = new Pagination(
 			$this->total,
 			$this->state->get('list.start'),
 			$this->state->get('list.limit')

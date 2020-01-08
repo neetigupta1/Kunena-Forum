@@ -26,7 +26,7 @@ use function defined;
  *
  * @since 5.1
  */
-class KunenaAdminViewBadwords extends KunenaView
+class KunenaAdminViewBadwords extends \Joomla\Component\Kunena\Libraries\View
 {
 	/**
 	 * @param   null  $tpl  tpl

@@ -526,7 +526,7 @@ class Ban extends CMSObject
 	 */
 	public function getCreationDate()
 	{
-		return KunenaDate::getInstance($this->created_time);
+		return \Joomla\Component\Kunena\Libraries\KunenaDate::getInstance($this->created_time);
 	}
 
 	/**
@@ -538,7 +538,7 @@ class Ban extends CMSObject
 	 */
 	public function getExpirationDate()
 	{
-		return KunenaDate::getInstance($this->expiration);
+		return \Joomla\Component\Kunena\Libraries\KunenaDate::getInstance($this->expiration);
 	}
 
 	/**
@@ -550,7 +550,7 @@ class Ban extends CMSObject
 	 */
 	public function getModificationDate()
 	{
-		return KunenaDate::getInstance($this->modified_time);
+		return \Joomla\Component\Kunena\Libraries\KunenaDate::getInstance($this->modified_time);
 	}
 
 	/**

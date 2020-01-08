@@ -68,7 +68,7 @@ class Finder extends KunenaDatabaseObjectFinder
 		{
 			foreach ($results as $id => $result)
 			{
-				$instances[$id] = KunenaAttachmentHelper::get($id);
+				$instances[$id] = \Joomla\Component\Kunena\Libraries\Attachment\Helper::get($id);
 			}
 		}
 

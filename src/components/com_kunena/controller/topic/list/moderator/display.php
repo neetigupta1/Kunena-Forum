@@ -10,7 +10,7 @@
  * @link            https://www.kunena.org
  **/
 
-namespace Joomla\Component\Kunena\Site;
+namespace Joomla\Component\Kunena\Site\Controller\Topic\KunenaList\Moderator;
 
 defined('_JEXEC') or die();
 
@@ -18,6 +18,10 @@ use Exception;
 use Joomla\CMS\Component\ComponentHelper;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\MVC\Controller\BaseController;
+use Joomla\Component\Kunena\Libraries\Access;
+use Joomla\Component\Kunena\Libraries\Forum\Category\Helper;
+use Joomla\Component\Kunena\Libraries\Pagination\Pagination;
+use Joomla\Component\Kunena\Libraries\Route\KunenaRoute;
 use function defined;
 
 /**
@@ -42,7 +46,7 @@ class ComponentKunenaControllerTopicListModeratorDisplay extends ComponentKunena
 		parent::before();
 
 		$this->me       = \Joomla\Component\Kunena\Libraries\User\Helper::getMyself();
-		$access         = \Joomla\Component\Kunena\Libraries\Access::getInstance();
+		$access         = Access::getInstance();
 		$this->moreUri  = null;
 		$this->embedded = $this->getOptions()->get('embedded', true);
 
@@ -60,17 +64,17 @@ class ComponentKunenaControllerTopicListModeratorDisplay extends ComponentKunena
 			else
 			{
 				$menu      = $this->app->getMenu();
-				$getid     = $menu->getItem(\Joomla\Component\Kunena\Libraries\Route\KunenaRoute::getItemID("index.php?option=com_kunena&view=topics&layout=moderator"));
+				$getid     = $menu->getItem(KunenaRoute::getItemID("index.php?option=com_kunena&view=topics&layout=moderator"));
 				$itemidfix = $getid->id;
 			}
 
 			if (!$itemidfix)
 			{
-				$itemidfix = \Joomla\Component\Kunena\Libraries\Route\KunenaRoute::fixMissingItemID();
+				$itemidfix = KunenaRoute::fixMissingItemID();
 			}
 
 			$controller = BaseController::getInstance("kunena");
-			$controller->setRedirect(\Joomla\Component\Kunena\Libraries\Route\KunenaRoute::_("index.php?option=com_kunena&view=topics&layout=moderator&Itemid={$itemidfix}", false));
+			$controller->setRedirect(KunenaRoute::_("index.php?option=com_kunena&view=topics&layout=moderator&Itemid={$itemidfix}", false));
 			$controller->redirect();
 		}
 
@@ -94,7 +98,7 @@ class ComponentKunenaControllerTopicListModeratorDisplay extends ComponentKunena
 			$categoryIds = false;
 		}
 
-		$categories = \Joomla\Component\Kunena\Libraries\Forum\Category\Helper::getCategories($categoryIds, $reverse);
+		$categories = Helper::getCategories($categoryIds, $reverse);
 
 		$finder = new KunenaForumTopicFinder;
 		$finder
@@ -103,7 +107,7 @@ class ComponentKunenaControllerTopicListModeratorDisplay extends ComponentKunena
 			->filterByMoved(false)
 			->where('locked', '=', 0);
 
-		$this->pagination = new KunenaPagination($finder->count(), $start, $limit);
+		$this->pagination = new Pagination($finder->count(), $start, $limit);
 
 		if ($this->moreUri)
 		{

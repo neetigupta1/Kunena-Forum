@@ -331,18 +331,18 @@ class KunenaUser extends CMSObject
 			case 'read' :
 				if (!isset($this->registerDate) || (!$user->exists() && !$config->pubprofile))
 				{
-					$exception = new KunenaExceptionAuthorise(Text::_('COM_KUNENA_PROFILEPAGE_NOT_ALLOWED_FOR_GUESTS'), $user->exists() ? 403 : 404);
+					$exception = new \Joomla\Component\Kunena\Libraries\Exception\Authorise(Text::_('COM_KUNENA_PROFILEPAGE_NOT_ALLOWED_FOR_GUESTS'), $user->exists() ? 403 : 404);
 				}
 				break;
 			case 'edit' :
 				if (!isset($this->registerDate) || !$this->isMyself() && !$user->isAdmin() && !$user->isModerator())
 				{
-					$exception = new KunenaExceptionAuthorise(Text::sprintf('COM_KUNENA_VIEW_USER_EDIT_AUTH_FAILED', $this->getName()), $user->exists() ? 403 : 401);
+					$exception = new \Joomla\Component\Kunena\Libraries\Exception\Authorise(Text::sprintf('COM_KUNENA_VIEW_USER_EDIT_AUTH_FAILED', $this->getName()), $user->exists() ? 403 : 401);
 				}
 
 				if ($user->isModerator() && $kuser->isAdmin() && !$user->isAdmin())
 				{
-					$exception = new KunenaExceptionAuthorise(Text::sprintf('COM_KUNENA_VIEW_USER_EDIT_AUTH_FAILED', $this->getName()), $user->exists() ? 403 : 401);
+					$exception = new \Joomla\Component\Kunena\Libraries\Exception\Authorise(Text::sprintf('COM_KUNENA_VIEW_USER_EDIT_AUTH_FAILED', $this->getName()), $user->exists() ? 403 : 401);
 				}
 				break;
 			case 'ban' :
@@ -354,7 +354,7 @@ class KunenaUser extends CMSObject
 				}
 				catch (Exception $e)
 				{
-					$exception = new KunenaExceptionAuthorise($e->getMessage(), $user->exists() ? 403 : 401);
+					$exception = new \Joomla\Component\Kunena\Libraries\Exception\Authorise($e->getMessage(), $user->exists() ? 403 : 401);
 				}
 				break;
 			default :
@@ -812,7 +812,7 @@ class KunenaUser extends CMSObject
 				$timezone = $user->getParam('timezone', $timezone);
 			}
 
-			$this->_time = new KunenaDate('now', $timezone);
+			$this->_time = new \Joomla\Component\Kunena\Libraries\KunenaDate('now', $timezone);
 
 			try
 			{
@@ -837,7 +837,7 @@ class KunenaUser extends CMSObject
 	 */
 	public function getRegisterDate()
 	{
-		return KunenaDate::getInstance($this->registerDate);
+		return \Joomla\Component\Kunena\Libraries\KunenaDate::getInstance($this->registerDate);
 	}
 
 	/**
@@ -851,11 +851,11 @@ class KunenaUser extends CMSObject
 	{
 		if (!$this->lastvisitDate || $this->lastvisitDate == "1000-01-01 00:00:00")
 		{
-			$date = KunenaDate::getInstance($this->registerDate);
+			$date = \Joomla\Component\Kunena\Libraries\KunenaDate::getInstance($this->registerDate);
 		}
 		else
 		{
-			$date = KunenaDate::getInstance($this->lastvisitDate);
+			$date = \Joomla\Component\Kunena\Libraries\KunenaDate::getInstance($this->lastvisitDate);
 		}
 
 		return $date;
@@ -1907,7 +1907,7 @@ class KunenaUser extends CMSObject
 			case 'birthdate' :
 				if ($this->birthdate)
 				{
-					$date = new KunenaDate($this->birthdate);
+					$date = new \Joomla\Component\Kunena\Libraries\KunenaDate($this->birthdate);
 
 					if ($date->format('%Y') < 1902)
 					{

@@ -26,7 +26,7 @@ use function defined;
  *
  * @since  3.0
  */
-class KunenaAdminModelUser extends KunenaModel
+class KunenaAdminModelUser extends \Joomla\Component\Kunena\Libraries\Model
 {
 	/**
 	 * @return  array|KunenaForumTopic[]|void

@@ -25,7 +25,7 @@ use function defined;
  *
  * @since   Kunena 1.X
  */
-class KunenaAdminViewRanks extends KunenaView
+class KunenaAdminViewRanks extends \Joomla\Component\Kunena\Libraries\View
 {
 	/**
 	 * Returns an array of standard published state filter options.

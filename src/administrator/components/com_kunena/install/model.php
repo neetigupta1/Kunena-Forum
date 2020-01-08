@@ -1259,7 +1259,7 @@ class KunenaModelInstall extends BaseDatabaseModel
 		\Joomla\Component\Kunena\Libraries\Forum\Category\Helper::fixAliases();
 
 		// Clean cache, just in case
-		KunenaMenuHelper::cleanCache();
+		\Joomla\Component\Kunena\Libraries\Menu\Helper::cleanCache();
 
 		$cache = Factory::getCache();
 		$cache->clean('com_kunena');
@@ -3124,7 +3124,7 @@ class KunenaModelInstall extends BaseDatabaseModel
 		// $debug = $lang->setDebug(false);
 
 		$this->createMenuJ25($menu, $submenu);
-		KunenaMenuHelper::cleanCache();
+		\Joomla\Component\Kunena\Libraries\Menu\Helper::cleanCache();
 
 		// $lang->setDebug($debug);
 	}
@@ -3399,7 +3399,7 @@ class KunenaModelInstall extends BaseDatabaseModel
 			return true;
 		}
 
-		KunenaForumMessageThankyouHelper::recount();
+		\Joomla\Component\Kunena\Libraries\Forum\Message\Thankyou\Helper::recount();
 
 		return true;
 	}

@@ -10,12 +10,14 @@
  * @link            https://www.kunena.org
  **/
 
-namespace Joomla\Component\Kunena\Site;
+namespace Joomla\Component\Kunena\Site\Controller\User\Ban\Manager;
 
 defined('_JEXEC') or die();
 
 use Exception;
 use Joomla\CMS\Language\Text;
+use Joomla\Component\Kunena\Libraries\Controller\Display;
+use Joomla\Component\Kunena\Libraries\User\Helper;
 use function defined;
 
 /**
@@ -23,7 +25,7 @@ use function defined;
  *
  * @since   Kunena 4.0
  */
-class ComponentKunenaControllerUserBanManagerDisplay extends KunenaControllerDisplay
+class ComponentKunenaControllerUserBanManagerDisplay extends Display
 {
 	/**
 	 * @var     string
@@ -68,7 +70,7 @@ class ComponentKunenaControllerUserBanManagerDisplay extends KunenaControllerDis
 	{
 		parent::before();
 
-		$this->me = \Joomla\Component\Kunena\Libraries\User\Helper::getMyself();
+		$this->me = Helper::getMyself();
 
 		// TODO: add authorisation
 		// TODO: add pagination
@@ -76,7 +78,7 @@ class ComponentKunenaControllerUserBanManagerDisplay extends KunenaControllerDis
 
 		if (!empty($this->userBans))
 		{
-			\Joomla\Component\Kunena\Libraries\User\Helper::loadUsers(array_keys($this->userBans));
+			Helper::loadUsers(array_keys($this->userBans));
 		}
 
 		$this->headerText = Text::_('COM_KUNENA_BAN_BANMANAGER');

@@ -25,7 +25,7 @@ $exception = $attachment->tryAuthorise('read', $user, false);
 
 if (!$exception)
 {
-	$exception = new KunenaExceptionAuthorise('Bad Request.', 400);
+	$exception = new \Joomla\Component\Kunena\Libraries\Exception\Authorise('Bad Request.', 400);
 }
 ?>
 <div class="kmsgattach">

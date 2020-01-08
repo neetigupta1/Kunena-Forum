@@ -10,7 +10,7 @@
  * @link            https://www.kunena.org
  **/
 
-namespace Joomla\Component\Kunena\Site;
+namespace Joomla\Component\Kunena\Site\Controller\Category\Topics;
 
 defined('_JEXEC') or die();
 
@@ -20,6 +20,11 @@ use Joomla\CMS\Language\Text;
 use Joomla\CMS\Uri\Uri;
 use Joomla\CMS\MVC\Controller\BaseController;
 use Joomla\CMS\Filesystem\File;
+use Joomla\Component\Kunena\Libraries\Access;
+use Joomla\Component\Kunena\Libraries\Controller\Display;
+use Joomla\Component\Kunena\Libraries\Forum\Message\Helper;
+use Joomla\Component\Kunena\Libraries\Pagination\Pagination;
+use Joomla\Component\Kunena\Libraries\Route\KunenaRoute;
 use function defined;
 
 /**
@@ -27,7 +32,7 @@ use function defined;
  *
  * @since   Kunena 4.0
  */
-class ComponentKunenaControllerCategoryTopicsDisplay extends KunenaControllerDisplay
+class ComponentKunenaControllerCategoryTopicsDisplay extends Display
 {
 	/**
 	 * @var     string
@@ -97,9 +102,9 @@ class ComponentKunenaControllerCategoryTopicsDisplay extends KunenaControllerDis
 
 		if (!$Itemid && $format != 'feed' && $this->config->sef_redirect)
 		{
-			$itemid     = \Joomla\Component\Kunena\Libraries\Route\KunenaRoute::fixMissingItemID();
+			$itemid     = KunenaRoute::fixMissingItemID();
 			$controller = BaseController::getInstance("kunena");
-			$controller->setRedirect(\Joomla\Component\Kunena\Libraries\Route\KunenaRoute::_("index.php?option=com_kunena&view=category&catid={$catid}&Itemid={$itemid}", false));
+			$controller->setRedirect(KunenaRoute::_("index.php?option=com_kunena&view=category&catid={$catid}&Itemid={$itemid}", false));
 			$controller->redirect();
 		}
 
@@ -118,7 +123,7 @@ class ComponentKunenaControllerCategoryTopicsDisplay extends KunenaControllerDis
 
 		$topic_ordering = $this->category->topic_ordering;
 
-		$access = \Joomla\Component\Kunena\Libraries\Access::getInstance();
+		$access = Access::getInstance();
 		$hold   = $access->getAllowedHold($this->me, $catid);
 		$moved  = 1;
 		$params = [
@@ -150,7 +155,7 @@ class ComponentKunenaControllerCategoryTopicsDisplay extends KunenaControllerDis
 		if ($limitstart > 1 && !$this->topics)
 		{
 			$controller = BaseController::getInstance("kunena");
-			$controller->setRedirect(\Joomla\Component\Kunena\Libraries\Route\KunenaRoute::_("index.php?option=com_kunena&view=category&catid={$catid}&Itemid={$itemid}", false));
+			$controller->setRedirect(KunenaRoute::_("index.php?option=com_kunena&view=category&catid={$catid}&Itemid={$itemid}", false));
 			$controller->redirect();
 		}
 
@@ -177,9 +182,9 @@ class ComponentKunenaControllerCategoryTopicsDisplay extends KunenaControllerDis
 			$lastreadlist = \Joomla\Component\Kunena\Libraries\Forum\Topic\Helper::fetchNewStatus($this->topics);
 
 			// Fetch last / new post positions when user can see unapproved or deleted posts.
-			if ($lastreadlist || $this->me->isAdmin() || \Joomla\Component\Kunena\Libraries\Access::getInstance()->getModeratorStatus())
+			if ($lastreadlist || $this->me->isAdmin() || Access::getInstance()->getModeratorStatus())
 			{
-				KunenaForumMessageHelper::loadLocation($lastpostlist + $lastreadlist);
+				Helper::loadLocation($lastpostlist + $lastreadlist);
 			}
 		}
 
@@ -190,7 +195,7 @@ class ComponentKunenaControllerCategoryTopicsDisplay extends KunenaControllerDis
 
 		$this->actionMove = $this->model->getActionMove();
 
-		$this->pagination = new KunenaPagination($this->total, $limitstart, $limit);
+		$this->pagination = new Pagination($this->total, $limitstart, $limit);
 		$this->pagination->setDisplayedPages(5);
 		$doc  = Factory::getApplication()->getDocument();
 		$page = $this->pagination->pagesCurrent;
@@ -287,7 +292,7 @@ class ComponentKunenaControllerCategoryTopicsDisplay extends KunenaControllerDis
 					{
 						if ($value['relation'] == 'canonical')
 						{
-							$canonicalUrl               = \Joomla\Component\Kunena\Libraries\Route\KunenaRoute::_();
+							$canonicalUrl               = KunenaRoute::_();
 							$doc->_links[$canonicalUrl] = $value;
 							unset($doc->_links[$key]);
 							break;

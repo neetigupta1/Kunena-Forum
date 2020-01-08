@@ -57,7 +57,7 @@ $list = [];
 	<div class="shadow-none p-4 mb-5 rounded">
 		<div class="mykmsg-header">
 			<?php
-			$title   = KunenaForumMessage::getInstance()->getsubstr($this->escape($message->subject), 0, $subjectlengthmessage);
+			$title   = \Joomla\Component\Kunena\Libraries\Forum\Message\Message::getInstance()->getsubstr($this->escape($message->subject), 0, $subjectlengthmessage);
 			$langstr = $isReply ? 'COM_KUNENA_MESSAGE_REPLIED_NEW' : 'COM_KUNENA_MESSAGE_CREATED_NEW';
 			echo Text::sprintf($langstr, $message->getAuthor()->getLink(), $this->getTopicLink($topic, 'first', null, null, \Joomla\Component\Kunena\Libraries\Template\Template::getInstance()->tooltips() . ' topictitle', $category, true, false)); ?>
 		</div>
@@ -161,8 +161,8 @@ endif; ?>
 
 	if ($message->modified_time)
 	{
-		$datehover = 'title="' . KunenaDate::getInstance($message->modified_time)->toKunena('config_post_dateformat_hover') . '"';
-		$dateshown = KunenaDate::getInstance($message->modified_time)->toKunena('config_post_dateformat') . ' ';
+		$datehover = 'title="' . \Joomla\Component\Kunena\Libraries\KunenaDate::getInstance($message->modified_time)->toKunena('config_post_dateformat_hover') . '"';
+		$dateshown = \Joomla\Component\Kunena\Libraries\KunenaDate::getInstance($message->modified_time)->toKunena('config_post_dateformat') . ' ';
 	}
 	?>
 	<div class="alert alert-info hidden-xs-down" <?php echo $datehover ?>>

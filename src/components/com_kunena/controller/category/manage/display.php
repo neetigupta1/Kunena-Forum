@@ -10,7 +10,7 @@
  * @link            https://www.kunena.org
  **/
 
-namespace Joomla\Component\Kunena\Site;
+namespace Joomla\Component\Kunena\Site\Controller\Category\Manage;
 
 defined('_JEXEC') or die();
 
@@ -18,6 +18,12 @@ use Exception;
 use Joomla\CMS\Factory;
 use Joomla\CMS\HTML\HTMLHelper;
 use Joomla\CMS\Language\Text;
+use Joomla\Component\Kunena\Libraries\Access;
+use Joomla\Component\Kunena\Libraries\Controller\Display;
+use Joomla\Component\Kunena\Libraries\Exception\Authorise;
+use Joomla\Component\Kunena\Libraries\Forum\Category\Helper;
+use Joomla\Component\Kunena\Libraries\KunenaFactory;
+use Joomla\Component\Kunena\Libraries\Template\Template;
 use Joomla\Registry\Registry;
 use Joomla\CMS\Filesystem\Folder;
 use function defined;
@@ -27,7 +33,7 @@ use function defined;
  *
  * @since   Kunena 4.0
  */
-class ComponentKunenaControllerCategoryManageDisplay extends KunenaControllerDisplay
+class ComponentKunenaControllerCategoryManageDisplay extends Display
 {
 	/**
 	 * @var     string
@@ -92,7 +98,7 @@ class ComponentKunenaControllerCategoryManageDisplay extends KunenaControllerDis
 
 		if (!$this->me->isAdmin())
 		{
-			return new KunenaExceptionAuthorise(Text::_('COM_KUNENA_NO_ACCESS'), 403);
+			return new Authorise(Text::_('COM_KUNENA_NO_ACCESS'), 403);
 		}
 
 		parent::before();
@@ -101,11 +107,11 @@ class ComponentKunenaControllerCategoryManageDisplay extends KunenaControllerDis
 
 		$catid = $this->input->getInt('catid');
 
-		\Joomla\Component\Kunena\Libraries\KunenaFactory::loadLanguage('com_kunena.models', 'admin');
-		\Joomla\Component\Kunena\Libraries\KunenaFactory::loadLanguage('com_kunena.views', 'admin');
-		\Joomla\Component\Kunena\Libraries\KunenaFactory::loadLanguage('com_kunena', 'admin');
+		KunenaFactory::loadLanguage('com_kunena.models', 'admin');
+		KunenaFactory::loadLanguage('com_kunena.views', 'admin');
+		KunenaFactory::loadLanguage('com_kunena', 'admin');
 
-		$this->category = \Joomla\Component\Kunena\Libraries\Forum\Category\Helper::get($catid);
+		$this->category = Helper::get($catid);
 		$this->category->tryAuthorise();
 
 		$category = $this->category;
@@ -173,8 +179,8 @@ class ComponentKunenaControllerCategoryManageDisplay extends KunenaControllerDis
 		$cat_params = ['sections' => 1, 'catid' => 0];
 
 		$lists                     = [];
-		$lists ['accesstypes']     = \Joomla\Component\Kunena\Libraries\Access::getInstance()->getAccessTypesList($category);
-		$lists ['accesslists']     = \Joomla\Component\Kunena\Libraries\Access::getInstance()->getAccessOptions($category);
+		$lists ['accesstypes']     = Access::getInstance()->getAccessTypesList($category);
+		$lists ['accesslists']     = Access::getInstance()->getAccessOptions($category);
 		$lists ['categories']      = HTMLHelper::_('kunenaforum.categorylist', 'parent_id', 0, null, $cat_params, 'class="inputbox form-control"', 'value', 'text', $category->parent_id);
 		$lists ['channels']        = HTMLHelper::_('kunenaforum.categorylist', 'channels[]', 0, $channels_options, $channels_params, 'class="inputbox form-control" multiple="multiple"', 'value', 'text', explode(',', $category->channels));
 		$lists ['aliases']         = $aliases ? HTMLHelper::_('kunenaforum.checklist', 'aliases', $aliases, true, 'category_aliases') : null;
@@ -208,7 +214,7 @@ class ComponentKunenaControllerCategoryManageDisplay extends KunenaControllerDis
 
 		if (empty($category->iconset))
 		{
-			$value = \Joomla\Component\Kunena\Libraries\Template\Template::getInstance()->params->get('DefaultIconset');
+			$value = Template::getInstance()->params->get('DefaultIconset');
 		}
 		else
 		{

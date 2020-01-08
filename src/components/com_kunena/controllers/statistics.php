@@ -10,10 +10,11 @@
  * @link            https://www.kunena.org
  **/
 
-namespace Joomla\Component\Kunena\Site;
+namespace Joomla\Component\Kunena\Site\Controllers;
 
 defined('_JEXEC') or die();
 
+use Joomla\Component\Kunena\Libraries\Controller;
 use function defined;
 
 /**
@@ -21,6 +22,6 @@ use function defined;
  *
  * @since   Kunena 2.0
  */
-class KunenaControllerStatistics extends KunenaController
+class KunenaControllerStatistics extends Controller
 {
 }

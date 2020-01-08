@@ -10,7 +10,7 @@
  * @link            https://www.kunena.org
 **/
 
-namespace Joomla\Component\Kunena\Site;
+namespace Joomla\Component\Kunena\Site\Controller\Topic\KunenaList;
 
 defined('_JEXEC') or die();
 
@@ -19,6 +19,10 @@ use Joomla\CMS\Factory;
 use Joomla\CMS\HTML\HTMLHelper;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\Plugin\PluginHelper;
+use Joomla\Component\Kunena\Libraries\Access;
+use Joomla\Component\Kunena\Libraries\Controller\Display;
+use Joomla\Component\Kunena\Libraries\Forum\Message\Helper;
+use Joomla\Component\Kunena\Libraries\Html\Parser;
 use Joomla\Registry\Registry;
 use function defined;
 
@@ -27,7 +31,7 @@ use function defined;
  *
  * @since   Kunena 4.0
  */
-abstract class ComponentKunenaControllerTopicListDisplay extends KunenaControllerDisplay
+abstract class ComponentKunenaControllerTopicListDisplay extends Display
 {
 	/**
 	 * @var     string
@@ -96,7 +100,7 @@ abstract class ComponentKunenaControllerTopicListDisplay extends KunenaControlle
 
 		// Fetch also last post positions when user can see unapproved or deleted posts.
 		// TODO: Optimize? Take account of configuration option...
-		if ($this->me->isAdmin() || \Joomla\Component\Kunena\Libraries\Access::getInstance()->getModeratorStatus())
+		if ($this->me->isAdmin() || Access::getInstance()->getModeratorStatus())
 		{
 			$mesIds += $lastIds;
 		}
@@ -104,10 +108,10 @@ abstract class ComponentKunenaControllerTopicListDisplay extends KunenaControlle
 		// Load position information for all selected messages.
 		if ($mesIds)
 		{
-			KunenaForumMessageHelper::loadLocation($mesIds);
+			Helper::loadLocation($mesIds);
 		}
 
-		$allowed = md5(serialize(\Joomla\Component\Kunena\Libraries\Access::getInstance()->getAllowedCategories()));
+		$allowed = md5(serialize(Access::getInstance()->getAllowedCategories()));
 		$cache   = Factory::getCache('com_kunena', 'output');
 
 		/*
@@ -127,7 +131,7 @@ abstract class ComponentKunenaControllerTopicListDisplay extends KunenaControlle
 		$params->set('kunena_view', 'topic');
 		$params->set('kunena_layout', 'list');
 		PluginHelper::importPlugin('kunena');
-		\Joomla\Component\Kunena\Libraries\Html\Parser::prepareContent($content, 'topic_list_default');
+		Parser::prepareContent($content, 'topic_list_default');
 		Factory::getApplication()->triggerEvent('onKunenaPrepare', ['kunena.topic.list', &$this->topic, &$params, 0]);
 	}
 

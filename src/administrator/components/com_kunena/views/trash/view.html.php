@@ -25,7 +25,7 @@ use function defined;
  *
  * @since  K1.0
  */
-class KunenaAdminViewTrash extends KunenaView
+class KunenaAdminViewTrash extends \Joomla\Component\Kunena\Libraries\View
 {
 	/**
 	 * @return  void

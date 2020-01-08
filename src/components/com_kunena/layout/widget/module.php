@@ -10,12 +10,13 @@
  * @link            https://www.kunena.org
  **/
 
-namespace Joomla\Component\Kunena\Site;
+namespace Joomla\Component\Kunena\Site\Layout\Widget;
 
 defined('_JEXEC') or die;
 
 use Exception;
 use Joomla\CMS\Factory;
+use Joomla\Component\Kunena\Libraries\Layout\Layout;
 use function defined;
 
 /**
@@ -23,7 +24,7 @@ use function defined;
  *
  * @since   Kunena 4.0
  */
-class KunenaLayoutWidgetModule extends KunenaLayout
+class KunenaLayoutWidgetModule extends Layout
 {
 	/**
 	 * @var     null

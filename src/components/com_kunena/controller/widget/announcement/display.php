@@ -10,11 +10,13 @@
  * @link            https://www.kunena.org
  **/
 
-namespace Joomla\Component\Kunena\Site;
+namespace Joomla\Component\Kunena\Site\Controller\Widget\Announcement;
 
 defined('_JEXEC') or die();
 
 use Exception;
+use Joomla\Component\Kunena\Libraries\Controller\Display;
+use Joomla\Component\Kunena\Libraries\Forum\Announcement\Helper;
 use function defined;
 
 /**
@@ -22,7 +24,7 @@ use function defined;
  *
  * @since   Kunena 4.0
  */
-class ComponentKunenaControllerWidgetAnnouncementDisplay extends KunenaControllerDisplay
+class ComponentKunenaControllerWidgetAnnouncementDisplay extends Display
 {
 	/**
 	 * @var     string
@@ -56,7 +58,7 @@ class ComponentKunenaControllerWidgetAnnouncementDisplay extends KunenaControlle
 			return false;
 		}
 
-		$items              = KunenaForumAnnouncementHelper::getAnnouncements();
+		$items              = Helper::getAnnouncements();
 		$this->announcement = array_pop($items);
 
 		if (!$this->announcement || !$this->announcement->isAuthorised('read'))

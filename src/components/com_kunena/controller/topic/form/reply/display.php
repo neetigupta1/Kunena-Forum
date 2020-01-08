@@ -10,7 +10,7 @@
  * @link            https://www.kunena.org
  **/
 
-namespace Joomla\Component\Kunena\Site;
+namespace Joomla\Component\Kunena\Site\Controller\Topic\Form\Reply;
 
 defined('_JEXEC') or die();
 
@@ -18,6 +18,11 @@ use Exception;
 use Joomla\CMS\Factory;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\Plugin\PluginHelper;
+use Joomla\Component\Kunena\Libraries\Attachment\Helper;
+use Joomla\Component\Kunena\Libraries\Controller\Display;
+use Joomla\Component\Kunena\Libraries\Exception\Authorise;
+use Joomla\Component\Kunena\Libraries\KunenaFactory;
+use Joomla\Component\Kunena\Libraries\Template\Template;
 use Joomla\Registry\Registry;
 use function defined;
 
@@ -26,7 +31,7 @@ use function defined;
  *
  * @since   Kunena 4.0
  */
-class ComponentKunenaControllerTopicFormReplyDisplay extends KunenaControllerDisplay
+class ComponentKunenaControllerTopicFormReplyDisplay extends Display
 {
 	/**
 	 * @var     string
@@ -61,22 +66,22 @@ class ComponentKunenaControllerTopicFormReplyDisplay extends KunenaControllerDis
 		$saved = $this->app->getUserState('com_kunena.postfields');
 
 		$this->me       = \Joomla\Component\Kunena\Libraries\User\Helper::getMyself();
-		$this->template = \Joomla\Component\Kunena\Libraries\KunenaFactory::getTemplate();
+		$this->template = KunenaFactory::getTemplate();
 
 		if (!$mesid)
 		{
 			$this->topic = \Joomla\Component\Kunena\Libraries\Forum\Topic\Helper::get($id);
-			$parent      = KunenaForumMessageHelper::get($this->topic->first_post_id);
+			$parent      = \Joomla\Component\Kunena\Libraries\Forum\Message\Helper::get($this->topic->first_post_id);
 		}
 		else
 		{
-			$parent      = KunenaForumMessageHelper::get($mesid);
+			$parent      = \Joomla\Component\Kunena\Libraries\Forum\Message\Helper::get($mesid);
 			$this->topic = $parent->getTopic();
 		}
 
 		if ($this->config->read_only)
 		{
-			throw new KunenaExceptionAuthorise(Text::_('COM_KUNENA_NO_ACCESS'), '401');
+			throw new Authorise(Text::_('COM_KUNENA_NO_ACCESS'), '401');
 		}
 
 		$doc = Factory::getApplication()->getDocument();
@@ -105,7 +110,7 @@ class ComponentKunenaControllerTopicFormReplyDisplay extends KunenaControllerDis
 
 		if ($parent->isAuthorised('reply') && $this->me->canDoCaptcha())
 		{
-			$this->captchaDisplay = \Joomla\Component\Kunena\Libraries\Template\Template::getInstance()->recaptcha();
+			$this->captchaDisplay = Template::getInstance()->recaptcha();
 			$this->captchaEnabled = true;
 		}
 		else
@@ -116,7 +121,7 @@ class ComponentKunenaControllerTopicFormReplyDisplay extends KunenaControllerDis
 		$parent->tryAuthorise('reply');
 
 		$arraypollcatid = [];
-		\Joomla\Component\Kunena\Libraries\Template\Template::getInstance()->addScriptOptions('com_kunena.pollcategoriesid', json_encode($arraypollcatid));
+		Template::getInstance()->addScriptOptions('com_kunena.pollcategoriesid', json_encode($arraypollcatid));
 
 		// Run event.
 		$params = new Registry;
@@ -142,7 +147,7 @@ class ComponentKunenaControllerTopicFormReplyDisplay extends KunenaControllerDis
 		$this->privateMessage       = new KunenaPrivateMessage;
 		$this->privateMessage->body = $saved ? $saved['private'] : $this->privateMessage->body;
 
-		$this->allowedExtensions = KunenaAttachmentHelper::getExtensions($this->category);
+		$this->allowedExtensions = Helper::getExtensions($this->category);
 
 		$this->post_anonymous       = $saved ? $saved['anonymous'] : !empty($this->category->post_anonymous);
 		$this->subscriptionschecked = $saved ? $saved['subscribe'] : $this->config->subscriptionschecked == 1;

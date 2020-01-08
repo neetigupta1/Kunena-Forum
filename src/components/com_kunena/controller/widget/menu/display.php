@@ -10,11 +10,15 @@
  * @link            https://www.kunena.org
  **/
 
-namespace Joomla\Component\Kunena\Site;
+namespace Joomla\Component\Kunena\Site\Controller\Widget\Menu;
 
 defined('_JEXEC') or die();
 
 use Exception;
+use Joomla\Component\Kunena\Libraries\Controller\Display;
+use Joomla\Component\Kunena\Libraries\KunenaFactory;
+use Joomla\Component\Kunena\Libraries\Menu\Helper;
+use Joomla\Component\Kunena\Libraries\Route\KunenaRoute;
 use Joomla\Registry\Registry;
 use function defined;
 
@@ -23,7 +27,7 @@ use function defined;
  *
  * @since   Kunena 4.0
  */
-class ComponentKunenaControllerWidgetMenuDisplay extends KunenaControllerDisplay
+class ComponentKunenaControllerWidgetMenuDisplay extends Display
 {
 	/**
 	 * @var     string
@@ -92,7 +96,7 @@ class ComponentKunenaControllerWidgetMenuDisplay extends KunenaControllerDisplay
 	{
 		parent::before();
 
-		$this->basemenu = $basemenu = \Joomla\Component\Kunena\Libraries\Route\KunenaRoute::getMenu();
+		$this->basemenu = $basemenu = KunenaRoute::getMenu();
 
 		if (!$basemenu)
 		{
@@ -100,13 +104,13 @@ class ComponentKunenaControllerWidgetMenuDisplay extends KunenaControllerDisplay
 		}
 
 		$parameters = new Registry;
-		$template   = \Joomla\Component\Kunena\Libraries\KunenaFactory::getTemplate();
+		$template   = KunenaFactory::getTemplate();
 		$parameters->set('showAllChildren', $template->params->get('menu_showall', 0));
 		$parameters->set('menutype', $basemenu->menutype);
 		$parameters->set('startLevel', $basemenu->level + 1);
 		$parameters->set('endLevel', $basemenu->level + $template->params->get('menu_levels', 1));
 
-		$this->list      = KunenaMenuHelper::getList($parameters);
+		$this->list      = Helper::getList($parameters);
 		$this->menu      = $this->app->getMenu();
 		$this->active    = $this->menu->getActive();
 		$this->active_id = isset($this->active) ? $this->active->id : $this->menu->getDefault()->id;

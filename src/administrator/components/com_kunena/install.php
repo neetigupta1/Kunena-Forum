@@ -40,6 +40,6 @@ if ($view != 'install' && class_exists('KunenaForum') && \Joomla\Component\Kunen
 // Run the installer...
 require_once __DIR__ . '/install/controller.php';
 
-$controller = new KunenaControllerInstall;
+$controller = new \Joomla\Component\Kunena\Administrator\Install\Controller\KunenaControllerInstall;
 $controller->execute($task);
 $controller->redirect();

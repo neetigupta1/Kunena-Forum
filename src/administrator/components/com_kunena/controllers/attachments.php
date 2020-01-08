@@ -81,7 +81,7 @@ class KunenaAdminControllerAttachments extends KunenaController
 
 		foreach ($cid as $id)
 		{
-			$attachment = KunenaAttachmentHelper::get($id);
+			$attachment = \Joomla\Component\Kunena\Libraries\Attachment\Helper::get($id);
 
 			$message     = $attachment->getMessage();
 			$attachments = [$attachment->id, 1];

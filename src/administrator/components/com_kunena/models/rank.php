@@ -26,7 +26,7 @@ use function defined;
  *
  * @since  3.0
  */
-class KunenaAdminModelRank extends KunenaModel
+class KunenaAdminModelRank extends \Joomla\Component\Kunena\Libraries\Model
 {
 	/**
 	 * @return  mixed

@@ -10,7 +10,7 @@
  * @link            https://www.kunena.org
  **/
 
-namespace Joomla\Component\Kunena\Site;
+namespace Joomla\Component\Kunena\Site\View\Category;
 
 defined('_JEXEC') or die();
 
@@ -20,6 +20,9 @@ use Joomla\CMS\Document\Feed\FeedImage;
 use Joomla\CMS\Document\Feed\FeedItem;
 use Joomla\CMS\Factory;
 use Joomla\CMS\Language\Text;
+use Joomla\Component\Kunena\Libraries\Html\Parser;
+use Joomla\Component\Kunena\Libraries\KunenaFactory;
+use Joomla\Component\Kunena\Libraries\View;
 use function defined;
 
 /**
@@ -27,7 +30,7 @@ use function defined;
  *
  * @since   Kunena 6.0
  */
-class KunenaViewCategory extends KunenaView
+class feed extends View
 {
 	/**
 	 * @param   null  $tpl  tpl
@@ -45,7 +48,7 @@ class KunenaViewCategory extends KunenaView
 			throw new Exception(Text::_('COM_KUNENA_RSS_DISABLED'), 500);
 		}
 
-		\Joomla\Component\Kunena\Libraries\Html\Parser::$relative = false;
+		Parser::$relative = false;
 
 		$this->category = $this->get('Category');
 
@@ -74,7 +77,7 @@ class KunenaViewCategory extends KunenaView
 			$description = $topic->last_post_message;
 			$date        = new Date($topic->last_post_time);
 			$userid      = $topic->last_post_userid;
-			$username    = \Joomla\Component\Kunena\Libraries\KunenaFactory::getUser($userid)->getName($topic->last_post_guest_name);
+			$username    = KunenaFactory::getUser($userid)->getName($topic->last_post_guest_name);
 
 			$title    = $topic->subject;
 			$category = $topic->getCategory();
@@ -120,11 +123,11 @@ class KunenaViewCategory extends KunenaView
 
 			if ((bool) $this->config->rss_allow_html)
 			{
-				$description = \Joomla\Component\Kunena\Libraries\Html\Parser::parseBBCode($description, null, (int) $this->config->rss_word_count);
+				$description = Parser::parseBBCode($description, null, (int) $this->config->rss_word_count);
 			}
 			else
 			{
-				$description = \Joomla\Component\Kunena\Libraries\Html\Parser::parseText($description, (int) $this->config->rss_word_count);
+				$description = Parser::parseText($description, (int) $this->config->rss_word_count);
 			}
 		}
 

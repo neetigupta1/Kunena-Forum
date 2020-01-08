@@ -10,11 +10,14 @@
  * @link            https://www.kunena.org
  **/
 
-namespace Joomla\Component\Kunena\Site;
+namespace Joomla\Component\Kunena\Site\Controller\User\Edit\Avatar;
 
 defined('_JEXEC') or die();
 
 use Exception;
+use Joomla\Component\Kunena\Libraries\Exception\Authorise;
+use Joomla\Component\Kunena\Libraries\Integration\Avatar;
+use Joomla\Component\Kunena\Libraries\KunenaFactory;
 use Joomla\String\StringHelper;
 use Joomla\CMS\HTML\HTMLHelper;
 use Joomla\CMS\Language\Text;
@@ -84,11 +87,11 @@ class ComponentKunenaControllerUserEditAvatarDisplay extends ComponentKunenaCont
 	{
 		parent::before();
 
-		$avatar = \Joomla\Component\Kunena\Libraries\KunenaFactory::getAvatarIntegration();
+		$avatar = KunenaFactory::getAvatarIntegration();
 
-		if (!($avatar instanceof \Joomla\Component\Kunena\Libraries\Integration\Avatar))
+		if (!($avatar instanceof Avatar))
 		{
-			throw new KunenaExceptionAuthorise(Text::_('COM_KUNENA_AUTH_ERROR_USER_EDIT_AVATARS'), 404);
+			throw new Authorise(Text::_('COM_KUNENA_AUTH_ERROR_USER_EDIT_AVATARS'), 404);
 		}
 
 		$path                 = JPATH_ROOT . '/media/kunena/avatars/gallery';

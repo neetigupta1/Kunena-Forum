@@ -130,7 +130,7 @@ use function defined;
 							</strong>
 						</td>
 						<td>
-							<?php echo KunenaDate::getInstance($comment->time)->toKunena(); ?>
+							<?php echo \Joomla\Component\Kunena\Libraries\KunenaDate::getInstance($comment->time)->toKunena(); ?>
 						</td>
 						<td colspan="3">
 							<?php echo \Joomla\Component\Kunena\Libraries\Html\Parser::parseText($comment->comment); ?>

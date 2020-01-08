@@ -10,11 +10,12 @@
  * @link            https://www.kunena.org
  **/
 
-namespace Joomla\Component\Kunena\Site;
+namespace Joomla\Component\Kunena\Site\Controller\Topic\Item\Rating;
 
 defined('_JEXEC') or die();
 
 use Exception;
+use Joomla\Component\Kunena\Libraries\Controller\Display;
 use function defined;
 
 /**
@@ -22,7 +23,7 @@ use function defined;
  *
  * @since   Kunena 5.0
  */
-class ComponentKunenaControllerTopicItemRatingDisplay extends KunenaControllerDisplay
+class ComponentKunenaControllerTopicItemRatingDisplay extends Display
 {
 	/**
 	 * @var     string

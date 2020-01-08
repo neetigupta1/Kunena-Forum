@@ -21,6 +21,6 @@ use function defined;
  *
  * @since   Kunena 2.0
  */
-class KunenaAdminModelCpanel extends KunenaModel
+class KunenaAdminModelCpanel extends \Joomla\Component\Kunena\Libraries\Model
 {
 }

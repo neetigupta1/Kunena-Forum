@@ -246,7 +246,7 @@ $filterItem = $this->escape($this->state->get('item.id'));
 							:
 							foreach ($this->items as $item)
 								:
-								$date = new KunenaDate($item->time);
+								$date = new \Joomla\Component\Kunena\Libraries\KunenaDate($item->time);
 								$user     = \Joomla\Component\Kunena\Libraries\User\Helper::get($item->user_id);
 								$category = \Joomla\Component\Kunena\Libraries\Forum\Category\Helper::get($item->category_id);
 								$topic    = \Joomla\Component\Kunena\Libraries\Forum\Topic\Helper::get($item->topic_id);

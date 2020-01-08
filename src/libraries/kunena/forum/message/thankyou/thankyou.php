@@ -69,7 +69,7 @@ class Thankyou extends CMSObject
 	 */
 	public static function getInstance($identifier = null, $reload = false)
 	{
-		return KunenaForumMessageThankyouHelper::get($identifier, $reload);
+		return \Joomla\Component\Kunena\Libraries\Forum\Message\Thankyou\Helper::get($identifier, $reload);
 	}
 
 	/**
@@ -99,7 +99,7 @@ class Thankyou extends CMSObject
 	public function save($user)
 	{
 		$user    = \Joomla\Component\Kunena\Libraries\KunenaFactory::getUser($user);
-		$message = KunenaForumMessageHelper::get($this->id);
+		$message = \Joomla\Component\Kunena\Libraries\Forum\Message\Helper::get($this->id);
 
 		if (!$user->exists())
 		{
@@ -216,7 +216,7 @@ class Thankyou extends CMSObject
 	public function delete($user)
 	{
 		$user    = \Joomla\Component\Kunena\Libraries\KunenaFactory::getUser($user);
-		$message = KunenaForumMessageHelper::get($this->id);
+		$message = \Joomla\Component\Kunena\Libraries\Forum\Message\Helper::get($this->id);
 
 		if (!$user->exists())
 		{

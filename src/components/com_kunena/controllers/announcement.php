@@ -10,7 +10,7 @@
  * @link            https://www.kunena.org
  **/
 
-namespace Joomla\Component\Kunena\Site;
+namespace Joomla\Component\Kunena\Site\Controllers;
 
 defined('_JEXEC') or die();
 
@@ -19,6 +19,8 @@ use Joomla\CMS\Date\Date;
 use Joomla\CMS\Factory;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\Session\Session;
+use Joomla\Component\Kunena\Libraries\Controller;
+use Joomla\Component\Kunena\Libraries\Forum\Announcement\Helper;
 use Joomla\Utilities\ArrayHelper;
 use function defined;
 
@@ -27,7 +29,7 @@ use function defined;
  *
  * @since   Kunena 2.0
  */
-class KunenaControllerAnnouncement extends KunenaController
+class KunenaControllerAnnouncement extends Controller
 {
 	/**
 	 * @return  void
@@ -66,7 +68,7 @@ class KunenaControllerAnnouncement extends KunenaController
 
 		foreach ($cid as $id)
 		{
-			$announcement = KunenaForumAnnouncementHelper::get($id);
+			$announcement = Helper::get($id);
 			$date_today   = Factory::getDate();
 
 			if ($announcement->published == 1 && $announcement->publish_up > $date_today && $announcement->publish_down > $date_today)
@@ -134,7 +136,7 @@ class KunenaControllerAnnouncement extends KunenaController
 
 		foreach ($cid as $id)
 		{
-			$announcement = KunenaForumAnnouncementHelper::get($id);
+			$announcement = Helper::get($id);
 			$date_today   = Factory::getDate();
 
 			if ($announcement->published == 0 && $announcement->publish_down > $date_today && $announcement->publish_down > $date_today)
@@ -192,7 +194,7 @@ class KunenaControllerAnnouncement extends KunenaController
 		$cid = $this->input->get('cid', [], 'array');
 		$cid = ArrayHelper::toInteger($cid, []);
 
-		$announcement = KunenaForumAnnouncementHelper::get(array_pop($cid));
+		$announcement = Helper::get(array_pop($cid));
 
 		$this->setRedirect($announcement->getUrl('edit', false));
 	}
@@ -220,7 +222,7 @@ class KunenaControllerAnnouncement extends KunenaController
 
 		foreach ($cid as $id)
 		{
-			$announcement = KunenaForumAnnouncementHelper::get($id);
+			$announcement = Helper::get($id);
 
 			try
 			{
@@ -254,7 +256,7 @@ class KunenaControllerAnnouncement extends KunenaController
 			}
 		}
 
-		$this->setRedirect(KunenaForumAnnouncementHelper::getUrl('list', false));
+		$this->setRedirect(Helper::getUrl('list', false));
 	}
 
 	/**
@@ -287,7 +289,7 @@ class KunenaControllerAnnouncement extends KunenaController
 		$fields['showdate']     = $this->app->input->getInt('showdate', 1);
 
 		$id           = $this->app->input->getInt('id');
-		$announcement = KunenaForumAnnouncementHelper::get($id);
+		$announcement = Helper::get($id);
 
 		if ($fields['created'] == null)
 		{

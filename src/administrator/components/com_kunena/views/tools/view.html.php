@@ -24,7 +24,7 @@ use function defined;
  *
  * @since   Kunena 6.0
  */
-class KunenaAdminViewTools extends KunenaView
+class KunenaAdminViewTools extends \Joomla\Component\Kunena\Libraries\View
 {
 	/**
 	 * @return  void
@@ -310,7 +310,7 @@ class KunenaAdminViewTools extends KunenaView
 	{
 		$this->setToolBarUninstall();
 
-		$login              = KunenaLogin::getInstance();
+		$login              = \Joomla\Component\Kunena\Libraries\Login::getInstance();
 		$this->isTFAEnabled = $login->isTFAEnabled();
 
 		$this->display();

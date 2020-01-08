@@ -123,7 +123,7 @@ class TableKunenaAttachments extends KunenaTable
 	public function check()
 	{
 		$user    = \Joomla\Component\Kunena\Libraries\User\Helper::get($this->userid);
-		$message = KunenaForumMessageHelper::get($this->mesid);
+		$message = \Joomla\Component\Kunena\Libraries\Forum\Message\Helper::get($this->mesid);
 
 		if ($user->userid != 0 && !$user->exists())
 		{

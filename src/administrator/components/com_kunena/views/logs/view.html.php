@@ -29,7 +29,7 @@ use function defined;
  *
  * @since 5.0
  */
-class KunenaAdminViewLogs extends KunenaView
+class KunenaAdminViewLogs extends \Joomla\Component\Kunena\Libraries\View
 {
 	/**
 	 * @param   null  $tpl  tpl

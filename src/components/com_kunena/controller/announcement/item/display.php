@@ -10,13 +10,16 @@
  * @link            https://www.kunena.org
  **/
 
-namespace Joomla\Component\Kunena\Site;
+namespace Joomla\Component\Kunena\Site\Controller\Announement\Item;
 
 defined('_JEXEC') or die();
 
 use Exception;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\MVC\Controller\BaseController;
+use Joomla\Component\Kunena\Libraries\Controller\Display;
+use Joomla\Component\Kunena\Libraries\Forum\Announcement\Helper;
+use Joomla\Component\Kunena\Libraries\Route\KunenaRoute;
 use function defined;
 
 /**
@@ -24,7 +27,7 @@ use function defined;
  *
  * @since   Kunena 4.0
  */
-class ComponentKunenaControllerAnnouncementItemDisplay extends KunenaControllerDisplay
+class ComponentKunenaControllerAnnouncementItemDisplay extends Display
 {
 	/**
 	 * @var     string
@@ -53,16 +56,16 @@ class ComponentKunenaControllerAnnouncementItemDisplay extends KunenaControllerD
 
 		$id = $this->input->getInt('id', null);
 
-		$this->announcement = KunenaForumAnnouncementHelper::get($id);
+		$this->announcement = Helper::get($id);
 		$this->announcement->tryAuthorise();
 
 		$Itemid = $this->input->getInt('Itemid');
 
 		if (!$Itemid && $this->config->sef_redirect)
 		{
-			$itemid     = \Joomla\Component\Kunena\Libraries\Route\KunenaRoute::fixMissingItemID();
+			$itemid     = KunenaRoute::fixMissingItemID();
 			$controller = BaseController::getInstance("kunena");
-			$controller->setRedirect(\Joomla\Component\Kunena\Libraries\Route\KunenaRoute::_("index.php?option=com_kunena&view=announcement&layout=default&id={$id}&Itemid={$itemid}", false));
+			$controller->setRedirect(KunenaRoute::_("index.php?option=com_kunena&view=announcement&layout=default&id={$id}&Itemid={$itemid}", false));
 			$controller->redirect();
 		}
 	}

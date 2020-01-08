@@ -10,12 +10,14 @@
  * @link            https://www.kunena.org
  **/
 
-namespace Joomla\Component\Kunena\Site;
+namespace Joomla\Component\Kunena\Site\Controllers;
 
 defined('_JEXEC') or die();
 
 use Exception;
 use Joomla\CMS\Uri\Uri;
+use Joomla\Component\Kunena\Libraries\Controller;
+use Joomla\Component\Kunena\Libraries\Route\KunenaRoute;
 use function defined;
 
 /**
@@ -23,7 +25,7 @@ use function defined;
  *
  * @since   Kunena 2.0
  */
-class KunenaControllerMisc extends KunenaController
+class KunenaControllerMisc extends Controller
 {
 	/**
 	 * @param   array  $config  config
@@ -67,6 +69,6 @@ class KunenaControllerMisc extends KunenaController
 			setcookie('kunena_template', null, time() - 3600, Uri::root(true) . '/', '', true);
 		}
 
-		$this->setRedirect(\Joomla\Component\Kunena\Libraries\Route\KunenaRoute::_('index.php?option=com_kunena', false));
+		$this->setRedirect(KunenaRoute::_('index.php?option=com_kunena', false));
 	}
 }

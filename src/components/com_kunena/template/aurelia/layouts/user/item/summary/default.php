@@ -184,7 +184,7 @@ if ($this->config->showuserstats)
 				?>
 				<li class="list-group-item">
 					<strong><?php echo Text::_('COM_KUNENA_MYPROFILE_BIRTHDATE'); ?>:</strong>
-					<span><?php echo KunenaDate::getInstance($this->profile->birthdate)->toSpan('date', 'ago', 'utc'); ?></span>
+					<span><?php echo \Joomla\Component\Kunena\Libraries\KunenaDate::getInstance($this->profile->birthdate)->toSpan('date', 'ago', 'utc'); ?></span>
 				</li>
 			<?php endif; ?>
 

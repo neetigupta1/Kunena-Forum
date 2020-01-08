@@ -590,7 +590,7 @@ class Category extends KunenaDatabaseObject
 			{
 				// Plugin forces authorisation to fail.
 				// TODO: allow plugin to customise the error.
-				$this->_authcache[$user->userid][$action] = new KunenaExceptionAuthorise(Text::_('COM_KUNENA_NO_ACCESS'), $user->userid ? 403 : 401);
+				$this->_authcache[$user->userid][$action] = new \Joomla\Component\Kunena\Libraries\Exception\Authorise(Text::_('COM_KUNENA_NO_ACCESS'), $user->userid ? 403 : 401);
 			}
 			else
 			{
@@ -648,18 +648,18 @@ class Category extends KunenaDatabaseObject
 		// Checks if user can read category
 		if (!$this->exists())
 		{
-			return new KunenaExceptionAuthorise(Text::_('COM_KUNENA_NO_ACCESS'), 404);
+			return new \Joomla\Component\Kunena\Libraries\Exception\Authorise(Text::_('COM_KUNENA_NO_ACCESS'), 404);
 		}
 
 		if (empty($catids[$this->id]))
 		{
 			if ($user->exists())
 			{
-				return new KunenaExceptionAuthorise(Text::_('COM_KUNENA_NO_ACCESS'), 403);
+				return new \Joomla\Component\Kunena\Libraries\Exception\Authorise(Text::_('COM_KUNENA_NO_ACCESS'), 403);
 			}
 			else
 			{
-				return new KunenaExceptionAuthorise(Text::_('COM_KUNENA_NO_ACCESS'), 401);
+				return new \Joomla\Component\Kunena\Libraries\Exception\Authorise(Text::_('COM_KUNENA_NO_ACCESS'), 401);
 			}
 		}
 
@@ -1392,7 +1392,7 @@ class Category extends KunenaDatabaseObject
 
 		\Joomla\Component\Kunena\Libraries\User\Helper::recount();
 		\Joomla\Component\Kunena\Libraries\Forum\Category\Helper::recount($this->id);
-		KunenaAttachmentHelper::cleanup();
+		\Joomla\Component\Kunena\Libraries\Attachment\Helper::cleanup();
 
 		return $count;
 	}
@@ -1521,7 +1521,7 @@ class Category extends KunenaDatabaseObject
 		}
 
 		\Joomla\Component\Kunena\Libraries\User\Helper::recount();
-		KunenaForumMessageThankyouHelper::recount();
+		\Joomla\Component\Kunena\Libraries\Forum\Message\Thankyou\Helper::recount();
 
 		$this->id = null;
 		\Joomla\Component\Kunena\Libraries\Forum\Category\Helper::register($this);
@@ -1909,11 +1909,11 @@ class Category extends KunenaDatabaseObject
 
 			if (!$banned->isLifetime())
 			{
-				return new KunenaExceptionAuthorise(Text::sprintf('COM_KUNENA_POST_ERROR_USER_BANNED_NOACCESS_EXPIRY', KunenaDate::getInstance($banned->expiration)->toKunena()), 403);
+				return new \Joomla\Component\Kunena\Libraries\Exception\Authorise(Text::sprintf('COM_KUNENA_POST_ERROR_USER_BANNED_NOACCESS_EXPIRY', \Joomla\Component\Kunena\Libraries\KunenaDate::getInstance($banned->expiration)->toKunena()), 403);
 			}
 			else
 			{
-				return new KunenaExceptionAuthorise(Text::_('COM_KUNENA_POST_ERROR_USER_BANNED_NOACCESS'), 403);
+				return new \Joomla\Component\Kunena\Libraries\Exception\Authorise(Text::_('COM_KUNENA_POST_ERROR_USER_BANNED_NOACCESS'), 403);
 			}
 		}
 
@@ -1934,7 +1934,7 @@ class Category extends KunenaDatabaseObject
 		// Check if user is guest and they can create or reply topics
 		if ($user->userid == 0 && !\Joomla\Component\Kunena\Libraries\KunenaFactory::getConfig()->pubwrite)
 		{
-			return new KunenaExceptionAuthorise(Text::_('COM_KUNENA_POST_ERROR_ANONYMOUS_FORBITTEN'), 401);
+			return new \Joomla\Component\Kunena\Libraries\Exception\Authorise(Text::_('COM_KUNENA_POST_ERROR_ANONYMOUS_FORBITTEN'), 401);
 		}
 
 		return;
@@ -1956,12 +1956,12 @@ class Category extends KunenaDatabaseObject
 
 		if (!$config->allowsubscriptions || $config->topic_subscriptions == 'disabled')
 		{
-			return new KunenaExceptionAuthorise(Text::_('COM_KUNENA_LIB_CATEGORY_AUTHORISE_FAILED_SUBSCRIPTIONS'), 403);
+			return new \Joomla\Component\Kunena\Libraries\Exception\Authorise(Text::_('COM_KUNENA_LIB_CATEGORY_AUTHORISE_FAILED_SUBSCRIPTIONS'), 403);
 		}
 
 		if ($user->userid == 0)
 		{
-			return new KunenaExceptionAuthorise(Text::_('COM_KUNENA_LIB_CATEGORY_AUTHORISE_FAILED_SUBSCRIPTIONS'), 401);
+			return new \Joomla\Component\Kunena\Libraries\Exception\Authorise(Text::_('COM_KUNENA_LIB_CATEGORY_AUTHORISE_FAILED_SUBSCRIPTIONS'), 401);
 		}
 
 		return;
@@ -1983,12 +1983,12 @@ class Category extends KunenaDatabaseObject
 
 		if (!$config->allowsubscriptions || $config->category_subscriptions == 'disabled')
 		{
-			return new KunenaExceptionAuthorise(Text::_('COM_KUNENA_LIB_CATEGORY_AUTHORISE_FAILED_SUBSCRIPTIONS'), 403);
+			return new \Joomla\Component\Kunena\Libraries\Exception\Authorise(Text::_('COM_KUNENA_LIB_CATEGORY_AUTHORISE_FAILED_SUBSCRIPTIONS'), 403);
 		}
 
 		if ($user->userid == 0)
 		{
-			return new KunenaExceptionAuthorise(Text::_('COM_KUNENA_LIB_CATEGORY_AUTHORISE_FAILED_SUBSCRIPTIONS'), 401);
+			return new \Joomla\Component\Kunena\Libraries\Exception\Authorise(Text::_('COM_KUNENA_LIB_CATEGORY_AUTHORISE_FAILED_SUBSCRIPTIONS'), 401);
 		}
 
 		return;
@@ -2008,12 +2008,12 @@ class Category extends KunenaDatabaseObject
 		// Check if user is guest and they can create or reply topics
 		if (!\Joomla\Component\Kunena\Libraries\KunenaFactory::getConfig()->allowfavorites)
 		{
-			return new KunenaExceptionAuthorise(Text::_('COM_KUNENA_LIB_CATEGORY_AUTHORISE_FAILED_FAVORITES'), 403);
+			return new \Joomla\Component\Kunena\Libraries\Exception\Authorise(Text::_('COM_KUNENA_LIB_CATEGORY_AUTHORISE_FAILED_FAVORITES'), 403);
 		}
 
 		if ($user->userid == 0)
 		{
-			return new KunenaExceptionAuthorise(Text::_('COM_KUNENA_LIB_CATEGORY_AUTHORISE_FAILED_FAVORITES'), 401);
+			return new \Joomla\Component\Kunena\Libraries\Exception\Authorise(Text::_('COM_KUNENA_LIB_CATEGORY_AUTHORISE_FAILED_FAVORITES'), 401);
 		}
 
 		return;
@@ -2033,7 +2033,7 @@ class Category extends KunenaDatabaseObject
 		// Check if category is not a section
 		if ($this->isSection())
 		{
-			return new KunenaExceptionAuthorise(Text::_('COM_KUNENA_POST_ERROR_IS_SECTION'), 403);
+			return new \Joomla\Component\Kunena\Libraries\Exception\Authorise(Text::_('COM_KUNENA_POST_ERROR_IS_SECTION'), 403);
 		}
 
 		return;
@@ -2070,7 +2070,7 @@ class Category extends KunenaDatabaseObject
 
 		if (!isset($channels[$this->id]))
 		{
-			return new KunenaExceptionAuthorise(Text::_('COM_KUNENA_POST_ERROR_IS_ALIAS'), 403);
+			return new \Joomla\Component\Kunena\Libraries\Exception\Authorise(Text::_('COM_KUNENA_POST_ERROR_IS_ALIAS'), 403);
 		}
 
 		return;
@@ -2090,7 +2090,7 @@ class Category extends KunenaDatabaseObject
 		// Check that category is not locked or that user is a moderator
 		if ($this->locked && (!$user->userid || !$user->isModerator($this)))
 		{
-			return new KunenaExceptionAuthorise(Text::_('COM_KUNENA_POST_ERROR_CATEGORY_LOCKED'), 403);
+			return new \Joomla\Component\Kunena\Libraries\Exception\Authorise(Text::_('COM_KUNENA_POST_ERROR_CATEGORY_LOCKED'), 403);
 		}
 
 		return;
@@ -2110,12 +2110,12 @@ class Category extends KunenaDatabaseObject
 		// Check that user is moderator
 		if (!$user->userid)
 		{
-			return new KunenaExceptionAuthorise(Text::_('COM_KUNENA_POST_NOT_MODERATOR'), 401);
+			return new \Joomla\Component\Kunena\Libraries\Exception\Authorise(Text::_('COM_KUNENA_POST_NOT_MODERATOR'), 401);
 		}
 
 		if (!$user->isModerator($this))
 		{
-			return new KunenaExceptionAuthorise(Text::_('COM_KUNENA_POST_NOT_MODERATOR'), 403);
+			return new \Joomla\Component\Kunena\Libraries\Exception\Authorise(Text::_('COM_KUNENA_POST_NOT_MODERATOR'), 403);
 		}
 
 		return;
@@ -2135,12 +2135,12 @@ class Category extends KunenaDatabaseObject
 		// Check that user is a global moderator
 		if (!$user->userid)
 		{
-			return new KunenaExceptionAuthorise(Text::_('COM_KUNENA_POST_NOT_GLOBAL_MODERATOR'), 401);
+			return new \Joomla\Component\Kunena\Libraries\Exception\Authorise(Text::_('COM_KUNENA_POST_NOT_GLOBAL_MODERATOR'), 401);
 		}
 
 		if (!$user->isModerator())
 		{
-			return new KunenaExceptionAuthorise(Text::_('COM_KUNENA_POST_NOT_GLOBAL_MODERATOR'), 403);
+			return new \Joomla\Component\Kunena\Libraries\Exception\Authorise(Text::_('COM_KUNENA_POST_NOT_GLOBAL_MODERATOR'), 403);
 		}
 
 		return;
@@ -2160,12 +2160,12 @@ class Category extends KunenaDatabaseObject
 		// Check that user is admin
 		if (!$user->userid)
 		{
-			return new KunenaExceptionAuthorise(Text::_('COM_KUNENA_MODERATION_ERROR_NOT_ADMIN'), 401);
+			return new \Joomla\Component\Kunena\Libraries\Exception\Authorise(Text::_('COM_KUNENA_MODERATION_ERROR_NOT_ADMIN'), 401);
 		}
 
 		if (!$user->isAdmin($this))
 		{
-			return new KunenaExceptionAuthorise(Text::_('COM_KUNENA_MODERATION_ERROR_NOT_ADMIN'), 403);
+			return new \Joomla\Component\Kunena\Libraries\Exception\Authorise(Text::_('COM_KUNENA_MODERATION_ERROR_NOT_ADMIN'), 403);
 		}
 
 		return;
@@ -2185,13 +2185,13 @@ class Category extends KunenaDatabaseObject
 		// Check if polls are enabled at all
 		if (!\Joomla\Component\Kunena\Libraries\KunenaFactory::getConfig()->pollenabled)
 		{
-			return new KunenaExceptionAuthorise(Text::_('COM_KUNENA_LIB_CATEGORY_AUTHORISE_FAILED_POLLS_DISABLED'), 403);
+			return new \Joomla\Component\Kunena\Libraries\Exception\Authorise(Text::_('COM_KUNENA_LIB_CATEGORY_AUTHORISE_FAILED_POLLS_DISABLED'), 403);
 		}
 
 		// Check if polls are not enabled in this category
 		if (!$this->allow_polls)
 		{
-			return new KunenaExceptionAuthorise(Text::_('COM_KUNENA_LIB_CATEGORY_AUTHORISE_FAILED_POLLS_NOT_ALLOWED'), 403);
+			return new \Joomla\Component\Kunena\Libraries\Exception\Authorise(Text::_('COM_KUNENA_LIB_CATEGORY_AUTHORISE_FAILED_POLLS_NOT_ALLOWED'), 403);
 		}
 
 		return;
@@ -2209,7 +2209,7 @@ class Category extends KunenaDatabaseObject
 		// Check if user is guest
 		if ($user->userid == 0)
 		{
-			return new KunenaExceptionAuthorise(Text::_('COM_KUNENA_POLL_NOT_LOGGED'), 401);
+			return new \Joomla\Component\Kunena\Libraries\Exception\Authorise(Text::_('COM_KUNENA_POLL_NOT_LOGGED'), 401);
 		}
 
 		return;
@@ -2227,9 +2227,9 @@ class Category extends KunenaDatabaseObject
 	protected function authoriseUpload(KunenaUser $user)
 	{
 		// Check if attachments are allowed
-		if (KunenaAttachmentHelper::getExtensions($this, $user) === false)
+		if (\Joomla\Component\Kunena\Libraries\Attachment\Helper::getExtensions($this, $user) === false)
 		{
-			return new KunenaExceptionAuthorise(Text::_('COM_KUNENA_LIB_CATEGORY_AUTHORISE_FAILED_UPLOAD_NOT_ALLOWED'), 403);
+			return new \Joomla\Component\Kunena\Libraries\Exception\Authorise(Text::_('COM_KUNENA_LIB_CATEGORY_AUTHORISE_FAILED_UPLOAD_NOT_ALLOWED'), 403);
 		}
 
 		return;

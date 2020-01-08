@@ -10,7 +10,7 @@
  * @link            https://www.kunena.org
  **/
 
-namespace Joomla\Component\Kunena\Site;
+namespace Joomla\Component\Kunena\Site\Controller\Application\Home;
 
 defined('_JEXEC') or die();
 
@@ -18,6 +18,11 @@ use Exception;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\Layout\BaseLayout;
 use Joomla\CMS\Menu\AbstractMenu;
+use Joomla\Component\Kunena\Libraries\Controller\Application\Display;
+use Joomla\Component\Kunena\Libraries\Error;
+use Joomla\Component\Kunena\Libraries\Exception\Authorise;
+use Joomla\Component\Kunena\Libraries\KunenaFactory;
+use Joomla\Component\Kunena\Libraries\Route\KunenaRoute;
 use function defined;
 
 /**
@@ -25,7 +30,7 @@ use function defined;
  *
  * @since   Kunena 4.0
  */
-class ComponentKunenaControllerApplicationHomeDefaultDisplay extends KunenaControllerApplicationDisplay
+class ComponentKunenaControllerApplicationHomeDefaultDisplay extends Display
 {
 	/**
 	 * Return true if layout exists.
@@ -38,7 +43,7 @@ class ComponentKunenaControllerApplicationHomeDefaultDisplay extends KunenaContr
 	 */
 	public function exists()
 	{
-		return \Joomla\Component\Kunena\Libraries\KunenaFactory::getTemplate()->isHmvc();
+		return KunenaFactory::getTemplate()->isHmvc();
 	}
 
 	/**
@@ -69,12 +74,12 @@ class ComponentKunenaControllerApplicationHomeDefaultDisplay extends KunenaContr
 			if (!$default || $default->id == $home->id)
 			{
 				// There is no default menu item, use category view instead.
-				$default = $menu->getItem(\Joomla\Component\Kunena\Libraries\Route\KunenaRoute::getItemID('index.php?option=com_kunena&view=category&layout=list'));
+				$default = $menu->getItem(KunenaRoute::getItemID('index.php?option=com_kunena&view=category&layout=list'));
 
 				if ($default)
 				{
 					$default = clone $default;
-					$defhome = \Joomla\Component\Kunena\Libraries\Route\KunenaRoute::getHome($default);
+					$defhome = KunenaRoute::getHome($default);
 
 					if (!$defhome || $defhome->id != $home->id)
 					{
@@ -88,7 +93,7 @@ class ComponentKunenaControllerApplicationHomeDefaultDisplay extends KunenaContr
 
 			if (!$default)
 			{
-				throw new KunenaExceptionAuthorise(Text::_('COM_KUNENA_NO_ACCESS'), 500);
+				throw new Authorise(Text::_('COM_KUNENA_NO_ACCESS'), 500);
 			}
 
 			// Add query variables from shown menu item.
@@ -106,7 +111,7 @@ class ComponentKunenaControllerApplicationHomeDefaultDisplay extends KunenaContr
 		}
 
 		// Reset our router.
-		\Joomla\Component\Kunena\Libraries\Route\KunenaRoute::initialize();
+		KunenaRoute::initialize();
 
 		// Get HMVC controller for the current page.
 		$controller = KunenaControllerApplication::getInstance(
@@ -118,7 +123,7 @@ class ComponentKunenaControllerApplicationHomeDefaultDisplay extends KunenaContr
 
 		if (!$controller)
 		{
-			throw new KunenaExceptionAuthorise(Text::_('COM_KUNENA_NO_ACCESS'), 404);
+			throw new Authorise(Text::_('COM_KUNENA_NO_ACCESS'), 404);
 		}
 
 		return $controller->execute();
@@ -139,7 +144,7 @@ class ComponentKunenaControllerApplicationHomeDefaultDisplay extends KunenaContr
 	 */
 	protected function getDefaultMenuItem(AbstractMenu $menu, $active, $visited = [])
 	{
-		\Joomla\Component\Kunena\Libraries\KunenaFactory::loadLanguage('com_kunena.controllers');
+		KunenaFactory::loadLanguage('com_kunena.controllers');
 
 		if (empty($active->query['defaultmenu']) || $active->id == $active->query['defaultmenu'])
 		{
@@ -152,21 +157,21 @@ class ComponentKunenaControllerApplicationHomeDefaultDisplay extends KunenaContr
 		if (!$item)
 		{
 			// Menu item points to nowhere, abort!
-			\Joomla\Component\Kunena\Libraries\Error::warning(Text::sprintf('COM_KUNENA_WARNING_MENU_NOT_EXISTS'), 'menu');
+			Error::warning(Text::sprintf('COM_KUNENA_WARNING_MENU_NOT_EXISTS'), 'menu');
 
 			return null;
 		}
 		elseif (isset($visited[$item->id]))
 		{
 			// Menu loop detected, abort!
-			\Joomla\Component\Kunena\Libraries\Error::warning(Text::sprintf('COM_KUNENA_WARNING_MENU_LOOP'), 'menu');
+			Error::warning(Text::sprintf('COM_KUNENA_WARNING_MENU_LOOP'), 'menu');
 
 			return null;
 		}
 		elseif (empty($item->component) || $item->component != 'com_kunena' || !isset($item->query['view']))
 		{
 			// Menu item doesn't point to Kunena, abort!
-			\Joomla\Component\Kunena\Libraries\Error::warning(Text::sprintf('COM_KUNENA_WARNING_MENU_NOT_KUNENA'), 'menu');
+			Error::warning(Text::sprintf('COM_KUNENA_WARNING_MENU_NOT_KUNENA'), 'menu');
 
 			return null;
 		}

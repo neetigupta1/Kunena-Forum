@@ -159,7 +159,7 @@ class Rate extends CMSObject
 	 */
 	public static function getInstance($identifier = null, $reload = false)
 	{
-		return KunenaForumTopicRateHelper::get($identifier, $reload);
+		return \Joomla\Component\Kunena\Libraries\Forum\Topic\Rate\Helper::get($identifier, $reload);
 	}
 
 	/**

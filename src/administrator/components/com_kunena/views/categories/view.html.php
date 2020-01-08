@@ -24,7 +24,7 @@ use Joomla\CMS\Toolbar\ToolbarHelper;
  *
  * @since   Kunena 6.0
  */
-class KunenaAdminViewCategories extends KunenaView
+class KunenaAdminViewCategories extends \Joomla\Component\Kunena\Libraries\View
 {
 	/**
 	 * @var     array|KunenaForumCategory[]

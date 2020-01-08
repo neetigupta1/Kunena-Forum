@@ -10,13 +10,16 @@
  * @link            https://www.kunena.org
  **/
 
-namespace Joomla\Component\Kunena\Site;
+namespace Joomla\Component\Kunena\Site\Layout\Search;
 
 defined('_JEXEC') or die;
 
 use Exception;
 use Joomla\CMS\Factory;
 use Joomla\CMS\Plugin\PluginHelper;
+use Joomla\Component\Kunena\Libraries\Html\Parser;
+use Joomla\Component\Kunena\Libraries\KunenaFactory;
+use Joomla\Component\Kunena\Libraries\Layout\Layout;
 use Joomla\Registry\Registry;
 use function defined;
 
@@ -25,7 +28,7 @@ use function defined;
  *
  * @since   Kunena 4.0
  */
-class KunenaLayoutSearchResults extends KunenaLayout
+class KunenaLayoutSearchResults extends Layout
 {
 	/**
 	 * @var     KunenaForumMessage
@@ -125,10 +128,10 @@ class KunenaLayoutSearchResults extends KunenaLayout
 			$this->topic        = $this->message->getTopic();
 			$this->category     = $this->message->getCategory();
 			$this->categoryLink = $this->getCategoryLink($this->category->getParent()) . ' / ' . $this->getCategoryLink($this->category);
-			$ressubject         = \Joomla\Component\Kunena\Libraries\Html\Parser::parseText($this->message->subject);
-			$resmessage         = \Joomla\Component\Kunena\Libraries\Html\Parser::parseBBCode($this->message->message, 500);
+			$ressubject         = Parser::parseText($this->message->subject);
+			$resmessage         = Parser::parseBBCode($this->message->message, 500);
 
-			$profile          = \Joomla\Component\Kunena\Libraries\KunenaFactory::getUser((int) $this->message->userid);
+			$profile          = KunenaFactory::getUser((int) $this->message->userid);
 			$this->useravatar = $profile->getAvatarImage('kavatar', 'post');
 
 			foreach ($this->searchwords as $searchword)

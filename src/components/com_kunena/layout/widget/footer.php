@@ -10,13 +10,17 @@
  * @link            https://www.kunena.org
  **/
 
-namespace Joomla\Component\Kunena\Site;
+namespace Joomla\Component\Kunena\Site\Layout\Widget;
 
 defined('_JEXEC') or die;
 
 use Exception;
 use Joomla\CMS\Application\CMSApplication;
 use Joomla\CMS\Factory;
+use Joomla\Component\Kunena\Libraries\KunenaFactory;
+use Joomla\Component\Kunena\Libraries\KunenaProfiler;
+use Joomla\Component\Kunena\Libraries\Layout\Layout;
+use Joomla\Component\Kunena\Libraries\Route\KunenaRoute;
 use function defined;
 
 /**
@@ -24,7 +28,7 @@ use function defined;
  *
  * @since   Kunena 4.0
  */
-class KunenaLayoutWidgetFooter extends KunenaLayout
+class KunenaLayoutWidgetFooter extends Layout
 {
 	/**
 	 * Method to get the time of page generation
@@ -37,14 +41,14 @@ class KunenaLayoutWidgetFooter extends KunenaLayout
 	 */
 	protected function getTime()
 	{
-		$config = \Joomla\Component\Kunena\Libraries\KunenaFactory::getConfig();
+		$config = KunenaFactory::getConfig();
 
 		if (!$config->time_to_create_page)
 		{
 			return;
 		}
 
-		$profiler = \Joomla\Component\Kunena\Libraries\KunenaProfiler::instance('Kunena');
+		$profiler = KunenaProfiler::instance('Kunena');
 		$time     = $profiler->getTime('Total Time');
 
 		return sprintf('%0.3f', $time);
@@ -62,7 +66,7 @@ class KunenaLayoutWidgetFooter extends KunenaLayout
 	 */
 	protected function getRSS()
 	{
-		$config = \Joomla\Component\Kunena\Libraries\KunenaFactory::getConfig();
+		$config = KunenaFactory::getConfig();
 
 		if ($config->enablerss)
 		{
@@ -81,15 +85,15 @@ class KunenaLayoutWidgetFooter extends KunenaLayout
 					break;
 			}
 
-			$itemid = \Joomla\Component\Kunena\Libraries\Route\KunenaRoute::fixMissingItemID();
+			$itemid = KunenaRoute::fixMissingItemID();
 
 			if (CMSApplication::getInstance('site')->get('sef_suffix'))
 			{
-				$url = \Joomla\Component\Kunena\Libraries\Route\KunenaRoute::_("index.php?option=com_kunena&view=topics&layout=default&{$rss_type}") . '?format=feed&type=rss';
+				$url = KunenaRoute::_("index.php?option=com_kunena&view=topics&layout=default&{$rss_type}") . '?format=feed&type=rss';
 			}
 			else
 			{
-				$url = \Joomla\Component\Kunena\Libraries\Route\KunenaRoute::_("index.php?option=com_kunena&view=topics&format=feed&type=rss&layout=default&{$rss_type}&Itemid={$itemid}", true);
+				$url = KunenaRoute::_("index.php?option=com_kunena&view=topics&format=feed&type=rss&layout=default&{$rss_type}&Itemid={$itemid}", true);
 			}
 
 			$doc = Factory::getApplication()->getDocument();

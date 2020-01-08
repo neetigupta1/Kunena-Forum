@@ -48,7 +48,7 @@ $subjectlengthmessage = $this->ktemplate->params->get('SubjectLengthMessage', 20
 		<div class="badger-left badger-info <?php if ($message->getAuthor()->isModerator()) : ?> badger-moderator <?php endif; ?> message-<?php echo $message->getState(); ?> khistory">
 			<div class="mykmsg-header">
 				<?php
-				$title   = KunenaForumMessage::getInstance()->getsubstr($this->escape($message->subject), 0, $subjectlengthmessage);
+				$title   = \Joomla\Component\Kunena\Libraries\Forum\Message\Message::getInstance()->getsubstr($this->escape($message->subject), 0, $subjectlengthmessage);
 				$langstr = $isReply ? 'COM_KUNENA_MESSAGE_REPLIED_NEW' : 'COM_KUNENA_MESSAGE_CREATED_NEW';
 				echo Text::sprintf($langstr, $message->getAuthor()->getLink(), $this->getTopicLink($topic, 'first', null, null, \Joomla\Component\Kunena\Libraries\Template\Template::getInstance()->tooltips() . ' topictitle', $category, true, false)); ?>
 			</div>

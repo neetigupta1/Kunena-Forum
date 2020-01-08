@@ -25,7 +25,7 @@ use function defined;
  *
  * @since   Kunena 6.0
  */
-class KunenaAdminViewAttachments extends KunenaView
+class KunenaAdminViewAttachments extends \Joomla\Component\Kunena\Libraries\View
 {
 	/**
 	 * @param   null  $tpl  tpl

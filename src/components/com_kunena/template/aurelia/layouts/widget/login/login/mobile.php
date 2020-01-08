@@ -66,7 +66,7 @@ use function defined;
 					</div>
 				</div>
 
-				<?php $login = KunenaLogin::getInstance(); ?>
+				<?php $login = \Joomla\Component\Kunena\Libraries\Login::getInstance(); ?>
 				<?php
 				if ($login->getTwoFactorMethods() > 1)
 					:

@@ -10,7 +10,7 @@
  * @link            https://www.kunena.org
  **/
 
-namespace Joomla\Component\Kunena\Site;
+namespace Joomla\Component\Kunena\Site\Controller\User\KunenaList;
 
 defined('_JEXEC') or die();
 
@@ -19,6 +19,11 @@ use Joomla\CMS\Access\Access;
 use Joomla\CMS\Factory;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\MVC\Controller\BaseController;
+use Joomla\Component\Kunena\Libraries\Controller\Display;
+use Joomla\Component\Kunena\Libraries\Exception\Authorise;
+use Joomla\Component\Kunena\Libraries\Pagination\Pagination;
+use Joomla\Component\Kunena\Libraries\Route\KunenaRoute;
+use Joomla\Component\Kunena\Libraries\User\Helper;
 use phpDocumentor\Reflection\Types\This;
 use function defined;
 
@@ -27,7 +32,7 @@ use function defined;
  *
  * @since   Kunena 4.0
  */
-class ComponentKunenaControllerUserListDisplay extends KunenaControllerDisplay
+class ComponentKunenaControllerUserListDisplay extends Display
 {
 	/**
 	 * @var     object
@@ -81,7 +86,7 @@ class ComponentKunenaControllerUserListDisplay extends KunenaControllerDisplay
 
 		if (!$this->config->userlist_allowed && Factory::getApplication()->getIdentity()->guest)
 		{
-			throw new KunenaExceptionAuthorise(Text::_('COM_KUNENA_NO_ACCESS'), '401');
+			throw new Authorise(Text::_('COM_KUNENA_NO_ACCESS'), '401');
 		}
 
 		require_once KPATH_SITE . '/models/user.php';
@@ -89,7 +94,7 @@ class ComponentKunenaControllerUserListDisplay extends KunenaControllerDisplay
 		$this->model->initialize($this->getOptions(), $this->getOptions()->get('embedded', false));
 		$this->state = $this->model->getState();
 
-		$this->me     = \Joomla\Component\Kunena\Libraries\User\Helper::getMyself();
+		$this->me     = Helper::getMyself();
 
 		$start = $this->state->get('list.start');
 		$limit = $this->state->get('list.limit');
@@ -99,9 +104,9 @@ class ComponentKunenaControllerUserListDisplay extends KunenaControllerDisplay
 
 		if (!$Itemid && $format != 'feed' && $this->config->sef_redirect)
 		{
-			$itemid     = \Joomla\Component\Kunena\Libraries\Route\KunenaRoute::fixMissingItemID();
+			$itemid     = KunenaRoute::fixMissingItemID();
 			$controller = BaseController::getInstance("kunena");
-			$controller->setRedirect(\Joomla\Component\Kunena\Libraries\Route\KunenaRoute::_("index.php?option=com_kunena&view=user&layout=list&Itemid={$itemid}", false));
+			$controller->setRedirect(KunenaRoute::_("index.php?option=com_kunena&view=user&layout=list&Itemid={$itemid}", false));
 			$controller->redirect();
 		}
 
@@ -121,7 +126,7 @@ class ComponentKunenaControllerUserListDisplay extends KunenaControllerDisplay
 			->filterByName($this->state->get('list.search'));
 
 		$this->total      = $finder->count();
-		$this->pagination = new KunenaPagination($this->total, $start, $limit);
+		$this->pagination = new Pagination($this->total, $start, $limit);
 
 		$alias     = 'ku';
 		$aliasList = ['id', 'name', 'username', 'email', 'block', 'registerDate', 'lastvisitDate'];

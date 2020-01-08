@@ -10,7 +10,7 @@
  * @link            https://www.kunena.org
  **/
 
-namespace Joomla\Component\Kunena\Site;
+namespace Joomla\Component\Kunena\Site\Controllers;
 
 defined('_JEXEC') or die();
 
@@ -18,6 +18,10 @@ use Exception;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\Menu\AbstractMenu;
 use Joomla\CMS\MVC\Controller\BaseController;
+use Joomla\Component\Kunena\Libraries\Controller;
+use Joomla\Component\Kunena\Libraries\Error;
+use Joomla\Component\Kunena\Libraries\KunenaFactory;
+use Joomla\Component\Kunena\Libraries\Route\KunenaRoute;
 use function defined;
 
 /**
@@ -25,7 +29,7 @@ use function defined;
  *
  * @since   Kunena 2.0
  */
-class KunenaControllerHome extends KunenaController
+class KunenaControllerHome extends Controller
 {
 	/**
 	 * @var     integer
@@ -62,12 +66,12 @@ class KunenaControllerHome extends KunenaController
 			if (!$default || $default->id == $home->id)
 			{
 				// There is no default menu item, use category view instead
-				$default = $menu->getItem(\Joomla\Component\Kunena\Libraries\Route\KunenaRoute::getItemID("index.php?option=com_kunena&view=category&layout=list"));
+				$default = $menu->getItem(KunenaRoute::getItemID("index.php?option=com_kunena&view=category&layout=list"));
 
 				if ($default)
 				{
 					$default = clone $default;
-					$defhome = \Joomla\Component\Kunena\Libraries\Route\KunenaRoute::getHome($default);
+					$defhome = KunenaRoute::getHome($default);
 
 					if (!$defhome || $defhome->id != $home->id)
 					{
@@ -98,7 +102,7 @@ class KunenaControllerHome extends KunenaController
 		}
 
 		// Reset our router
-		\Joomla\Component\Kunena\Libraries\Route\KunenaRoute::initialize();
+		KunenaRoute::initialize();
 
 		// Run display task from our new controller
 		$controller = KunenaController::getInstance();
@@ -121,7 +125,7 @@ class KunenaControllerHome extends KunenaController
 	 */
 	protected function _getDefaultMenuItem(AbstractMenu $menu, $active, $visited = [])
 	{
-		\Joomla\Component\Kunena\Libraries\KunenaFactory::loadLanguage('com_kunena.controllers');
+		KunenaFactory::loadLanguage('com_kunena.controllers');
 
 		if (empty($active->query ['defaultmenu']) || $active->id == $active->query ['defaultmenu'])
 		{
@@ -134,21 +138,21 @@ class KunenaControllerHome extends KunenaController
 		if (!$item)
 		{
 			// Menu item points to nowhere, abort
-			\Joomla\Component\Kunena\Libraries\Error::warning(Text::sprintf('COM_KUNENA_WARNING_MENU_NOT_EXISTS'), 'menu');
+			Error::warning(Text::sprintf('COM_KUNENA_WARNING_MENU_NOT_EXISTS'), 'menu');
 
 			return null;
 		}
 		elseif (isset($visited[$item->id]))
 		{
 			// Menu loop detected, abort
-			\Joomla\Component\Kunena\Libraries\Error::warning(Text::sprintf('COM_KUNENA_WARNING_MENU_LOOP'), 'menu');
+			Error::warning(Text::sprintf('COM_KUNENA_WARNING_MENU_LOOP'), 'menu');
 
 			return null;
 		}
 		elseif (empty($item->component) || $item->component != 'com_kunena' || !isset($item->query ['view']))
 		{
 			// Menu item doesn't point to Kunena, abort
-			\Joomla\Component\Kunena\Libraries\Error::warning(Text::sprintf('COM_KUNENA_WARNING_MENU_NOT_KUNENA'), 'menu');
+			Error::warning(Text::sprintf('COM_KUNENA_WARNING_MENU_NOT_KUNENA'), 'menu');
 
 			return null;
 		}

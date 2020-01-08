@@ -10,7 +10,7 @@
  * @link            https://www.kunena.org
  **/
 
-namespace Joomla\Component\Kunena\Administrator;
+namespace Joomla\Component\Kunena\Administrator\Models;
 
 defined('_JEXEC') or die();
 
@@ -30,7 +30,7 @@ use function defined;
  *
  * @since 2.0
  */
-class KunenaAdminModelCategories extends KunenaModel
+class KunenaAdminModelCategories extends \Joomla\Component\Kunena\Libraries\Model
 {
 	/**
 	 * @var     string

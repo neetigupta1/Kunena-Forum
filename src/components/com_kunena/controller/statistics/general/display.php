@@ -10,7 +10,7 @@
  * @link            https://www.kunena.org
  **/
 
-namespace Joomla\Component\Kunena\Site;
+namespace Joomla\Component\Kunena\Site\Controller\Statistics\General;
 
 defined('_JEXEC') or die();
 
@@ -18,6 +18,11 @@ use Exception;
 use Joomla\CMS\Factory;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\MVC\Controller\BaseController;
+use Joomla\Component\Kunena\Libraries\Controller\Display;
+use Joomla\Component\Kunena\Libraries\Exception\Authorise;
+use Joomla\Component\Kunena\Libraries\Forum\Statistics;
+use Joomla\Component\Kunena\Libraries\KunenaFactory;
+use Joomla\Component\Kunena\Libraries\Route\KunenaRoute;
 use function defined;
 
 /**
@@ -25,7 +30,7 @@ use function defined;
  *
  * @since   Kunena 4.0
  */
-class ComponentKunenaControllerStatisticsGeneralDisplay extends KunenaControllerDisplay
+class ComponentKunenaControllerStatisticsGeneralDisplay extends Display
 {
 	/**
 	 * @var     string
@@ -51,28 +56,28 @@ class ComponentKunenaControllerStatisticsGeneralDisplay extends KunenaController
 
 		if (!$Itemid && $this->config->sef_redirect)
 		{
-			$itemid     = \Joomla\Component\Kunena\Libraries\Route\KunenaRoute::fixMissingItemID();
+			$itemid     = KunenaRoute::fixMissingItemID();
 			$controller = BaseController::getInstance("kunena");
-			$controller->setRedirect(\Joomla\Component\Kunena\Libraries\Route\KunenaRoute::_("index.php?option=com_kunena&view=statistics&Itemid={$itemid}", false));
+			$controller->setRedirect(KunenaRoute::_("index.php?option=com_kunena&view=statistics&Itemid={$itemid}", false));
 			$controller->redirect();
 		}
 
 		if (!$this->config->get('showstats'))
 		{
-			throw new KunenaExceptionAuthorise(Text::_('COM_KUNENA_NO_ACCESS'), '404');
+			throw new Authorise(Text::_('COM_KUNENA_NO_ACCESS'), '404');
 		}
 
 		if (!$this->config->statslink_allowed && Factory::getApplication()->getIdentity()->guest)
 		{
-			throw new KunenaExceptionAuthorise(Text::_('COM_KUNENA_NO_ACCESS'), '401');
+			throw new Authorise(Text::_('COM_KUNENA_NO_ACCESS'), '401');
 		}
 
-		$statistics = KunenaForumStatistics::getInstance();
+		$statistics = Statistics::getInstance();
 		$statistics->loadAll();
 		$this->setProperties($statistics);
 
-		$this->latestMemberLink = \Joomla\Component\Kunena\Libraries\KunenaFactory::getUser((int) $this->lastUserId)->getLink(null, null, '');
-		$this->userlistUrl      = \Joomla\Component\Kunena\Libraries\KunenaFactory::getProfile()->getUserListUrl();
+		$this->latestMemberLink = KunenaFactory::getUser((int) $this->lastUserId)->getLink(null, null, '');
+		$this->userlistUrl      = KunenaFactory::getProfile()->getUserListUrl();
 	}
 
 	/**

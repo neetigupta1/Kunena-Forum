@@ -10,7 +10,7 @@
  * @link            https://www.kunena.org
  **/
 
-namespace Joomla\Component\Kunena\Site;
+namespace Joomla\Component\Kunena\Site\Layout\User;
 
 defined('_JEXEC') or die;
 
@@ -18,6 +18,9 @@ use Exception;
 use Joomla\CMS\Factory;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\Plugin\PluginHelper;
+use Joomla\Component\Kunena\Libraries\Access;
+use Joomla\Component\Kunena\Libraries\Forum\Forum;
+use Joomla\Component\Kunena\Libraries\Layout\Layout;
 use Joomla\Input\Input;
 use stdClass;
 use function defined;
@@ -27,7 +30,7 @@ use function defined;
  *
  * @since   Kunena 4.0
  */
-class KunenaLayoutUserItem extends KunenaLayout
+class KunenaLayoutUserItem extends Layout
 {
 	/**
 	 * @var     KunenaUser
@@ -73,7 +76,7 @@ class KunenaLayoutUserItem extends KunenaLayout
 		$showSubscriptions = $this->config->allowsubscriptions && ($myProfile || $moderator);
 		$showFavorites     = $this->config->allowfavorites && $myProfile;
 		$showThankYou      = $this->config->showthankyou && $this->me->exists();
-		$showUnapproved    = $myProfile && ($this->me->isAdmin() || \Joomla\Component\Kunena\Libraries\Access::getInstance()->getModeratorStatus());
+		$showUnapproved    = $myProfile && ($this->me->isAdmin() || Access::getInstance()->getModeratorStatus());
 		$showAttachments   = $this->config->show_imgfiles_manage_profile && ($moderator || $myProfile);
 		$showBanManager    = $moderator && $myProfile;
 
@@ -316,7 +319,7 @@ class KunenaLayoutUserItem extends KunenaLayout
 			'filter_order_Dir'    => 'desc',
 		];
 
-		\Joomla\Component\Kunena\Libraries\Forum\Forum::display('topics', 'posts', 'embed', $params);
+		Forum::display('topics', 'posts', 'embed', $params);
 	}
 
 	/**
@@ -342,7 +345,7 @@ class KunenaLayoutUserItem extends KunenaLayout
 			'filter_order_Dir'    => 'desc',
 		];
 
-		\Joomla\Component\Kunena\Libraries\Forum\Forum::display('topics', 'posts', 'embed', $params);
+		Forum::display('topics', 'posts', 'embed', $params);
 	}
 
 	/**
@@ -368,7 +371,7 @@ class KunenaLayoutUserItem extends KunenaLayout
 			'filter_order_Dir'    => 'desc',
 		];
 
-		\Joomla\Component\Kunena\Libraries\Forum\Forum::display('topics', 'posts', 'embed', $params);
+		Forum::display('topics', 'posts', 'embed', $params);
 	}
 
 	/**
@@ -394,7 +397,7 @@ class KunenaLayoutUserItem extends KunenaLayout
 			'filter_order_Dir'    => 'desc',
 		];
 
-		\Joomla\Component\Kunena\Libraries\Forum\Forum::display('topics', 'posts', 'embed', $params);
+		Forum::display('topics', 'posts', 'embed', $params);
 	}
 
 	/**
@@ -420,7 +423,7 @@ class KunenaLayoutUserItem extends KunenaLayout
 			'filter_order_Dir'    => 'desc',
 		];
 
-		\Joomla\Component\Kunena\Libraries\Forum\Forum::display('topics', 'user', 'embed', $params);
+		Forum::display('topics', 'user', 'embed', $params);
 	}
 
 	/**
@@ -451,7 +454,7 @@ class KunenaLayoutUserItem extends KunenaLayout
 			'filter_order_Dir'    => 'desc',
 		];
 
-		\Joomla\Component\Kunena\Libraries\Forum\Forum::display('topics', 'user', 'embed', $params);
+		Forum::display('topics', 'user', 'embed', $params);
 	}
 
 	/**
@@ -478,6 +481,6 @@ class KunenaLayoutUserItem extends KunenaLayout
 			'filter_order_Dir' => 'desc',
 		];
 
-		\Joomla\Component\Kunena\Libraries\Forum\Forum::display('category', 'user', 'embed', $params);
+		Forum::display('category', 'user', 'embed', $params);
 	}
 }

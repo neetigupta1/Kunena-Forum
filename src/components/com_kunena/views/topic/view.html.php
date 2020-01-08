@@ -10,13 +10,25 @@
  * @link          https://www.kunena.org
  **/
 
-namespace Joomla\Component\Kunena\Site;
+namespace Joomla\Component\Kunena\Site\View\Topic;
 
 defined('_JEXEC') or die();
 
 use Exception;
 use Joomla\CMS\Plugin\PluginHelper;
 use Joomla\CMS\Router\Route;
+use Joomla\Component\Kunena\Libraries\Html\Parser;
+use Joomla\Component\Kunena\Libraries\KunenaDate;
+use Joomla\Component\Kunena\Libraries\KunenaFactory;
+use Joomla\Component\Kunena\Libraries\Pagination\Pagination;
+use Joomla\Component\Kunena\Libraries\Request\Request;
+use Joomla\Component\Kunena\Libraries\Route\KunenaRoute;
+use Joomla\Component\Kunena\Libraries\User\Helper;
+use Joomla\Component\Kunena\Libraries\View;
+use Joomla\Component\Kunena\Libraries\Forum\Message;
+use Joomla\Component\Kunena\Libraries\Forum\Topic;
+use Joomla\Component\Kunena\Libraries\Forum\Category;
+use Joomla\Component\Kunena\Libraries\Attachment;
 use Joomla\Input\Input;
 use Joomla\Registry\Registry;
 use Joomla\String\StringHelper;
@@ -34,7 +46,7 @@ use function defined;
  *
  * @since   Kunena 6.0
  */
-class KunenaViewTopic extends KunenaView
+class html extends View
 {
 	/**
 	 * @var     null
@@ -134,7 +146,7 @@ class KunenaViewTopic extends KunenaView
 				$mesid = $this->topic->first_post_id;
 			}
 
-			$message = KunenaForumMessageHelper::get($mesid);
+			$message = Message\Helper::get($mesid);
 
 			// Redirect to correct location (no redirect in embedded mode).
 			if (empty($this->embedded) && $message->exists())
@@ -147,7 +159,7 @@ class KunenaViewTopic extends KunenaView
 			}
 		}
 
-		if (!KunenaForumMessageHelper::get($this->topic->first_post_id)->exists())
+		if (!Message\Helper::get($this->topic->first_post_id)->exists())
 		{
 			$this->displayError([Text::_('COM_KUNENA_NO_ACCESS')], 404);
 
@@ -215,9 +227,9 @@ class KunenaViewTopic extends KunenaView
 		// Redirect unread layout to the page that contains the first unread message
 		$category = $this->get('Category');
 		$topic    = $this->get('Topic');
-		\Joomla\Component\Kunena\Libraries\Forum\Topic\Helper::fetchNewStatus([$topic->id => $topic]);
+		Topic\Helper::fetchNewStatus([$topic->id => $topic]);
 
-		$message = KunenaForumMessage::getInstance($topic->lastread ? $topic->lastread : $topic->last_post_id);
+		$message = Message\Message::getInstance($topic->lastread ? $topic->lastread : $topic->last_post_id);
 
 		while (@ob_end_clean())
 		{
@@ -300,7 +312,7 @@ class KunenaViewTopic extends KunenaView
 			$this->topicIcons = $this->ktemplate->getTopicIcons(false, $saved ? $saved['icon_id'] : 0);
 		}
 
-		$categories        = \Joomla\Component\Kunena\Libraries\Forum\Category\Helper::getCategories();
+		$categories        = Category\Helper::getCategories();
 		$arrayanynomousbox = [];
 		$arraypollcatid    = [];
 
@@ -323,14 +335,14 @@ class KunenaViewTopic extends KunenaView
 		$this->document->addScriptDeclaration('var pollcategoriesid = {' . $arraypollcatid . '};');
 
 		$cat_params = ['ordering'    => 'ordering',
-					   'toplevel'    => 0,
-					   'sections'    => 0,
-					   'direction'   => 1,
-					   'hide_lonely' => 1,
-					   'action'      => 'topic.create'];
+		               'toplevel'    => 0,
+		               'sections'    => 0,
+		               'direction'   => 1,
+		               'hide_lonely' => 1,
+		               'action'      => 'topic.create'];
 
 		$this->catid    = $this->state->get('item.catid');
-		$this->category = \Joomla\Component\Kunena\Libraries\Forum\Category\Helper::get($this->catid);
+		$this->category = Category\Helper::get($this->catid);
 		list($this->topic, $this->message) = $this->category->newTopic($saved);
 
 		if (!$this->topic->category_id)
@@ -361,7 +373,7 @@ class KunenaViewTopic extends KunenaView
 
 		$this->action = 'post';
 
-		$this->allowedExtensions = KunenaAttachmentHelper::getExtensions($this->category);
+		$this->allowedExtensions = Attachment\Helper::getExtensions($this->category);
 
 		if ($arraypollcatid)
 		{
@@ -396,12 +408,12 @@ class KunenaViewTopic extends KunenaView
 
 		if (!$this->mesid)
 		{
-			$this->topic = \Joomla\Component\Kunena\Libraries\Forum\Topic\Helper::get($this->state->get('item.id'));
-			$parent      = KunenaForumMessageHelper::get($this->topic->first_post_id);
+			$this->topic = Topic\Helper::get($this->state->get('item.id'));
+			$parent      = Message\Helper::get($this->topic->first_post_id);
 		}
 		else
 		{
-			$parent      = KunenaForumMessageHelper::get($this->mesid);
+			$parent      = Message\Helper::get($this->mesid);
 			$this->topic = $parent->getTopic();
 		}
 
@@ -438,7 +450,7 @@ class KunenaViewTopic extends KunenaView
 		$this->_prepareDocument('reply');
 		$this->action = 'post';
 
-		$this->allowedExtensions = KunenaAttachmentHelper::getExtensions($this->category);
+		$this->allowedExtensions = Attachment\Helper::getExtensions($this->category);
 
 		$this->post_anonymous       = $saved ? $saved['anonymous'] : !empty($this->category->post_anonymous);
 		$this->subscriptionschecked = $saved ? $saved['subscribe'] : $this->config->subscriptionschecked == 1;
@@ -464,7 +476,7 @@ class KunenaViewTopic extends KunenaView
 
 		$saved = $this->app->getUserState('com_kunena.postfields');
 
-		$this->message = KunenaForumMessageHelper::get($mesid);
+		$this->message = Message\Helper::get($mesid);
 
 		try
 		{
@@ -507,7 +519,7 @@ class KunenaViewTopic extends KunenaView
 			$this->poll = $this->topic->getPoll();
 		}
 
-		$this->allowedExtensions = KunenaAttachmentHelper::getExtensions($this->category);
+		$this->allowedExtensions = Attachment\Helper::getExtensions($this->category);
 
 		if ($saved)
 		{
@@ -603,7 +615,7 @@ class KunenaViewTopic extends KunenaView
 					$this->userrankimage = $this->profile->getRank($this->topic->category_id, 'image');
 					$this->userranktitle = $this->profile->getRank($this->topic->category_id, 'title');
 					$this->userposts     = $this->profile->posts;
-					$activityIntegration = \Joomla\Component\Kunena\Libraries\KunenaFactory::getActivityIntegration();
+					$activityIntegration = KunenaFactory::getActivityIntegration();
 					$this->userthankyou  = $this->profile->thankyou;
 					$this->userpoints    = $activityIntegration->getUserPoints($this->profile->userid);
 					$this->usermedals    = $activityIntegration->getUserMedals($this->profile->userid);
@@ -618,9 +630,9 @@ class KunenaViewTopic extends KunenaView
 					$this->usermedals    = null;
 				}
 
-				$this->personalText = \Joomla\Component\Kunena\Libraries\Html\Parser::parseText($this->profile->personalText);
+				$this->personalText = Parser::parseText($this->profile->personalText);
 
-				$contents = trim(\Joomla\Component\Kunena\Libraries\KunenaFactory::getProfile()->showProfile($this, $params));
+				$contents = trim(KunenaFactory::getProfile()->showProfile($this, $params));
 
 				if (!$contents)
 				{
@@ -848,9 +860,9 @@ class KunenaViewTopic extends KunenaView
 	}
 
 	/**
-	 * @param   integer  $id       id
-	 * @param   string   $message  message
-	 * @param   null     $template template
+	 * @param   integer  $id        id
+	 * @param   string   $message   message
+	 * @param   null     $template  template
 	 *
 	 * @return  void
 	 *
@@ -915,14 +927,14 @@ class KunenaViewTopic extends KunenaView
 					$userids_thankyous[] = $userid;
 				}
 
-				$loaded_users = \Joomla\Component\Kunena\Libraries\User\Helper::loadUsers($userids_thankyous);
+				$loaded_users = Helper::loadUsers($userids_thankyous);
 
 				$thankyou_delete = '';
 
 				foreach ($loaded_users as $userid => $user)
 				{
 					$thankyou_delete  = $canUnthankyou === true ? ' <a title="' . Text::_('COM_KUNENA_BUTTON_THANKYOU_REMOVE_LONG') . '" href="'
-						. \Joomla\Component\Kunena\Libraries\Route\KunenaRoute::_(sprintf($task, "unthankyou&userid={$userid}")) . '"><img src="' . $this->ktemplate->getImagePath('icons/publish_x.png') . '" title="" alt="" /></a>' : '';
+						. KunenaRoute::_(sprintf($task, "unthankyou&userid={$userid}")) . '"><img src="' . $this->ktemplate->getImagePath('icons/publish_x.png') . '" title="" alt="" /></a>' : '';
 					$this->thankyou[] = $loaded_users[$userid]->getLink() . $thankyou_delete;
 				}
 			}
@@ -972,7 +984,7 @@ class KunenaViewTopic extends KunenaView
 				}
 			}
 
-			$this->signatureHtml = \Joomla\Component\Kunena\Libraries\Html\Parser::parseBBCode($this->profile->signature, null, $this->config->maxsig);
+			$this->signatureHtml = Parser::parseBBCode($this->profile->signature, null, $this->config->maxsig);
 			$this->attachments   = $this->message->getAttachments();
 
 			// Link to individual message
@@ -1033,7 +1045,7 @@ class KunenaViewTopic extends KunenaView
 	}
 
 	/**
-	 * @param   array  $matches matches
+	 * @param   array  $matches  matches
 	 *
 	 * @return  mixed|string|void
 	 *
@@ -1081,9 +1093,9 @@ class KunenaViewTopic extends KunenaView
 	}
 
 	/**
-	 * @param   integer  $maxpages max pages
+	 * @param   integer  $maxpages  max pages
 	 *
-	 * @return  KunenaPagination
+	 * @return  Pagination
 	 *
 	 * @since   Kunena 6.0
 	 *
@@ -1092,10 +1104,10 @@ class KunenaViewTopic extends KunenaView
 	 */
 	public function getPaginationObject($maxpages)
 	{
-		$pagination = new KunenaPagination($this->total, $this->state->get('list.start'), $this->state->get('list.limit'));
+		$pagination = new Pagination($this->total, $this->state->get('list.start'), $this->state->get('list.limit'));
 		$pagination->setDisplayedPages($maxpages);
 
-		$uri = \Joomla\Component\Kunena\Libraries\Route\KunenaRoute::normalize(null, true);
+		$uri = KunenaRoute::normalize(null, true);
 
 		if ($uri)
 		{
@@ -1107,7 +1119,7 @@ class KunenaViewTopic extends KunenaView
 	}
 
 	/**
-	 * @param   integer  $maxpages max pages
+	 * @param   integer  $maxpages  max pages
 	 *
 	 * @return  string
 	 *
@@ -1152,10 +1164,10 @@ class KunenaViewTopic extends KunenaView
 			return;
 		}
 
-		$this->history      = KunenaForumMessageHelper::getMessagesByTopic($this->topic, 0, (int) $this->config->historylimit, $ordering = 'DESC');
+		$this->history      = Message\Helper::getMessagesByTopic($this->topic, 0, (int) $this->config->historylimit, $ordering = 'DESC');
 		$this->historycount = count($this->history);
 		$this->replycount   = $this->topic->getReplies();
-		KunenaAttachmentHelper::getByMessage($this->history);
+		Attachment\Helper::getByMessage($this->history);
 		$userlist = [];
 
 		foreach ($this->history as $message)
@@ -1163,7 +1175,7 @@ class KunenaViewTopic extends KunenaView
 			$userlist[(int) $message->userid] = (int) $message->userid;
 		}
 
-		\Joomla\Component\Kunena\Libraries\User\Helper::loadUsers($userlist);
+		Helper::loadUsers($userlist);
 
 		// Run events
 		$params = new Registry;
@@ -1195,7 +1207,7 @@ class KunenaViewTopic extends KunenaView
 	 */
 	protected function redirectBack($anchor = '')
 	{
-		$default  = Uri::base() . ($this->app->isClient('site') ? ltrim(\Joomla\Component\Kunena\Libraries\Route\KunenaRoute::_('index.php?option=com_kunena'), '/') : '');
+		$default  = Uri::base() . ($this->app->isClient('site') ? ltrim(KunenaRoute::_('index.php?option=com_kunena'), '/') : '');
 		$referrer = $this->app->input->server->getString('HTTP_REFERER');
 
 		$uri = Uri::getInstance($referrer ? $referrer : $default);
@@ -1225,8 +1237,8 @@ class KunenaViewTopic extends KunenaView
 	}
 
 	/**
-	 * @param   integer  $mesid    mesid
-	 * @param   integer  $replycnt reply count
+	 * @param   integer  $mesid     mesid
+	 * @param   integer  $replycnt  reply count
 	 *
 	 * @return  string
 	 *
@@ -1247,7 +1259,7 @@ class KunenaViewTopic extends KunenaView
 	}
 
 	/**
-	 * @param   string  $name name
+	 * @param   string  $name  name
 	 *
 	 * @return  mixed
 	 *
@@ -1259,7 +1271,7 @@ class KunenaViewTopic extends KunenaView
 	}
 
 	/**
-	 * @param   string  $name name
+	 * @param   string  $name  name
 	 *
 	 * @return  mixed
 	 *
@@ -1271,7 +1283,7 @@ class KunenaViewTopic extends KunenaView
 	}
 
 	/**
-	 * @param   string  $name name
+	 * @param   string  $name  name
 	 *
 	 * @return  mixed
 	 *
@@ -1298,7 +1310,7 @@ class KunenaViewTopic extends KunenaView
 	}
 
 	/**
-	 * @param   string  $type type
+	 * @param   string  $type  type
 	 *
 	 * @return  void
 	 *
@@ -1357,7 +1369,7 @@ class KunenaViewTopic extends KunenaView
 				{
 					// Create Meta Description form the content of the first message
 					// better for search results display but NOT for search ranking!
-					$description = \Joomla\Component\Kunena\Libraries\Html\Parser::stripBBCode($this->topic->first_post_message, 182);
+					$description = Parser::stripBBCode($this->topic->first_post_message, 182);
 					$description = preg_replace('/\s+/', ' ', $description); // Remove newlines
 					$description = trim($description); // Remove trailing spaces and beginning
 
@@ -1475,10 +1487,10 @@ class KunenaViewTopic extends KunenaView
 	}
 
 	/**
-	 * @param   integer $anker anker
-	 * @param   string  $name  name
-	 * @param   string  $rel   rel
-	 * @param   string  $class class
+	 * @param   integer  $anker  anker
+	 * @param   string   $name   name
+	 * @param   string   $rel    rel
+	 * @param   string   $class  class
 	 *
 	 * @return  string
 	 *
@@ -1520,7 +1532,7 @@ class KunenaViewTopic extends KunenaView
 			}
 			else
 			{
-				$title = \Joomla\Component\Kunena\Libraries\KunenaFactory::getConfig()->board_title . ': ' . $title;
+				$title = KunenaFactory::getConfig()->board_title . ': ' . $title;
 			}
 
 			$this->document->setTitle($title);
@@ -1528,7 +1540,7 @@ class KunenaViewTopic extends KunenaView
 	}
 
 	/**
-	 * @param   string  $keywords keywords
+	 * @param   string  $keywords  keywords
 	 *
 	 * @return  void
 	 *
@@ -1551,7 +1563,7 @@ class KunenaViewTopic extends KunenaView
 	}
 
 	/**
-	 * @param   string  $description description
+	 * @param   string  $description  description
 	 *
 	 * @return  void
 	 *
@@ -1586,9 +1598,9 @@ class KunenaViewTopic extends KunenaView
 	 * By using $this->subLayout() instead of KunenaLayout::factory() you can make your template files both
 	 * easier to read and gain some context awareness -- for example possibility to use setLayout().
 	 *
-	 * @param   string  $path path
+	 * @param   string  $path  path
 	 *
-	 * @return  KunenaLayout
+	 * @return  self
 	 *
 	 * @since   Kunena 4.0
 	 */
@@ -1602,20 +1614,20 @@ class KunenaViewTopic extends KunenaView
 	/**
 	 * Display arbitrary MVC triad from current layout.
 	 *
-	 * By using $this->subRequest() instead of KunenaRequest::factory() you can make your template files both
-	 * easier to read and gain some context awareness.
+	 * By using $this->subRequest() instead of \Joomla\Component\Kunena\Libraries\Request\Request::factory() you can
+	 * make your template files both easier to read and gain some context awareness.
 	 *
-	 * @param   string               $path    path
-	 * @param   Input   $input   input
-	 * @param   array                $options options
+	 * @param   string  $path     path
+	 * @param   Input   $input    input
+	 * @param   array   $options  options
 	 *
-	 * @return  KunenaControllerDisplay
+	 * @return  Request
 	 *
 	 * @since   Kunena 4.0
 	 */
 	public function subRequest($path, Input $input = null, $options = null)
 	{
-		return KunenaRequest::factory($path . '/Display', $input, $options)
+		return Request::factory($path . '/Display', $input, $options)
 			->setLayout($this->getLayout());
 	}
 

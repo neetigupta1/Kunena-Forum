@@ -10,10 +10,12 @@
  * @link            https://www.kunena.org
  **/
 
-namespace Joomla\Component\Kunena\Site;
+namespace Joomla\Component\Kunena\Site\Layout\Category;
 
 defined('_JEXEC') or die;
 
+use Joomla\Component\Kunena\Libraries\Layout\Layout;
+use Joomla\Component\Kunena\Libraries\Pagination\Pagination;
 use function defined;
 
 /**
@@ -21,7 +23,7 @@ use function defined;
  *
  * @since  K5.1
  */
-class KunenaLayoutCategoryManage extends KunenaLayout
+class KunenaLayoutCategoryManage extends Layout
 {
 	/**
 	 * @var     integer
@@ -46,7 +48,7 @@ class KunenaLayoutCategoryManage extends KunenaLayout
 	 */
 	public function getPaginationObject($maxpages)
 	{
-		$pagination = new KunenaPagination($this->total, $this->state->get('list.start'), $this->state->get('list.limit'));
+		$pagination = new Pagination($this->total, $this->state->get('list.start'), $this->state->get('list.limit'));
 		$pagination->setDisplayedPages($maxpages);
 
 		return $pagination;

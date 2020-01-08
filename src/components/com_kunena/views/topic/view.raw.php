@@ -10,13 +10,21 @@
  * @link            https://www.kunena.org
  **/
 
-namespace Joomla\Component\Kunena\Site;
+namespace Joomla\Component\Kunena\Site\View\Topic;
 
 defined('_JEXEC') or die();
 
 use Exception;
 use Joomla\CMS\Factory;
 use Joomla\CMS\Uri\Uri;
+use Joomla\Component\Kunena\Libraries\Error;
+use Joomla\Component\Kunena\Libraries\Forum\Category\Helper;
+use Joomla\Component\Kunena\Libraries\Html\Parser;
+use Joomla\Component\Kunena\Libraries\KunenaFactory;
+use Joomla\Component\Kunena\Libraries\Forum\Topic\Rate;
+use Joomla\Component\Kunena\Libraries\Forum;
+use Joomla\Component\Kunena\Libraries\View;
+use Joomla\Component\Kunena\Libraries;
 use Joomla\Database\Exception\ExecutionFailureException;
 use stdClass;
 use function defined;
@@ -26,7 +34,7 @@ use function defined;
  *
  * @since   Kunena 6.0
  */
-class KunenaViewTopic extends KunenaView
+class raw extends View
 {
 	/**
 	 * @param   null  $tpl  tpl
@@ -44,7 +52,7 @@ class KunenaViewTopic extends KunenaView
 
 		if ($this->me->exists() || $this->config->pubwrite)
 		{
-			$msgbody              = \Joomla\Component\Kunena\Libraries\Html\Parser::parseBBCode($body, $this);
+			$msgbody              = Parser::parseBBCode($body, $this);
 			$response ['preview'] = $msgbody;
 		}
 
@@ -88,7 +96,7 @@ class KunenaViewTopic extends KunenaView
 			}
 			catch (ExecutionFailureException $e)
 			{
-				\Joomla\Component\Kunena\Libraries\Error::displayDatabaseError($e);
+				Error::displayDatabaseError($e);
 			}
 
 			foreach ($smileys as $smiley)
@@ -124,7 +132,7 @@ class KunenaViewTopic extends KunenaView
 	{
 		$catid = $this->app->input->getInt('catid', 0);
 
-		$category         = \Joomla\Component\Kunena\Libraries\Forum\Category\Helper::get($catid);
+		$category         = Helper::get($catid);
 		$category_iconset = $category->iconset;
 		$app              = Factory::getApplication();
 
@@ -142,7 +150,7 @@ class KunenaViewTopic extends KunenaView
 
 		$topicIcons = [];
 
-		$template = \Joomla\Component\Kunena\Libraries\KunenaFactory::getTemplate();
+		$template = KunenaFactory::getTemplate();
 
 		$xmlfile = JPATH_ROOT . '/media/kunena/topic_icons/' . $category_iconset . '/topicicons.xml';
 
@@ -210,13 +218,13 @@ class KunenaViewTopic extends KunenaView
 		$response = [];
 		$app      = Factory::getApplication();
 
-		if ($user->id == 0 || \Joomla\Component\Kunena\Libraries\Forum\Topic\Helper::get($topicid)->first_post_userid == $this->me->userid)
+		if ($user->id == 0 || Forum\Topic\Helper::get($topicid)->first_post_userid == $this->me->userid)
 		{
-			$response = KunenaForumTopicRateHelper::getSelected($topicid);
+			$response = Rate\Helper::getSelected($topicid);
 		}
 		else
 		{
-			$response = KunenaForumTopicRateHelper::getRate($topicid, $user->id);
+			$response = Rate\Helper::getRate($topicid, $user->id);
 		}
 
 		// Set the MIME type and header for JSON output.
@@ -244,19 +252,19 @@ class KunenaViewTopic extends KunenaView
 		$topicid  = $this->app->input->get('topic_id', 0, 'int');
 		$response = [];
 		$app      = Factory::getApplication();
-		$user     = \Joomla\Component\Kunena\Libraries\User\Helper::getMyself();
+		$user     = Libraries\User\Helper::getMyself();
 
 		if ($user->exists() || $this->config->ratingenabled)
 		{
-			$rate           = KunenaForumTopicRateHelper::get($topicid);
+			$rate           = Rate\Helper::get($topicid);
 			$rate->stars    = $starid;
 			$rate->topic_id = $topicid;
 
 			$response = $rate->save($this->me);
 
-			$selected = KunenaForumTopicRateHelper::getSelected($topicid);
+			$selected = Rate\Helper::getSelected($topicid);
 
-			$topic         = \Joomla\Component\Kunena\Libraries\Forum\Topic\Helper::get($topicid);
+			$topic         = Forum\Topic\Helper::get($topicid);
 			$topic->rating = $selected;
 			$topic->save();
 		}
@@ -286,7 +294,7 @@ class KunenaViewTopic extends KunenaView
 		$catid    = $this->app->input->getInt('catid', 0);
 		$response = '';
 
-		$category = \Joomla\Component\Kunena\Libraries\Forum\Category\Helper::get($catid);
+		$category = Helper::get($catid);
 
 		$response = $category->topictemplate;
 

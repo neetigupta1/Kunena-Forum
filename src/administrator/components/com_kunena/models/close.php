@@ -21,6 +21,6 @@ use function defined;
  *
  * @since   Kunena 2.0.3
  */
-class KunenaAdminModelClose extends KunenaModel
+class KunenaAdminModelClose extends \Joomla\Component\Kunena\Libraries\Model
 {
 }

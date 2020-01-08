@@ -2526,7 +2526,7 @@ class KunenaBBCodeLibrary extends BBCodeLibrary
 
 		if (!empty($default))
 		{
-			$attachment = KunenaAttachmentHelper::get($default);
+			$attachment = \Joomla\Component\Kunena\Libraries\Attachment\Helper::get($default);
 			unset($attachments [$attachment->id]);
 		}
 		elseif (empty($content))

@@ -783,7 +783,7 @@ class Base extends LayoutBase
 	/**
 	 * Display arbitrary MVC triad from current layout.
 	 *
-	 * By using $this->subRequest() instead of KunenaRequest::factory() you can make your template files both
+	 * By using $this->subRequest() instead of \Joomla\Component\Kunena\Libraries\Request\Request::factory() you can make your template files both
 	 * easier to read and gain some context awareness.
 	 *
 	 * @param   string  $path     path
@@ -796,7 +796,7 @@ class Base extends LayoutBase
 	 */
 	public function subRequest($path, Input $input = null, $options = null)
 	{
-		return KunenaRequest::factory($path . '/Display', $input, $options)
+		return \Joomla\Component\Kunena\Libraries\Request\Request::factory($path . '/Display', $input, $options)
 			->setLayout($this->getLayout());
 	}
 }

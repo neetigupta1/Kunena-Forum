@@ -10,13 +10,16 @@
  * @link            https://www.kunena.org
  **/
 
-namespace Joomla\Component\Kunena\Site;
+namespace Joomla\Component\Kunena\Site\Controller\Announement\Edit;
 
 defined('_JEXEC') or die();
 
 use Exception;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\MVC\Controller\BaseController;
+use Joomla\Component\Kunena\Libraries\Controller\Display;
+use Joomla\Component\Kunena\Libraries\Forum\Announcement\Helper;
+use Joomla\Component\Kunena\Libraries\Route\KunenaRoute;
 use function defined;
 
 /**
@@ -24,7 +27,7 @@ use function defined;
  *
  * @since   Kunena 4.0
  */
-class ComponentKunenaControllerAnnouncementEditDisplay extends KunenaControllerDisplay
+class ComponentKunenaControllerAnnouncementEditDisplay extends Display
 {
 	/**
 	 * @var     string
@@ -54,23 +57,23 @@ class ComponentKunenaControllerAnnouncementEditDisplay extends KunenaControllerD
 
 		$id = $this->input->getInt('id', null);
 
-		$this->announcement = KunenaForumAnnouncementHelper::get($id);
+		$this->announcement = Helper::get($id);
 		$this->announcement->tryAuthorise($id ? 'edit' : 'create');
 
 		$Itemid = $this->input->getInt('Itemid');
 
 		if (!$Itemid && $this->config->sef_redirect)
 		{
-			$itemid     = \Joomla\Component\Kunena\Libraries\Route\KunenaRoute::fixMissingItemID();
+			$itemid     = KunenaRoute::fixMissingItemID();
 			$controller = BaseController::getInstance("kunena");
 
 			if ($id)
 			{
-				$controller->setRedirect(\Joomla\Component\Kunena\Libraries\Route\KunenaRoute::_("index.php?option=com_kunena&view=announcement&layout=edit&&id={$id}&Itemid={$itemid}", false));
+				$controller->setRedirect(KunenaRoute::_("index.php?option=com_kunena&view=announcement&layout=edit&&id={$id}&Itemid={$itemid}", false));
 			}
 			else
 			{
-				$controller->setRedirect(\Joomla\Component\Kunena\Libraries\Route\KunenaRoute::_("index.php?option=com_kunena&view=announcement&layout=create&Itemid={$itemid}", false));
+				$controller->setRedirect(KunenaRoute::_("index.php?option=com_kunena&view=announcement&layout=create&Itemid={$itemid}", false));
 			}
 
 			$controller->redirect();

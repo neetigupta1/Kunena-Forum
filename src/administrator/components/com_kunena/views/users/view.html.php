@@ -26,7 +26,7 @@ use function defined;
  *
  * @since   Kunena 1.X
  */
-class KunenaAdminViewUsers extends KunenaView
+class KunenaAdminViewUsers extends \Joomla\Component\Kunena\Libraries\View
 {
 	/**
 	 * DisplayDefault

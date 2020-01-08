@@ -10,7 +10,7 @@
  * @link            https://www.kunena.org
  **/
 
-namespace Joomla\Component\Kunena\Site;
+namespace Joomla\Component\Kunena\Site\Layout\Widget;
 
 defined('_JEXEC') or die;
 
@@ -18,6 +18,8 @@ use Exception;
 use Joomla\CMS\HTML\HTMLHelper;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\Filesystem\Folder;
+use Joomla\Component\Kunena\Libraries\KunenaFactory;
+use Joomla\Component\Kunena\Libraries\Layout\Layout;
 use function defined;
 
 /**
@@ -25,7 +27,7 @@ use function defined;
  *
  * @since   Kunena 4.0
  */
-class KunenaLayoutWidgetEditor extends KunenaLayout
+class KunenaLayoutWidgetEditor extends Layout
 {
 	/**
 	 * @var     KunenaTemplate
@@ -44,7 +46,7 @@ class KunenaLayoutWidgetEditor extends KunenaLayout
 	 */
 	public function getCodeTypes()
 	{
-		$templatesettings = \Joomla\Component\Kunena\Libraries\KunenaFactory::getTemplate()->params;
+		$templatesettings = KunenaFactory::getTemplate()->params;
 
 		if (!$templatesettings->get('highlightcode'))
 		{
@@ -89,7 +91,7 @@ class KunenaLayoutWidgetEditor extends KunenaLayout
 	 */
 	public function getBBcodesEnabled()
 	{
-		$this->ktemplate  = \Joomla\Component\Kunena\Libraries\KunenaFactory::getTemplate();
+		$this->ktemplate  = KunenaFactory::getTemplate();
 		$templatesettings = $this->ktemplate->params;
 		$config           = Config::getInstance();
 

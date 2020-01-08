@@ -26,10 +26,10 @@ use function defined;
  *
  * <code>
  *    // Executes the controller and sets the layout for the view.
- *    echo KunenaRequest::factory('User/Login')->execute()->set('layout', 'form');
+ *    echo \Joomla\Component\Kunena\Libraries\Request\Request::factory('User/Login')->execute()->set('layout', 'form');
  *
  *    // If there are no parameters for the view, this shorthand works also.
- *    echo KunenaRequest::factory('User/Registration');
+ *    echo \Joomla\Component\Kunena\Libraries\Request\Request::factory('User/Registration');
  * </code>
  *
  * Individual controller classes are located in /components/com_kunena/controller

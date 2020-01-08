@@ -10,7 +10,7 @@
  * @link            https://www.kunena.org
  **/
 
-namespace Joomla\Component\Kunena\Site;
+namespace Joomla\Component\Kunena\Site\Controller\Topic\Form\History;
 
 defined('_JEXEC') or die();
 
@@ -18,6 +18,8 @@ use Exception;
 use Joomla\CMS\Factory;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\Plugin\PluginHelper;
+use Joomla\Component\Kunena\Libraries\Attachment\Helper;
+use Joomla\Component\Kunena\Libraries\Controller\Display;
 use Joomla\Registry\Registry;
 use function defined;
 
@@ -28,7 +30,7 @@ use function defined;
  *
  * @since   Kunena 4.0
  */
-class ComponentKunenaControllerTopicFormHistoryDisplay extends KunenaControllerDisplay
+class ComponentKunenaControllerTopicFormHistoryDisplay extends Display
 {
 	/**
 	 * @var     string
@@ -54,13 +56,13 @@ class ComponentKunenaControllerTopicFormHistoryDisplay extends KunenaControllerD
 
 		$this->topic    = \Joomla\Component\Kunena\Libraries\Forum\Topic\Helper::get($id);
 		$this->category = $this->topic->getCategory();
-		$this->history  = KunenaForumMessageHelper::getMessagesByTopic(
+		$this->history  = \Joomla\Component\Kunena\Libraries\Forum\Message\Helper::getMessagesByTopic(
 			$this->topic, 0, (int) $this->config->historylimit, 'DESC'
 		);
 
 		$this->replycount   = $this->topic->getReplies();
 		$this->historycount = count($this->history);
-		KunenaAttachmentHelper::getByMessage($this->history);
+		Helper::getByMessage($this->history);
 		$userlist = [];
 
 		foreach ($this->history as $message)
@@ -113,7 +115,7 @@ class ComponentKunenaControllerTopicFormHistoryDisplay extends KunenaControllerD
 		Factory::getApplication()->triggerEvent('onKunenaPrepare', ['kunena.messages', &$this->history, &$params, 0]);
 
 		// FIXME: need to improve BBCode class on this...
-		$this->attachments        = KunenaAttachmentHelper::getByMessage($this->history);
+		$this->attachments        = Helper::getByMessage($this->history);
 		$this->inline_attachments = [];
 
 		$this->headerText = Text::_('COM_KUNENA_POST_EDIT') . ' ' . $this->topic->subject;

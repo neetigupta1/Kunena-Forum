@@ -530,7 +530,7 @@ class KunenaAdminControllerTools extends KunenaController
 						if ($state->topics)
 						{
 							// Update topic statistics
-							KunenaAttachmentHelper::cleanup();
+							\Joomla\Component\Kunena\Libraries\Attachment\Helper::cleanup();
 							\Joomla\Component\Kunena\Libraries\Forum\Topic\Helper::recount(false, $state->start, $state->start + $count);
 							$state->start += $count;
 							$msg          = Text::sprintf(
@@ -564,7 +564,7 @@ class KunenaAdminControllerTools extends KunenaController
 						if ($state->users)
 						{
 							// Update user statistics
-							KunenaForumMessageThankyouHelper::recountThankyou();
+							\Joomla\Component\Kunena\Libraries\Forum\Message\Thankyou\Helper::recountThankyou();
 							\Joomla\Component\Kunena\Libraries\User\Helper::recount();
 							\Joomla\Component\Kunena\Libraries\User\Helper::recountPostsNull();
 							$msg = Text::sprintf('COM_KUNENA_ADMIN_RECOUNT_USERS_X', '100%');
@@ -934,7 +934,7 @@ class KunenaAdminControllerTools extends KunenaController
 		$password = $this->app->input->getString('password');
 		$code     = $this->app->input->getInt('secretkey');
 
-		$login = KunenaLogin::getInstance();
+		$login = \Joomla\Component\Kunena\Libraries\Login::getInstance();
 
 		if ($login->isTFAEnabled())
 		{

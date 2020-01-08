@@ -109,12 +109,12 @@ class KunenaAdminControllerTrash extends KunenaController
 				}
 				elseif ($type == 'messages')
 				{
-					$messages = KunenaForumMessageHelper::getMessages($ids, 'none');
+					$messages = \Joomla\Component\Kunena\Libraries\Forum\Message\Helper::getMessages($ids, 'none');
 
 					foreach ($messages as $message)
 					{
 						$success = $message->delete();
-						$target  = KunenaForumMessageHelper::get($message->id);
+						$target  = \Joomla\Component\Kunena\Libraries\Forum\Message\Helper::get($message->id);
 						$topic   = \Joomla\Component\Kunena\Libraries\Forum\Topic\Helper::get($target->getTopic());
 
 						if ($topic->attachments > 0)
@@ -204,7 +204,7 @@ class KunenaAdminControllerTrash extends KunenaController
 
 		if ($type == 'messages')
 		{
-			$messages = KunenaForumMessageHelper::getMessages($cid, 'none');
+			$messages = \Joomla\Component\Kunena\Libraries\Forum\Message\Helper::getMessages($cid, 'none');
 
 			foreach ($messages as $target)
 			{

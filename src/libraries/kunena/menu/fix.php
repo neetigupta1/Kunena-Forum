@@ -289,7 +289,7 @@ abstract class Fix
 			}
 		}
 
-		KunenaMenuHelper::cleanCache();
+		\Joomla\Component\Kunena\Libraries\Menu\Helper::cleanCache();
 
 		return !empty($errors) ? $errors : null;
 	}
@@ -311,7 +311,7 @@ abstract class Fix
 
 		$table  = Table::getInstance('menu');
 		$result = $table->delete($itemid);
-		KunenaMenuHelper::cleanCache();
+		\Joomla\Component\Kunena\Libraries\Menu\Helper::cleanCache();
 
 		return $result;
 	}

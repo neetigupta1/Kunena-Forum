@@ -10,7 +10,7 @@
  * @link            https://www.kunena.org
  **/
 
-namespace Joomla\Component\Kunena\Site;
+namespace Joomla\Component\Kunena\Site\Controller\Search\Form;
 
 defined('_JEXEC') or die();
 
@@ -18,6 +18,10 @@ use Exception;
 use Joomla\CMS\Factory;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\MVC\Controller\BaseController;
+use Joomla\Component\Kunena\Libraries\Access;
+use Joomla\Component\Kunena\Libraries\Controller\Display;
+use Joomla\Component\Kunena\Libraries\Route\KunenaRoute;
+use Joomla\Component\Kunena\Libraries\User\Helper;
 use function defined;
 
 /**
@@ -25,7 +29,7 @@ use function defined;
  *
  * @since   Kunena 4.0
  */
-class ComponentKunenaControllerSearchFormDisplay extends KunenaControllerDisplay
+class ComponentKunenaControllerSearchFormDisplay extends Display
 {
 	/**
 	 * @var     string
@@ -69,23 +73,23 @@ class ComponentKunenaControllerSearchFormDisplay extends KunenaControllerDisplay
 			else
 			{
 				$menu      = $this->app->getMenu();
-				$getid     = $menu->getItem(\Joomla\Component\Kunena\Libraries\Route\KunenaRoute::getItemID("index.php?option=com_kunena&view=search"));
+				$getid     = $menu->getItem(KunenaRoute::getItemID("index.php?option=com_kunena&view=search"));
 				$itemidfix = $getid->id;
 			}
 
 			if (!$itemidfix)
 			{
-				$itemidfix = \Joomla\Component\Kunena\Libraries\Route\KunenaRoute::fixMissingItemID();
+				$itemidfix = KunenaRoute::fixMissingItemID();
 			}
 
 			$controller = BaseController::getInstance("kunena");
-			$controller->setRedirect(\Joomla\Component\Kunena\Libraries\Route\KunenaRoute::_("index.php?option=com_kunena&view=search&Itemid={$itemidfix}", false));
+			$controller->setRedirect(KunenaRoute::_("index.php?option=com_kunena&view=search&Itemid={$itemidfix}", false));
 			$controller->redirect();
 		}
 
-		$this->me = \Joomla\Component\Kunena\Libraries\User\Helper::getMyself();
+		$this->me = Helper::getMyself();
 
-		$this->isModerator = ($this->me->isAdmin() || \Joomla\Component\Kunena\Libraries\Access::getInstance()->getModeratorStatus());
+		$this->isModerator = ($this->me->isAdmin() || Access::getInstance()->getModeratorStatus());
 		$this->error       = $this->model->getError();
 	}
 

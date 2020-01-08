@@ -10,13 +10,18 @@
  * @link            https://www.kunena.org
  **/
 
-namespace Joomla\Component\Kunena\Site;
+namespace Joomla\Component\Kunena\Site\Controller\Widget\Login;
 
 defined('_JEXEC') or die();
 
 use Exception;
 use Joomla\CMS\Factory;
 use Joomla\CMS\Language\Text;
+use Joomla\Component\Kunena\Libraries\Controller\Display;
+use Joomla\Component\Kunena\Libraries\Forum\Announcement\Helper;
+use Joomla\Component\Kunena\Libraries\KunenaDate;
+use Joomla\Component\Kunena\Libraries\KunenaFactory;
+use Joomla\Component\Kunena\Libraries\Login;
 use Joomla\Registry\Registry;
 use function defined;
 
@@ -25,7 +30,7 @@ use function defined;
  *
  * @since   Kunena 4.0
  */
-class ComponentKunenaControllerWidgetLoginDisplay extends KunenaControllerDisplay
+class ComponentKunenaControllerWidgetLoginDisplay extends Display
 {
 	/**
 	 * @var     string
@@ -125,7 +130,7 @@ class ComponentKunenaControllerWidgetLoginDisplay extends KunenaControllerDispla
 	{
 		parent::before();
 
-		$login = KunenaLogin::getInstance();
+		$login = Login::getInstance();
 
 		$params         = new Registry($login->getParams());
 		$this->plglogin = $params->get('login', '1');
@@ -151,7 +156,7 @@ class ComponentKunenaControllerWidgetLoginDisplay extends KunenaControllerDispla
 		{
 			$this->lastvisitDate = KunenaDate::getInstance($this->my->lastvisitDate);
 
-			$private = \Joomla\Component\Kunena\Libraries\KunenaFactory::getPrivateMessaging();
+			$private = KunenaFactory::getPrivateMessaging();
 
 			if ($private)
 			{
@@ -160,14 +165,14 @@ class ComponentKunenaControllerWidgetLoginDisplay extends KunenaControllerDispla
 				$this->pm_link         = $private->getInboxURL();
 			}
 
-			$profile = \Joomla\Component\Kunena\Libraries\KunenaFactory::getProfile();
+			$profile = KunenaFactory::getProfile();
 
 			$this->profile_edit_url = $profile->getEditProfileURL($this->me->userid);
 
 			// Display announcements.
 			if ($this->me->isModerator())
 			{
-				$this->announcementsUrl = KunenaForumAnnouncementHelper::getUrl('list');
+				$this->announcementsUrl = Helper::getUrl('list');
 			}
 		}
 

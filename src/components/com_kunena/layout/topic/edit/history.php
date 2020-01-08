@@ -10,10 +10,11 @@
  * @link            https://www.kunena.org
  **/
 
-namespace Joomla\Component\Kunena\Site;
+namespace Joomla\Component\Kunena\Site\Layout\Topic\Edit;
 
 defined('_JEXEC') or die;
 
+use Joomla\Component\Kunena\Libraries\Layout\Layout;
 use function defined;
 
 /**
@@ -21,7 +22,7 @@ use function defined;
  *
  * @since   Kunena 4.0
  */
-class KunenaLayoutTopicEditHistory extends KunenaLayout
+class KunenaLayoutTopicEditHistory extends Layout
 {
 	/**
 	 * @var     Config

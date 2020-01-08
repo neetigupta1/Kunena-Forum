@@ -93,7 +93,7 @@ class Display extends KunenaControllerDisplay
 		if ($result === false)
 		{
 			KUNENA_PROFILER ? \Joomla\Component\Kunena\Libraries\KunenaProfiler::instance()->stop('function ' . get_class($this) . '::' . __FUNCTION__ . '()') : null;
-			throw new KunenaExceptionAuthorise(Text::_('COM_KUNENA_NO_ACCESS'), 404);
+			throw new \Joomla\Component\Kunena\Libraries\Exception\Authorise(Text::_('COM_KUNENA_NO_ACCESS'), 404);
 		}
 
 		// Wrapper layout.
@@ -154,7 +154,7 @@ class Display extends KunenaControllerDisplay
 					$this->content = KunenaLayout::factory('Widget/Custom')
 						->set('header', Text::_('COM_KUNENA_POST_ERROR_USER_BANNED_NOACCESS'))
 						->set('body', Text::sprintf('COM_KUNENA_POST_ERROR_USER_BANNED_NOACCESS_EXPIRY',
-							KunenaDate::getInstance($bannedtime->getExpirationDate())->toKunena('date_today')
+							\Joomla\Component\Kunena\Libraries\KunenaDate::getInstance($bannedtime->getExpirationDate())->toKunena('date_today')
 						)
 						);
 					$this->document->setMetaData('robots', 'noindex, follow');
@@ -196,7 +196,7 @@ class Display extends KunenaControllerDisplay
 				{
 					$header  = 'Error while rendering layout';
 					$content = $e->getMessage();
-					$e       = new KunenaExceptionAuthorise($e->getMessage(), $e->getCode(), $e);
+					$e       = new \Joomla\Component\Kunena\Libraries\Exception\Authorise($e->getMessage(), $e->getCode(), $e);
 				}
 				else
 				{
@@ -286,7 +286,7 @@ class Display extends KunenaControllerDisplay
 				$this->app->enqueueMessage(
 					Text::sprintf(
 						'COM_KUNENA_POST_ERROR_USER_BANNED_NOACCESS_EXPIRY',
-						KunenaDate::getInstance($banned->expiration)->toKunena('date_today')
+						\Joomla\Component\Kunena\Libraries\KunenaDate::getInstance($banned->expiration)->toKunena('date_today')
 					), 'notice'
 				);
 			}

@@ -17,7 +17,10 @@ defined('_JEXEC') or die();
 use Exception;
 use Joomla\CMS\Factory;
 use Joomla\CMS\MVC\Model\ListModel;
+use Joomla\Component\Kunena\Libraries\Forum\Message\Helper;
 use Joomla\Database\QueryInterface;
+use Joomla\Component\Kunena\Libraries\User;
+use Joomla\Component\Kunena\Libraries\Attachment;
 use function defined;
 
 /**
@@ -133,7 +136,7 @@ class KunenaAdminModelAttachments extends ListModel
 	 * @param   int     $limitstart  limitstart
 	 * @param   int     $limit       limit
 	 *
-	 * @return  KunenaAttachment[]
+	 * @return  Attachment
 	 *
 	 * @since   Kunena 6.0
 	 *
@@ -144,7 +147,7 @@ class KunenaAdminModelAttachments extends ListModel
 	{
 		$this->_db->setQuery($query, $limitstart, $limit);
 		$ids     = $this->_db->loadColumn();
-		$results = KunenaAttachmentHelper::getById($ids);
+		$results = Attachment\Helper::getById($ids);
 		$userids = [];
 		$mesids  = [];
 
@@ -154,8 +157,8 @@ class KunenaAdminModelAttachments extends ListModel
 			$mesids[$result->mesid]   = $result->mesid;
 		}
 
-		\Joomla\Component\Kunena\Libraries\User\Helper::loadUsers($userids);
-		KunenaForumMessageHelper::getMessages($mesids);
+		User\Helper::loadUsers($userids);
+		Helper::getMessages($mesids);
 
 		return $results;
 	}

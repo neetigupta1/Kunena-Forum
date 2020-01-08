@@ -10,7 +10,7 @@
  * @link            https://www.kunena.org
  **/
 
-namespace Joomla\Component\Kunena\Site;
+namespace Joomla\Component\Kunena\Site\Controller\Category\Index;
 
 defined('_JEXEC') or die();
 
@@ -20,6 +20,13 @@ use Joomla\CMS\HTML\HTMLHelper;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\Uri\Uri;
 use Joomla\CMS\MVC\Controller\BaseController;
+use Joomla\Component\Kunena\Libraries\Access;
+use Joomla\Component\Kunena\Libraries\Controller\Display;
+use Joomla\Component\Kunena\Libraries\Error;
+use Joomla\Component\Kunena\Libraries\Forum\Message\Helper;
+use Joomla\Component\Kunena\Libraries\Html\Parser;
+use Joomla\Component\Kunena\Libraries\KunenaFactory;
+use Joomla\Component\Kunena\Libraries\Route\KunenaRoute;
 use Joomla\Registry\Registry;
 use Joomla\CMS\Filesystem\File;
 use Joomla\Database\Exception\ExecutionFailureException;
@@ -30,7 +37,7 @@ use function defined;
  *
  * @since   Kunena 4.0
  */
-class ComponentKunenaControllerCategoryIndexDisplay extends KunenaControllerDisplay
+class ComponentKunenaControllerCategoryIndexDisplay extends Display
 {
 	/**
 	 * @var     string
@@ -83,7 +90,7 @@ class ComponentKunenaControllerCategoryIndexDisplay extends KunenaControllerDisp
 		parent::before();
 
 		$this->me        = \Joomla\Component\Kunena\Libraries\User\Helper::getMyself();
-		$this->ktemplate = \Joomla\Component\Kunena\Libraries\KunenaFactory::getTemplate();
+		$this->ktemplate = KunenaFactory::getTemplate();
 
 		// Get sections to display.
 		$catid       = $this->input->getInt('catid', 0);
@@ -106,11 +113,11 @@ class ComponentKunenaControllerCategoryIndexDisplay extends KunenaControllerDisp
 
 				if ($view == 'home')
 				{
-					$getid = $menu->getItem(\Joomla\Component\Kunena\Libraries\Route\KunenaRoute::getItemID("index.php?option=com_kunena&view=home&defaultmenu={$defaultmenu}"));
+					$getid = $menu->getItem(KunenaRoute::getItemID("index.php?option=com_kunena&view=home&defaultmenu={$defaultmenu}"));
 				}
 				else
 				{
-					$getid = $menu->getItem(\Joomla\Component\Kunena\Libraries\Route\KunenaRoute::getItemID("index.php?option=com_kunena&view=category&layout=list"));
+					$getid = $menu->getItem(KunenaRoute::getItemID("index.php?option=com_kunena&view=category&layout=list"));
 				}
 
 				$itemidfix = $getid->id;
@@ -118,29 +125,29 @@ class ComponentKunenaControllerCategoryIndexDisplay extends KunenaControllerDisp
 
 			if (!$itemidfix)
 			{
-				$itemidfix = \Joomla\Component\Kunena\Libraries\Route\KunenaRoute::fixMissingItemID();
+				$itemidfix = KunenaRoute::fixMissingItemID();
 			}
 
 			if ($view == 'home')
 			{
 				if ($defaultmenu)
 				{
-					$controller->setRedirect(\Joomla\Component\Kunena\Libraries\Route\KunenaRoute::_("index.php?option=com_kunena&view=home&defaultmenu={$defaultmenu}&Itemid={$itemidfix}", false));
+					$controller->setRedirect(KunenaRoute::_("index.php?option=com_kunena&view=home&defaultmenu={$defaultmenu}&Itemid={$itemidfix}", false));
 				}
 				else
 				{
-					$controller->setRedirect(\Joomla\Component\Kunena\Libraries\Route\KunenaRoute::_("index.php?option=com_kunena&view=category&layout=list&Itemid={$itemidfix}", false));
+					$controller->setRedirect(KunenaRoute::_("index.php?option=com_kunena&view=category&layout=list&Itemid={$itemidfix}", false));
 				}
 			}
 			else
 			{
-				$controller->setRedirect(\Joomla\Component\Kunena\Libraries\Route\KunenaRoute::_("index.php?option=com_kunena&view=category&layout=list&Itemid={$itemidfix}", false));
+				$controller->setRedirect(KunenaRoute::_("index.php?option=com_kunena&view=category&layout=list&Itemid={$itemidfix}", false));
 			}
 
 			$controller->redirect();
 		}
 
-		$allowed = md5(serialize(\Joomla\Component\Kunena\Libraries\Access::getInstance()->getAllowedCategories()));
+		$allowed = md5(serialize(Access::getInstance()->getAllowedCategories()));
 
 		/*
 		$cache   = Factory::getCache('com_kunena', 'output');
@@ -320,7 +327,7 @@ class ComponentKunenaControllerCategoryIndexDisplay extends KunenaControllerDisp
 		}
 
 		\Joomla\Component\Kunena\Libraries\User\Helper::loadUsers($userIds);
-		KunenaForumMessageHelper::getMessages($postIds);
+		Helper::getMessages($postIds);
 
 		// Pre-fetch user related stuff.
 		$this->pending = [];
@@ -331,7 +338,7 @@ class ComponentKunenaControllerCategoryIndexDisplay extends KunenaControllerDisp
 			\Joomla\Component\Kunena\Libraries\Forum\Category\Helper::getNewTopics(array_keys($categories + $subcategories));
 
 			// Get categories which are moderated by current user.
-			$access   = \Joomla\Component\Kunena\Libraries\Access::getInstance();
+			$access   = Access::getInstance();
 			$moderate = $access->getAdminStatus($this->me) + $access->getModeratorStatus($this->me);
 
 			if (!empty($moderate[0]))
@@ -363,7 +370,7 @@ class ComponentKunenaControllerCategoryIndexDisplay extends KunenaControllerDisp
 				}
 				catch (ExecutionFailureException $e)
 				{
-					\Joomla\Component\Kunena\Libraries\Error::displayDatabaseError($e);
+					Error::displayDatabaseError($e);
 				}
 
 				foreach ($pending as $item)
@@ -386,7 +393,7 @@ class ComponentKunenaControllerCategoryIndexDisplay extends KunenaControllerDisp
 				// Fix last post position when user can see unapproved or deleted posts.
 				if (!$topic_ordering)
 				{
-					KunenaForumMessageHelper::loadLocation($postIds);
+					Helper::loadLocation($postIds);
 				}
 			}
 		}
@@ -401,7 +408,7 @@ class ComponentKunenaControllerCategoryIndexDisplay extends KunenaControllerDisp
 				{
 					if ($value['relation'] == 'canonical')
 					{
-						$canonicalUrl               = \Joomla\Component\Kunena\Libraries\Route\KunenaRoute::_();
+						$canonicalUrl               = KunenaRoute::_();
 						$canonicalUrl               = str_replace('?limitstart=0', '', $canonicalUrl);
 						$doc->_links[$canonicalUrl] = $value;
 						unset($doc->_links[$key]);
@@ -411,7 +418,7 @@ class ComponentKunenaControllerCategoryIndexDisplay extends KunenaControllerDisp
 			}
 		}
 
-		\Kunena\\Joomla\Component\Kunena\Libraries\Html\Parser::prepareContent($content, 'index_top');
+		Parser::prepareContent($content, 'index_top');
 	}
 
 	/**

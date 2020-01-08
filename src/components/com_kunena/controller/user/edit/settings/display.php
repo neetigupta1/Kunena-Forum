@@ -10,13 +10,14 @@
  * @link            https://www.kunena.org
  **/
 
-namespace Joomla\Component\Kunena\Site;
+namespace Joomla\Component\Kunena\Site\Controller\User\Edit;
 
 defined('_JEXEC') or die();
 
 use Exception;
 use Joomla\CMS\HTML\HTMLHelper;
 use Joomla\CMS\Language\Text;
+use Joomla\Component\Kunena\Libraries\KunenaFactory;
 use StdClass;
 use function defined;
 
@@ -119,7 +120,7 @@ class ComponentKunenaControllerUserEditSettingsDisplay extends ComponentKunenaCo
 		);
 		$this->settings[] = $item;
 
-		$this->ktemplate = \Joomla\Component\Kunena\Libraries\KunenaFactory::getTemplate();
+		$this->ktemplate = KunenaFactory::getTemplate();
 		$social          = $this->ktemplate->params->get('socialshare');
 
 		if ($social != 0)

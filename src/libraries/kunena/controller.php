@@ -211,13 +211,13 @@ class Controller extends BaseController
 				// Make sure that Kunena is online before running any tasks (doesn't affect admins).
 				if (!\Joomla\Component\Kunena\Libraries\Forum\Forum::enabled(true))
 				{
-					throw new KunenaExceptionAuthorise(Text::_('COM_KUNENA_FORUM_IS_OFFLINE'), 503);
+					throw new \Joomla\Component\Kunena\Libraries\Exception\Authorise(Text::_('COM_KUNENA_FORUM_IS_OFFLINE'), 503);
 				}
 
 				// If forum is for registered users only, prevent guests from accessing tasks.
 				if ($this->config->regonly && !$this->me->exists())
 				{
-					throw new KunenaExceptionAuthorise(Text::_('COM_KUNENA_LOGIN_NOTIFICATION'), 403);
+					throw new \Joomla\Component\Kunena\Libraries\Exception\Authorise(Text::_('COM_KUNENA_LOGIN_NOTIFICATION'), 403);
 				}
 			}
 			*/
@@ -289,7 +289,7 @@ class Controller extends BaseController
 		if ($content instanceof Exception)
 		{
 			// We want to wrap the exception to be able to display correct HTTP status code.
-			$exception = new KunenaExceptionAuthorise($content->getMessage(), $content->getCode(), $content);
+			$exception = new \Joomla\Component\Kunena\Libraries\Exception\Authorise($content->getMessage(), $content->getCode(), $content);
 			header('HTTP/1.1 ' . $exception->getResponseStatus(), true);
 		}
 

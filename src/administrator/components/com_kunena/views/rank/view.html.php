@@ -24,7 +24,7 @@ use function defined;
  *
  * @since   Kunena 1.X
  */
-class KunenaAdminViewRank extends KunenaView
+class KunenaAdminViewRank extends \Joomla\Component\Kunena\Libraries\View
 {
 	/**
 	 * @param   null  $tpl  tpl

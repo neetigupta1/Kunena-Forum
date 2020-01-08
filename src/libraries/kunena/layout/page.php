@@ -144,7 +144,7 @@ class Page extends \Joomla\Component\Kunena\Libraries\Layout
 	 */
 	public function request($path, Input $input = null, $options = null)
 	{
-		return KunenaRequest::factory($path . '/Display', $input, $options ? $options : $this->getOptions())
+		return \Joomla\Component\Kunena\Libraries\Request\Request::factory($path . '/Display', $input, $options ? $options : $this->getOptions())
 			->setPrimary()->set('layout', $this->getLayout());
 	}
 

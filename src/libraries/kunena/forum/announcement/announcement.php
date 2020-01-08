@@ -117,7 +117,7 @@ class Announcement extends KunenaDatabaseObject
 	 */
 	public static function getInstance($identifier = null, $reload = false)
 	{
-		return KunenaForumAnnouncementHelper::get($identifier, $reload);
+		return \Joomla\Component\Kunena\Libraries\Forum\Announcement\Helper::get($identifier, $reload);
 	}
 
 	/**
@@ -281,7 +281,7 @@ class Announcement extends KunenaDatabaseObject
 	{
 		if (!$this->_date)
 		{
-			$this->_date = KunenaDate::getInstance($this->created);
+			$this->_date = \Joomla\Component\Kunena\Libraries\KunenaDate::getInstance($this->created);
 		}
 
 		return $this->_date;
@@ -403,7 +403,7 @@ class Announcement extends KunenaDatabaseObject
 	{
 		if ($this->exists())
 		{
-			return new KunenaExceptionAuthorise(Text::_('COM_KUNENA_NO_ACCESS'), 404);
+			return new \Joomla\Component\Kunena\Libraries\Exception\Authorise(Text::_('COM_KUNENA_NO_ACCESS'), 404);
 		}
 
 		return null;
@@ -422,12 +422,12 @@ class Announcement extends KunenaDatabaseObject
 	{
 		if (!$this->exists())
 		{
-			return new KunenaExceptionAuthorise(Text::_('COM_KUNENA_NO_ACCESS'), 404);
+			return new \Joomla\Component\Kunena\Libraries\Exception\Authorise(Text::_('COM_KUNENA_NO_ACCESS'), 404);
 		}
 
 		if ($this->published != 1 && !$user->isModerator())
 		{
-			return new KunenaExceptionAuthorise(Text::_('COM_KUNENA_NO_ACCESS'), 403);
+			return new \Joomla\Component\Kunena\Libraries\Exception\Authorise(Text::_('COM_KUNENA_NO_ACCESS'), 403);
 		}
 
 		return null;
@@ -452,11 +452,11 @@ class Announcement extends KunenaDatabaseObject
 
 			if (!$banned->isLifetime())
 			{
-				return new KunenaExceptionAuthorise(Text::sprintf('COM_KUNENA_POST_ERROR_USER_BANNED_NOACCESS_EXPIRY', KunenaDate::getInstance($banned->expiration)->toKunena()), 403);
+				return new \Joomla\Component\Kunena\Libraries\Exception\Authorise(Text::sprintf('COM_KUNENA_POST_ERROR_USER_BANNED_NOACCESS_EXPIRY', \Joomla\Component\Kunena\Libraries\KunenaDate::getInstance($banned->expiration)->toKunena()), 403);
 			}
 			else
 			{
-				return new KunenaExceptionAuthorise(Text::_('COM_KUNENA_POST_ERROR_USER_BANNED_NOACCESS'), 403);
+				return new \Joomla\Component\Kunena\Libraries\Exception\Authorise(Text::_('COM_KUNENA_POST_ERROR_USER_BANNED_NOACCESS'), 403);
 			}
 		}
 
@@ -477,12 +477,12 @@ class Announcement extends KunenaDatabaseObject
 		// Check that user is global moderator
 		if (!$user->exists())
 		{
-			return new KunenaExceptionAuthorise(Text::_('COM_KUNENA_POST_NOT_MODERATOR'), 401);
+			return new \Joomla\Component\Kunena\Libraries\Exception\Authorise(Text::_('COM_KUNENA_POST_NOT_MODERATOR'), 401);
 		}
 
 		if (!$user->isModerator())
 		{
-			return new KunenaExceptionAuthorise(Text::_('COM_KUNENA_POST_NOT_MODERATOR'), 403);
+			return new \Joomla\Component\Kunena\Libraries\Exception\Authorise(Text::_('COM_KUNENA_POST_NOT_MODERATOR'), 403);
 		}
 
 		return null;

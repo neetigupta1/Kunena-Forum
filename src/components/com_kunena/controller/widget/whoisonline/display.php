@@ -10,12 +10,16 @@
  * @link            https://www.kunena.org
  **/
 
-namespace Joomla\Component\Kunena\Site;
+namespace Joomla\Component\Kunena\Site\Controller\Widget\Whoisonline;
 
 defined('_JEXEC') or die();
 
 use Exception;
 use Joomla\CMS\Language\Text;
+use Joomla\Component\Kunena\Libraries\Controller\Display;
+use Joomla\Component\Kunena\Libraries\Exception\Authorise;
+use Joomla\Component\Kunena\Libraries\KunenaFactory;
+use Joomla\Component\Kunena\Libraries\User\Helper;
 use function defined;
 
 /**
@@ -23,7 +27,7 @@ use function defined;
  *
  * @since   Kunena 4.0
  */
-class ComponentKunenaControllerWidgetWhoisonlineDisplay extends KunenaControllerDisplay
+class ComponentKunenaControllerWidgetWhoisonlineDisplay extends Display
 {
 	/**
 	 * @var     string
@@ -54,15 +58,15 @@ class ComponentKunenaControllerWidgetWhoisonlineDisplay extends KunenaController
 
 		if (!$this->config->get('showwhoisonline'))
 		{
-			throw new KunenaExceptionAuthorise(Text::_('COM_KUNENA_NO_ACCESS'), '404');
+			throw new Authorise(Text::_('COM_KUNENA_NO_ACCESS'), '404');
 		}
 
-		$me        = \Joomla\Component\Kunena\Libraries\User\Helper::getMyself();
+		$me        = Helper::getMyself();
 		$moderator = intval($me->isModerator()) + intval($me->isAdmin());
 
-		$users = \Joomla\Component\Kunena\Libraries\User\Helper::getOnlineUsers();
-		\Joomla\Component\Kunena\Libraries\User\Helper::loadUsers(array_keys($users));
-		$onlineusers = \Joomla\Component\Kunena\Libraries\User\Helper::getOnlineCount();
+		$users = Helper::getOnlineUsers();
+		Helper::loadUsers(array_keys($users));
+		$onlineusers = Helper::getOnlineCount();
 
 		$who = '<strong>' . $onlineusers['user'] . ' </strong>';
 
@@ -95,7 +99,7 @@ class ComponentKunenaControllerWidgetWhoisonlineDisplay extends KunenaController
 
 		foreach ($users as $userid => $usertime)
 		{
-			$user = \Joomla\Component\Kunena\Libraries\User\Helper::get($userid);
+			$user = Helper::get($userid);
 
 			if (!$user->showOnline)
 			{
@@ -113,7 +117,7 @@ class ComponentKunenaControllerWidgetWhoisonlineDisplay extends KunenaController
 		ksort($this->onlineList);
 		ksort($this->hiddenList);
 
-		$profile        = \Joomla\Component\Kunena\Libraries\KunenaFactory::getProfile();
+		$profile        = KunenaFactory::getProfile();
 		$this->usersUrl = $profile->getUserListURL();
 	}
 

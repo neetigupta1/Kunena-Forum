@@ -26,7 +26,7 @@ use function defined;
  *
  * @since 2.0
  */
-class KunenaAdminModelConfig extends KunenaModel
+class KunenaAdminModelConfig extends \Joomla\Component\Kunena\Libraries\Model
 {
 	/**
 	 * @return  array
@@ -221,7 +221,7 @@ class KunenaAdminModelConfig extends KunenaModel
 
 		// New for 1.6: datetime
 		$dateformatlist                 = [];
-		$time                           = KunenaDate::getInstance(time() - 80000);
+		$time                           = \Joomla\Component\Kunena\Libraries\KunenaDate::getInstance(time() - 80000);
 		$dateformatlist[]               = HTMLHelper::_('select.option', 'none', Text::_('COM_KUNENA_OPTION_DATEFORMAT_NONE'));
 		$dateformatlist[]               = HTMLHelper::_('select.option', 'ago', $time->toKunena('ago'));
 		$dateformatlist[]               = HTMLHelper::_('select.option', 'datetime_today', $time->toKunena('datetime_today'));

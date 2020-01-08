@@ -8,9 +8,9 @@
  * @copyright       Copyright (C) 2008 - 2020 Kunena Team. All rights reserved.
  * @license         https://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link            https://www.kunena.org
-**/
+ **/
 
-namespace Joomla\Component\Kunena\Site;
+namespace Joomla\Component\Kunena\Site\Controller\Topic\Form\Create;
 
 defined('_JEXEC') or die();
 
@@ -19,6 +19,12 @@ use Joomla\CMS\Factory;
 use Joomla\CMS\HTML\HTMLHelper;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\MVC\Controller\BaseController;
+use Joomla\Component\Kunena\Libraries\Attachment\Helper;
+use Joomla\Component\Kunena\Libraries\Controller\Display;
+use Joomla\Component\Kunena\Libraries\Exception\Authorise;
+use Joomla\Component\Kunena\Libraries\KunenaFactory;
+use Joomla\Component\Kunena\Libraries\Route\KunenaRoute;
+use Joomla\Component\Kunena\Libraries\Template\Template;
 use function defined;
 
 /**
@@ -26,7 +32,7 @@ use function defined;
  *
  * @since   Kunena 4.0
  */
-class ComponentKunenaControllerTopicFormCreateDisplay extends KunenaControllerDisplay
+class ComponentKunenaControllerTopicFormCreateDisplay extends Display
 {
 	/**
 	 * @var     string
@@ -69,31 +75,31 @@ class ComponentKunenaControllerTopicFormCreateDisplay extends KunenaControllerDi
 			else
 			{
 				$menu      = $this->app->getMenu();
-				$getid     = $menu->getItem(\Joomla\Component\Kunena\Libraries\Route\KunenaRoute::getItemID("index.php?option=com_kunena&view=topic&layout=create"));
+				$getid     = $menu->getItem(KunenaRoute::getItemID("index.php?option=com_kunena&view=topic&layout=create"));
 				$itemidfix = $getid->id;
 			}
 
 			if (!$itemidfix)
 			{
-				$itemidfix = \Joomla\Component\Kunena\Libraries\Route\KunenaRoute::fixMissingItemID();
+				$itemidfix = KunenaRoute::fixMissingItemID();
 			}
 
 			$controller = BaseController::getInstance("kunena");
 
 			if ($catid)
 			{
-				$controller->setRedirect(\Joomla\Component\Kunena\Libraries\Route\KunenaRoute::_("index.php?option=com_kunena&view=topic&layout=create&catid={$catid}&Itemid={$itemidfix}", false));
+				$controller->setRedirect(KunenaRoute::_("index.php?option=com_kunena&view=topic&layout=create&catid={$catid}&Itemid={$itemidfix}", false));
 			}
 			else
 			{
-				$controller->setRedirect(\Joomla\Component\Kunena\Libraries\Route\KunenaRoute::_("index.php?option=com_kunena&view=topic&layout=create&Itemid={$itemidfix}", false));
+				$controller->setRedirect(KunenaRoute::_("index.php?option=com_kunena&view=topic&layout=create&Itemid={$itemidfix}", false));
 			}
 
 			$controller->redirect();
 		}
 
 		$this->me       = \Joomla\Component\Kunena\Libraries\User\Helper::getMyself();
-		$this->template = \Joomla\Component\Kunena\Libraries\KunenaFactory::getTemplate();
+		$this->template = KunenaFactory::getTemplate();
 
 		$categories        = \Joomla\Component\Kunena\Libraries\Forum\Category\Helper::getCategories();
 		$arrayanynomousbox = [];
@@ -117,12 +123,12 @@ class ComponentKunenaControllerTopicFormCreateDisplay extends KunenaControllerDi
 
 		if ($this->config->read_only)
 		{
-			throw new KunenaExceptionAuthorise(Text::_('COM_KUNENA_NO_ACCESS'), '401');
+			throw new Authorise(Text::_('COM_KUNENA_NO_ACCESS'), '401');
 		}
 
 		// FIXME: We need to proxy this...
-		\Joomla\Component\Kunena\Libraries\Template\Template::getInstance()->addScriptOptions('com_kunena.arrayanynomousbox', json_encode($arrayanynomousbox));
-		\Joomla\Component\Kunena\Libraries\Template\Template::getInstance()->addScriptOptions('com_kunena.pollcategoriesid', json_encode($arraypollcatid));
+		Template::getInstance()->addScriptOptions('com_kunena.arrayanynomousbox', json_encode($arrayanynomousbox));
+		Template::getInstance()->addScriptOptions('com_kunena.pollcategoriesid', json_encode($arraypollcatid));
 
 		$this->category = \Joomla\Component\Kunena\Libraries\Forum\Category\Helper::get($catid);
 		list($this->topic, $this->message) = $this->category->newTopic($saved);
@@ -137,7 +143,7 @@ class ComponentKunenaControllerTopicFormCreateDisplay extends KunenaControllerDi
 
 		if ($this->topic->isAuthorised('create') && $this->me->canDoCaptcha())
 		{
-			$this->captchaDisplay = \Joomla\Component\Kunena\Libraries\Template\Template::getInstance()->recaptcha();
+			$this->captchaDisplay = Template::getInstance()->recaptcha();
 			$this->captchaEnabled = true;
 		}
 		else
@@ -147,7 +153,7 @@ class ComponentKunenaControllerTopicFormCreateDisplay extends KunenaControllerDi
 
 		if (!$this->topic->category_id)
 		{
-			throw new KunenaExceptionAuthorise(Text::sprintf('COM_KUNENA_POST_NEW_TOPIC_NO_PERMISSIONS',
+			throw new Authorise(Text::sprintf('COM_KUNENA_POST_NEW_TOPIC_NO_PERMISSIONS',
 				$this->topic->getError()), $this->me->exists() ? 403 : 401);
 		}
 
@@ -180,7 +186,7 @@ class ComponentKunenaControllerTopicFormCreateDisplay extends KunenaControllerDi
 
 		$this->action = 'post';
 
-		$this->allowedExtensions = KunenaAttachmentHelper::getExtensions($this->category);
+		$this->allowedExtensions = Helper::getExtensions($this->category);
 
 		if ($arraypollcatid)
 		{

@@ -10,7 +10,7 @@
  * @link            https://www.kunena.org
  **/
 
-namespace Joomla\Component\Kunena\Site;
+namespace Joomla\Component\Kunena\Site\Controller\Application\Topic\Indented;
 
 defined('_JEXEC') or die();
 
@@ -22,7 +22,7 @@ use function defined;
  *
  * @since   Kunena 4.0
  */
-class ComponentKunenaControllerApplicationTopicIndentedDisplay extends KunenaControllerApplicationDisplay
+class ComponentKunenaControllerApplicationTopicIndentedDisplay extends \Joomla\Component\Kunena\Libraries\Controller\Application\Display
 {
 	/**
 	 * Return true if layout exists.

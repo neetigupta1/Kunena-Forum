@@ -10,7 +10,7 @@
  * @link            https://www.kunena.org
  **/
 
-namespace Joomla\Component\Kunena\Site;
+namespace Joomla\Component\Kunena\Site\Layout\User;
 
 defined('_JEXEC') or die;
 
@@ -18,6 +18,8 @@ use Exception;
 use Joomla\CMS\Factory;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\Plugin\PluginHelper;
+use Joomla\Component\Kunena\Libraries\Layout\Layout;
+use Joomla\Component\Kunena\Libraries\User\Helper;
 use stdClass;
 use function defined;
 
@@ -26,7 +28,7 @@ use function defined;
  *
  * @since   Kunena 5.1
  */
-class KunenaLayoutUserEdit extends KunenaLayout
+class KunenaLayoutUserEdit extends Layout
 {
 	/**
 	 * @var     KunenaUser
@@ -45,7 +47,7 @@ class KunenaLayoutUserEdit extends KunenaLayout
 	 */
 	public function getTabsEdit()
 	{
-		$myProfile = $this->profile->isMyself() || \Joomla\Component\Kunena\Libraries\User\Helper::getMyself()->isAdmin() || \Joomla\Component\Kunena\Libraries\User\Helper::getMyself()->isModerator();
+		$myProfile = $this->profile->isMyself() || Helper::getMyself()->isAdmin() || Helper::getMyself()->isModerator();
 
 		// Define all tabs.
 		$tabs = [];

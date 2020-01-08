@@ -83,7 +83,7 @@ abstract class Helper
 	 */
 	public static function clearMenu()
 	{
-		KunenaMenuHelper::cleanCache();
+		\Joomla\Component\Kunena\Libraries\Menu\Helper::cleanCache();
 	}
 
 	/**

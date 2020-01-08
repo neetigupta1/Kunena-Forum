@@ -10,7 +10,7 @@
  * @link            https://www.kunena.org
  **/
 
-namespace Joomla\Component\Kunena\Site;
+namespace Joomla\Component\Kunena\Site\Controller\Application\Misc;
 
 defined('_JEXEC') or die();
 
@@ -18,6 +18,8 @@ use Exception;
 use Joomla\CMS\Factory;
 use Joomla\CMS\MVC\Controller\BaseController;
 use Joomla\CMS\Component\ComponentHelper;
+use Joomla\Component\Kunena\Libraries\Controller\Application\Display;
+use Joomla\Component\Kunena\Libraries\Route\KunenaRoute;
 use function defined;
 
 /**
@@ -25,7 +27,7 @@ use function defined;
  *
  * @since   Kunena 4.0
  */
-class ComponentKunenaControllerApplicationMiscDefaultDisplay extends KunenaControllerApplicationDisplay
+class ComponentKunenaControllerApplicationMiscDefaultDisplay extends Display
 {
 	/**
 	 * @var     string
@@ -145,17 +147,17 @@ class ComponentKunenaControllerApplicationMiscDefaultDisplay extends KunenaContr
 			else
 			{
 				$menu      = $this->app->getMenu();
-				$getid     = $menu->getItem(\Joomla\Component\Kunena\Libraries\Route\KunenaRoute::getItemID("index.php?option=com_kunena&view=misc"));
+				$getid     = $menu->getItem(KunenaRoute::getItemID("index.php?option=com_kunena&view=misc"));
 				$itemidfix = $getid->id;
 			}
 
 			if (!$itemidfix)
 			{
-				$itemidfix = \Joomla\Component\Kunena\Libraries\Route\KunenaRoute::fixMissingItemID();
+				$itemidfix = KunenaRoute::fixMissingItemID();
 			}
 
 			$controller = BaseController::getInstance("kunena");
-			$controller->setRedirect(\Joomla\Component\Kunena\Libraries\Route\KunenaRoute::_("index.php?option=com_kunena&view=misc&Itemid={$itemidfix}", false));
+			$controller->setRedirect(KunenaRoute::_("index.php?option=com_kunena&view=misc&Itemid={$itemidfix}", false));
 			$controller->redirect();
 		}
 

@@ -105,7 +105,7 @@ use Joomla\CMS\Router\Route;
 										</a>
 									</h6>
 									<h3 class="fw-700 text-cyan">
-										<?php $count = KunenaForumStatistics::getInstance()->loadCategoryCount();
+										<?php $count = \Joomla\Component\Kunena\Libraries\Forum\Statistics::getInstance()->loadCategoryCount();
 										echo $count['sections'] . ' / ' . $count['categories']; ?>
 									</h3>
 									<p class="mb-0">Last Edit: Welcome</p>
@@ -137,7 +137,7 @@ use Joomla\CMS\Router\Route;
 									<h3 class="fw-700 text-cyan"><?php echo \Joomla\Component\Kunena\Libraries\User\Helper::getTotalCount(); ?></h3>
 									<p class="mb-0"><?php $lastid = \Joomla\Component\Kunena\Libraries\User\Helper::getLastId();
 										$user                     = KunenaUser::getInstance($lastid)->registerDate;
-										echo KunenaDate::getInstance($user)->toKunena('ago'); ?></p>
+										echo \Joomla\Component\Kunena\Libraries\KunenaDate::getInstance($user)->toKunena('ago'); ?></p>
 								</div>
 								<div class="col-auto">
 									<i class="fas fa-users bg-cyan"></i>
@@ -157,7 +157,7 @@ use Joomla\CMS\Router\Route;
 											<?php echo Text::_('COM_KUNENA_CPANEL_LABEL_FILES') ?>
 										</a>
 									</h6>
-									<h3 class="fw-700 text-cyan"><?php echo KunenaAttachmentHelper::getTotalAttachments(); ?></h3>
+									<h3 class="fw-700 text-cyan"><?php echo \Joomla\Component\Kunena\Libraries\Attachment\Helper::getTotalAttachments(); ?></h3>
 									<p class="mb-0">photo.png (topic id: 44343)</p>
 								</div>
 								<div class="col-auto">
@@ -178,7 +178,7 @@ use Joomla\CMS\Router\Route;
 											<?php echo Text::_('COM_KUNENA_CPANEL_LABEL_EMOTICONS') ?>
 										</a>
 									</h6>
-									<h3 class="fw-700 text-cyan"><?php echo KunenaForumStatistics::getTotalEmoticons() ?></h3>
+									<h3 class="fw-700 text-cyan"><?php echo \Joomla\Component\Kunena\Libraries\Forum\Statistics::getTotalEmoticons() ?></h3>
 									<p class="mb-0"><?php echo Text::_('COM_KUNENA_EDITOR_SMILIES') ?></p>
 								</div>
 								<div class="col-auto">

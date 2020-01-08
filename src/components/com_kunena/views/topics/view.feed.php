@@ -10,7 +10,7 @@
  * @link            https://www.kunena.org
  **/
 
-namespace Joomla\Component\Kunena\Site;
+namespace Joomla\Component\Kunena\Site\View\Topics;
 
 defined('_JEXEC') or die();
 
@@ -19,6 +19,9 @@ use Joomla\CMS\Date\Date;
 use Joomla\CMS\Document\Feed\FeedItem;
 use Joomla\CMS\Factory;
 use Joomla\CMS\Language\Text;
+use Joomla\Component\Kunena\Libraries\Html\Parser;
+use Joomla\Component\Kunena\Libraries\KunenaFactory;
+use Joomla\Component\Kunena\Libraries\View;
 use function defined;
 
 /**
@@ -26,7 +29,7 @@ use function defined;
  *
  * @since   Kunena 6.0
  */
-class KunenaViewTopics extends KunenaView
+class feed extends View
 {
 	/**
 	 * @param   null  $tpl  tpl
@@ -44,7 +47,7 @@ class KunenaViewTopics extends KunenaView
 			throw new Exception(Text::_('COM_KUNENA_RSS_DISABLED'), 401);
 		}
 
-		\Joomla\Component\Kunena\Libraries\Html\Parser::$relative = false;
+		Parser::$relative = false;
 		$cache                      = Factory::getCache('com_kunena_rss', 'output');
 
 		if (!$this->config->cache)
@@ -218,7 +221,7 @@ class KunenaViewTopics extends KunenaView
 				$description = $topic->first_post_message;
 				$date        = new Date($topic->first_post_time);
 				$userid      = $topic->first_post_userid;
-				$username    = \Joomla\Component\Kunena\Libraries\KunenaFactory::getUser($userid)->getName($topic->first_post_guest_name);
+				$username    = KunenaFactory::getUser($userid)->getName($topic->first_post_guest_name);
 			}
 			else
 			{
@@ -236,7 +239,7 @@ class KunenaViewTopics extends KunenaView
 
 				$date     = new Date($topic->last_post_time);
 				$userid   = $topic->last_post_userid;
-				$username = \Joomla\Component\Kunena\Libraries\KunenaFactory::getUser($userid)->getName($topic->last_post_guest_name);
+				$username = KunenaFactory::getUser($userid)->getName($topic->last_post_guest_name);
 			}
 
 			$title    = $topic->subject;
@@ -280,7 +283,7 @@ class KunenaViewTopics extends KunenaView
 
 			$date     = new Date($message->time);
 			$userid   = $message->userid;
-			$username = \Joomla\Component\Kunena\Libraries\KunenaFactory::getUser($userid)->getName($message->name);
+			$username = KunenaFactory::getUser($userid)->getName($message->name);
 
 			$this->createItem($title, $url, $description, $category->name, $date, $userid, $username);
 		}
@@ -322,11 +325,11 @@ class KunenaViewTopics extends KunenaView
 
 			if ((bool) $this->config->rss_allow_html)
 			{
-				$description = \Joomla\Component\Kunena\Libraries\Html\Parser::parseBBCode($description, null, (int) $this->config->rss_word_count);
+				$description = Parser::parseBBCode($description, null, (int) $this->config->rss_word_count);
 			}
 			else
 			{
-				$description = \Joomla\Component\Kunena\Libraries\Html\Parser::parseText($description, (int) $this->config->rss_word_count);
+				$description = Parser::parseText($description, (int) $this->config->rss_word_count);
 			}
 		}
 

@@ -10,7 +10,7 @@
  * @link            https://www.kunena.org
  **/
 
-namespace Joomla\Component\Kunena\Site;
+namespace Joomla\Component\Kunena\Site\View\User;
 
 defined('_JEXEC') or die();
 
@@ -18,6 +18,7 @@ use Exception;
 use Joomla\CMS\Factory;
 use Joomla\CMS\Uri\Uri;
 use Joomla\CMS\Filesystem\Folder;
+use Joomla\Component\Kunena\Libraries\View;
 use stdClass;
 use function defined;
 
@@ -26,7 +27,7 @@ use function defined;
  *
  * @since   Kunena 6.0
  */
-class KunenaViewUser extends KunenaView
+class Raw extends View
 {
 	/**
 	 * @param   null  $tpl  tpl

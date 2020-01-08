@@ -10,7 +10,7 @@
  * @link            https://www.kunena.org
  **/
 
-namespace Joomla\Component\Kunena\Site;
+namespace Joomla\Component\Kunena\Site\Layout\Category;
 
 defined('_JEXEC') or die;
 
@@ -18,6 +18,11 @@ use Exception;
 use Joomla\CMS\HTML\HTMLHelper;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\Session\Session;
+use Joomla\Component\Kunena\Libraries\Forum\Category\Category;
+use Joomla\Component\Kunena\Libraries\Html\Parser;
+use Joomla\Component\Kunena\Libraries\KunenaFactory;
+use Joomla\Component\Kunena\Libraries\Layout\Layout;
+use Joomla\Component\Kunena\Libraries\Pagination\Pagination;
 use function defined;
 
 /**
@@ -25,7 +30,7 @@ use function defined;
  *
  * @since   Kunena 4.0
  */
-class KunenaLayoutCategoryItem extends KunenaLayout
+class KunenaLayoutCategoryItem extends Layout
 {
 	/**
 	 * @var     integer
@@ -123,7 +128,7 @@ class KunenaLayoutCategoryItem extends KunenaLayout
 
 		// Is user allowed to post new topic?
 		$url             = $category->getNewTopicUrl();
-		$this->ktemplate = \Joomla\Component\Kunena\Libraries\KunenaFactory::getTemplate();
+		$this->ktemplate = KunenaFactory::getTemplate();
 		$topicicontype   = $this->ktemplate->params->get('topicicontype');
 		$config          = Config::getInstance();
 
@@ -287,7 +292,7 @@ class KunenaLayoutCategoryItem extends KunenaLayout
 	 *
 	 * @see     KunenaLayout::getLastPostLink()
 	 *
-	 * @param  \Joomla\Component\Kunena\Libraries\Forum\Category\Category  $category   The KunenaCategory object
+	 * @param   Category  $category   The KunenaCategory object
 	 * @param   string               $content    The content of last topic subject
 	 * @param   string               $title      The title of the link
 	 * @param   string               $class      The class attribute of the link
@@ -318,12 +323,12 @@ class KunenaLayoutCategoryItem extends KunenaLayout
 		{
 			if (Config::getInstance()->disable_re)
 			{
-				$content = \Joomla\Component\Kunena\Libraries\Html\Parser::parseText($category->getLastTopic()->subject, $length);
+				$content = Parser::parseText($category->getLastTopic()->subject, $length);
 			}
 			else
 			{
 				$content = $lastTopic->first_post_id != $lastTopic->last_post_id ? Text::_('COM_KUNENA_RE') . ' ' : '';
-				$content .= \Joomla\Component\Kunena\Libraries\Html\Parser::parseText($category->getLastTopic()->subject, $length);
+				$content .= Parser::parseText($category->getLastTopic()->subject, $length);
 			}
 		}
 
@@ -348,7 +353,7 @@ class KunenaLayoutCategoryItem extends KunenaLayout
 	 */
 	public function getPagination($maxpages)
 	{
-		$pagination = new KunenaPagination($this->total, $this->state->get('list.start'), $this->state->get('list.limit'));
+		$pagination = new Pagination($this->total, $this->state->get('list.start'), $this->state->get('list.limit'));
 		$pagination->setDisplayedPages($maxpages);
 
 		return $pagination->getPagesLinks();

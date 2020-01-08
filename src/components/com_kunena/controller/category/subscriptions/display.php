@@ -10,7 +10,7 @@
  * @link            https://www.kunena.org
  **/
 
-namespace Joomla\Component\Kunena\Site;
+namespace Joomla\Component\Kunena\Site\Controller\Category\Subscriptions;
 
 defined('_JEXEC') or die();
 
@@ -19,6 +19,9 @@ use Joomla\CMS\Factory;
 use Joomla\CMS\HTML\HTMLHelper;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\Pagination\Pagination;
+use Joomla\Component\Kunena\Libraries\Controller\Display;
+use Joomla\Component\Kunena\Libraries\Exception\Authorise;
+use Joomla\Component\Kunena\Libraries\Forum\Category\Helper;
 use function defined;
 
 /**
@@ -26,7 +29,7 @@ use function defined;
  *
  * @since   Kunena 4.0
  */
-class ComponentKunenaControllerCategorySubscriptionsDisplay extends KunenaControllerDisplay
+class ComponentKunenaControllerCategorySubscriptionsDisplay extends Display
 {
 	/**
 	 * @var     string
@@ -75,7 +78,7 @@ class ComponentKunenaControllerCategorySubscriptionsDisplay extends KunenaContro
 
 		if (!$me->exists())
 		{
-			throw new KunenaExceptionAuthorise(Text::_('COM_KUNENA_NO_ACCESS'), 401);
+			throw new Authorise(Text::_('COM_KUNENA_NO_ACCESS'), 401);
 		}
 
 		$this->user = \Joomla\Component\Kunena\Libraries\User\Helper::get($this->state->get('user'));
@@ -94,7 +97,7 @@ class ComponentKunenaControllerCategorySubscriptionsDisplay extends KunenaContro
 			$limitstart = 0;
 		}
 
-		list($total, $this->categories) = \Joomla\Component\Kunena\Libraries\Forum\Category\Helper::getLatestSubscriptions($this->state->get('user'));
+		list($total, $this->categories) = Helper::getLatestSubscriptions($this->state->get('user'));
 
 		$topicIds = [];
 		$userIds  = [];
@@ -120,13 +123,13 @@ class ComponentKunenaControllerCategorySubscriptionsDisplay extends KunenaContro
 		}
 
 		\Joomla\Component\Kunena\Libraries\User\Helper::loadUsers($userIds);
-		KunenaForumMessageHelper::getMessages($postIds);
+		\Joomla\Component\Kunena\Libraries\Forum\Message\Helper::getMessages($postIds);
 
 		// Pre-fetch user related stuff.
 		if ($me->exists() && !$me->isBanned())
 		{
 			// Load new topic counts.
-			\Joomla\Component\Kunena\Libraries\Forum\Category\Helper::getNewTopics(array_keys($this->categories));
+			Helper::getNewTopics(array_keys($this->categories));
 		}
 
 		$this->actions = $this->getActions();

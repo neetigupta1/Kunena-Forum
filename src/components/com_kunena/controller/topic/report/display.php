@@ -10,12 +10,15 @@
  * @link            https://www.kunena.org
  **/
 
-namespace Joomla\Component\Kunena\Site;
+namespace Joomla\Component\Kunena\Site\Controller\Topic\Report;
 
 defined('_JEXEC') or die();
 
 use Exception;
 use Joomla\CMS\Language\Text;
+use Joomla\Component\Kunena\Libraries\Controller\Display;
+use Joomla\Component\Kunena\Libraries\Exception\Authorise;
+use Joomla\Component\Kunena\Libraries\Forum\Message\Helper;
 use function defined;
 
 /**
@@ -23,7 +26,7 @@ use function defined;
  *
  * @since   Kunena 4.0
  */
-class ComponentKunenaControllerTopicReportDisplay extends KunenaControllerDisplay
+class ComponentKunenaControllerTopicReportDisplay extends Display
 {
 	/**
 	 * @var     string
@@ -70,13 +73,13 @@ class ComponentKunenaControllerTopicReportDisplay extends KunenaControllerDispla
 		if (!$this->config->reportmsg)
 		{
 			// Deny access if report feature has been disabled.
-			throw new KunenaExceptionAuthorise(Text::_('COM_KUNENA_NO_ACCESS'), 404);
+			throw new Authorise(Text::_('COM_KUNENA_NO_ACCESS'), 404);
 		}
 
 		if (!$me->exists())
 		{
 			// Deny access if user is guest.
-			throw new KunenaExceptionAuthorise(Text::_('COM_KUNENA_NO_ACCESS'), 401);
+			throw new Authorise(Text::_('COM_KUNENA_NO_ACCESS'), 401);
 		}
 
 		if (!$mesid)
@@ -86,7 +89,7 @@ class ComponentKunenaControllerTopicReportDisplay extends KunenaControllerDispla
 		}
 		else
 		{
-			$this->message = KunenaForumMessageHelper::get($mesid);
+			$this->message = Helper::get($mesid);
 			$this->message->tryAuthorise();
 			$this->topic = $this->message->getTopic();
 		}

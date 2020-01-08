@@ -10,13 +10,15 @@
  * @link            https://www.kunena.org
  **/
 
-namespace Joomla\Component\Kunena\Site;
+namespace Joomla\Component\Kunena\Site\Layout\Announcement;
 
 defined('_JEXEC') or die;
 
 use Exception;
 use Joomla\CMS\HTML\HTMLHelper;
 use Joomla\CMS\Language\Text;
+use Joomla\Component\Kunena\Libraries\Layout\Layout;
+use Joomla\Component\Kunena\Libraries\User\Helper;
 use function defined;
 
 /**
@@ -24,7 +26,7 @@ use function defined;
  *
  * @since   Kunena 4.0
  */
-class KunenaLayoutAnnouncementList extends KunenaLayout
+class KunenaLayoutAnnouncementList extends Layout
 {
 	/**
 	 * Method to get moderation action in announcements list
@@ -41,7 +43,7 @@ class KunenaLayoutAnnouncementList extends KunenaLayout
 	{
 		$options = [];
 
-		if (\Joomla\Component\Kunena\Libraries\User\Helper::getMyself()->isModerator())
+		if (Helper::getMyself()->isModerator())
 		{
 			$options[] = HTMLHelper::_('select.option', 'none', Text::_('COM_KUNENA_BULK_CHOOSE_ACTION'));
 			$options[] = HTMLHelper::_('select.option', 'unpublish', Text::_('COM_KUNENA_UNPUBLISH'));
