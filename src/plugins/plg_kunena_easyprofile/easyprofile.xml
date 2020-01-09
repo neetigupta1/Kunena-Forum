@@ -2,14 +2,16 @@
 <!DOCTYPE extension>
 <extension version="2.5" type="plugin" group="kunena" method="upgrade">
     <name>PLG_KUNENA_EASYPROFILE</name>
-    <version>@kunenaversion@</version>
-    <creationDate>@kunenaversiondate@</creationDate>
+    <version>6.0.0-ALPHA6-DEV</version>
+    <versionname>Internal</versionname>
+    <creationDate>2020-01-08</creationDate>
     <author>Onlinecommunityhub</author>
     <authorEmail>info@onlinecommunityhub.nl</authorEmail>
     <authorUrl>https://onlinecommunityhub.nl</authorUrl>
     <copyright>https://onlinecommunityhub.nl</copyright>
     <license>http://www.gnu.org/licenses/gpl-3.0.html GNU/GPL</license>
     <description>PLG_KUNENA_EASYPROFILE_DESCRIPTION</description>
+    <namespace>Kunena\Forum\Plugin\Kunena\Easyprofile</namespace>
     <files>
         <filename plugin="easyprofile">easyprofile.php</filename>
         <filename>avatar.php</filename>

@@ -24,7 +24,7 @@ use Kunena\Forum\Libraries\KunenaProfiler;
 use function defined;
 
 // Access check.
-if (!Factory::getApplication()->getIdentity()->authorise('core.manage', 'com_kunena'))
+if (Factory::getApplication()->getIdentity()->authorise('core.manage', 'com_kunena'))
 {
 	throw new Authorise(Text::_('COM_KUNENA_NO_ACCESS'), 401);
 }

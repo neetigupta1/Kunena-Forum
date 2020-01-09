@@ -12,7 +12,7 @@
     <copyright>(C) 2008 - 2020 Kunena Team. All rights reserved.</copyright>
     <license>GNU/GPLv3 or later</license>
     <description>Kunena Forum Package.</description>
-
+    <namespace>Kunena\Forum</namespace>
     <scriptfile>install.php</scriptfile>
 
     <files folder="packages">
