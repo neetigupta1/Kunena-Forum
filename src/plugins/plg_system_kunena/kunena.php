@@ -101,6 +101,16 @@ EOF;
 	}
 
 	/**
+	 * Method to register custom library.
+	 *
+	 * return  void
+	 */
+	public function onAfterInitialise()
+	{
+		\JLoader::registerNamespace('Kunena', JPATH_LIBRARIES . '/kunena');
+	}
+
+	/**
 	 * @internal
 	 *
 	 * @param   string   $context  Context
