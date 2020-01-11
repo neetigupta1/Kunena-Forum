@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE extension>
+<extension type="library" version="4.0" method="upgrade">
+    <name>Kunena Framework</name>
+    <libraryname>kunena</libraryname>
+    <version>6.0.0-ALPHA6-DEV</version>
+    <versionname>Internal</versionname>
+    <creationDate>2020-01-08</creationDate>
+    <author>Kunena Team</author>
+    <authorEmail>kunena@kunena.org</authorEmail>
+    <authorUrl>https://www.kunena.org</authorUrl>
+    <copyright>(C) 2008 - 2020 Kunena Team. All rights reserved.</copyright>
+    <license>GNU/GPLv3 or later</license>
+    <description>Kunena Framework.</description>
+    <namespace>Kunena\Forum\Libraries2</namespace>
+    <files>
+        <folder>Activity</folder>
+        <folder>Attachment</folder>
+        <folder>Bbcode</folder>
+        <folder>Cache</folder>
+        <folder>Collection</folder>
+        <folder>Compat</folder>
+        <folder>Controller</folder>
+        <folder>Database</folder>
+        <folder>Email</folder>
+        <folder>Exception</folder>
+        <folder>External</folder>
+        <folder>File</folder>
+        <folder>Folder</folder>
+        <folder>Form</folder>
+        <folder>Forum</folder>
+        <folder>Html</folder>
+        <folder>Icons</folder>
+        <folder>Image</folder>
+        <folder>Integration</folder>
+        <folder>Layout</folder>
+        <folder>Log</folder>
+        <folder>Menu</folder>
+        <folder>Module</folder>
+        <folder>Pagination</folder>
+        <folder>Private</folder>
+        <folder>Path</folder>
+        <folder>Response</folder>
+        <folder>Request</folder>
+        <folder>Route</folder>
+        <folder>Table</folder>
+        <folder>Tables</folder>
+        <folder>Template</folder>
+        <folder>Upload</folder>
+        <folder>User</folder>
+        <folder>Access</folder>
+        <folder>Config</folder>
+        <folder>Date</folder>
+        <folder>Error</folder>
+        <folder>Exception</folder>
+        <folder>Factory</folder>
+        <folder>Installer</folder>
+        <folder>Login</folder>
+        <folder>Model</folder>
+        <folder>Profiler</folder>
+        <folder>Session</folder>
+        <folder>Tree</folder>
+        <folder>View</folder>
+    </files>
+</extension>

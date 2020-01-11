@@ -21,7 +21,7 @@ HTMLHelper::_('behavior.multiselect');
 HTMLHelper::_('dropdown.init');
 HTMLHelper::_('bootstrap.popover');
 
-$filterItem = $this->escape($this->state->get('item.id'));
+//$filterItem = $this->escape($this->state->get('item.id'));
 ?>
 
 <script type="text/javascript">

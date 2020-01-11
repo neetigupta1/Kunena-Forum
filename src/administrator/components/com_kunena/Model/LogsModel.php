@@ -70,7 +70,8 @@ class LogsModel extends AdminModel
 			];
 		}
 
-		$this->me = \Kunena\Forum\Libraries\User\Helper::getMyself();
+		$app = Factory::getApplication();
+		$this->me = $app->getIdentity();
 
 		parent::__construct($config);
 	}

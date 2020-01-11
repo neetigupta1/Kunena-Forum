@@ -723,15 +723,7 @@ class Base extends LayoutBase
 
 		$app = Factory::getApplication();
 
-		// Add all paths for the template overrides.
-		if ($app->isClient('administrator'))
-		{
-			$template = KunenaFactory::getAdminTemplate();
-		}
-		else
-		{
-			$template = KunenaFactory::getTemplate();
-		}
+		$template = KunenaFactory::getTemplate();
 
 		$templatePaths = [];
 

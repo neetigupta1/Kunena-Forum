@@ -96,18 +96,6 @@ EOF;
 	}
 
 	/**
-	 * Method to register custom library.
-	 *
-	 * @return  void
-	 *
-	 * @since   Kunena 6.0
-	 */
-	public function onAfterInitialise()
-	{
-		\JLoader::registerNamespace('Kunena\\Forum\\Libraries', JPATH_LIBRARIES . '/kunena/', false, false, 'psr4');
-	}
-
-	/**
 	 * @internal
 	 *
 	 * @param   string   $context  Context
