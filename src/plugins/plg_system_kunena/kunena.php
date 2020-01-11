@@ -10,11 +10,8 @@
  * @link            https://www.kunena.org
  **/
 
-namespace Kunena\Forum\Plugin\System\Kunena;
-
 defined('_JEXEC') or die();
 
-use Exception;
 use Joomla\CMS\Component\ComponentHelper;
 use Joomla\CMS\Factory;
 use Joomla\CMS\Filter\InputFilter;
@@ -26,8 +23,6 @@ use Kunena\Forum\Libraries\Forum\Forum;
 use Kunena\Forum\Libraries\Installer;
 use Kunena\Forum\Libraries\Factory\KunenaFactory;
 use Kunena\Forum\Libraries\Template\Template;
-use stdClass;
-use function defined;
 
 /**
  * Class plgSystemKunena
@@ -98,6 +93,18 @@ EOF;
 
 		// ! Always load language after parent::construct else the name of plugin isn't yet set
 		$this->loadLanguage('plg_system_kunena.sys');
+	}
+
+	/**
+	 * Method to register custom library.
+	 *
+	 * @return  void
+	 *
+	 * @since   Kunena 6.0
+	 */
+	public function onAfterInitialise()
+	{
+		\JLoader::registerNamespace('Kunena\\Forum\\Libraries', JPATH_LIBRARIES . '/kunena/', false, false, 'psr4');
 	}
 
 	/**
