@@ -141,7 +141,7 @@ class Avatar
 			$class = ' class="' . $class . '"';
 		}
 
-		$ktemplate = \Kunena\Forum\Libraries\KunenaFactory::getTemplate();
+		$ktemplate = \Kunena\Forum\Libraries\Factory\KunenaFactory::getTemplate();
 		$topicicontype = $ktemplate->params->get('topicicontype');
 
 		if ($topicicontype == 'B4')
@@ -181,7 +181,7 @@ class Avatar
 
 		if (!intval($sizex))
 		{
-			$template = \Kunena\Forum\Libraries\KunenaFactory::getTemplate();
+			$template = \Kunena\Forum\Libraries\Factory\KunenaFactory::getTemplate();
 			$name     = ucfirst(strtolower($sizex));
 			$size->x  = intval($template->params->get('avatarSizeX' . $name, 90));
 			$size->y  = intval($template->params->get('avatarSizeY' . $name, 90));
@@ -203,7 +203,7 @@ class Avatar
 	 */
 	public function getURL($user, $sizex = 90, $sizey = 90)
 	{
-		KUNENA_PROFILER ? \Kunena\Forum\Libraries\KunenaProfiler::instance()->start('function ' . __CLASS__ . '::' . __FUNCTION__ . '()') : null;
+		KUNENA_PROFILER ? \Kunena\Forum\Libraries\Profiler\KunenaProfiler::instance()->start('function ' . __CLASS__ . '::' . __FUNCTION__ . '()') : null;
 		$size = $this->getSize($sizex, $sizey);
 
 		if (!$size->x || !$size->y)
@@ -212,7 +212,7 @@ class Avatar
 		}
 
 		$result = $this->_getURL($user, $size->x, $size->y);
-		KUNENA_PROFILER ? \Kunena\Forum\Libraries\KunenaProfiler::instance()->stop('function ' . __CLASS__ . '::' . __FUNCTION__ . '()') : null;
+		KUNENA_PROFILER ? \Kunena\Forum\Libraries\Profiler\KunenaProfiler::instance()->stop('function ' . __CLASS__ . '::' . __FUNCTION__ . '()') : null;
 
 		return $result;
 	}

@@ -31,7 +31,7 @@ $this->addScript('pollcheck.js');
 echo $this->subLayout('Widget/Datepicker');
 
 $this->getBBcodesEnabled();
-$topictemplate = !\Kunena\Forum\Libraries\Config::getInstance()->pickup_category;
+$topictemplate = !\Kunena\Forum\Libraries\Config\Config::getInstance()->pickup_category;
 ?>
 <div class="row">
 	<div class="col-md-12">

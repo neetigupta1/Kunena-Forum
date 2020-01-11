@@ -14,8 +14,9 @@ namespace Kunena\Forum\Site\Controllers;
 
 defined('_JEXEC') or die();
 
+
 use Joomla\CMS\Uri\Uri;
-use Kunena\Forum\Libraries\Controller;
+use Kunena\Forum\Libraries\Controller\KunenaController;
 use Kunena\Forum\Libraries\Route\KunenaRoute;
 use function defined;
 
@@ -24,7 +25,7 @@ use function defined;
  *
  * @since   Kunena 2.0
  */
-class KunenaControllerMisc extends Controller
+class KunenaControllerMisc extends KunenaController
 {
 	/**
 	 * @param   array  $config  config

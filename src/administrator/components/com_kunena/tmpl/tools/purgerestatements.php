@@ -43,6 +43,6 @@ use Joomla\CMS\Language\Text;
 		</div>
 	</div>
 	<div class="pull-right small">
-		<?php echo \Kunena\Forum\Administrator\Install\KunenaVersion::getLongVersionHTML(); ?>
+		<?php echo \Kunena\Forum\Administrator\Install\Version::getLongVersionHTML(); ?>
 	</div>
 </div>

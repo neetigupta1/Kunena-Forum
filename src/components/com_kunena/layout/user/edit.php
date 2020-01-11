@@ -18,7 +18,7 @@ use Exception;
 use Joomla\CMS\Factory;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\Plugin\PluginHelper;
-use Kunena\Forum\Libraries\Config;
+use Kunena\Forum\Libraries\Config\Config;
 use Kunena\Forum\Libraries\Layout\Layout;
 use Kunena\Forum\Libraries\User\Helper;
 use Kunena\Forum\Libraries\User\KunenaUser;

@@ -16,7 +16,7 @@ defined('_JEXEC') or die();
 
 use function defined;
 
-$config = \Kunena\Forum\Libraries\KunenaFactory::getTemplate()->params;
+$config = \Kunena\Forum\Libraries\Factory\KunenaFactory::getTemplate()->params;
 ?>
 
 <div id="kunena" class="layout <?php echo $this->options->get('pageclass_sfx'); ?>">

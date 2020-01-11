@@ -25,7 +25,7 @@ if (!$attachment->isImage())
 	return;
 }
 
-$config = \Kunena\Forum\Libraries\Config::getInstance();
+$config = \Kunena\Forum\Libraries\Config\Config::getInstance();
 
 // Load FancyBox library if enabled in configuration
 if ($config->lightbox == 1)

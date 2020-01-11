@@ -17,7 +17,7 @@ use Exception;
 use Joomla\CMS\Factory;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\MVC\View\HtmlView;
-use Kunena\Forum\Libraries\Forum\KunenaForum;
+use Kunena\Forum\Libraries\Forum\Forum;
 use JToolbarHelper;
 use function defined;
 
@@ -81,7 +81,7 @@ class KunenaViewInstall extends HtmlView
 	public function setToolBar()
 	{
 		// Set the titlebar text
-		JToolbarHelper::title('<span>Kunena ' . KunenaForum::version() . '</span> ' . Text::_('COM_KUNENA_INSTALLER'), 'kunena.png');
+		JToolbarHelper::title('<span>Kunena ' . Forum::version() . '</span> ' . Text::_('COM_KUNENA_INSTALLER'), 'kunena.png');
 	}
 
 	/**
@@ -101,7 +101,7 @@ class KunenaViewInstall extends HtmlView
 		echo $this->escape($schema->getSchema()->saveXML());
 		echo '</textarea>';
 
-		if (KunenaForum::isDev())
+		if (Forum::isDev())
 		{
 			echo '<textarea cols="80" rows="20">';
 
@@ -132,7 +132,7 @@ class KunenaViewInstall extends HtmlView
 		echo $this->escape($diff->saveXML());
 		echo '</textarea>';
 
-		if (KunenaForum::isDev())
+		if (Forum::isDev())
 		{
 			echo '<textarea cols="80" rows="20">';
 

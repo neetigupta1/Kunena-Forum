@@ -17,7 +17,7 @@ defined('_JEXEC') or die();
 use Exception;
 use Joomla\CMS\Factory;
 use Joomla\Database\Exception\ExecutionFailureException;
-use Kunena\Forum\Libraries\Error;
+use Kunena\Forum\Libraries\Error\KunenaError;
 use Kunena\Forum\Libraries\Forum\Topic\Topic;
 use Kunena\Forum\Libraries\User\KunenaUser;
 use function defined;
@@ -168,7 +168,7 @@ abstract class Helper
 		}
 		catch (ExecutionFailureException $e)
 		{
-			Error::displayDatabaseError($e);
+			KunenaError::displayDatabaseError($e);
 		}
 
 		foreach ($ids as $id)
@@ -242,7 +242,7 @@ abstract class Helper
 		}
 		catch (ExecutionFailureException $e)
 		{
-			Error::displayDatabaseError($e);
+			KunenaError::displayDatabaseError($e);
 		}
 
 		$list = [];
@@ -285,7 +285,7 @@ abstract class Helper
 		}
 		catch (ExecutionFailureException $e)
 		{
-			Error::displayDatabaseError($e);
+			KunenaError::displayDatabaseError($e);
 
 			return false;
 		}
@@ -353,7 +353,7 @@ abstract class Helper
 			}
 			catch (ExecutionFailureException $e)
 			{
-				Error::displayDatabaseError($e);
+				KunenaError::displayDatabaseError($e);
 
 				return false;
 			}
@@ -397,7 +397,7 @@ abstract class Helper
 		}
 		catch (ExecutionFailureException $e)
 		{
-			Error::displayDatabaseError($e);
+			KunenaError::displayDatabaseError($e);
 		}
 
 		// TODO: Is there a bug?
@@ -493,7 +493,7 @@ abstract class Helper
 		}
 		catch (ExecutionFailureException $e)
 		{
-			Error::displayDatabaseError($e);
+			KunenaError::displayDatabaseError($e);
 
 			return false;
 		}
@@ -515,7 +515,7 @@ abstract class Helper
 		}
 		catch (ExecutionFailureException $e)
 		{
-			Error::displayDatabaseError($e);
+			KunenaError::displayDatabaseError($e);
 
 			return false;
 		}
@@ -541,7 +541,7 @@ abstract class Helper
 		}
 		catch (ExecutionFailureException $e)
 		{
-			Error::displayDatabaseError($e);
+			KunenaError::displayDatabaseError($e);
 
 			return false;
 		}

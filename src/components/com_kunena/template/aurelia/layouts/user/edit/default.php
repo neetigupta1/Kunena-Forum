@@ -18,10 +18,10 @@ use Joomla\CMS\HTML\HTMLHelper;
 use Joomla\CMS\Language\Text;
 use function defined;
 
-$this->profile = \Kunena\Forum\Libraries\KunenaFactory::getUser($this->user->id);
+$this->profile = \Kunena\Forum\Libraries\Factory\KunenaFactory::getUser($this->user->id);
 $this->me      = \Kunena\Forum\Libraries\User\Helper::getMyself();
 $tabs          = $this->getTabsEdit();
-$avatar        = \Kunena\Forum\Libraries\KunenaFactory::getAvatarIntegration();
+$avatar        = \Kunena\Forum\Libraries\Factory\KunenaFactory::getAvatarIntegration();
 ?>
 <h2>
 	<?php echo Text::_('COM_KUNENA_USER_PROFILE'); ?><?php echo $this->escape($this->profile->getName()); ?>

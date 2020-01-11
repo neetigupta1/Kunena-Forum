@@ -15,9 +15,9 @@ namespace Kunena\Forum\Site;
 defined('_JEXEC') or die();
 
 use Joomla\CMS\Language\Text;
-use Kunena\Forum\Libraries\Config;
+use Kunena\Forum\Libraries\Config\Config;
 use Kunena\Forum\Libraries\Icons\Icons;
-use Kunena\Forum\Libraries\KunenaFactory;
+use Kunena\Forum\Libraries\Factory\KunenaFactory;
 use Kunena\Forum\Libraries\Template\Template;
 use function defined;
 

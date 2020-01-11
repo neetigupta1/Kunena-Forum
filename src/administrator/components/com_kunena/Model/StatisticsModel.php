@@ -19,7 +19,7 @@ use Joomla\CMS\Date\Date;
 use Joomla\CMS\Factory;
 use Joomla\CMS\MVC\Model\AdminModel;
 use Joomla\CMS\MVC\Model\ListModel;
-use Kunena\Forum\Libraries\Access;
+use Kunena\Forum\Libraries\Access\Access;
 use Kunena\Forum\Libraries\Log\Finder;
 use Kunena\Forum\Libraries\Log\Log;
 use Kunena\Forum\Libraries\User\Helper;

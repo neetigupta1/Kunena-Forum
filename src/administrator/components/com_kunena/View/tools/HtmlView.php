@@ -18,11 +18,11 @@ use Exception;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\MVC\View\HtmlView as BaseHtmlView;
 use Joomla\CMS\Toolbar\ToolbarHelper;
-use Kunena\Forum\Libraries\Access;
-use Kunena\Forum\Libraries\Login;
+use Kunena\Forum\Libraries\Access\Access;
+use Kunena\Forum\Libraries\Login\Login;
 use Kunena\Forum\Libraries\Menu\Fix;
 use Kunena\Forum\Libraries\User\Helper;
-use Kunena\Forum\Libraries\View;
+use Kunena\Forum\Libraries\View\View;
 use function defined;
 
 /**

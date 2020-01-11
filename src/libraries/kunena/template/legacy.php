@@ -118,15 +118,15 @@ define('KUNENA_PATH_UPLOADED_LEGACY', KUNENA_ROOT_PATH . KUNENA_RELPATH_UPLOADED
 /**
  *
  */
-define('KUNENA_VERSION', \Kunena\Forum\Libraries\Forum\KunenaForum::version());
+define('KUNENA_VERSION', \Kunena\Forum\Libraries\Forum\Forum::version());
 /**
  *
  */
-define('KUNENA_VERSION_DATE', \Kunena\Forum\Libraries\Forum\KunenaForum::versionDate());
+define('KUNENA_VERSION_DATE', \Kunena\Forum\Libraries\Forum\Forum::versionDate());
 /**
  *
  */
-define('KUNENA_VERSION_NAME', \Kunena\Forum\Libraries\Forum\KunenaForum::versionName());
+define('KUNENA_VERSION_NAME', \Kunena\Forum\Libraries\Forum\Forum::versionName());
 /**
  *
  */
@@ -168,7 +168,7 @@ define('KUNENA_DIRECTURL', KUNENA_JLIVEURL . 'components/com_kunena/');
 /**
  *
  */
-define('KUNENA_RELTMPLTPATH', \Kunena\Forum\Libraries\KunenaFactory::getTemplate()->name);
+define('KUNENA_RELTMPLTPATH', \Kunena\Forum\Libraries\Factory\KunenaFactory::getTemplate()->name);
 /**
  *
  */

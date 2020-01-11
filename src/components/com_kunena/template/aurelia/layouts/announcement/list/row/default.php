@@ -66,7 +66,7 @@ $announcement = $this->announcement;
 	<?php endif; ?>
 
 	<td>
-		<?php if (\Kunena\Forum\Libraries\Config::getInstance()->username)
+		<?php if (\Kunena\Forum\Libraries\Config\Config::getInstance()->username)
 			:
 			?>
 			<?php echo $announcement->getAuthor()->username; ?>

@@ -14,12 +14,13 @@ namespace Kunena\Forum\Site\Controllers;
 
 defined('_JEXEC') or die();
 
+
 use Exception;
 use Joomla\CMS\Date\Date;
 use Joomla\CMS\Factory;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\Session\Session;
-use Kunena\Forum\Libraries\Controller;
+use Kunena\Forum\Libraries\Controller\KunenaController;
 use Kunena\Forum\Libraries\Forum\Announcement\Helper;
 use Joomla\Utilities\ArrayHelper;
 use function defined;
@@ -29,7 +30,7 @@ use function defined;
  *
  * @since   Kunena 2.0
  */
-class KunenaControllerAnnouncement extends Controller
+class KunenaControllerAnnouncement extends KunenaController
 {
 	/**
 	 * @return  void

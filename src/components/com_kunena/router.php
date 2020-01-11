@@ -16,8 +16,8 @@ defined('_JEXEC') or die();
 use Joomla\CMS\Component\Router\RouterBase;
 use Joomla\CMS\Factory;
 use Joomla\CMS\Profiler\Profiler;
-use Kunena\Forum\Libraries\Forum\KunenaForum;
-use Kunena\Forum\Libraries\KunenaProfiler;
+use Kunena\Forum\Libraries\Forum\Forum;
+use Kunena\Forum\Libraries\Profiler\KunenaProfiler;
 use Kunena\Forum\Libraries\Route\KunenaRoute;
 use Kunena\Forum\Libraries\User\Helper;
 use function defined;
@@ -56,7 +56,7 @@ class KunenaRouter extends RouterBase
 		$segments = [];
 
 		// If Kunena Forum isn't installed or SEF is not enabled, do nothing
-		if (!class_exists('KunenaForum') || !KunenaForum::isCompatible('4.0') || !KunenaForum::installed() || !\Kunena\Forum\Libraries\Config::getInstance()->sef)
+		if (!class_exists('KunenaForum') || !Forum::isCompatible('4.0') || !Forum::installed() || !\Kunena\Forum\Libraries\Config\Config::getInstance()->sef)
 		{
 			return $segments;
 		}
@@ -303,7 +303,7 @@ class KunenaRouter extends RouterBase
 	public function parse(&$segments)
 	{
 		// If Kunena Forum isn't installed do nothing
-		if (!class_exists('KunenaForum') || !KunenaForum::isCompatible('4.0') || !KunenaForum::installed())
+		if (!class_exists('KunenaForum') || !Forum::isCompatible('4.0') || !Forum::installed())
 		{
 			return [];
 		}

@@ -677,7 +677,7 @@ class Pagination
 	 */
 	protected function setChrome()
 	{
-		$template                 = \Kunena\Forum\Libraries\KunenaFactory::getTemplate();
+		$template                 = \Kunena\Forum\Libraries\Factory\KunenaFactory::getTemplate();
 		$this->itemActiveChrome   = [$template, 'getPaginationItemActive'];
 		$this->itemInactiveChrome = [$template, 'getPaginationItemInactive'];
 		$this->listChrome         = [$template, 'getPaginationListRender'];

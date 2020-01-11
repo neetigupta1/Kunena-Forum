@@ -16,8 +16,8 @@ use Joomla\CMS\HTML\HTMLHelper;
 use Joomla\CMS\Factory;
 use Joomla\CMS\Language\Text;
 use Joomla\String\StringHelper;
-use Kunena\Forum\Administrator\Install\KunenaVersion;
-use Kunena\Forum\Libraries\KunenaDate;
+use Kunena\Forum\Administrator\Install\Version;
+use Kunena\Forum\Libraries\Date\KunenaDate;
 use Kunena\Forum\Libraries\Route\KunenaRoute;
 
 HTMLHelper::_('behavior.multiselect');
@@ -423,6 +423,6 @@ jQuery(function($) {
 		</div>
 	</div>
 	<div class="pull-right small">
-		<?php echo KunenaVersion::getLongVersionHTML(); ?>
+		<?php echo Version::getLongVersionHTML(); ?>
 	</div>
 </div>

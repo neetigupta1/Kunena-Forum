@@ -20,7 +20,7 @@ use Joomla\CMS\Factory;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\Router\Route;
 use Joomla\CMS\Session\Session;
-use Kunena\Forum\Libraries\Controller;
+use Kunena\Forum\Libraries\Controller\KunenaController;
 use Kunena\Forum\Libraries\Route\KunenaRoute;
 use Joomla\CMS\MVC\Controller\FormController;
 use function defined;

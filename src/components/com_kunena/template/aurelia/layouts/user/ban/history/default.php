@@ -124,13 +124,13 @@ use function defined;
 						<td>
 							<strong>
 								<?php echo Text::sprintf(
-									'COM_KUNENA_BAN_COMMENT_BY', \Kunena\Forum\Libraries\KunenaFactory::getUser((int) $comment->userid)->getLink()
+									'COM_KUNENA_BAN_COMMENT_BY', \Kunena\Forum\Libraries\Factory\KunenaFactory::getUser((int) $comment->userid)->getLink()
 								);
 								?>
 							</strong>
 						</td>
 						<td>
-							<?php echo \Kunena\Forum\Libraries\KunenaDate::getInstance($comment->time)->toKunena(); ?>
+							<?php echo \Kunena\Forum\Libraries\Date\KunenaDate::getInstance($comment->time)->toKunena(); ?>
 						</td>
 						<td colspan="3">
 							<?php echo \Kunena\Forum\Libraries\Html\Parser::parseText($comment->comment); ?>

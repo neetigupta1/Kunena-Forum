@@ -19,7 +19,7 @@ use Joomla\CMS\Date\Date;
 use Joomla\Database\Exception\ExecutionFailureException;
 use Joomla\Database\QueryInterface;
 use Kunena\Forum\Libraries\Collection\Collection;
-use Kunena\Forum\Libraries\Error;
+use Kunena\Forum\Libraries\Error\KunenaError;
 use function defined;
 
 /**
@@ -143,7 +143,7 @@ class Finder extends \Kunena\Forum\Libraries\Database\Object\Finder
 		}
 		catch (ExecutionFailureException $e)
 		{
-			Error::displayDatabaseError($e);
+			KunenaError::displayDatabaseError($e);
 		}
 
 		return $results;

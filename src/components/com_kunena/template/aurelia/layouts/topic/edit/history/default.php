@@ -43,8 +43,8 @@ $k = 0;
 					</li>
 					<li>
 						<?php
-						$profile    = \Kunena\Forum\Libraries\KunenaFactory::getUser(intval($this->message->userid));
-						$useravatar = $profile->getAvatarImage(\Kunena\Forum\Libraries\KunenaFactory::getTemplate()->params->get('avatarType'), 'profile');
+						$profile    = \Kunena\Forum\Libraries\Factory\KunenaFactory::getUser(intval($this->message->userid));
+						$useravatar = $profile->getAvatarImage(\Kunena\Forum\Libraries\Factory\KunenaFactory::getTemplate()->params->get('avatarType'), 'profile');
 
 						if ($useravatar)
 							:

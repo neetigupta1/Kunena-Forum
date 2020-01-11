@@ -19,9 +19,9 @@ use Joomla\CMS\Factory;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\Object\CMSObject;
 use Joomla\Database\Exception\ExecutionFailureException;
-use Kunena\Forum\Libraries\Error;
+use Kunena\Forum\Libraries\Error\KunenaError;
 use Kunena\Forum\Libraries\Forum\Message\Message;
-use Kunena\Forum\Libraries\KunenaFactory;
+use Kunena\Forum\Libraries\Factory\KunenaFactory;
 use function defined;
 
 /**
@@ -137,7 +137,7 @@ class Thankyou extends CMSObject
 		}
 		catch (ExecutionFailureException $e)
 		{
-			Error::displayDatabaseError($e);
+			KunenaError::displayDatabaseError($e);
 
 			return false;
 		}
@@ -185,7 +185,7 @@ class Thankyou extends CMSObject
 		}
 		catch (ExecutionFailureException $e)
 		{
-			Error::displayDatabaseError($e);
+			KunenaError::displayDatabaseError($e);
 
 			return false;
 		}
@@ -251,7 +251,7 @@ class Thankyou extends CMSObject
 		}
 		catch (ExecutionFailureException $e)
 		{
-			Error::displayDatabaseError($e);
+			KunenaError::displayDatabaseError($e);
 
 			return false;
 		}

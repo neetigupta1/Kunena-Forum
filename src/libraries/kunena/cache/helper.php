@@ -96,7 +96,7 @@ abstract class Helper
 	 */
 	public static function clearAccess()
 	{
-		\Kunena\Forum\Libraries\Access::getInstance()->clearCache();
+		\Kunena\Forum\Libraries\Access\Access::getInstance()->clearCache();
 	}
 
 	/**

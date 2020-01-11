@@ -18,7 +18,7 @@ use Exception;
 use Joomla\CMS\Factory;
 use Joomla\CMS\Uri\Uri;
 use Joomla\Database\Exception\ExecutionFailureException;
-use Kunena\Forum\Libraries\Error;
+use Kunena\Forum\Libraries\Error\KunenaError;
 use Kunena\Forum\Libraries\Route\KunenaRoute;
 use function defined;
 
@@ -160,7 +160,7 @@ abstract class Helper
 		}
 		catch (ExecutionFailureException $e)
 		{
-			Error::displayDatabaseError($e);
+			KunenaError::displayDatabaseError($e);
 		}
 
 		self::$_instances = [];
@@ -227,7 +227,7 @@ abstract class Helper
 		}
 		catch (ExecutionFailureException $e)
 		{
-			Error::displayDatabaseError($e);
+			KunenaError::displayDatabaseError($e);
 		}
 
 		return $total;

@@ -20,9 +20,9 @@ use Joomla\CMS\Session\Session;
 use function defined;
 
 $markAllReadUrl = \Kunena\Forum\Libraries\Forum\Category\Helper::get()->getMarkReadUrl();
-$config         = \Kunena\Forum\Libraries\KunenaFactory::getConfig();
+$config         = \Kunena\Forum\Libraries\Factory\KunenaFactory::getConfig();
 $status         = $config->user_status;
-$config         = \Kunena\Forum\Libraries\KunenaFactory::getTemplate()->params;
+$config         = \Kunena\Forum\Libraries\Factory\KunenaFactory::getTemplate()->params;
 ?>
 
 <div class="klogout">
@@ -37,26 +37,26 @@ $config         = \Kunena\Forum\Libraries\KunenaFactory::getTemplate()->params;
 
 					if ($this->me->getStatus() == 0 && $status && $showOnlineStatus)
 					:
-						echo $this->me->getAvatarImage(\Kunena\Forum\Libraries\KunenaFactory::getTemplate()->params->get('avatarType') . ' green', 20, 20, 'green');
+						echo $this->me->getAvatarImage(\Kunena\Forum\Libraries\Factory\KunenaFactory::getTemplate()->params->get('avatarType') . ' green', 20, 20, 'green');
 					elseif ($this->me->getStatus() == 1 && $status && $showOnlineStatus)
 					:
-						echo $this->me->getAvatarImage(\Kunena\Forum\Libraries\KunenaFactory::getTemplate()->params->get('avatarType') . ' yellow', 20, 20, 'yellow');
+						echo $this->me->getAvatarImage(\Kunena\Forum\Libraries\Factory\KunenaFactory::getTemplate()->params->get('avatarType') . ' yellow', 20, 20, 'yellow');
 					elseif ($this->me->getStatus() == 2 && $status && $showOnlineStatus)
 					:
-						echo $this->me->getAvatarImage(\Kunena\Forum\Libraries\KunenaFactory::getTemplate()->params->get('avatarType') . ' red', 20, 20, 'red');
+						echo $this->me->getAvatarImage(\Kunena\Forum\Libraries\Factory\KunenaFactory::getTemplate()->params->get('avatarType') . ' red', 20, 20, 'red');
 					elseif ($this->me->getStatus() == 3 && $status || !$showOnlineStatus)
 					:
-						echo $this->me->getAvatarImage(\Kunena\Forum\Libraries\KunenaFactory::getTemplate()->params->get('avatarType') . ' grey', 20, 20, 'grey');
+						echo $this->me->getAvatarImage(\Kunena\Forum\Libraries\Factory\KunenaFactory::getTemplate()->params->get('avatarType') . ' grey', 20, 20, 'grey');
 					else
 
 					:
-						echo $this->me->getAvatarImage(\Kunena\Forum\Libraries\KunenaFactory::getTemplate()->params->get('avatarType') . ' none', 20, 20, 'none');
+						echo $this->me->getAvatarImage(\Kunena\Forum\Libraries\Factory\KunenaFactory::getTemplate()->params->get('avatarType') . ' none', 20, 20, 'none');
 					endif; ?>
 					<b class="caret"></b>
 				</a>
 
 				<div class="dropdown-menu dropdown-menu-right" id="nav-menu userdropdownlogout" role="menu">
-					<?php if (\Kunena\Forum\Libraries\KunenaFactory::getTemplate()->params->get('displayDropdownContent'))
+					<?php if (\Kunena\Forum\Libraries\Factory\KunenaFactory::getTemplate()->params->get('displayDropdownContent'))
 					:
 						?>
 						<div class="center">
@@ -64,7 +64,7 @@ $config         = \Kunena\Forum\Libraries\KunenaFactory::getTemplate()->params;
 								<strong><?php echo $this->me->getLink(null, null, '', '', \Kunena\Forum\Libraries\Template\Template::getInstance()->tooltips()); ?></strong>
 							</p>
 							<a href="<?php echo $this->me->getURL(); ?>">
-								<?php echo $this->me->getAvatarImage(\Kunena\Forum\Libraries\KunenaFactory::getTemplate()->params->get('avatarType'), 'post'); ?>
+								<?php echo $this->me->getAvatarImage(\Kunena\Forum\Libraries\Factory\KunenaFactory::getTemplate()->params->get('avatarType'), 'post'); ?>
 							</a>
 							<p><?php echo $this->subLayout('User/Item/Status')->set('user', $this->me); ?></p>
 							<p>

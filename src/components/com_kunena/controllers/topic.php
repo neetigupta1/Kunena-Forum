@@ -14,6 +14,7 @@ namespace Kunena\Forum\Site\Controllers;
 
 defined('_JEXEC') or die();
 
+
 use Exception;
 use Joomla\CMS\Date\Date;
 use Joomla\CMS\Factory;
@@ -26,17 +27,17 @@ use Joomla\CMS\Mail\MailHelper;
 use Joomla\CMS\Plugin\PluginHelper;
 use Joomla\CMS\Session\Session;
 use Joomla\CMS\Uri\Uri;
-use Kunena\Forum\Libraries\Access;
+use Kunena\Forum\Libraries\Access\Access;
 use Kunena\Forum\Libraries\Attachment\Attachment;
-use Kunena\Forum\Libraries\Config;
-use Kunena\Forum\Libraries\Controller;
-use Kunena\Forum\Libraries\Email\Email;
-use Kunena\Forum\Libraries\Error;
-use Kunena\Forum\Libraries\Forum\KunenaForum;
+use Kunena\Forum\Libraries\Config\Config;
+use Kunena\Forum\Libraries\Controller\KunenaController;
+use Kunena\Forum\Libraries\Email\KunenaEmail;
+use Kunena\Forum\Libraries\Error\KunenaError;
+use Kunena\Forum\Libraries\Forum\Forum;
 use Kunena\Forum\Libraries\Forum\Message\Message;
 use Kunena\Forum\Libraries\Html\Parser;
 use Kunena\Forum\Libraries\Image\KunenaImage;
-use Kunena\Forum\Libraries\KunenaFactory;
+use Kunena\Forum\Libraries\Factory\KunenaFactory;
 use Kunena\Forum\Libraries\KunenaPrivate\Message\Finder;
 use Kunena\Forum\Libraries\Layout\Layout;
 use Kunena\Forum\Libraries\Log\Log;
@@ -47,6 +48,7 @@ use Kunena\Forum\Libraries\User\Helper;
 use Joomla\Database\Exception\ExecutionFailureException;
 use Joomla\Registry\Registry;
 use Joomla\Utilities\ArrayHelper;
+
 use RuntimeException;
 use stdClass;
 use function defined;
@@ -61,7 +63,7 @@ use function defined;
  *
  * @since   Kunena 2.0
  */
-class KunenaControllerTopic extends Controller
+class KunenaControllerTopic extends KunenaController
 {
 	/**
 	 * @param   array  $config  config
@@ -597,7 +599,7 @@ class KunenaControllerTopic extends Controller
 			}
 			catch (ExecutionFailureException $e)
 			{
-				Error::displayDatabaseError($e);
+				KunenaError::displayDatabaseError($e);
 			}
 
 			if ($count)
@@ -1140,14 +1142,14 @@ class KunenaControllerTopic extends Controller
 
 				try
 				{
-					$message->publish(KunenaForum::DELETED);
+					$message->publish(Forum::DELETED);
 				}
 				catch (Exception $e)
 				{
 					$this->app->enqueueMessage($e->getMessage(), 'notice');
 				}
 
-				if ($message->publish(KunenaForum::DELETED))
+				if ($message->publish(Forum::DELETED))
 				{
 					$this->app->enqueueMessage(Text::_('COM_KUNENA_POST_SUCCESS_DELETE'));
 				}
@@ -1829,7 +1831,7 @@ class KunenaControllerTopic extends Controller
 			$message = $target = \Kunena\Forum\Libraries\Forum\Message\Helper::get($this->mesid);
 			$topic   = $message->getTopic();
 			$log     = Log::LOG_POST_DELETE;
-			$hold    = KunenaForum::DELETED;
+			$hold    = Forum::DELETED;
 			$msg     = Text::_('COM_KUNENA_POST_SUCCESS_DELETE');
 		}
 		else
@@ -1837,7 +1839,7 @@ class KunenaControllerTopic extends Controller
 			// Delete topic
 			$topic = $target = \Kunena\Forum\Libraries\Forum\Topic\Helper::get($this->id);
 			$log   = Log::LOG_TOPIC_DELETE;
-			$hold  = KunenaForum::TOPIC_DELETED;
+			$hold  = Forum::TOPIC_DELETED;
 			$msg   = Text::_('COM_KUNENA_TOPIC_SUCCESS_DELETE');
 		}
 
@@ -1915,7 +1917,7 @@ class KunenaControllerTopic extends Controller
 
 		$category = $topic->getCategory();
 
-		if ($target->isAuthorised('undelete') && $target->publish(KunenaForum::PUBLISHED))
+		if ($target->isAuthorised('undelete') && $target->publish(Forum::PUBLISHED))
 		{
 			if ($this->config->log_moderation)
 			{
@@ -2052,7 +2054,7 @@ class KunenaControllerTopic extends Controller
 		$topic    = $message->getTopic();
 		$category = $topic->getCategory();
 
-		if ($target->isAuthorised('approve') && $target->publish(KunenaForum::PUBLISHED))
+		if ($target->isAuthorised('approve') && $target->publish(Forum::PUBLISHED))
 		{
 			if ($this->config->log_moderation)
 			{
@@ -2379,7 +2381,7 @@ class KunenaControllerTopic extends Controller
 					}
 				}
 
-				Email::send($mail, $receivers);
+				KunenaEmail::send($mail, $receivers);
 
 				$this->app->enqueueMessage(Text::_('COM_KUNENA_REPORT_SUCCESS'));
 			}
@@ -2645,7 +2647,7 @@ class KunenaControllerTopic extends Controller
 		}
 		catch (Exception $e)
 		{
-			Error::displayDatabaseError($e);
+			KunenaError::displayDatabaseError($e);
 		}
 
 		Log::log(
@@ -2710,7 +2712,7 @@ class KunenaControllerTopic extends Controller
 			}
 			catch (Exception $e)
 			{
-				Error::displayDatabaseError($e);
+				KunenaError::displayDatabaseError($e);
 			}
 		}
 
@@ -2720,7 +2722,7 @@ class KunenaControllerTopic extends Controller
 		}
 		catch (Exception $e)
 		{
-			Error::displayDatabaseError($e);
+			KunenaError::displayDatabaseError($e);
 		}
 	}
 }

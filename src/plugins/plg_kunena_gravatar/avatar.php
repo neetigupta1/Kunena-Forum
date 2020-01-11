@@ -16,7 +16,7 @@ defined('_JEXEC') or die();
 
 use Exception;
 use Kunena\Forum\Libraries\Integration\Avatar;
-use Kunena\Forum\Libraries\KunenaFactory;
+use Kunena\Forum\Libraries\Factory\KunenaFactory;
 use Kunena\Forum\Libraries\Route\KunenaRoute;
 use function defined;
 

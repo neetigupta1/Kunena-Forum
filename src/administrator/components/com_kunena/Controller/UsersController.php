@@ -21,12 +21,12 @@ use Joomla\CMS\Language\Text;
 use Joomla\CMS\Router\Route;
 use Joomla\CMS\Session\Session;
 use Joomla\CMS\User\User;
-use Kunena\Forum\Libraries\Access;
-use Kunena\Forum\Libraries\Controller;
+use Kunena\Forum\Libraries\Access\Access;
+use Kunena\Forum\Libraries\Controller\KunenaController;
 use Kunena\Forum\Libraries\Forum\Category\Category;
 use Kunena\Forum\Libraries\Forum\Category\Helper;
-use Kunena\Forum\Libraries\Forum\KunenaForum;
-use Kunena\Forum\Libraries\KunenaFactory;
+use Kunena\Forum\Libraries\Forum\Forum;
+use Kunena\Forum\Libraries\Factory\KunenaFactory;
 use Kunena\Forum\Libraries\Route\KunenaRoute;
 use Kunena\Forum\Libraries\User\Ban;
 use Kunena\Forum\Libraries\User\KunenaUser;
@@ -368,7 +368,7 @@ class UsersController extends FormController
 
 				foreach ($messages as $mes)
 				{
-					$mes->publish(KunenaForum::DELETED);
+					$mes->publish(Forum::DELETED);
 				}
 			}
 		}

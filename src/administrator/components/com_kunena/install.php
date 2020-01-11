@@ -15,7 +15,7 @@ defined('_JEXEC') or die();
 
 use Joomla\CMS\Factory;
 use Joomla\CMS\Uri\Uri;
-use Kunena\Forum\Libraries\Forum\KunenaForum;
+use Kunena\Forum\Libraries\Forum\Forum;
 use function defined;
 
 $app  = Factory::getApplication();
@@ -23,12 +23,12 @@ $view = $app->input->getCmd('view');
 $task = $app->input->getCmd('task');
 
 // Special case for developer versions.
-if ($view != 'install' && class_exists('KunenaForum') && KunenaForum::isDev())
+if ($view != 'install' && class_exists('KunenaForum') && Forum::isDev())
 {
 	// Developer version found: Check if latest version of Kunena has been installed. If not, prepare installation.
 	require_once __DIR__ . '/install/version.php';
 
-	$kversion = new KunenaVersion;
+	$kversion = new version;
 
 	if (!$kversion->checkVersion())
 	{

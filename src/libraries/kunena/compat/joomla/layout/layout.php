@@ -7,7 +7,7 @@
  * @license     GNU General Public License version 2 or later; see LICENSE.txt
  */
 
-namespace Kunena\Forum\Libraries\Compat;
+namespace Kunena\Forum\Libraries\Compat\Joomla\Layout;
 
 defined('JPATH_BASE') or die;
 

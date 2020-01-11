@@ -14,7 +14,7 @@ defined('_JEXEC') or die();
 
 use Joomla\CMS\HTML\HTMLHelper;
 use Joomla\CMS\Language\Text;
-use Kunena\Forum\Administrator\Install\KunenaVersion;
+use Kunena\Forum\Administrator\Install\Version;
 use Kunena\Forum\Libraries\Route\KunenaRoute;
 
 ?>
@@ -44,6 +44,6 @@ use Kunena\Forum\Libraries\Route\KunenaRoute;
 		</div>
 	</div>
 	<div class="pull-right small">
-		<?php echo KunenaVersion::getLongVersionHTML(); ?>
+		<?php echo Version::getLongVersionHTML(); ?>
 	</div>
 </div>

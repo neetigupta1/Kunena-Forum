@@ -28,7 +28,7 @@ use function defined;
  */
 function kunena_200_2012_05_30_configuration($parent)
 {
-	$config = \Kunena\Forum\Libraries\KunenaFactory::getConfig();
+	$config = \Kunena\Forum\Libraries\Factory\KunenaFactory::getConfig();
 
 	// Unset deprecated configuration options which have been migrated earlier
 	unset($config->board_ofset);

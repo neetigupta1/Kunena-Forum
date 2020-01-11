@@ -12,7 +12,7 @@ defined('_JEXEC') or die;
 use Joomla\CMS\HTML\HTMLHelper;
 use Joomla\CMS\Factory;
 use Joomla\CMS\Language\Text;
-use Kunena\Forum\Administrator\Install\KunenaVersion;
+use Kunena\Forum\Administrator\Install\Version;
 
 HTMLHelper::_('bootstrap.tooltip');
 HTMLHelper::_('behavior.multiselect');
@@ -263,6 +263,6 @@ $user = Factory::getApplication()->getIdentity();
 		</div>
 	</div>
 	<div class="pull-right small">
-		<?php echo KunenaVersion::getLongVersionHTML(); ?>
+		<?php echo Version::getLongVersionHTML(); ?>
 	</div>
 </div>

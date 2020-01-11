@@ -15,7 +15,7 @@ defined('_JEXEC') or die();
 use Joomla\CMS\Factory;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\Uri\Uri;
-use Kunena\Forum\Administrator\Install\KunenaVersion;
+use Kunena\Forum\Administrator\Install\Version;
 
 $document = Factory::getApplication()->getDocument();
 $document->addStyleSheet(Uri::base(true) . '/components/com_kunena/media/css/admin.css');
@@ -62,7 +62,7 @@ if (Factory::getLanguage()->isRTL())
 					<td><?php echo Text::_('COM_KUNENA_STATS_TOTAL_TOPICS'); ?></td>
 					<td><strong><?php echo $this->topicCount; ?></strong></td>
 					<td><?php echo Text::_('COM_KUNENA_STATS_LATEST_MEMBER'); ?> </td>
-					<td><strong><?php echo \Kunena\Forum\Libraries\KunenaFactory::getUser(intval($this->lastUserId))->getName(); ?></strong>
+					<td><strong><?php echo \Kunena\Forum\Libraries\Factory\KunenaFactory::getUser(intval($this->lastUserId))->getName(); ?></strong>
 					</td>
 				</tr>
 				<tr>
@@ -126,5 +126,5 @@ if (Factory::getLanguage()->isRTL())
 
 
 <div class="pull-right small">
-	<?php echo KunenaVersion::getLongVersionHTML(); ?>
+	<?php echo Version::getLongVersionHTML(); ?>
 </div>

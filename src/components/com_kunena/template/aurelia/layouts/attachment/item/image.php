@@ -25,14 +25,14 @@ if (!$attachment->isImage())
 	return;
 }
 
-$config = \Kunena\Forum\Libraries\KunenaFactory::getConfig();
+$config = \Kunena\Forum\Libraries\Factory\KunenaFactory::getConfig();
 
 // Load FancyBox library if enabled in configuration
 if ($config->lightbox == 1)
 {
 	echo $this->subLayout('Widget/Lightbox');
 
-	$config = \Kunena\Forum\Libraries\Config::getInstance();
+	$config = \Kunena\Forum\Libraries\Config\Config::getInstance();
 
 	$attributesLink = $config->lightbox ? ' data-fancybox="gallery"' : '';
 	$attributesImg  = ' style="max-height:' . (int) $config->imageheight . 'px;"';

@@ -18,7 +18,7 @@ use Exception;
 use Joomla\CMS\HTML\HTMLHelper;
 use Joomla\CMS\Language\Text;
 use Joomla\Utilities\ArrayHelper;
-use Kunena\Forum\Libraries\Config;
+use Kunena\Forum\Libraries\Config\Config;
 use Kunena\Forum\Libraries\Controller\KunenaControllerDisplay;
 use function defined;
 

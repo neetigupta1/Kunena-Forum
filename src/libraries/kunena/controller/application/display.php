@@ -10,7 +10,7 @@
  * @link          https://www.kunena.org
  **/
 
-namespace Kunena\Forum\Libraries\Controller;
+namespace Kunena\Forum\Libraries\Controller\Application;
 
 
 defined('_JEXEC') or die();
@@ -23,11 +23,12 @@ use Joomla\CMS\Language\Text;
 use Joomla\CMS\Layout\BaseLayout;
 use Joomla\CMS\Pathway\Pathway;
 use Joomla\CMS\Plugin\PluginHelper;
-use Kunena\Forum\Libraries\Config;
+use Kunena\Forum\Libraries\Config\Config;
+use Kunena\Forum\Libraries\Controller\KunenaControllerDisplay;
 use Kunena\Forum\Libraries\Exception\Authorise;
-use Kunena\Forum\Libraries\KunenaDate;
-use Kunena\Forum\Libraries\KunenaFactory;
-use Kunena\Forum\Libraries\KunenaProfiler;
+use Kunena\Forum\Libraries\Date\KunenaDate;
+use Kunena\Forum\Libraries\Factory\KunenaFactory;
+use Kunena\Forum\Libraries\Profiler\KunenaProfiler;
 use Kunena\Forum\Libraries\Layout\Layout;
 use Kunena\Forum\Libraries\Layout\Page;
 use Kunena\Forum\Libraries\Route\KunenaRoute;
@@ -43,7 +44,7 @@ use function defined;
  *
  * @since   Kunena 6.0
  */
-class KunenaControllerApplicationDisplay extends KunenaControllerDisplay
+class Display extends KunenaControllerDisplay
 {
 	/**
 	 * @var     Config

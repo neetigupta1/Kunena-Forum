@@ -88,7 +88,7 @@ Text::script('COM_KUNENA_WYSIBB_EDITOR_SM7');
 Text::script('COM_KUNENA_WYSIBB_EDITOR_SM8');
 Text::script('COM_KUNENA_WYSIBB_EDITOR_SM9');
 
-$this->ktemplate  = \Kunena\Forum\Libraries\KunenaFactory::getTemplate();
+$this->ktemplate  = \Kunena\Forum\Libraries\Factory\KunenaFactory::getTemplate();
 $templatesettings = $this->ktemplate->params;
 $settings         = $templatesettings->get('wysibb');
 ?>

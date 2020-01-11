@@ -19,7 +19,8 @@ use Joomla\CMS\HTML\HTMLHelper;
 use Joomla\CMS\Language\Text;
 use Kunena\Forum\Libraries\Database\KunenaDatabaseObject;
 use Kunena\Forum\Libraries\Forum\Category\Category;
-use Kunena\Forum\Libraries\Tree;
+
+use Kunena\Forum\Libraries\Tree\Tree;
 use function defined;
 
 require_once dirname(__FILE__) . '/integration.php';

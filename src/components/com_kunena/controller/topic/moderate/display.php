@@ -18,7 +18,7 @@ use Joomla\CMS\Factory;
 use Joomla\CMS\HTML\HTMLHelper;
 use Joomla\CMS\Language\Text;
 use Kunena\Forum\Libraries\Controller\KunenaControllerDisplay;
-use Kunena\Forum\Libraries\Error;
+use Kunena\Forum\Libraries\Error\KunenaError;
 use Kunena\Forum\Libraries\Exception\Authorise;
 use Kunena\Forum\Libraries\Forum\Message\Helper;
 use Kunena\Forum\Libraries\Template\Template;
@@ -160,7 +160,7 @@ class ComponentKunenaControllerTopicModerateDisplay extends KunenaControllerDisp
 			}
 			catch (ExecutionFailureException $e)
 			{
-				Error::displayDatabaseError($e);
+				KunenaError::displayDatabaseError($e);
 
 				return;
 			}

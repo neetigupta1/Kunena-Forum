@@ -17,11 +17,12 @@ defined('_JEXEC') or die();
 use Joomla\CMS\Factory;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\Plugin\PluginHelper;
-use Kunena\Forum\Libraries\KunenaDate;
-use Kunena\Forum\Libraries\KunenaFactory;
+use Kunena\Forum\Libraries\Date\KunenaDate;
+use Kunena\Forum\Libraries\Factory\KunenaFactory;
 use Kunena\Forum\Libraries\Route\KunenaRoute;
-use Kunena\Forum\Libraries\View;
+use Kunena\Forum\Libraries\View\View;
 use Joomla\Registry\Registry;
+use Kunena\Forum\Libraries\View\View;
 use function defined;
 
 /**

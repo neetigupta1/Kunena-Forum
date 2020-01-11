@@ -18,14 +18,14 @@ use Exception;
 use Joomla\CMS\Factory;
 use Joomla\CMS\HTML\HTMLHelper;
 use Joomla\CMS\Language\Text;
-use Kunena\Forum\Administrator\Models\KunenaAdminModelCategories;
-use Kunena\Forum\Libraries\Access;
-use Kunena\Forum\Libraries\Error;
+use Kunena\Forum\Administrator\Model\CategoriesModel;
+use Kunena\Forum\Libraries\Access\Access;
+use Kunena\Forum\Libraries\Error\KunenaError;
 use Kunena\Forum\Libraries\Forum;
 use Kunena\Forum\Libraries\Forum\Category;
 use Kunena\Forum\Libraries\Forum\Message\Helper;
 use Kunena\Forum\Libraries\Forum\Topic\Topic;
-use Kunena\Forum\Libraries\KunenaFactory;
+use Kunena\Forum\Libraries\Factory\KunenaFactory;
 use Kunena\Forum\Libraries\User;
 use Joomla\Database\Exception\ExecutionFailureException;
 use function defined;
@@ -37,7 +37,7 @@ require_once KPATH_ADMIN . '/models/categories.php';
  *
  * @since   Kunena 2.0
  */
-class KunenaModelCategory extends KunenaAdminModelCategories
+class KunenaModelCategory extends CategoriesModel
 {
 	/**
 	 * @var     boolean|array
@@ -292,7 +292,7 @@ class KunenaModelCategory extends KunenaAdminModelCategories
 				}
 				catch (ExecutionFailureException $e)
 				{
-					Error::displayDatabaseError($e);
+					KunenaError::displayDatabaseError($e);
 				}
 
 				foreach ($pending as $item)

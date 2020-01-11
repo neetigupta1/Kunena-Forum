@@ -16,7 +16,7 @@ use Joomla\CMS\Factory;
 use Joomla\CMS\HTML\HTMLHelper;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\Uri\Uri;
-use Kunena\Forum\Administrator\Install\KunenaVersion;
+use Kunena\Forum\Administrator\Install\Version;
 use Kunena\Forum\Libraries\Route\KunenaRoute;
 
 Text::script('COM_KUNENA_MODAL_CLOSE');
@@ -75,7 +75,7 @@ Factory::getApplication()->getDocument()->addScript(Uri::root() . 'administrator
 		</div>
 	</div>
 	<div class="pull-right small">
-		<?php echo KunenaVersion::getLongVersionHTML(); ?>
+		<?php echo Version::getLongVersionHTML(); ?>
 	</div>
 </div>
 

@@ -116,7 +116,7 @@ $this->addScriptOptions('com_kunena.icons.secure', \Kunena\Forum\Libraries\Icons
 $suffix = CMSApplication::getInstance('site')->get('sef_suffix');
 $this->addScriptOptions('com_kunena.suffixpreview', $suffix ? true : false);
 
-$this->ktemplate = \Kunena\Forum\Libraries\KunenaFactory::getTemplate();
+$this->ktemplate = \Kunena\Forum\Libraries\Factory\KunenaFactory::getTemplate();
 $topicicontype   = $this->ktemplate->params->get('topicicontype');
 $editor          = $this->ktemplate->params->get('editor');
 $me              = isset($this->me) ? $this->me : \Kunena\Forum\Libraries\User\Helper::getMyself();
@@ -137,7 +137,7 @@ $this->addScript('assets/js/edit.js');
 
 echo $this->subLayout('Widget/Lightbox');
 
-if (\Kunena\Forum\Libraries\KunenaFactory::getTemplate()->params->get('formRecover'))
+if (\Kunena\Forum\Libraries\Factory\KunenaFactory::getTemplate()->params->get('formRecover'))
 {
 	$this->addScript('sisyphus.js');
 }

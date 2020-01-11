@@ -18,7 +18,7 @@ use Joomla\CMS\HTML\HTMLHelper;
 use Joomla\CMS\Language\Text;
 use Kunena\Forum\Libraries\Forum;
 use Kunena\Forum\Libraries\Forum\Announcement\Announcement;
-use Kunena\Forum\Libraries\Model;
+use Kunena\Forum\Libraries\Model\Model;
 use Kunena\Forum\Libraries\User\Helper;
 use function defined;
 

@@ -18,9 +18,9 @@ use Joomla\CMS\Factory;
 use Joomla\CMS\Language\Text;
 use Kunena\Forum\Libraries\Controller\KunenaControllerDisplay;
 use Kunena\Forum\Libraries\Forum\Announcement\Helper;
-use Kunena\Forum\Libraries\KunenaDate;
-use Kunena\Forum\Libraries\KunenaFactory;
-use Kunena\Forum\Libraries\Login;
+use Kunena\Forum\Libraries\Date\KunenaDate;
+use Kunena\Forum\Libraries\Factory\KunenaFactory;
+use Kunena\Forum\Libraries\Login\Login;
 use Joomla\Registry\Registry;
 use function defined;
 

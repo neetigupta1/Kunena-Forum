@@ -20,4 +20,8 @@ use Joomla\CMS\MVC\Controller\FormController;
  */
 class ForumController extends FormController
 {
+	public function onAfterInitialise()
+	{
+		\JLoader::registerNamespace('Kunena\Forum\Libraries', JPATH_LIBRARIES . '/kunena/', true,false,'psr4');
+	}
 }

@@ -42,7 +42,7 @@ $this->addScript('jquery.atwho.js');
 
 $this->addScript('assets/js/topic.js');
 
-$this->ktemplate = \Kunena\Forum\Libraries\KunenaFactory::getTemplate();
+$this->ktemplate = \Kunena\Forum\Libraries\Factory\KunenaFactory::getTemplate();
 $social          = $this->ktemplate->params->get('socialshare');
 $quick           = $this->ktemplate->params->get('quick');
 $txt             = '';
@@ -132,7 +132,7 @@ if ($topic->locked)
 
 	echo '</div>';
 
-	if ($quick == 2 && \Kunena\Forum\Libraries\Config::getInstance()->quickreply)
+	if ($quick == 2 && \Kunena\Forum\Libraries\Config\Config::getInstance()->quickreply)
 	{
 		echo $this->subLayout('Message/Edit')
 			->set('message', $this->message)

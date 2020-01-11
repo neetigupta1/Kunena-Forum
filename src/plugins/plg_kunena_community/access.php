@@ -19,10 +19,11 @@ use Joomla\CMS\Factory;
 use Joomla\CMS\HTML\HTMLHelper;
 use Joomla\CMS\Language\Text;
 use Kunena\Forum\Libraries\Database\KunenaDatabaseObject;
-use Kunena\Forum\Libraries\Error;
-use Kunena\Forum\Libraries\Forum\KunenaForum;
-use Kunena\Forum\Libraries\KunenaFactory;
-use Kunena\Forum\Libraries\Tree;
+use Kunena\Forum\Libraries\Error\KunenaError;
+use Kunena\Forum\Libraries\Forum\Forum;
+use Kunena\Forum\Libraries\Factory\KunenaFactory;
+
+use Kunena\Forum\Libraries\Tree\Tree;
 use RuntimeException;
 use function defined;
 
@@ -137,7 +138,7 @@ class KunenaAccessCommunity
 			}
 			catch (RuntimeException $e)
 			{
-				Error::displayDatabaseError($e);
+				KunenaError::displayDatabaseError($e);
 			}
 
 			if ($this->categories !== false)
@@ -214,7 +215,7 @@ class KunenaAccessCommunity
 			}
 			catch (RuntimeException $e)
 			{
-				Error::displayDatabaseError($e);
+				KunenaError::displayDatabaseError($e);
 			}
 
 			$this->tree = new Tree($this->categories);
@@ -245,7 +246,7 @@ class KunenaAccessCommunity
 	{
 		$db    = Factory::getDBO();
 		$query = $db->getQuery(true);
-		$query->select('g.memberid AS user_id, c.id AS category_id, ' . KunenaForum::ADMINISTRATOR . ' AS role')
+		$query->select('g.memberid AS user_id, c.id AS category_id, ' . Forum::ADMINISTRATOR . ' AS role')
 			->from($db->quoteName('#__kunena_categories', 'c'))
 			->innerJoin($db->quoteName('#__community_groups_members', 'g') . ' ON c.accesstype=\'jomsocial\' AND c.access = g.groupid')
 			->where('c.published = 1')
@@ -259,7 +260,7 @@ class KunenaAccessCommunity
 		}
 		catch (RuntimeException $e)
 		{
-			Error::displayDatabaseError($e);
+			KunenaError::displayDatabaseError($e);
 		}
 
 		return $list;
@@ -303,7 +304,7 @@ class KunenaAccessCommunity
 			}
 			catch (RuntimeException $e)
 			{
-				Error::displayDatabaseError($e);
+				KunenaError::displayDatabaseError($e);
 			}
 
 			foreach ($list as $catid)
@@ -354,7 +355,7 @@ class KunenaAccessCommunity
 		}
 		catch (RuntimeException $e)
 		{
-			Error::displayDatabaseError($e);
+			KunenaError::displayDatabaseError($e);
 		}
 
 		return [$allow, $deny];

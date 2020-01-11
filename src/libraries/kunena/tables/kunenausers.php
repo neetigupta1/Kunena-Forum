@@ -571,7 +571,7 @@ class KunenaUsers extends KunenaTable
 		}
 		catch (ExecutionFailureException $e)
 		{
-			\Kunena\Forum\Libraries\Error::displayDatabaseError($e);
+			\Kunena\Forum\Libraries\Error\KunenaError::displayDatabaseError($e);
 
 			return false;
 		}

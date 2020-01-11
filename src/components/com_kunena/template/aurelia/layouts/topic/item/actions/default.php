@@ -17,7 +17,7 @@ defined('_JEXEC') or die();
 use Joomla\CMS\Language\Text;
 use function defined;
 
-$this->ktemplate = \Kunena\Forum\Libraries\KunenaFactory::getTemplate();
+$this->ktemplate = \Kunena\Forum\Libraries\Factory\KunenaFactory::getTemplate();
 $fullactions     = $this->ktemplate->params->get('fullactions');
 ?>
 

@@ -20,7 +20,7 @@ use Joomla\CMS\Installer\Adapter\FileAdapter;
 use Joomla\CMS\Installer\Installer;
 use Joomla\CMS\Language\LanguageHelper;
 use Joomla\CMS\Table\Table;
-use Kunena\Forum\Libraries\Forum\KunenaForum;
+use Kunena\Forum\Libraries\Forum\Forum;
 
 /**
  * Class pkg_kunena_languagesInstallerScript
@@ -67,14 +67,14 @@ class pkg_kunena_languagesInstallerScript
 		$app = Factory::getApplication();
 
 		// Do not install if Kunena doesn't exist.
-		if (!class_exists('KunenaForum') || !KunenaForum::isCompatible('4.0'))
+		if (!class_exists('KunenaForum') || !Forum::isCompatible('4.0'))
 		{
 			$app->enqueueMessage(sprintf('Kunena %s has not been installed, aborting!', '4.0'), 'notice');
 
 			return false;
 		}
 
-		if (KunenaForum::isDev())
+		if (Forum::isDev())
 		{
 			$app->enqueueMessage(sprintf('You have installed Kunena from GitHub, aborting!'), 'notice');
 

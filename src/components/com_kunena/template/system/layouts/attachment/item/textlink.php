@@ -19,7 +19,7 @@ use function defined;
 
 $attachment = $this->attachment;
 
-$config = \Kunena\Forum\Libraries\Config::getInstance();
+$config = \Kunena\Forum\Libraries\Config\Config::getInstance();
 
 $attributesLink = $attachment->isImage() && $config->lightbox ? ' data-fancybox="gallery"' : '';
 ?>

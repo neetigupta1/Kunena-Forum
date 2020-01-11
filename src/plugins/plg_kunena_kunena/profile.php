@@ -17,9 +17,9 @@ defined('_JEXEC') or die();
 use Exception;
 use Joomla\CMS\Access\Access;
 use Joomla\CMS\Factory;
-use Kunena\Forum\Libraries\Error;
+use Kunena\Forum\Libraries\Error\KunenaError;
 use Kunena\Forum\Libraries\Integration\Profile;
-use Kunena\Forum\Libraries\KunenaFactory;
+use Kunena\Forum\Libraries\Factory\KunenaFactory;
 use Kunena\Forum\Libraries\Route\KunenaRoute;
 use Kunena\Forum\Libraries\User\Helper;
 use Kunena\Forum\Libraries\User\KunenaUser;
@@ -107,7 +107,7 @@ class KunenaProfile extends Profile
 		}
 		catch (RuntimeException $e)
 		{
-			Error::displayDatabaseError($e);
+			KunenaError::displayDatabaseError($e);
 		}
 
 		return $top;

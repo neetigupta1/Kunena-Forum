@@ -13,14 +13,15 @@ namespace Kunena\Forum\Administrator;
 
 defined('_JEXEC') or die();
 
+
 use Joomla\CMS\Factory;
 use Joomla\CMS\Language\Text;
 use Kunena\Forum\Administrator\Install\KunenaControllerInstall;
-use Kunena\Forum\Libraries\Controller;
-use Kunena\Forum\Libraries\Error;
+use Kunena\Forum\Libraries\Controller\KunenaController;
+use Kunena\Forum\Libraries\Error\KunenaError;
 use Kunena\Forum\Libraries\Exception\Authorise;
-use Kunena\Forum\Libraries\Forum\KunenaForum;
-use Kunena\Forum\Libraries\KunenaProfiler;
+use Kunena\Forum\Libraries\Forum\Forum;
+use Kunena\Forum\Libraries\Profiler\KunenaProfiler;
 use function defined;
 
 // Access check.
@@ -37,7 +38,7 @@ KUNENA_PROFILER ? $kunena_profiler->mark('afterLoad') : null;
 $app = Factory::getApplication();
 
 // Safety check to prevent fatal error if 'System - Kunena Forum' plug-in has been disabled.
-if ($app->input->getCmd('view') == 'install' || !class_exists('KunenaForum') || !KunenaForum::isCompatible('4.0'))
+if ($app->input->getCmd('view') == 'install' || !class_exists('KunenaForum') || !Forum::isCompatible('4.0'))
 {
 	// Run installer instead..
 	require_once __DIR__ . '/install/controller.php';
@@ -69,18 +70,18 @@ if ($app->input->getCmd('view') == 'uninstall')
 }
 
 // Initialize Kunena Framework.
-KunenaForum::setup();
+Forum::setup();
 
 // Initialize custom error handlers.
-Error::initialize();
+KunenaError::initialize();
 
 // Kunena has been successfully installed: Load our main controller.
-$controller = Controller::getInstance();
+$controller = KunenaController::getInstance();
 $controller->execute($app->input->getCmd('task'));
 $controller->redirect();
 
 // Remove custom error handlers.
-Error::cleanup();
+KunenaError::cleanup();
 
 // Display profiler information.
 $kunena_profiler->stop('Total Time');

@@ -17,9 +17,9 @@ defined('_JEXEC') or die();
 use Exception;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\Session\Session;
-use Kunena\Forum\Administrator\Controllers\KunenaAdminControllerCategories;
+use Kunena\Forum\Administrator\Controller\CategoriesController;
 use Kunena\Forum\Libraries\Forum\Category\Helper;
-use Kunena\Forum\Libraries\KunenaFactory;
+use Kunena\Forum\Libraries\Factory\KunenaFactory;
 use Kunena\Forum\Libraries\Route\KunenaRoute;
 use Joomla\Utilities\ArrayHelper;
 use function defined;
@@ -31,7 +31,7 @@ require_once KPATH_ADMIN . '/controllers/categories.php';
  *
  * @since   Kunena 2.0
  */
-class KunenaControllerCategory extends KunenaAdminControllerCategories
+class KunenaControllerCategory extends CategoriesController
 {
 	/**
 	 * @param   array  $config  config

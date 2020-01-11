@@ -20,8 +20,8 @@ use Joomla\CMS\Factory;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\Plugin\CMSPlugin;
 use Joomla\CMS\Router\Route;
-use Kunena\Forum\Libraries\Forum\KunenaForum;
-use Kunena\Forum\Libraries\KunenaFactory;
+use Kunena\Forum\Libraries\Forum\Forum;
+use Kunena\Forum\Libraries\Factory\KunenaFactory;
 use stdClass;
 use function defined;
 
@@ -67,7 +67,7 @@ class plgQuickiconKunena extends CMSPlugin
 
 		$updateInfo = null;
 
-		if (KunenaForum::installed() && Factory::getUser()->authorise('core.manage', 'com_installer'))
+		if (Forum::installed() && Factory::getUser()->authorise('core.manage', 'com_installer'))
 		{
 			$updateSite = 'https://update.kunena.org/%';
 			$db         = Factory::getDbo();
@@ -114,7 +114,7 @@ class plgQuickiconKunena extends CMSPlugin
 
 		$useIcons = version_compare(JVERSION, '3.0', '>');
 
-		if (!KunenaForum::installed())
+		if (!Forum::installed())
 		{
 			$icon = 'fa fa-warning';
 
@@ -141,7 +141,7 @@ class plgQuickiconKunena extends CMSPlugin
 			$icon = 'kunena/icons/icon-48-kupdate-alert-white.png';
 			$text = Text::_('COM_KUNENA') . '<br />' . Text::_('PLG_QUICKICON_KUNENA_UPDATE_DISABLED');
 		}
-		elseif (!empty($updateInfo->version) && version_compare(KunenaForum::version(), $updateInfo->version, '<'))
+		elseif (!empty($updateInfo->version) && version_compare(Forum::version(), $updateInfo->version, '<'))
 		{
 			// Has updates
 			$icon = 'fa fa-download';

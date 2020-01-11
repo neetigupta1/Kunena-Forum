@@ -15,9 +15,9 @@ defined('_JEXEC') or die;
 
 use Kunena\Forum\Libraries\Forum\Topic;
 use Kunena\Forum\Libraries\Html\Parser;
-use Kunena\Forum\Libraries\KunenaFactory;
+use Kunena\Forum\Libraries\Factory\KunenaFactory;
 use Kunena\Forum\Libraries\User\Helper;
-use Kunena\Forum\Libraries\View;
+use Kunena\Forum\Libraries\View\View;
 use stdClass;
 use function defined;
 

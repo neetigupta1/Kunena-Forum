@@ -14,6 +14,7 @@ namespace Kunena\Forum\Site\Controllers;
 
 defined('_JEXEC') or die();
 
+
 use Exception;
 use Joomla\CMS\Component\ComponentHelper;
 use Joomla\CMS\Date\Date;
@@ -28,14 +29,14 @@ use Joomla\CMS\Session\Session;
 use Joomla\CMS\Table\Table;
 use Joomla\CMS\Uri\Uri;
 use Joomla\CMS\User\User;
-use Kunena\Forum\Libraries\Config;
-use Kunena\Forum\Libraries\Controller;
+use Kunena\Forum\Libraries\Config\Config;
+use Kunena\Forum\Libraries\Controller\KunenaController;
 use Kunena\Forum\Libraries\Exception\Authorise;
-use Kunena\Forum\Libraries\Forum\KunenaForum;
+use Kunena\Forum\Libraries\Forum\Forum;
 use Kunena\Forum\Libraries\Integration\Profile;
-use Kunena\Forum\Libraries\KunenaFactory;
+use Kunena\Forum\Libraries\Factory\KunenaFactory;
 use Kunena\Forum\Libraries\Log\Log;
-use Kunena\Forum\Libraries\Login;
+use Kunena\Forum\Libraries\Login\Login;
 use Kunena\Forum\Libraries\Path\KunenaPath;
 use Kunena\Forum\Libraries\Route\KunenaRoute;
 use Kunena\Forum\Libraries\User\Ban;
@@ -53,7 +54,7 @@ use function defined;
  *
  * @since   Kunena 2.0
  */
-class KunenaControllerUser extends Controller
+class KunenaControllerUser extends KunenaController
 {
 	/**
 	 * @param   bool  $cachable   cachable
@@ -899,7 +900,7 @@ class KunenaControllerUser extends Controller
 
 			foreach ($messages as $mes)
 			{
-				$mes->publish(KunenaForum::DELETED);
+				$mes->publish(Forum::DELETED);
 			}
 
 			$this->app->enqueueMessage(Text::_('COM_KUNENA_MODERATE_DELETED_BAD_MESSAGES'));

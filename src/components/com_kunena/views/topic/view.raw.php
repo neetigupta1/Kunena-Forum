@@ -17,14 +17,15 @@ defined('_JEXEC') or die();
 use Joomla\CMS\Factory;
 use Joomla\CMS\Uri\Uri;
 use Kunena\Forum\Libraries;
-use Kunena\Forum\Libraries\Error;
+use Kunena\Forum\Libraries\Error\KunenaError;
 use Kunena\Forum\Libraries\Forum;
 use Kunena\Forum\Libraries\Forum\Category\Helper;
 use Kunena\Forum\Libraries\Forum\Topic\Rate;
 use Kunena\Forum\Libraries\Html\Parser;
-use Kunena\Forum\Libraries\KunenaFactory;
-use Kunena\Forum\Libraries\View;
+use Kunena\Forum\Libraries\Factory\KunenaFactory;
+use Kunena\Forum\Libraries\View\View;
 use Joomla\Database\Exception\ExecutionFailureException;
+use Kunena\Forum\Libraries\View\View;
 use stdClass;
 use function defined;
 
@@ -95,7 +96,7 @@ class raw extends View
 			}
 			catch (ExecutionFailureException $e)
 			{
-				Error::displayDatabaseError($e);
+				KunenaError::displayDatabaseError($e);
 			}
 
 			foreach ($smileys as $smiley)

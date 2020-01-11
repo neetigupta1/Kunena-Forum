@@ -26,12 +26,12 @@ $category        = $message->getCategory();
 $userTopic       = $topic->getUserTopic();
 $isReply         = $message->id != $topic->first_post_id;
 $category        = $message->getCategory();
-$this->ktemplate = \Kunena\Forum\Libraries\KunenaFactory::getTemplate();
-$config          = \Kunena\Forum\Libraries\KunenaFactory::getConfig();
-$avatar          = $config->avataroncat ? $topic->getLastPostAuthor()->getAvatarImage(\Kunena\Forum\Libraries\KunenaFactory::getTemplate()->params->get('avatarType'), 'thumb') : null;
+$this->ktemplate = \Kunena\Forum\Libraries\Factory\KunenaFactory::getTemplate();
+$config          = \Kunena\Forum\Libraries\Factory\KunenaFactory::getConfig();
+$avatar          = $config->avataroncat ? $topic->getLastPostAuthor()->getAvatarImage(\Kunena\Forum\Libraries\Factory\KunenaFactory::getTemplate()->params->get('avatarType'), 'thumb') : null;
 $cols            = empty($this->checkbox) ? 5 : 6;
 $txt             = $topic->getActions();
-$topicPages      = $topic->getPagination(null, \Kunena\Forum\Libraries\Config::getInstance()->messages_per_page, 3);
+$topicPages      = $topic->getPagination(null, \Kunena\Forum\Libraries\Config\Config::getInstance()->messages_per_page, 3);
 
 ?>
 <tr class="category<?php echo $this->escape($category->class_sfx) . $txt; ?>">

@@ -28,12 +28,12 @@ use Joomla\CMS\Object\CMSObject;
 use Joomla\CMS\Plugin\PluginHelper;
 use Joomla\CMS\Uri\Uri;
 use Joomla\Registry\Registry;
-use Kunena\Forum\Libraries\Error;
+use Kunena\Forum\Libraries\Error\KunenaError;
 use Kunena\Forum\Libraries\Forum\Category\Category;
-use Kunena\Forum\Libraries\Forum\KunenaForum;
+use Kunena\Forum\Libraries\Forum\Forum;
 use Kunena\Forum\Libraries\Forum\Topic\Topic;
 use Kunena\Forum\Libraries\Icons\SvgIcons;
-use Kunena\Forum\Libraries\KunenaFactory;
+use Kunena\Forum\Libraries\Factory\KunenaFactory;
 use Kunena\Forum\Libraries\Path\KunenaPath;
 use Kunena\Forum\Libraries\Route\KunenaRoute;
 use lessc;
@@ -435,7 +435,7 @@ class Template extends CMSObject
 
 				if (is_dir(KPATH_SITE . "/template/{$templatename}"))
 				{
-					Error::warning(Text::sprintf('COM_KUNENA_LIB_TEMPLATE_NOTICE_INCOMPATIBLE', $name, $templatename));
+					KunenaError::warning(Text::sprintf('COM_KUNENA_LIB_TEMPLATE_NOTICE_INCOMPATIBLE', $name, $templatename));
 				}
 			}
 
@@ -884,7 +884,7 @@ HTML;
 			$filemin      = $filename;
 			$filemin_path = preg_replace('/\.css$/u', '-min.css', $filename);
 
-			if (!JDEBUG && !KunenaFactory::getConfig()->debug && !KunenaForum::isDev() && is_file(JPATH_ROOT . "/$filemin_path"))
+			if (!JDEBUG && !KunenaFactory::getConfig()->debug && !Forum::isDev() && is_file(JPATH_ROOT . "/$filemin_path"))
 			{
 				$filemin = preg_replace('/\.css$/u', '-min.css', $filename);
 			}
@@ -1095,7 +1095,7 @@ HTML;
 			$filemin      = $filename;
 			$filemin_path = preg_replace('/\.js$/u', '-min.js', $filename);
 
-			if (!JDEBUG && !KunenaFactory::getConfig()->debug && !KunenaForum::isDev() && is_file(JPATH_ROOT . "/$filemin_path"))
+			if (!JDEBUG && !KunenaFactory::getConfig()->debug && !Forum::isDev() && is_file(JPATH_ROOT . "/$filemin_path"))
 			{
 				$filemin = preg_replace('/\.js$/u', '-min.js', $filename);
 			}

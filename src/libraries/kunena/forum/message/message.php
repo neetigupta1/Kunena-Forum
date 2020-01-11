@@ -27,22 +27,23 @@ use Joomla\CMS\Uri\Uri;
 use Joomla\CMS\User\UserHelper;
 use Joomla\Database\DatabaseDriver;
 use Joomla\Database\Exception\ExecutionFailureException;
-use Kunena\Forum\Libraries\Access;
+use Kunena\Forum\Libraries\Access\Access;
 use Kunena\Forum\Libraries\Attachment\Attachment;
-use Kunena\Forum\Libraries\Config;
+use Kunena\Forum\Libraries\Config\Config;
 use Kunena\Forum\Libraries\Database\KunenaDatabaseObject;
-use Kunena\Forum\Libraries\Email\Email;
-use Kunena\Forum\Libraries\Error;
+use Kunena\Forum\Libraries\Email\KunenaEmail;
+use Kunena\Forum\Libraries\Error\KunenaError;
 use Kunena\Forum\Libraries\Exception\Authorise;
 use Kunena\Forum\Libraries\Forum\Category\Category;
-use Kunena\Forum\Libraries\Forum\KunenaForum;
+use Kunena\Forum\Libraries\Forum\Forum;
 use Kunena\Forum\Libraries\Forum\Topic\Topic;
 use Kunena\Forum\Libraries\Html\Parser;
-use Kunena\Forum\Libraries\KunenaDate;
-use Kunena\Forum\Libraries\KunenaFactory;
+use Kunena\Forum\Libraries\Date\KunenaDate;
+use Kunena\Forum\Libraries\Factory\KunenaFactory;
 use Kunena\Forum\Libraries\Layout\Layout;
 use Kunena\Forum\Libraries\Route\KunenaRoute;
 use Kunena\Forum\Libraries\User\KunenaUser;
+
 use StdClass;
 use function defined;
 
@@ -554,13 +555,13 @@ class Message extends KunenaDatabaseObject
 		{
 			if (!$config->getEmail())
 			{
-				Error::warning(Text::_('COM_KUNENA_EMAIL_DISABLED'));
+				KunenaError::warning(Text::_('COM_KUNENA_EMAIL_DISABLED'));
 
 				return false;
 			}
 			elseif (!MailHelper::isEmailAddress($config->getEmail()))
 			{
-				Error::warning(Text::_('COM_KUNENA_EMAIL_INVALID'));
+				KunenaError::warning(Text::_('COM_KUNENA_EMAIL_INVALID'));
 
 				return false;
 			}
@@ -616,7 +617,7 @@ class Message extends KunenaDatabaseObject
 					]
 				);
 
-				$ok = Email::send($mailer, $receivers[1]);
+				$ok = KunenaEmail::send($mailer, $receivers[1]);
 			}
 
 			// Send email to all moderators.
@@ -633,7 +634,7 @@ class Message extends KunenaDatabaseObject
 					]
 				);
 
-				if (!Email::send($mailer, $receivers[0]))
+				if (!KunenaEmail::send($mailer, $receivers[0]))
 				{
 					$ok = false;
 				}
@@ -673,7 +674,7 @@ class Message extends KunenaDatabaseObject
 				}
 				catch (ExecutionFailureException $e)
 				{
-					Error::displayDatabaseError($e);
+					KunenaError::displayDatabaseError($e);
 				}
 			}
 		}
@@ -771,7 +772,7 @@ class Message extends KunenaDatabaseObject
 	 * @throws  null
 	 * @throws  Exception
 	 */
-	public function publish($value = KunenaForum::PUBLISHED)
+	public function publish($value = Forum::PUBLISHED)
 	{
 		if ($this->hold == $value)
 		{
@@ -1046,7 +1047,7 @@ class Message extends KunenaDatabaseObject
 			}
 			catch (ExecutionFailureException $e)
 			{
-				Error::displayDatabaseError($e);
+				KunenaError::displayDatabaseError($e);
 			}
 		}
 
@@ -1682,7 +1683,7 @@ class Message extends KunenaDatabaseObject
 			}
 			catch (ExecutionFailureException $e)
 			{
-				Error::displayDatabaseError($e);
+				KunenaError::displayDatabaseError($e);
 
 				return false;
 			}
@@ -1715,7 +1716,7 @@ class Message extends KunenaDatabaseObject
 			}
 			catch (ExecutionFailureException $e)
 			{
-				Error::displayDatabaseError($e);
+				KunenaError::displayDatabaseError($e);
 
 				return false;
 			}

@@ -21,11 +21,11 @@ use Joomla\CMS\HTML\HTMLHelper;
 use Joomla\CMS\Language\Text;
 use Joomla\Database\DatabaseDriver;
 use Joomla\Database\Exception\ExecutionFailureException;
-use Kunena\Forum\Libraries\Config;
-use Kunena\Forum\Libraries\Error;
+use Kunena\Forum\Libraries\Config\Config;
+use Kunena\Forum\Libraries\Error\KunenaError;
 use Kunena\Forum\Libraries\Forum\Topic\Topic;
 use Kunena\Forum\Libraries\Html\Parser;
-use Kunena\Forum\Libraries\KunenaFactory;
+use Kunena\Forum\Libraries\Factory\KunenaFactory;
 use Kunena\Forum\Libraries\User\Helper;
 use RuntimeException;
 use function defined;
@@ -189,7 +189,7 @@ class Statistics
 	public function __construct()
 	{
 		$this->_db     = Factory::getDBO();
-		$this->_config = KunenaFactory::getConfig();
+		$this->_config = \Kunena\Forum\Libraries\Config\Config::getInstance();
 
 		$this->showstats            = (bool) $this->_config->showstats;
 		$this->showgenstats         = (bool) $this->_config->showgenstats;
@@ -354,7 +354,7 @@ class Statistics
 		}
 		catch (RuntimeException $e)
 		{
-			Error::displayDatabaseError($e);
+			KunenaError::displayDatabaseError($e);
 		}
 
 		return $smilies;
@@ -390,7 +390,7 @@ class Statistics
 			}
 			catch (ExecutionFailureException $e)
 			{
-				Error::displayDatabaseError($e);
+				KunenaError::displayDatabaseError($e);
 			}
 
 			if ($counts)
@@ -515,7 +515,7 @@ class Statistics
 			}
 			catch (ExecutionFailureException $e)
 			{
-				Error::displayDatabaseError($e);
+				KunenaError::displayDatabaseError($e);
 			}
 
 			// Codestyler fixes: use real dir
@@ -701,7 +701,7 @@ class Statistics
 			}
 			catch (ExecutionFailureException $e)
 			{
-				Error::displayDatabaseError($e);
+				KunenaError::displayDatabaseError($e);
 			}
 
 			$top = reset($this->topThanks);

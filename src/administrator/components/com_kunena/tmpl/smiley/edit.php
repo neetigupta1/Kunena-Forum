@@ -15,7 +15,7 @@ defined('_JEXEC') or die();
 use Joomla\CMS\HTML\HTMLHelper;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\Uri\Uri;
-use Kunena\Forum\Administrator\Install\KunenaVersion;
+use Kunena\Forum\Administrator\Install\Version;
 
 $iconPath = json_encode(Uri::root(true) . '/');
 $this->document->addScriptDeclaration(
@@ -80,6 +80,6 @@ HTMLHelper::_('behavior.multiselect');
 		</div>
 	</div>
 	<div class="pull-right small">
-		<?php echo KunenaVersion::getLongVersionHTML(); ?>
+		<?php echo Version::getLongVersionHTML(); ?>
 	</div>
 </div>

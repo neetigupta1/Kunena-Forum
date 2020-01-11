@@ -16,7 +16,7 @@ defined('_JEXEC') or die();
 
 use function defined;
 
-if (\Kunena\Forum\Libraries\Config::getInstance()->lightbox != 1)
+if (\Kunena\Forum\Libraries\Config\Config::getInstance()->lightbox != 1)
 {
 	return false;
 }

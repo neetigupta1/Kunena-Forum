@@ -15,11 +15,11 @@ namespace Kunena\Forum\Plugin\Kunena\Kunena;
 defined('_JEXEC') or die();
 
 use Exception;
-use Kunena\Forum\Libraries\Config;
+use Kunena\Forum\Libraries\Config\Config;
 use Kunena\Forum\Libraries\Image\Helper;
 use Kunena\Forum\Libraries\Image\KunenaImage;
 use Kunena\Forum\Libraries\Integration\Avatar;
-use Kunena\Forum\Libraries\KunenaFactory;
+use Kunena\Forum\Libraries\Factory\KunenaFactory;
 use Kunena\Forum\Libraries\Route\KunenaRoute;
 use function defined;
 

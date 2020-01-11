@@ -18,7 +18,7 @@ use Exception;
 use Joomla\CMS\Component\ComponentHelper;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\MVC\Controller\BaseController;
-use Kunena\Forum\Libraries\Access;
+use Kunena\Forum\Libraries\Access\Access;
 use Kunena\Forum\Libraries\Forum\Category\Helper;
 use Kunena\Forum\Libraries\Forum\Topic\Finder;
 use Kunena\Forum\Libraries\Pagination\Pagination;

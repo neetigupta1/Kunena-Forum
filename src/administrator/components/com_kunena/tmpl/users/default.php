@@ -15,7 +15,7 @@ defined('_JEXEC') or die();
 use Joomla\CMS\HTML\HTMLHelper;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\Router\Route;
-use Kunena\Forum\Administrator\Install\KunenaVersion;
+use Kunena\Forum\Administrator\Install\Version;
 
 HTMLHelper::_('behavior.multiselect');
 HTMLHelper::_('dropdown.init');
@@ -238,7 +238,7 @@ HTMLHelper::_('dropdown.init');
 									<td>
 										<span class="editlinktip hasTip  kwho-<?php echo $user->getType(0, true); ?>"
 										      title="<?php echo $this->escape($user->username); ?> ">
-											<?php echo $user->getAvatarImage(\Kunena\Forum\Libraries\KunenaFactory::getTemplate()->params->get('avatarType'), 'thumb'); ?>
+											<?php echo $user->getAvatarImage(\Kunena\Forum\Libraries\Factory\KunenaFactory::getTemplate()->params->get('avatarType'), 'thumb'); ?>
 											<a href="<?php echo Route::_('index.php?option=com_kunena&view=user&layout=edit&userid=' . (int) $user->id); ?>"
 											   title="<?php echo Text::_('JACTION_EDIT'); ?> <?php echo Text::sprintf('COM_USERS_EDIT_USER', $this->escape($user->name)); ?>">
 											<span class="fa fa-pen-square mr-2"
@@ -343,6 +343,6 @@ HTMLHelper::_('dropdown.init');
 		</div>
 	</div>
 	<div class="pull-right small">
-		<?php echo KunenaVersion::getLongVersionHTML(); ?>
+		<?php echo Version::getLongVersionHTML(); ?>
 	</div>
 </div>

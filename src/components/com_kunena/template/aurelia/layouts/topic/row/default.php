@@ -19,13 +19,13 @@ use function defined;
 
 $topic           = $this->topic;
 $userTopic       = $topic->getUserTopic();
-$topicPages      = $topic->getPagination(null, \Kunena\Forum\Libraries\Config::getInstance()->messages_per_page, 3);
+$topicPages      = $topic->getPagination(null, \Kunena\Forum\Libraries\Config\Config::getInstance()->messages_per_page, 3);
 $author          = $topic->getLastPostAuthor();
-$this->ktemplate = \Kunena\Forum\Libraries\KunenaFactory::getTemplate();
+$this->ktemplate = \Kunena\Forum\Libraries\Factory\KunenaFactory::getTemplate();
 $avatar          = $author->getAvatarImage($this->ktemplate->params->get('avatarType'), 'thumb');
 $category        = $this->topic->getCategory();
 $category        = $this->topic->getCategory();
-$config          = \Kunena\Forum\Libraries\Config::getInstance();
+$config          = \Kunena\Forum\Libraries\Config\Config::getInstance();
 $txt             = '';
 
 if ($this->topic->ordering)

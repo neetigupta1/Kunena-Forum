@@ -22,10 +22,10 @@ $topic                = $message->getTopic();
 $category             = $topic->getCategory();
 $author               = $message->getAuthor();
 $isReply              = $message->id != $topic->first_post_id;
-$config               = \Kunena\Forum\Libraries\KunenaFactory::getConfig();
+$config               = \Kunena\Forum\Libraries\Factory\KunenaFactory::getConfig();
 $name                 = $config->username ? $author->username : $author->name;
 $me                   = isset($this->me) ? $this->me : \Kunena\Forum\Libraries\User\Helper::getMyself();
-$this->ktemplate      = \Kunena\Forum\Libraries\KunenaFactory::getTemplate();
+$this->ktemplate      = \Kunena\Forum\Libraries\Factory\KunenaFactory::getTemplate();
 $subjectlengthmessage = $this->ktemplate->params->get('SubjectLengthMessage', 20);
 
 ?>
@@ -35,7 +35,7 @@ $subjectlengthmessage = $this->ktemplate->params->get('SubjectLengthMessage', 20
 			<li>
 				<strong><?php echo $author->getLink(null, null, 'nofollow', '', null, $topic->getCategory()->id); ?></strong>
 			</li>
-			<li><?php echo $author->getLink($author->getAvatarImage(\Kunena\Forum\Libraries\KunenaFactory::getTemplate()->params->get('avatarType'), 'post')); ?></li>
+			<li><?php echo $author->getLink($author->getAvatarImage(\Kunena\Forum\Libraries\Factory\KunenaFactory::getTemplate()->params->get('avatarType'), 'post')); ?></li>
 		</ul>
 	</div>
 

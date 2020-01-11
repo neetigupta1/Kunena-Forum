@@ -21,7 +21,7 @@ use Joomla\CMS\Log\Log;
 use Joomla\CMS\Router\Route;
 use Joomla\CMS\Session\Session;
 use Kunena\Forum\Libraries\Bbcode\KunenaBbcodeEditor;
-use Kunena\Forum\Libraries\Controller;
+use Kunena\Forum\Libraries\Controller\KunenaController;
 use Joomla\Utilities\ArrayHelper;
 use Joomla\CMS\MVC\Controller\FormController;
 use function defined;

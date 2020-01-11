@@ -18,7 +18,7 @@ use Joomla\CMS\Language\Text;
 use Kunena\Forum\Libraries\Controller\KunenaControllerDisplay;
 use Kunena\Forum\Libraries\Exception\Authorise;
 use Kunena\Forum\Libraries\Forum\Statistics;
-use Kunena\Forum\Libraries\KunenaFactory;
+use Kunena\Forum\Libraries\Factory\KunenaFactory;
 use function defined;
 
 /**
@@ -66,7 +66,7 @@ class ComponentKunenaControllerWidgetStatisticsDisplay extends KunenaControllerD
 	{
 		parent::before();
 
-		$this->config = \Kunena\Forum\Libraries\Config::getInstance();
+		$this->config = \Kunena\Forum\Libraries\Config\Config::getInstance();
 
 		if (!$this->config->get('showstats'))
 		{

@@ -28,7 +28,7 @@ use function defined;
  */
 function kunena_600_2019_05_18_configuration($parent)
 {
-	$config = \Kunena\Forum\Libraries\KunenaFactory::getConfig();
+	$config = \Kunena\Forum\Libraries\Factory\KunenaFactory::getConfig();
 
 	if (isset($config->template))
 	{

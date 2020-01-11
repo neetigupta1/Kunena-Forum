@@ -145,7 +145,7 @@ $this->addScript('assets/js/search.js');
 		<tbody class="user-list">
 		<?php
 		$i               = $this->pagination->limitstart;
-		$this->ktemplate = \Kunena\Forum\Libraries\KunenaFactory::getTemplate();
+		$this->ktemplate = \Kunena\Forum\Libraries\Factory\KunenaFactory::getTemplate();
 
 		foreach ($this->users as $user) :
 			$avatar = $config->userlist_avatar ? $user->getAvatarImage($this->ktemplate->params->get('avatarType'), 'thumb') : null;

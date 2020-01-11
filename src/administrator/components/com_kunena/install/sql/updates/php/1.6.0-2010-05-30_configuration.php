@@ -28,7 +28,7 @@ use function defined;
  */
 function kunena_160_2010_05_30_configuration($parent)
 {
-	$config = \Kunena\Forum\Libraries\KunenaFactory::getConfig();
+	$config = \Kunena\Forum\Libraries\Factory\KunenaFactory::getConfig();
 
 	// Switch to default template
 	$config->set('template', 'blue_eagle');

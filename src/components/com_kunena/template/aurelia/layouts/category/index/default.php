@@ -132,7 +132,7 @@ foreach ($this->sections as $section) :
 															title="<?php echo Text::_('COM_KUNENA_GEN_MODERATED') ?>"><?php echo \Kunena\Forum\Libraries\Icons\Icons::shield(); ?></span>
 												<?php endif; ?>
 
-												<?php if (\Kunena\Forum\Libraries\KunenaFactory::getConfig()->enablerss) : ?>
+												<?php if (\Kunena\Forum\Libraries\Factory\KunenaFactory::getConfig()->enablerss) : ?>
 													<a href="<?php echo $this->getCategoryRSSURL($category->id); ?>"
 													   rel="alternate" type="application/rss+xml">
 														 <?php echo \Kunena\Forum\Libraries\Icons\Icons::rss(); ?>
@@ -157,7 +157,7 @@ foreach ($this->sections as $section) :
 												<li>
 													<?php $totaltopics = \Kunena\Forum\Libraries\Forum\Category\Category::getInstance()->totalCount($subcategory->getTopics()); ?>
 
-													<?php if (\Kunena\Forum\Libraries\Config::getInstance()->showchildcaticon) : ?>
+													<?php if (\Kunena\Forum\Libraries\Config\Config::getInstance()->showchildcaticon) : ?>
 														<?php echo $this->getCategoryLink($subcategory, $this->getSmallCategoryIcon($subcategory), '', null, true, false) . $this->getCategoryLink($subcategory, '', null, \Kunena\Forum\Libraries\Template\Template::getInstance()->tooltips(), true, false) . '<small class="hidden-xs-down muted"> ('
 															. $totaltopics . ')</small>';
 													else : ?>
@@ -187,7 +187,7 @@ foreach ($this->sections as $section) :
 									</div>
 								<?php endif; ?>
 
-								<?php if ($category->getmoderators() && \Kunena\Forum\Libraries\Config::getInstance()->listcat_show_moderators) : ?>
+								<?php if ($category->getmoderators() && \Kunena\Forum\Libraries\Config\Config::getInstance()->listcat_show_moderators) : ?>
 									<br/>
 									<div class="moderators">
 										<?php
@@ -195,7 +195,7 @@ foreach ($this->sections as $section) :
 										$modslist = [];
 										foreach ($category->getmoderators() as $moderator)
 										{
-											$modslist[] = \Kunena\Forum\Libraries\KunenaFactory::getUser($moderator)->getLink(null, null, '', null, \Kunena\Forum\Libraries\Template\Template::getInstance()->tooltips());
+											$modslist[] = \Kunena\Forum\Libraries\Factory\KunenaFactory::getUser($moderator)->getLink(null, null, '', null, \Kunena\Forum\Libraries\Template\Template::getInstance()->tooltips());
 										}
 
 										echo Text::_('COM_KUNENA_MODERATORS') . ': ' . implode(', ', $modslist);
@@ -218,7 +218,7 @@ foreach ($this->sections as $section) :
 							<?php if ($last->exists()) :
 								$author = $last->getLastPostAuthor();
 								$time = $last->getLastPostTime();
-								$this->ktemplate = \Kunena\Forum\Libraries\KunenaFactory::getTemplate();
+								$this->ktemplate = \Kunena\Forum\Libraries\Factory\KunenaFactory::getTemplate();
 								$avatar = $this->config->avataroncat ? $author->getAvatarImage($this->ktemplate->params->get('avatarType'), 'thumb') : null;
 								?>
 
@@ -226,7 +226,7 @@ foreach ($this->sections as $section) :
 									<div class="row">
 										<?php if ($avatar) : ?>
 										<div class="col-xs-6 col-md-3" id="kcat-avatar">
-											<?php echo $author->getLink($avatar, null, '', '', \Kunena\Forum\Libraries\Template\Template::getInstance()->tooltips(), $category->id, \Kunena\Forum\Libraries\Config::getInstance()->avataredit); ?>
+											<?php echo $author->getLink($avatar, null, '', '', \Kunena\Forum\Libraries\Template\Template::getInstance()->tooltips(), $category->id, \Kunena\Forum\Libraries\Config\Config::getInstance()->avataredit); ?>
 										</div>
 										<div class="col-xs-6 col-md-9" id="kcat-last">
 											<?php else : ?>

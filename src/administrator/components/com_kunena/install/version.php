@@ -16,7 +16,7 @@ defined('_JEXEC') or die();
 use Exception;
 use Joomla\CMS\Factory;
 use Joomla\CMS\Language\Text;
-use Kunena\Forum\Libraries\Forum\KunenaForum;
+use Kunena\Forum\Libraries\Forum\Forum;
 use stdClass;
 use function defined;
 
@@ -25,7 +25,7 @@ use function defined;
  *
  * @since   Kunena 6.0
  */
-class KunenaVersion
+class Version
 {
 	/**
 	 * Get warning for unstable releases
@@ -39,35 +39,35 @@ class KunenaVersion
 	 */
 	public function getVersionWarning($msg = 'COM_KUNENA_VERSION_WARNING')
 	{
-		if (strpos(KunenaForum::version(), 'GIT') !== false)
+		if (strpos(Forum::version(), 'GIT') !== false)
 		{
 			$kn_version_type    = Text::_('COM_KUNENA_VERSION_GIT');
 			$kn_version_warning = Text::_('COM_KUNENA_VERSION_GIT_WARNING');
 		}
 		else
 		{
-			if (strpos(KunenaForum::version(), 'DEV') !== false)
+			if (strpos(Forum::version(), 'DEV') !== false)
 			{
 				$kn_version_type    = Text::_('COM_KUNENA_VERSION_DEV');
 				$kn_version_warning = Text::_('COM_KUNENA_VERSION_DEV_WARNING');
 			}
 			else
 			{
-				if (strpos(KunenaForum::version(), 'RC') !== false)
+				if (strpos(Forum::version(), 'RC') !== false)
 				{
 					$kn_version_type    = Text::_('COM_KUNENA_VERSION_RC');
 					$kn_version_warning = Text::_('COM_KUNENA_VERSION_RC_WARNING');
 				}
 				else
 				{
-					if (strpos(KunenaForum::version(), 'BETA') !== false)
+					if (strpos(Forum::version(), 'BETA') !== false)
 					{
 						$kn_version_type    = Text::_('COM_KUNENA_VERSION_BETA');
 						$kn_version_warning = Text::_('COM_KUNENA_VERSION_BETA_WARNING');
 					}
 					else
 					{
-						if (strpos(KunenaForum::version(), 'ALPHA') !== false)
+						if (strpos(Forum::version(), 'ALPHA') !== false)
 						{
 							$kn_version_type    = Text::_('COM_KUNENA_VERSION_ALPHA');
 							$kn_version_warning = Text::_('COM_KUNENA_VERSION_ALPHA_WARNING');
@@ -79,7 +79,7 @@ class KunenaVersion
 
 		if (!empty($kn_version_warning) && !empty($kn_version_type))
 		{
-			return Text::sprintf($msg, '<strong>' . strtoupper(KunenaForum::version()), $kn_version_type . '</strong>') . ' ' . $kn_version_warning;
+			return Text::sprintf($msg, '<strong>' . strtoupper(Forum::version()), $kn_version_type . '</strong>') . ' ' . $kn_version_warning;
 		}
 
 		return '';
@@ -135,7 +135,7 @@ class KunenaVersion
 		}
 		elseif (!empty($version->state))
 		{
-			if ($version->version != KunenaForum::version())
+			if ($version->version != Forum::version())
 			{
 				$version->state = '';
 			}
@@ -153,7 +153,7 @@ class KunenaVersion
 	 */
 	public static function getVersionHTML()
 	{
-		return 'Kunena ' . strtoupper(KunenaForum::version()) . ' | ' . KunenaForum::versionDate() . ' [ ' . KunenaForum::versionName() . ' ]';
+		return 'Kunena ' . strtoupper(Forum::version()) . ' | ' . Forum::versionDate() . ' [ ' . Forum::versionName() . ' ]';
 	}
 
 	/**

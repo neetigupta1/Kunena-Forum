@@ -25,7 +25,7 @@ $signature            = $this->profile->getSignature();
 $attachments          = $message->getAttachments();
 $attachs              = $message->getNbAttachments();
 $avatarname           = $this->profile->getname();
-$config               = \Kunena\Forum\Libraries\Config::getInstance();
+$config               = \Kunena\Forum\Libraries\Config\Config::getInstance();
 $subjectlengthmessage = $this->ktemplate->params->get('SubjectLengthMessage', 20);
 $str_counts           = substr_count($this->topic->subject, 'solved');
 
@@ -161,8 +161,8 @@ endif; ?>
 
 	if ($message->modified_time)
 	{
-		$datehover = 'title="' . \Kunena\Forum\Libraries\KunenaDate::getInstance($message->modified_time)->toKunena('config_post_dateformat_hover') . '"';
-		$dateshown = \Kunena\Forum\Libraries\KunenaDate::getInstance($message->modified_time)->toKunena('config_post_dateformat') . ' ';
+		$datehover = 'title="' . \Kunena\Forum\Libraries\Date\KunenaDate::getInstance($message->modified_time)->toKunena('config_post_dateformat_hover') . '"';
+		$dateshown = \Kunena\Forum\Libraries\Date\KunenaDate::getInstance($message->modified_time)->toKunena('config_post_dateformat') . ' ';
 	}
 	?>
 	<div class="alert alert-info hidden-xs-down" <?php echo $datehover ?>>

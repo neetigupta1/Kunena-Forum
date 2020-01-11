@@ -21,7 +21,7 @@ $attachment = $this->attachment;
 
 echo $this->subLayout('Widget/Lightbox');
 
-$config = \Kunena\Forum\Libraries\Config::getInstance();
+$config = \Kunena\Forum\Libraries\Config\Config::getInstance();
 
 $attributesLink = $attachment->isImage() && $config->lightbox ? ' data-fancybox="gallery"' : '';
 $attributesImg  = ' style="max-height: ' . (int) $config->thumbheight . 'px;"';

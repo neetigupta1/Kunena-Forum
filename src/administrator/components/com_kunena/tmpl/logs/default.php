@@ -15,7 +15,7 @@ defined('_JEXEC') or die();
 use Joomla\CMS\HTML\HTMLHelper;
 use Joomla\CMS\Factory;
 use Joomla\CMS\Language\Text;
-use Kunena\Forum\Administrator\Install\KunenaVersion;
+use Kunena\Forum\Administrator\Install\Version;
 
 HTMLHelper::_('behavior.multiselect');
 HTMLHelper::_('dropdown.init');
@@ -243,7 +243,7 @@ $filterItem = $this->escape($this->state->get('item.id'));
 							:
 							foreach ($this->items as $item)
 								:
-								$date = new \Kunena\Forum\Libraries\KunenaDate($item->time);
+								$date = new \Kunena\Forum\Libraries\Date\KunenaDate($item->time);
 								$user     = \Kunena\Forum\Libraries\User\Helper::get($item->user_id);
 								$category = \Kunena\Forum\Libraries\Forum\Category\Helper::get($item->category_id);
 								$topic    = \Kunena\Forum\Libraries\Forum\Topic\Helper::get($item->topic_id);
@@ -379,6 +379,6 @@ $filterItem = $this->escape($this->state->get('item.id'));
 		</div>
 	</div>
 	<div class="pull-right small">
-		<?php echo KunenaVersion::getLongVersionHTML(); ?>
+		<?php echo Version::getLongVersionHTML(); ?>
 	</div>
 </div>

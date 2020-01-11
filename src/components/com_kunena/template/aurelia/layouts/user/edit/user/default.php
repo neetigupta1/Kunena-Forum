@@ -109,7 +109,7 @@ use function defined;
 	</table>
 <?php endif;
 
-if (\Kunena\Forum\Libraries\Login::getTwoFactorMethods() > 1)
+if (\Kunena\Forum\Libraries\Login\Login::getTwoFactorMethods() > 1)
 :
 	?>
 	<a class="btn btn-outline-primary border"

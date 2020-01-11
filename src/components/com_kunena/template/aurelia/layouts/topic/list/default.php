@@ -24,11 +24,11 @@ $cols            = !empty($this->actions) ? 6 : 7;
 $colspan         = !empty($this->actions) ? 4 : 3;
 $view            = Factory::getApplication()->input->getWord('view');
 $layout          = Factory::getApplication()->input->getWord('layout');
-$this->ktemplate = \Kunena\Forum\Libraries\KunenaFactory::getTemplate();
+$this->ktemplate = \Kunena\Forum\Libraries\Factory\KunenaFactory::getTemplate();
 $social          = $this->ktemplate->params->get('socialshare');
 $me              = \Kunena\Forum\Libraries\User\Helper::getMyself();
 
-if (\Kunena\Forum\Libraries\Config::getInstance()->ratingenabled)
+if (\Kunena\Forum\Libraries\Config\Config::getInstance()->ratingenabled)
 {
 	$this->addStyleSheet('rating.css');
 }

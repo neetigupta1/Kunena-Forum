@@ -15,14 +15,14 @@ namespace Kunena\Forum\Site\Models;
 defined('_JEXEC') or die();
 
 use Exception;
-use Kunena\Forum\Libraries\Access;
+use Kunena\Forum\Libraries\Access\Access;
 use Kunena\Forum\Libraries\Attachment\Helper;
 use Kunena\Forum\Libraries\Forum\Category;
 use Kunena\Forum\Libraries\Forum\Message;
 use Kunena\Forum\Libraries\Forum\Topic;
 use Kunena\Forum\Libraries\Forum\Topic\Poll\Poll;
-use Kunena\Forum\Libraries\KunenaFactory;
-use Kunena\Forum\Libraries\Model;
+use Kunena\Forum\Libraries\Factory\KunenaFactory;
+use Kunena\Forum\Libraries\Model\Model;
 use Kunena\Forum\Libraries\User;
 use function defined;
 

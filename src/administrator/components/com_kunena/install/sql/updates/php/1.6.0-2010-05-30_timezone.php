@@ -31,7 +31,7 @@ use function defined;
 function kunena_160_2010_05_30_timezone($parent)
 {
 	$result = null;
-	$config = \Kunena\Forum\Libraries\KunenaFactory::getConfig();
+	$config = \Kunena\Forum\Libraries\Factory\KunenaFactory::getConfig();
 	$db     = Factory::getDbo();
 
 	// We need to fix all timestamps to UTC (if not already done)

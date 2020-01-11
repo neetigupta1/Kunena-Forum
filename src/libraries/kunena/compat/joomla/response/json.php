@@ -7,7 +7,7 @@
  * @license     GNU General Public License version 2 or later; see LICENSE
  */
 
-namespace Kunena\Forum\Libraries\Compat;
+namespace Kunena\Forum\Libraries\Compat\Joomla\Response;
 
 defined('JPATH_PLATFORM') or die;
 
@@ -18,6 +18,6 @@ use Joomla\CMS\Response\JsonResponse;
  *
  * @since   Kunena 6.0
  */
-class ResponseJson extends JsonResponse
+class Json extends JsonResponse
 {
 }

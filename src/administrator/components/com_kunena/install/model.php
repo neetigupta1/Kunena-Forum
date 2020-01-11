@@ -30,9 +30,9 @@ use Joomla\CMS\Session\Session;
 use Joomla\CMS\Table\Table;
 use Joomla\CMS\Uri\Uri;
 use Kunena\Forum\Libraries\Bbcode\KunenaBbcodeEditor;
-use Kunena\Forum\Libraries\Forum\KunenaForum;
+use Kunena\Forum\Libraries\Forum\Forum;
 use Kunena\Forum\Libraries\Forum\Message\Thankyou\Helper;
-use Kunena\Forum\Libraries\KunenaFactory;
+use Kunena\Forum\Libraries\Factory\KunenaFactory;
 use Kunena\Forum\Libraries\Menu\Fix;
 use Kunena\Forum\Libraries\Path\KunenaPath;
 use Kunena\Forum\Libraries\Route\KunenaRoute;
@@ -1053,7 +1053,7 @@ class KunenaModelInstall extends BaseDatabaseModel
 	{
 		$path = JPATH_ADMINISTRATOR . '/components/com_kunena/archive';
 
-		if (KunenaForum::isDev() || !is_file("{$path}/fileformat"))
+		if (Forum::isDev() || !is_file("{$path}/fileformat"))
 		{
 			// Git install
 			$dir = JPATH_ADMINISTRATOR . '/components/com_kunena/media/kunena';
@@ -1102,7 +1102,7 @@ class KunenaModelInstall extends BaseDatabaseModel
 				}
 
 				// Copy new files into folder
-				$this->extract($path, $file['name'] . $ext, $dest, KunenaForum::isDev());
+				$this->extract($path, $file['name'] . $ext, $dest, Forum::isDev());
 			}
 
 			$this->setTask($task + 1);
@@ -1255,7 +1255,7 @@ class KunenaModelInstall extends BaseDatabaseModel
 	 */
 	public function stepFinish()
 	{
-		KunenaForum::setup();
+		Forum::setup();
 
 		$lang = Factory::getLanguage();
 		$lang->load('com_kunena', JPATH_SITE) || $lang->load('com_kunena', KUNENA_INSTALLER_SITEPATH);
@@ -1272,7 +1272,7 @@ class KunenaModelInstall extends BaseDatabaseModel
 		$cache->clean('com_kunena');
 
 		// Delete installer file (only if not using GIT build).
-		if (!KunenaForum::isDev())
+		if (!Forum::isDev())
 		{
 			File::delete(KPATH_ADMIN . '/install.php');
 		}
@@ -1563,7 +1563,7 @@ class KunenaModelInstall extends BaseDatabaseModel
 			if ($version['version'] == '@' . 'kunenaversion' . '@')
 			{
 				$git    = 1;
-				$vernum = KunenaForum::version();
+				$vernum = Forum::version();
 			}
 
 			if (isset($git) || version_compare(strtolower($version['version']), strtolower($curversion->version), '>'))
@@ -2584,7 +2584,7 @@ class KunenaModelInstall extends BaseDatabaseModel
 	protected function insertVersion($state = 'beginInstall')
 	{
 		// Insert data from the new version
-		$this->insertVersionData(KunenaForum::version(), KunenaForum::versionDate(), KunenaForum::versionName(), $state);
+		$this->insertVersionData(Forum::version(), Forum::versionDate(), Forum::versionName(), $state);
 	}
 
 	/**
@@ -2640,7 +2640,7 @@ class KunenaModelInstall extends BaseDatabaseModel
 		 */
 
 		static $search = ['#COMPONENT_OLD#', '#VERSION_OLD#', '#VERSION#'];
-		$replace = [$version->component, $version->version, KunenaForum::version()];
+		$replace = [$version->component, $version->version, Forum::version()];
 
 		if (!$action)
 		{
@@ -2692,13 +2692,13 @@ class KunenaModelInstall extends BaseDatabaseModel
 			}
 			else
 			{
-				if (version_compare(strtolower(KunenaForum::version()), strtolower($version->version), '>'))
+				if (version_compare(strtolower(Forum::version()), strtolower($version->version), '>'))
 				{
 					$this->_action = 'UPGRADE';
 				}
 				else
 				{
-					if (version_compare(strtolower(KunenaForum::version()), strtolower($version->version), '<'))
+					if (version_compare(strtolower(Forum::version()), strtolower($version->version), '<'))
 					{
 						$this->_action = 'DOWNGRADE';
 					}

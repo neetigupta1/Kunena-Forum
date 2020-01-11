@@ -18,7 +18,7 @@ use Joomla\CMS\HTML\HTMLHelper;
 use Joomla\CMS\Language\Text;
 use Kunena\Forum\Libraries\Forum\Topic\Rate\Helper;
 use Kunena\Forum\Libraries\Forum\Topic\Rate\Rate;
-use Kunena\Forum\Libraries\Model;
+use Kunena\Forum\Libraries\Model\Model;
 use function defined;
 
 /**

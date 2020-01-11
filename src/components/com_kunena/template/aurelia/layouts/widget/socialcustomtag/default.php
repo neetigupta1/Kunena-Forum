@@ -22,7 +22,7 @@ if (\Kunena\Forum\Libraries\User\Helper::getMyself()->socialshare == 0 && \Kunen
 	return false;
 }
 
-$this->ktemplate = \Kunena\Forum\Libraries\KunenaFactory::getTemplate();
+$this->ktemplate = \Kunena\Forum\Libraries\Factory\KunenaFactory::getTemplate();
 $socialsharetag  = $this->ktemplate->params->get('socialsharetag');
 
 echo HTMLHelper::_('content.prepare', $socialsharetag);

@@ -17,7 +17,7 @@ defined('_JEXEC') or die();
 use Joomla\CMS\Component\ComponentHelper;
 use Joomla\CMS\Factory;
 use Joomla\CMS\Log\Log;
-use Kunena\Forum\Libraries\KunenaFactory;
+use Kunena\Forum\Libraries\Factory\KunenaFactory;
 use Kunena\Forum\Libraries\User\Helper;
 use Kunena\Forum\Site\View\Common\html;
 use Joomla\Registry\Registry;
@@ -34,7 +34,7 @@ use function defined;
  *
  * @since   Kunena 6.0
  */
-abstract class KunenaForum
+abstract class Forum
 {
 	/**
 	 * @return  void
@@ -124,16 +124,16 @@ abstract class KunenaForum
 	 *
 	 * <code>
 	 * // Check if Kunena Forum has been installed, online and compatible with your code
-	 *    if (class_exists('KunenaForum') && \Kunena\Forum\Libraries\Forum\KunenaForum::enabled() && \Kunena\Forum\Libraries\Forum\KunenaForum::isCompatible('2.0.0')) {
+	 *    if (class_exists('KunenaForum') && \Kunena\Forum\Libraries\Forum\Forum::enabled() && \Kunena\Forum\Libraries\Forum\Forum::isCompatible('2.0.0')) {
 	 *        // Initialize the framework (new in 2.0.0)
-	 *        \Kunena\Forum\Libraries\Forum\KunenaForum::setup();
+	 *        \Kunena\Forum\Libraries\Forum\Forum::setup();
 	 *        // It's now safe to display something or to save Kunena objects
 	 * }
 	 * </code>
 	 *
-	 * @see     \Kunena\Forum\Libraries\Forum\KunenaForum::installed()
-	 * @see     \Kunena\Forum\Libraries\Forum\KunenaForum::isCompatible()
-	 * @see     \Kunena\Forum\Libraries\Forum\KunenaForum::setup()
+	 * @see     \Kunena\Forum\Libraries\Forum\Forum::installed()
+	 * @see     \Kunena\Forum\Libraries\Forum\Forum::isCompatible()
+	 * @see     \Kunena\Forum\Libraries\Forum\Forum::setup()
 	 *
 	 * @param   boolean  $checkAdmin  True if administrator is considered as a special case.
 	 *
@@ -167,17 +167,17 @@ abstract class KunenaForum
 	 *
 	 * <code>
 	 *    // Check if Kunena Forum has been installed and compatible with your code
-	 *    if (class_exists('KunenaForum') && \Kunena\Forum\Libraries\Forum\KunenaForum::installed() &&
-	 * \Kunena\Forum\Libraries\Forum\KunenaForum::isCompatible('2.0.0')) {
+	 *    if (class_exists('KunenaForum') && \Kunena\Forum\Libraries\Forum\Forum::installed() &&
+	 * \Kunena\Forum\Libraries\Forum\Forum::isCompatible('2.0.0')) {
 	 *        // Initialize the framework (new in 2.0.0)
-	 *        \Kunena\Forum\Libraries\Forum\KunenaForum::setup();
+	 *        \Kunena\Forum\Libraries\Forum\Forum::setup();
 	 *        // Start using the framework
 	 *    }
 	 * </code>
 	 *
-	 * @see     \Kunena\Forum\Libraries\Forum\KunenaForum::enabled()
-	 * @see     \Kunena\Forum\Libraries\Forum\KunenaForum::isCompatible()
-	 * @see     \Kunena\Forum\Libraries\Forum\KunenaForum::setup()
+	 * @see     \Kunena\Forum\Libraries\Forum\Forum::enabled()
+	 * @see     \Kunena\Forum\Libraries\Forum\Forum::isCompatible()
+	 * @see     \Kunena\Forum\Libraries\Forum\Forum::setup()
 	 *
 	 * @return  boolean True if Kunena has been fully installed.
 	 *
@@ -223,14 +223,14 @@ abstract class KunenaForum
 	 * <code>
 	 *    // We have already checked that Kunena 2.0+ has been installed and is online
 	 *
-	 *    if (\Kunena\Forum\Libraries\Forum\KunenaForum::isCompatible('2.0.0')) {
-	 *        \Kunena\Forum\Libraries\Forum\KunenaForum::setup();
+	 *    if (\Kunena\Forum\Libraries\Forum\Forum::isCompatible('2.0.0')) {
+	 *        \Kunena\Forum\Libraries\Forum\Forum::setup();
 	 *    } else {
-	 *        \Kunena\Forum\Libraries\KunenaFactory::loadLanguage();
+	 *        \Kunena\Forum\Libraries\Factory\KunenaFactory::loadLanguage();
 	 *    }
 	 * </code>
 	 *
-	 * @see     \Kunena\Forum\Libraries\Forum\KunenaForum::installed()
+	 * @see     \Kunena\Forum\Libraries\Forum\Forum::installed()
 	 *
 	 * Alternatively you could use method_exists() to check that the new API is in there.
 	 *
@@ -274,14 +274,14 @@ abstract class KunenaForum
 	 * you may want to use.
 	 *
 	 * <code>
-	 *    if (\Kunena\Forum\Libraries\Forum\KunenaForum::isCompatible('2.0.1')) {
+	 *    if (\Kunena\Forum\Libraries\Forum\Forum::isCompatible('2.0.1')) {
 	 *        // We can do it in the new way
 	 *    } else {
 	 *        // Use the old code instead
 	 *    }
 	 * </code>
 	 *
-	 * @see     \Kunena\Forum\Libraries\Forum\KunenaForum::installed()
+	 * @see     \Kunena\Forum\Libraries\Forum\Forum::installed()
 	 *
 	 * @param   string  $version  Minimum required version.
 	 *

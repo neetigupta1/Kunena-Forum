@@ -24,8 +24,8 @@ use function defined;
 		<?php
 		foreach ($this->onlineList as $user)
 		{
-			$avatar       = $user->getAvatarImage(\Kunena\Forum\Libraries\KunenaFactory::getTemplate()->params->get('avatarType') . ' ', 20, 20);
-			$onlinelist[] = $user->getLink($avatar, null, '', '', null, 0, \Kunena\Forum\Libraries\Config::getInstance()->avataredit);
+			$avatar       = $user->getAvatarImage(\Kunena\Forum\Libraries\Factory\KunenaFactory::getTemplate()->params->get('avatarType') . ' ', 20, 20);
+			$onlinelist[] = $user->getLink($avatar, null, '', '', null, 0, \Kunena\Forum\Libraries\Config\Config::getInstance()->avataredit);
 		}
 		?>
 		<?php echo implode(', ', $onlinelist); ?>
@@ -39,8 +39,8 @@ use function defined;
 		<?php
 		foreach ($this->hiddenList as $user)
 		{
-			$avatar       = $user->getAvatarImage(\Kunena\Forum\Libraries\KunenaFactory::getTemplate()->params->get('avatarType') . ' ', 20, 20);
-			$hiddenlist[] = $user->getLink($avatar, null, '', '', null, 0, \Kunena\Forum\Libraries\Config::getInstance()->avataredit);
+			$avatar       = $user->getAvatarImage(\Kunena\Forum\Libraries\Factory\KunenaFactory::getTemplate()->params->get('avatarType') . ' ', 20, 20);
+			$hiddenlist[] = $user->getLink($avatar, null, '', '', null, 0, \Kunena\Forum\Libraries\Config\Config::getInstance()->avataredit);
 		}
 		?>
 		<?php echo implode(', ', $hiddenlist); ?>

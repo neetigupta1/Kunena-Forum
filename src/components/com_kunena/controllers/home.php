@@ -18,9 +18,9 @@ use Exception;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\Menu\AbstractMenu;
 use Joomla\CMS\MVC\Controller\BaseController;
-use Kunena\Forum\Libraries\Controller;
-use Kunena\Forum\Libraries\Error;
-use Kunena\Forum\Libraries\KunenaFactory;
+use Kunena\Forum\Libraries\Controller\KunenaController;
+use Kunena\Forum\Libraries\Error\KunenaError;
+use Kunena\Forum\Libraries\Factory\KunenaFactory;
 use Kunena\Forum\Libraries\Route\KunenaRoute;
 use function defined;
 
@@ -29,7 +29,7 @@ use function defined;
  *
  * @since   Kunena 2.0
  */
-class KunenaControllerHome extends Controller
+class KunenaControllerHome extends KunenaController
 {
 	/**
 	 * @var     integer
@@ -105,7 +105,7 @@ class KunenaControllerHome extends Controller
 		KunenaRoute::initialize();
 
 		// Run display task from our new controller
-		$controller = Controller::getInstance();
+		$controller = KunenaController::getInstance();
 		$controller->execute('display');
 
 		// Set redirect and message
@@ -138,21 +138,21 @@ class KunenaControllerHome extends Controller
 		if (!$item)
 		{
 			// Menu item points to nowhere, abort
-			Error::warning(Text::sprintf('COM_KUNENA_WARNING_MENU_NOT_EXISTS'), 'menu');
+			KunenaError::warning(Text::sprintf('COM_KUNENA_WARNING_MENU_NOT_EXISTS'), 'menu');
 
 			return null;
 		}
 		elseif (isset($visited[$item->id]))
 		{
 			// Menu loop detected, abort
-			Error::warning(Text::sprintf('COM_KUNENA_WARNING_MENU_LOOP'), 'menu');
+			KunenaError::warning(Text::sprintf('COM_KUNENA_WARNING_MENU_LOOP'), 'menu');
 
 			return null;
 		}
 		elseif (empty($item->component) || $item->component != 'com_kunena' || !isset($item->query ['view']))
 		{
 			// Menu item doesn't point to Kunena, abort
-			Error::warning(Text::sprintf('COM_KUNENA_WARNING_MENU_NOT_KUNENA'), 'menu');
+			KunenaError::warning(Text::sprintf('COM_KUNENA_WARNING_MENU_NOT_KUNENA'), 'menu');
 
 			return null;
 		}

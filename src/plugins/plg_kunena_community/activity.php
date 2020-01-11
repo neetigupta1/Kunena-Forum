@@ -18,7 +18,7 @@ defined('_JEXEC') or die();
 use Exception;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\Uri\Uri;
-use Kunena\Forum\Libraries\Access;
+use Kunena\Forum\Libraries\Access\Access;
 use Kunena\Forum\Libraries\Html\Parser;
 use Kunena\Forum\Libraries\Integration\Activity;
 use Joomla\String\StringHelper;

@@ -121,7 +121,7 @@ abstract class Helper
 		}
 		catch (ExecutionFailureException $e)
 		{
-			\Kunena\Forum\Libraries\Error::displayDatabaseError($e);
+			\Kunena\Forum\Libraries\Error\KunenaError::displayDatabaseError($e);
 		}
 
 		foreach ($ids as $id)
@@ -173,7 +173,7 @@ abstract class Helper
 
 		if ($limit < 1)
 		{
-			$limit = \Kunena\Forum\Libraries\KunenaFactory::getConfig()->messages_per_page;
+			$limit = \Kunena\Forum\Libraries\Factory\KunenaFactory::getConfig()->messages_per_page;
 		}
 
 		// If out of range, use last page
@@ -225,7 +225,7 @@ abstract class Helper
 		}
 		catch (ExecutionFailureException $e)
 		{
-			\Kunena\Forum\Libraries\Error::displayDatabaseError($e);
+			\Kunena\Forum\Libraries\Error\KunenaError::displayDatabaseError($e);
 		}
 
 		$location = ($orderbyid || $ordering == 'ASC') ? $start : \Kunena\Forum\Libraries\Forum\Topic\Helper::get($topic_id)->getTotal($hold) - $start - 1;
@@ -278,15 +278,15 @@ abstract class Helper
 
 			if ($view == 'search')
 			{
-				$limit = \Kunena\Forum\Libraries\KunenaFactory::getConfig()->messages_per_page_search;
+				$limit = \Kunena\Forum\Libraries\Factory\KunenaFactory::getConfig()->messages_per_page_search;
 			}
 			elseif ($view == 'topics')
 			{
-				$limit = \Kunena\Forum\Libraries\KunenaFactory::getConfig()->threads_per_page;
+				$limit = \Kunena\Forum\Libraries\Factory\KunenaFactory::getConfig()->threads_per_page;
 			}
 			else
 			{
-				$limit = \Kunena\Forum\Libraries\KunenaFactory::getConfig()->messages_per_page;
+				$limit = \Kunena\Forum\Libraries\Factory\KunenaFactory::getConfig()->messages_per_page;
 			}
 		}
 
@@ -360,7 +360,7 @@ abstract class Helper
 		// Negative time means no time
 		if ($starttime == 0)
 		{
-			$starttime = \Kunena\Forum\Libraries\KunenaFactory::getSession()->lasttime;
+			$starttime = \Kunena\Forum\Libraries\Factory\KunenaFactory::getSession()->lasttime;
 		}
 		elseif ($starttime > 0)
 		{
@@ -389,7 +389,7 @@ abstract class Helper
 		}
 		catch (ExecutionFailureException $e)
 		{
-			\Kunena\Forum\Libraries\Error::displayDatabaseError($e);
+			\Kunena\Forum\Libraries\Error\KunenaError::displayDatabaseError($e);
 
 			return [0, []];
 		}
@@ -414,7 +414,7 @@ abstract class Helper
 		}
 		catch (ExecutionFailureException $e)
 		{
-			\Kunena\Forum\Libraries\Error::displayDatabaseError($e);
+			\Kunena\Forum\Libraries\Error\KunenaError::displayDatabaseError($e);
 
 			return [0, []];
 		}
@@ -459,7 +459,7 @@ abstract class Helper
 		{
 			$me           = \Kunena\Forum\Libraries\User\Helper::getMyself();
 			$mes_instance = self::get($mesid);
-			$hold         = \Kunena\Forum\Libraries\Access::getInstance()->getAllowedHold($me->userid, $mes_instance->catid, false);
+			$hold         = \Kunena\Forum\Libraries\Access\Access::getInstance()->getAllowedHold($me->userid, $mes_instance->catid, false);
 		}
 
 		if (!isset(self::$_location [$mesid]))
@@ -591,7 +591,7 @@ abstract class Helper
 		}
 		catch (ExecutionFailureException $e)
 		{
-			\Kunena\Forum\Libraries\Error::displayDatabaseError($e);
+			\Kunena\Forum\Libraries\Error\KunenaError::displayDatabaseError($e);
 		}
 
 		if (!empty($results))
@@ -665,7 +665,7 @@ abstract class Helper
 		}
 		catch (ExecutionFailureException $e)
 		{
-			\Kunena\Forum\Libraries\Error::displayDatabaseError($e);
+			\Kunena\Forum\Libraries\Error\KunenaError::displayDatabaseError($e);
 
 			return false;
 		}
@@ -706,7 +706,7 @@ abstract class Helper
 		}
 		catch (ExecutionFailureException $e)
 		{
-			\Kunena\Forum\Libraries\Error::displayDatabaseError($e);
+			\Kunena\Forum\Libraries\Error\KunenaError::displayDatabaseError($e);
 		}
 
 		return $results;
@@ -747,7 +747,7 @@ abstract class Helper
 		}
 		catch (ExecutionFailureException $e)
 		{
-			\Kunena\Forum\Libraries\Error::displayDatabaseError($e);
+			\Kunena\Forum\Libraries\Error\KunenaError::displayDatabaseError($e);
 		}
 
 		return $ip;

@@ -15,7 +15,7 @@ defined('_JEXEC') or die();
 use Joomla\CMS\HTML\HTMLHelper;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\Router\Route;
-use Kunena\Forum\Administrator\Install\KunenaVersion;
+use Kunena\Forum\Administrator\Install\Version;
 
 HTMLHelper::_('behavior.multiselect');
 HTMLHelper::_('dropdown.init');
@@ -348,7 +348,7 @@ $filterItem = $this->escape($this->state->get('item.id'));
 										if ($item->checked_out)
 										{
 											$canCheckin = $item->checked_out == 0 || $item->checked_out == $this->user->id || $this->user->authorise('core.admin', 'com_checkin');
-											$editor     = \Kunena\Forum\Libraries\KunenaFactory::getUser($item->editor)->getName();
+											$editor     = \Kunena\Forum\Libraries\Factory\KunenaFactory::getUser($item->editor)->getName();
 											echo HTMLHelper::_('jgrid.checkedout', $i, $editor, $item->checked_out_time, 'categories.', $canCheckin);
 										}
 										?>
@@ -443,6 +443,6 @@ $filterItem = $this->escape($this->state->get('item.id'));
 		</div>
 	</div>
 	<div class="pull-right small">
-		<?php echo KunenaVersion::getLongVersionHTML(); ?>
+		<?php echo Version::getLongVersionHTML(); ?>
 	</div>
 </div>

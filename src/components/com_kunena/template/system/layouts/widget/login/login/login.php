@@ -58,7 +58,7 @@ use function defined;
 			</div>
 		</div>
 
-		<?php $login = \Kunena\Forum\Libraries\Login::getInstance(); ?>
+		<?php $login = \Kunena\Forum\Libraries\Login\Login::getInstance(); ?>
 		<?php
 		if ($login->getTwoFactorMethods() > 1)
 			:

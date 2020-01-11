@@ -30,7 +30,7 @@ if (!$message->isAuthorised('reply'))
 $author   = isset($this->author) ? $this->author : $message->getAuthor();
 $topic    = isset($this->topic) ? $this->topic : $message->getTopic();
 $category = isset($this->category) ? $this->category : $message->getCategory();
-$config   = isset($this->config) ? $this->config : \Kunena\Forum\Libraries\KunenaFactory::getConfig();
+$config   = isset($this->config) ? $this->config : \Kunena\Forum\Libraries\Factory\KunenaFactory::getConfig();
 $me       = isset($this->me) ? $this->me : \Kunena\Forum\Libraries\User\Helper::getMyself();
 
 // Load caret.js always before atwho.js script and use it for autocomplete, emojiis...
@@ -42,7 +42,7 @@ $this->addScriptOptions('com_kunena.kunena_topicicontype', '');
 
 $this->addScript('assets/js/edit.js');
 
-if (\Kunena\Forum\Libraries\KunenaFactory::getTemplate()->params->get('formRecover'))
+if (\Kunena\Forum\Libraries\Factory\KunenaFactory::getTemplate()->params->get('formRecover'))
 {
 	$this->addScript('sisyphus.js');
 }
@@ -51,7 +51,7 @@ $template = \Kunena\Forum\Libraries\Template\Template::getInstance();
 $quick    = $template->params->get('quick');
 $editor   = $template->params->get('editor');
 
-if ($me->canDoCaptcha() && \Kunena\Forum\Libraries\Config::getInstance()->quickreply)
+if ($me->canDoCaptcha() && \Kunena\Forum\Libraries\Config\Config::getInstance()->quickreply)
 {
 	$this->captchaDisplay = $template->recaptcha($message->id);
 	$this->captchaEnabled = true;

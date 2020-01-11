@@ -15,7 +15,7 @@ namespace Kunena\Forum\Site\View\Category;
 defined('_JEXEC') or die();
 
 use Joomla\CMS\Factory;
-use Kunena\Forum\Libraries\View;
+use Kunena\Forum\Libraries\View\View;
 use StdClass;
 use function defined;
 

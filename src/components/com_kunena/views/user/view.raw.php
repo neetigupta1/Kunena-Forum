@@ -17,7 +17,7 @@ defined('_JEXEC') or die();
 use Joomla\CMS\Factory;
 use Joomla\CMS\Filesystem\Folder;
 use Joomla\CMS\Uri\Uri;
-use Kunena\Forum\Libraries\View;
+use Kunena\Forum\Libraries\View\View;
 use stdClass;
 use function defined;
 

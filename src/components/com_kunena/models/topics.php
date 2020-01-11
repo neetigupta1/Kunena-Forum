@@ -18,12 +18,12 @@ use Joomla\CMS\Factory;
 use Joomla\CMS\HTML\HTMLHelper;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\Plugin\PluginHelper;
-use Kunena\Forum\Libraries\Access;
+use Kunena\Forum\Libraries\Access\Access;
 use Kunena\Forum\Libraries\Forum\Category;
 use Kunena\Forum\Libraries\Forum\Message\Helper;
 use Kunena\Forum\Libraries\Forum\Topic;
-use Kunena\Forum\Libraries\KunenaFactory;
-use Kunena\Forum\Libraries\Model;
+use Kunena\Forum\Libraries\Factory\KunenaFactory;
+use Kunena\Forum\Libraries\Model\Model;
 use function defined;
 
 /**

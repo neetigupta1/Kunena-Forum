@@ -18,7 +18,7 @@ use Joomla\CMS\Language\Text;
 use function defined;
 
 $topic  = \Kunena\Forum\Libraries\Forum\Topic\Helper::get($this->id);
-$config = \Kunena\Forum\Libraries\KunenaFactory::getConfig();
+$config = \Kunena\Forum\Libraries\Factory\KunenaFactory::getConfig();
 ?>
 
 <div class="kfrontend shadow-lg rounded mt-4 border">

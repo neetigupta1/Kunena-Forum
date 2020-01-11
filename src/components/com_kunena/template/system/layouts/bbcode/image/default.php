@@ -26,7 +26,7 @@ $canLink = isset($this->canLink) ? $this->canLink : true;
 
 echo $this->subLayout('Widget/Lightbox');
 
-$config = \Kunena\Forum\Libraries\Config::getInstance();
+$config = \Kunena\Forum\Libraries\Config\Config::getInstance();
 
 $attributesLink = $config->lightbox ? ' data-fancybox="gallery"' : '';
 $width          = $size ? (int) $size . "px;" : 'auto ';

@@ -33,7 +33,7 @@ $success = !empty($this->success) ? ' btn-outline-success' : '';
 $primary = !empty($this->primary) ? ' btn-outline-primary' : '';
 $normal  = !empty($this->normal) ? 'btn-small dropdown-item' : 'btn btn-outline-primary border';
 $icon    = $this->icon;
-$ktemplate     = \Kunena\Forum\Libraries\KunenaFactory::getTemplate();
+$ktemplate     = \Kunena\Forum\Libraries\Factory\KunenaFactory::getTemplate();
 $topicicontype = $ktemplate->params->get('topicicontype');
 ?>
 

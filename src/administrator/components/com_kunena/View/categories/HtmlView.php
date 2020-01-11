@@ -23,7 +23,7 @@ use Joomla\CMS\Toolbar\Toolbar;
 use Joomla\CMS\Toolbar\ToolbarHelper;
 use Kunena\Forum\Libraries\Forum\Category\Category;
 use Kunena\Forum\Libraries\User\Helper;
-use Kunena\Forum\Libraries\View;
+use Kunena\Forum\Libraries\View\View;
 
 /**
  * About view for Kunena backend

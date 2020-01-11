@@ -19,7 +19,7 @@ use Joomla\CMS\Factory;
 use Joomla\CMS\Object\CMSObject;
 use Joomla\CMS\Table\Table;
 use Joomla\Database\DatabaseDriver;
-use Kunena\Forum\Libraries\Error;
+use Kunena\Forum\Libraries\Error\KunenaError;
 use Kunena\Forum\Libraries\Forum\Category\Category;
 use function defined;
 
@@ -187,7 +187,7 @@ class User extends CMSObject
 		}
 		catch (Exception $e)
 		{
-			Error::displayDatabaseError($e);
+			KunenaError::displayDatabaseError($e);
 		}
 
 		// Fill up \Kunena\Forum\Libraries\Forum\Category\CategoryUser object in case we created a new category.
@@ -262,7 +262,7 @@ class User extends CMSObject
 		}
 		catch (Exception $e)
 		{
-			Error::displayDatabaseError($e);
+			KunenaError::displayDatabaseError($e);
 		}
 
 		$this->_exists = false;

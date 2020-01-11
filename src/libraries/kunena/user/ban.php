@@ -21,9 +21,9 @@ use Joomla\CMS\Language\Text;
 use Joomla\CMS\Object\CMSObject;
 use Joomla\CMS\Table\Table;
 use Joomla\CMS\User\User;
-use Kunena\Forum\Libraries\Error;
-use Kunena\Forum\Libraries\KunenaDate;
-use Kunena\Forum\Libraries\KunenaFactory;
+use Kunena\Forum\Libraries\Error\KunenaError;
+use Kunena\Forum\Libraries\Date\KunenaDate;
+use Kunena\Forum\Libraries\Factory\KunenaFactory;
 use Joomla\Database\DatabaseDriver;
 use Joomla\Database\Exception\ExecutionFailureException;
 use stdClass;
@@ -418,7 +418,7 @@ class Ban extends CMSObject
 		}
 		catch (ExecutionFailureException $e)
 		{
-			Error::displayDatabaseError($e);
+			KunenaError::displayDatabaseError($e);
 		}
 
 		$list = [];
@@ -467,7 +467,7 @@ class Ban extends CMSObject
 		}
 		catch (ExecutionFailureException $e)
 		{
-			Error::displayDatabaseError($e);
+			KunenaError::displayDatabaseError($e);
 		}
 
 		$list = [];

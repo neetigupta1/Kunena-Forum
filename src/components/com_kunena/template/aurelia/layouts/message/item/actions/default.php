@@ -17,8 +17,8 @@ defined('_JEXEC') or die();
 use Joomla\CMS\Language\Text;
 use function defined;
 
-$config          = \Kunena\Forum\Libraries\Config::getInstance();
-$this->ktemplate = \Kunena\Forum\Libraries\KunenaFactory::getTemplate();
+$config          = \Kunena\Forum\Libraries\Config\Config::getInstance();
+$this->ktemplate = \Kunena\Forum\Libraries\Factory\KunenaFactory::getTemplate();
 $fullactions     = $this->ktemplate->params->get('fullactions');
 $quick           = $this->ktemplate->params->get('quick');
 ?>

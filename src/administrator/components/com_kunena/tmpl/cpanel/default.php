@@ -14,11 +14,11 @@ defined('_JEXEC') or die();
 
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\Router\Route;
-use Kunena\Forum\Administrator\Install\KunenaVersion;
-use Kunena\Forum\Libraries\Forum\KunenaForum;
+use Kunena\Forum\Administrator\Install\Version;
+use Kunena\Forum\Libraries\Forum\Forum;
 use Kunena\Forum\Libraries\Forum\Statistics;
 use Kunena\Forum\Libraries\Integration\Plugins;
-use Kunena\Forum\Libraries\KunenaDate;
+use Kunena\Forum\Libraries\Date\KunenaDate;
 use Kunena\Forum\Libraries\Template\Template;
 use Kunena\Forum\Libraries\User\Helper;
 use Kunena\Forum\Libraries\User\KunenaUser;
@@ -68,8 +68,8 @@ use Kunena\Forum\Libraries\User\KunenaUser;
 									<img src="components/com_kunena/media/icons/kunena_logo.png" style="width: 70%"/>
 								</div>
 								<div class="col">
-									<h6 class="mb-0"><?php echo strtoupper(KunenaForum::version()); ?></h6>
-									<h6 class="mb-0 text-cyan"><?php echo strtoupper(KunenaForum::versionDate()); ?></h6>
+									<h6 class="mb-0"><?php echo strtoupper(Forum::version()); ?></h6>
+									<h6 class="mb-0 text-cyan"><?php echo strtoupper(Forum::versionDate()); ?></h6>
 								</div>
 							</div>
 							<h6 class="pt-badge bg-cyan"><i class="fas fa-check text-white f-18"></i></h6>
@@ -362,6 +362,6 @@ use Kunena\Forum\Libraries\User\KunenaUser;
 				</div>
 			</div>
 		</div>
-		<div class="copyright"><?php echo KunenaVersion::getLongVersionHTML(); ?></div>
+		<div class="copyright"><?php echo Version::getLongVersionHTML(); ?></div>
 	</div>
 </div>

@@ -16,9 +16,9 @@ defined('_JEXEC') or die();
 
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\Session\Session;
-use Kunena\Forum\Libraries\Controller;
+use Kunena\Forum\Libraries\Controller\KunenaController;
 use Kunena\Forum\Libraries\Forum\Category\Helper;
-use Kunena\Forum\Libraries\Forum\KunenaForum;
+use Kunena\Forum\Libraries\Forum\Forum;
 use Kunena\Forum\Libraries\Route\KunenaRoute;
 use Joomla\CMS\MVC\Controller\FormController;
 use Joomla\Utilities\ArrayHelper;
@@ -212,7 +212,7 @@ class TrashController extends FormController
 
 			foreach ($messages as $target)
 			{
-				if ($target->publish(KunenaForum::PUBLISHED))
+				if ($target->publish(Forum::PUBLISHED))
 				{
 					$nb_items++;
 				}
@@ -228,13 +228,13 @@ class TrashController extends FormController
 
 			foreach ($topics as $target)
 			{
-				if ($target->getState() == KunenaForum::UNAPPROVED)
+				if ($target->getState() == Forum::UNAPPROVED)
 				{
-					$status = KunenaForum::UNAPPROVED;
+					$status = Forum::UNAPPROVED;
 				}
 				else
 				{
-					$status = KunenaForum::PUBLISHED;
+					$status = Forum::PUBLISHED;
 				}
 
 				if ($target->publish($status))

@@ -24,17 +24,17 @@ use Joomla\CMS\Factory;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\Pagination\Pagination;
 use Joomla\CMS\Uri\Uri;
-use Kunena\Forum\Libraries\Access;
+use Kunena\Forum\Libraries\Access\Access;
 use Kunena\Forum\Libraries\Database\KunenaDatabaseObject;
-use Kunena\Forum\Libraries\Error;
+use Kunena\Forum\Libraries\Error\KunenaError;
 use Kunena\Forum\Libraries\Exception\Authorise;
 use Kunena\Forum\Libraries\Forum\Category\Category;
-use Kunena\Forum\Libraries\Forum\KunenaForum;
+use Kunena\Forum\Libraries\Forum\Forum;
 use Kunena\Forum\Libraries\Forum\Message\Message;
 use Kunena\Forum\Libraries\Forum\Topic\Poll\Poll;
 use Kunena\Forum\Libraries\Html\Parser;
-use Kunena\Forum\Libraries\KunenaDate;
-use Kunena\Forum\Libraries\KunenaFactory;
+use Kunena\Forum\Libraries\Date\KunenaDate;
+use Kunena\Forum\Libraries\Factory\KunenaFactory;
 use Kunena\Forum\Libraries\Route\KunenaRoute;
 use Kunena\Forum\Libraries\User\KunenaUser;
 use Joomla\Database\DatabaseDriver;
@@ -483,7 +483,7 @@ class Topic extends KunenaDatabaseObject
 	 *
 	 * @throws  Exception
 	 */
-	public function publish($value = KunenaForum::PUBLISHED)
+	public function publish($value = Forum::PUBLISHED)
 	{
 		if ($value < 0 || $value > 3)
 		{
@@ -504,7 +504,7 @@ class Topic extends KunenaDatabaseObject
 		}
 		catch (ExecutionFailureException $e)
 		{
-			Error::displayDatabaseError($e);
+			KunenaError::displayDatabaseError($e);
 
 			return false;
 		}
@@ -538,7 +538,7 @@ class Topic extends KunenaDatabaseObject
 			}
 			catch (ExecutionFailureException $e)
 			{
-				Error::displayDatabaseError($e);
+				KunenaError::displayDatabaseError($e);
 
 				return false;
 			}
@@ -561,7 +561,7 @@ class Topic extends KunenaDatabaseObject
 				}
 				catch (ExecutionFailureException $e)
 				{
-					Error::displayDatabaseError($e);
+					KunenaError::displayDatabaseError($e);
 
 					return false;
 				}
@@ -619,7 +619,7 @@ class Topic extends KunenaDatabaseObject
 		{
 			if (!isset($this->hold))
 			{
-				$this->hold = KunenaForum::TOPIC_DELETED;
+				$this->hold = Forum::TOPIC_DELETED;
 			}
 
 			// If message isn't visible anymore, check if we need to update cache
@@ -642,7 +642,7 @@ class Topic extends KunenaDatabaseObject
 				}
 				catch (ExecutionFailureException $e)
 				{
-					Error::displayDatabaseError($e);
+					KunenaError::displayDatabaseError($e);
 				}
 
 				if ($first)
@@ -675,7 +675,7 @@ class Topic extends KunenaDatabaseObject
 				}
 				catch (ExecutionFailureException $e)
 				{
-					Error::displayDatabaseError($e);
+					KunenaError::displayDatabaseError($e);
 				}
 
 				if ($last)
@@ -693,7 +693,7 @@ class Topic extends KunenaDatabaseObject
 		if (!$this->first_post_id || !$this->last_post_id)
 		{
 			// If topic has no visible posts, mark it deleted and recount
-			$this->hold = $exists ? $message->hold : KunenaForum::TOPIC_DELETED;
+			$this->hold = $exists ? $message->hold : Forum::TOPIC_DELETED;
 			$this->recount();
 		}
 
@@ -853,7 +853,7 @@ class Topic extends KunenaDatabaseObject
 				}
 				catch (ExecutionFailureException $e)
 				{
-					Error::displayDatabaseError($e);
+					KunenaError::displayDatabaseError($e);
 
 					return false;
 				}
@@ -2008,7 +2008,7 @@ class Topic extends KunenaDatabaseObject
 			}
 			catch (ExecutionFailureException $e)
 			{
-				Error::displayDatabaseError($e);
+				KunenaError::displayDatabaseError($e);
 
 				return false;
 			}
@@ -2043,7 +2043,7 @@ class Topic extends KunenaDatabaseObject
 		}
 		catch (ExecutionFailureException $e)
 		{
-			Error::displayDatabaseError($e);
+			KunenaError::displayDatabaseError($e);
 
 			return false;
 		}
@@ -2059,7 +2059,7 @@ class Topic extends KunenaDatabaseObject
 		}
 		catch (ExecutionFailureException $e)
 		{
-			Error::displayDatabaseError($e);
+			KunenaError::displayDatabaseError($e);
 
 			return false;
 		}

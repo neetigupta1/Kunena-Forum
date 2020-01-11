@@ -14,7 +14,7 @@ namespace Kunena\Forum\Site\Models;
 
 defined('_JEXEC') or die();
 
-use Kunena\Forum\Libraries\Model;
+use Kunena\Forum\Libraries\Model\Model;
 use function defined;
 
 /**

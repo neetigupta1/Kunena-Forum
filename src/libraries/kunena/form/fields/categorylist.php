@@ -43,14 +43,14 @@ class CategoryList extends FormField
 	 */
 	protected function getInput()
 	{
-		if (!class_exists('KunenaForum') || !\Kunena\Forum\Libraries\Forum\KunenaForum::installed())
+		if (!class_exists('KunenaForum') || !\Kunena\Forum\Libraries\Forum\Forum::installed())
 		{
 			echo '<a href="' . Route::_('index.php?option=com_kunena') . '">PLEASE COMPLETE KUNENA INSTALLATION</a>';
 
 			return '';
 		}
 
-		\Kunena\Forum\Libraries\KunenaFactory::loadLanguage('com_kunena');
+		\Kunena\Forum\Libraries\Factory\KunenaFactory::loadLanguage('com_kunena');
 
 		$size  = $this->element['size'];
 		$class = $this->element['class'];

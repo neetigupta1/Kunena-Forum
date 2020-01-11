@@ -83,7 +83,7 @@ class Layout extends Base
 	 */
 	public function render($layout = null)
 	{
-		KUNENA_PROFILER ? \Kunena\Forum\Libraries\KunenaProfiler::instance()->start("render layout '{$this->_name}'") : null;
+		KUNENA_PROFILER ? \Kunena\Forum\Libraries\Profiler\KunenaProfiler::instance()->start("render layout '{$this->_name}'") : null;
 
 		try
 		{
@@ -96,11 +96,11 @@ class Layout extends Base
 		}
 		catch (Exception $e)
 		{
-			KUNENA_PROFILER ? \Kunena\Forum\Libraries\KunenaProfiler::instance()->stop("render layout '{$this->_name}'") : null;
+			KUNENA_PROFILER ? \Kunena\Forum\Libraries\Profiler\KunenaProfiler::instance()->stop("render layout '{$this->_name}'") : null;
 			throw $e;
 		}
 
-		KUNENA_PROFILER ? \Kunena\Forum\Libraries\KunenaProfiler::instance()->stop("render layout '{$this->_name}'") : null;
+		KUNENA_PROFILER ? \Kunena\Forum\Libraries\Profiler\KunenaProfiler::instance()->stop("render layout '{$this->_name}'") : null;
 
 		return $output;
 	}
@@ -121,7 +121,7 @@ class Layout extends Base
 	 */
 	public function getButton($link, $name, $scope, $type, $id = null)
 	{
-		return \Kunena\Forum\Libraries\KunenaFactory::getTemplate()->getButton(\Kunena\Forum\Libraries\Route\KunenaRoute::_($link), $name, $scope, $type, $id);
+		return \Kunena\Forum\Libraries\Factory\KunenaFactory::getTemplate()->getButton(\Kunena\Forum\Libraries\Route\KunenaRoute::_($link), $name, $scope, $type, $id);
 	}
 
 	/**
@@ -136,7 +136,7 @@ class Layout extends Base
 	 */
 	public function getIcon($name, $title = '')
 	{
-		return \Kunena\Forum\Libraries\KunenaFactory::getTemplate()->getIcon($name, $title);
+		return \Kunena\Forum\Libraries\Factory\KunenaFactory::getTemplate()->getIcon($name, $title);
 	}
 
 	/**
@@ -195,7 +195,7 @@ class Layout extends Base
 	 */
 	public function getCategoryLink(\Kunena\Forum\Libraries\Forum\Category\Category $category, $content = null, $title = null, $class = null, $follow = true, $canonical = null)
 	{
-		KUNENA_PROFILER ? \Kunena\Forum\Libraries\KunenaProfiler::instance()->start('function ' . __CLASS__ . '::' . __FUNCTION__ . '()') : null;
+		KUNENA_PROFILER ? \Kunena\Forum\Libraries\Profiler\KunenaProfiler::instance()->start('function ' . __CLASS__ . '::' . __FUNCTION__ . '()') : null;
 
 		if (!$content)
 		{
@@ -238,7 +238,7 @@ class Layout extends Base
 
 		$link = HTMLHelper::_('kunenaforum.link', $category->getUrl(), $content, $title, $class, $con);
 
-		KUNENA_PROFILER ? \Kunena\Forum\Libraries\KunenaProfiler::instance()->stop('function ' . __CLASS__ . '::' . __FUNCTION__ . '()') : null;
+		KUNENA_PROFILER ? \Kunena\Forum\Libraries\Profiler\KunenaProfiler::instance()->stop('function ' . __CLASS__ . '::' . __FUNCTION__ . '()') : null;
 
 		return $link;
 	}
@@ -262,7 +262,7 @@ class Layout extends Base
 	 */
 	public function getTopicLink(\Kunena\Forum\Libraries\Forum\Topic\Topic $topic, $action = null, $content = null, $title = null, $class = null, \Kunena\Forum\Libraries\Forum\Category\Category $category = null, $follow = true, $canonical = false)
 	{
-		KUNENA_PROFILER ? \Kunena\Forum\Libraries\KunenaProfiler::instance()->start('function ' . __CLASS__ . '::' . __FUNCTION__ . '()') : null;
+		KUNENA_PROFILER ? \Kunena\Forum\Libraries\Profiler\KunenaProfiler::instance()->start('function ' . __CLASS__ . '::' . __FUNCTION__ . '()') : null;
 
 		$url = $topic->getUrl($category ? $category : (isset($this->category) ? $this->category : $topic->getCategory()), true, $action);
 
@@ -286,7 +286,7 @@ class Layout extends Base
 						break;
 					case 'unread':
 					case 'last':
-						if (!\Kunena\Forum\Libraries\User\Helper::getMyself()->userid && \Kunena\Forum\Libraries\Config::getInstance()->teaser)
+						if (!\Kunena\Forum\Libraries\User\Helper::getMyself()->userid && \Kunena\Forum\Libraries\Config\Config::getInstance()->teaser)
 						{
 							$title = \Kunena\Forum\Libraries\Html\Parser::stripBBCode($topic->first_post_message, 200, false);
 						}
@@ -332,7 +332,7 @@ class Layout extends Base
 
 		$link = HTMLHelper::_('kunenaforum.link', $url, $content, $title, $class, $con);
 
-		KUNENA_PROFILER ? \Kunena\Forum\Libraries\KunenaProfiler::instance()->stop('function ' . __CLASS__ . '::' . __FUNCTION__ . '()') : null;
+		KUNENA_PROFILER ? \Kunena\Forum\Libraries\Profiler\KunenaProfiler::instance()->stop('function ' . __CLASS__ . '::' . __FUNCTION__ . '()') : null;
 
 		return $link;
 	}
@@ -366,7 +366,7 @@ class Layout extends Base
 
 		if (!$content)
 		{
-			if (\Kunena\Forum\Libraries\Config::getInstance()->disable_re)
+			if (\Kunena\Forum\Libraries\Config\Config::getInstance()->disable_re)
 			{
 				$content = \Kunena\Forum\Libraries\Html\Parser::parseText($lastTopic->subject, $length);
 			}

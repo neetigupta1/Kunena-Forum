@@ -17,9 +17,9 @@ use Joomla\CMS\Factory;
 use Kunena\Forum\Libraries\Forum\Message;
 use Kunena\Forum\Libraries\Forum\Topic;
 use Kunena\Forum\Libraries\Html\Parser;
-use Kunena\Forum\Libraries\KunenaFactory;
+use Kunena\Forum\Libraries\Factory\KunenaFactory;
 use Kunena\Forum\Libraries\User\Helper;
-use Kunena\Forum\Libraries\View;
+use Kunena\Forum\Libraries\View\View;
 use stdClass;
 use function defined;
 
@@ -59,7 +59,7 @@ class json extends View
 			$response->author  = $user->username;
 			$response->avatar  = $user->getAvatarImage($template->params->get('avatarType'), 'thumb');
 			$response->rank    = $user->getRank($topic->getCategory()->id, 'title');
-			$response->time    = \Kunena\Forum\Libraries\KunenaDate::getInstance($message->time)->toKunena('config_post_dateformat');
+			$response->time    = \Kunena\Forum\Libraries\Date\KunenaDate::getInstance($message->time)->toKunena('config_post_dateformat');
 
 			$list[] = $response;
 		}

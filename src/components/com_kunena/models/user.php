@@ -16,9 +16,9 @@ defined('_JEXEC') or die();
 
 use Joomla\CMS\Factory;
 use Joomla\CMS\Language\Text;
-use Kunena\Forum\Libraries\Error;
-use Kunena\Forum\Libraries\KunenaFactory;
-use Kunena\Forum\Libraries\Model;
+use Kunena\Forum\Libraries\Error\KunenaError;
+use Kunena\Forum\Libraries\Factory\KunenaFactory;
+use Kunena\Forum\Libraries\Model\Model;
 use Kunena\Forum\Libraries\User\Helper;
 use Joomla\Database\Exception\ExecutionFailureException;
 use function defined;
@@ -197,7 +197,7 @@ class KunenaModelUser extends Model
 			}
 			catch (ExecutionFailureException $e)
 			{
-				Error::displayDatabaseError($e);
+				KunenaError::displayDatabaseError($e);
 			}
 		}
 
@@ -234,7 +234,7 @@ class KunenaModelUser extends Model
 			}
 			catch (ExecutionFailureException $e)
 			{
-				Error::displayDatabaseError($e);
+				KunenaError::displayDatabaseError($e);
 			}
 		}
 
@@ -309,7 +309,7 @@ class KunenaModelUser extends Model
 			}
 			catch (ExecutionFailureException $e)
 			{
-				Error::displayDatabaseError($e);
+				KunenaError::displayDatabaseError($e);
 			}
 
 			// Prefetch all users/avatars to avoid user by user queries during template iterations

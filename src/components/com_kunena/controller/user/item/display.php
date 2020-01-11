@@ -23,7 +23,7 @@ use Joomla\CMS\Uri\Uri;
 use Joomla\CMS\User\User;
 use Kunena\Forum\Libraries\Controller\KunenaControllerDisplay;
 use Kunena\Forum\Libraries\Exception\Authorise;
-use Kunena\Forum\Libraries\KunenaFactory;
+use Kunena\Forum\Libraries\Factory\KunenaFactory;
 use Kunena\Forum\Libraries\Route\KunenaRoute;
 use Kunena\Forum\Libraries\User\Ban;
 use Kunena\Forum\Libraries\User\Helper;

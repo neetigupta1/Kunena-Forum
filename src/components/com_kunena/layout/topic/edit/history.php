@@ -14,7 +14,7 @@ namespace Kunena\Forum\Site\Layout\Topic\Edit;
 
 defined('_JEXEC') or die;
 
-use Kunena\Forum\Libraries\Config;
+use Kunena\Forum\Libraries\Config\Config;
 use Kunena\Forum\Libraries\Layout\Layout;
 use function defined;
 

@@ -25,7 +25,7 @@ kunena_url_ajax= '" . \Kunena\Forum\Libraries\Route\KunenaRoute::_("index.php?op
 );
 
 $this->addScript('assets/js/topic.js');
-$this->ktemplate = \Kunena\Forum\Libraries\KunenaFactory::getTemplate();
+$this->ktemplate = \Kunena\Forum\Libraries\Factory\KunenaFactory::getTemplate();
 $topicicontype   = $this->ktemplate->params->get('topicicontype');
 $labels          = $this->ktemplate->params->get('labels');
 ?>

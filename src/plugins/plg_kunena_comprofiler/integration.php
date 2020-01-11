@@ -15,7 +15,7 @@ namespace Kunena\Forum\Plugin\Kunena\Comprofiler;
 defined('_JEXEC') or die();
 
 use Exception;
-use Kunena\Forum\Libraries\KunenaFactory;
+use Kunena\Forum\Libraries\Factory\KunenaFactory;
 use function defined;
 
 /**

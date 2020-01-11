@@ -14,7 +14,7 @@ namespace Kunena\Forum\Site\View\Category;
 
 defined('_JEXEC') or die();
 
-use Kunena\Forum\Libraries\View;
+use Kunena\Forum\Libraries\View\View;
 use function defined;
 
 /**
