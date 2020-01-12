@@ -14,31 +14,39 @@
     <description>Kunena Framework.</description>
     <namespace>Kunena\Forum\Libraries2</namespace>
     <files>
+        <folder>Access</folder>
         <folder>Activity</folder>
         <folder>Attachment</folder>
         <folder>Bbcode</folder>
         <folder>Cache</folder>
+        <folder>Config</folder>
         <folder>Collection</folder>
         <folder>Compat</folder>
         <folder>Controller</folder>
         <folder>Database</folder>
+        <folder>Date</folder>
         <folder>Email</folder>
+        <folder>Error</folder>
         <folder>Exception</folder>
         <folder>External</folder>
         <folder>File</folder>
         <folder>Folder</folder>
         <folder>Form</folder>
         <folder>Forum</folder>
+        <folder>Factory</folder>
         <folder>Html</folder>
         <folder>Icons</folder>
         <folder>Image</folder>
+        <folder>Installer</folder>
         <folder>Integration</folder>
+        <folder>KunenaPrivate</folder>
         <folder>Layout</folder>
         <folder>Log</folder>
+        <folder>Login</folder>
         <folder>Menu</folder>
+        <folder>Model</folder>
         <folder>Module</folder>
         <folder>Pagination</folder>
-        <folder>Private</folder>
         <folder>Path</folder>
         <folder>Response</folder>
         <folder>Request</folder>
@@ -48,18 +56,10 @@
         <folder>Template</folder>
         <folder>Upload</folder>
         <folder>User</folder>
-        <folder>Access</folder>
-        <folder>Config</folder>
-        <folder>Date</folder>
-        <folder>Error</folder>
-        <folder>Exception</folder>
-        <folder>Factory</folder>
-        <folder>Installer</folder>
-        <folder>Login</folder>
-        <folder>Model</folder>
         <folder>Profiler</folder>
         <folder>Session</folder>
         <folder>Tree</folder>
         <folder>View</folder>
+        <filename>kunena.xml</filename>
     </files>
 </extension>
