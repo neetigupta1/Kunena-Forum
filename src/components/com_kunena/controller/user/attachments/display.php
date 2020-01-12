@@ -28,11 +28,11 @@ use Kunena\Forum\Libraries\User\KunenaUser;
 use function defined;
 
 /**
- * Class ComponentKunenaControllerUserAttachmentsDisplay
+ * Class ComponentUserControllerAttachmentsDisplay
  *
  * @since   Kunena 4.0
  */
-class ComponentKunenaControllerUserAttachmentsDisplay extends KunenaControllerDisplay
+class ComponentUserControllerAttachmentsDisplay extends KunenaControllerDisplay
 {
 	/**
 	 * @var     string

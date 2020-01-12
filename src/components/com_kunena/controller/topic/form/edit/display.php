@@ -28,11 +28,11 @@ use Joomla\Registry\Registry;
 use function defined;
 
 /**
- * Class ComponentKunenaControllerTopicFormEditDisplay
+ * Class ComponentTopicControllerFormEditDisplay
  *
  * @since   Kunena 4.0
  */
-class ComponentKunenaControllerTopicFormEditDisplay extends KunenaControllerDisplay
+class ComponentTopicControllerFormEditDisplay extends KunenaControllerDisplay
 {
 	/**
 	 * @var     string

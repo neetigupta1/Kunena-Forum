@@ -27,11 +27,11 @@ use Kunena\Forum\Libraries\User\KunenaUser;
 use function defined;
 
 /**
- * Class ComponentKunenaControllerTopicPollDisplay
+ * Class ComponentTopicControllerPollDisplay
  *
  * @since   Kunena 4.0
  */
-class ComponentKunenaControllerTopicPollDisplay extends KunenaControllerDisplay
+class ComponentTopicControllerPollDisplay extends KunenaControllerDisplay
 {
 	/**
 	 * @var     KunenaUser

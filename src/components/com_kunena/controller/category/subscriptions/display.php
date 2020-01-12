@@ -26,11 +26,11 @@ use Kunena\Forum\Site\Models\KunenaModelCategory;
 use function defined;
 
 /**
- * Class ComponentKunenaControllerCategorySubscriptionsDisplay
+ * Class ComponentCategoryControllerSubscriptionsDisplay
  *
  * @since   Kunena 4.0
  */
-class ComponentKunenaControllerCategorySubscriptionsDisplay extends KunenaControllerDisplay
+class ComponentCategoryControllerSubscriptionsDisplay extends KunenaControllerDisplay
 {
 	/**
 	 * @var     string

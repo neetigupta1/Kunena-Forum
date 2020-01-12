@@ -10,10 +10,9 @@
  * @link            https://www.kunena.org
  **/
 
-namespace Kunena\Forum\Site\Controllers;
+namespace Kunena\Forum\Site\Controller;
 
 defined('_JEXEC') or die();
-
 
 use Exception;
 use Joomla\CMS\Date\Date;
@@ -30,7 +29,7 @@ use function defined;
  *
  * @since   Kunena 2.0
  */
-class KunenaControllerAnnouncement extends KunenaController
+class AnnouncementController extends KunenaController
 {
 	/**
 	 * @return  void

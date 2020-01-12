@@ -36,7 +36,7 @@ use function defined;
  *
  * @since   Kunena 4.0
  */
-class ComponentKunenaControllerCategoryIndexDisplay extends KunenaControllerDisplay
+class ComponentCategoryControllerIndexDisplay extends KunenaControllerDisplay
 {
 	/**
 	 * @var     string

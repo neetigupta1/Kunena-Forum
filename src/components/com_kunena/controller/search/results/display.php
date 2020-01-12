@@ -26,11 +26,11 @@ use Kunena\Forum\Site\Models\KunenaModelSearch;
 use function defined;
 
 /**
- * Class ComponentKunenaControllerSearchResultsDisplay
+ * Class ComponentSearchControllerResultsDisplay
  *
  * @since   Kunena 4.0
  */
-class ComponentKunenaControllerSearchResultsDisplay extends KunenaControllerDisplay
+class ComponentSearchControllerResultsDisplay extends KunenaControllerDisplay
 {
 	/**
 	 * @var     string

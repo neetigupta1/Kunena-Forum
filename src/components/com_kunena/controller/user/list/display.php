@@ -29,11 +29,11 @@ use Kunena\Forum\Site\Models\KunenaModelUser;
 use function defined;
 
 /**
- * Class ComponentKunenaControllerUserListDisplay
+ * Class ComponentUserControllerListDisplay
  *
  * @since   Kunena 4.0
  */
-class ComponentKunenaControllerUserListDisplay extends KunenaControllerDisplay
+class ComponentUserControllerListDisplay extends KunenaControllerDisplay
 {
 	/**
 	 * @var     object

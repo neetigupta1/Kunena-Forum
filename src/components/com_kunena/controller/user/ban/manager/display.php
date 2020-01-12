@@ -23,11 +23,11 @@ use Kunena\Forum\Libraries\User\KunenaUser;
 use function defined;
 
 /**
- * Class ComponentKunenaControllerUserBanManagerDisplay
+ * Class ComponentUserControllerBanManagerDisplay
  *
  * @since   Kunena 4.0
  */
-class ComponentKunenaControllerUserBanManagerDisplay extends KunenaControllerDisplay
+class ComponentUserControllerBanManagerDisplay extends KunenaControllerDisplay
 {
 	/**
 	 * @var     string

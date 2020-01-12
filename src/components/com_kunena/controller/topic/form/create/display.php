@@ -29,11 +29,11 @@ use Kunena\Forum\Libraries\Template\Template;
 use function defined;
 
 /**
- * Class ComponentKunenaControllerTopicFormCreateDisplay
+ * Class ComponentTopicControllerFormCreateDisplay
  *
  * @since   Kunena 4.0
  */
-class ComponentKunenaControllerTopicFormCreateDisplay extends KunenaControllerDisplay
+class ComponentTopicControllerFormCreateDisplay extends KunenaControllerDisplay
 {
 	/**
 	 * @var     string

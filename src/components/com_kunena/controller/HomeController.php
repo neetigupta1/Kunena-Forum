@@ -10,7 +10,7 @@
  * @link            https://www.kunena.org
  **/
 
-namespace Kunena\Forum\Site\Controllers;
+namespace Kunena\Forum\Site\Controller;
 
 defined('_JEXEC') or die();
 
@@ -29,7 +29,7 @@ use function defined;
  *
  * @since   Kunena 2.0
  */
-class KunenaControllerHome extends KunenaController
+class HomeController extends KunenaController
 {
 	/**
 	 * @var     integer

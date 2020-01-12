@@ -1,19 +1,28 @@
 <?php
 /**
- * Kunena Component
+ * @package     Kunena.Site
+ * @subpackage  com_kunena
  *
- * @package        Kunena.Site
- *
- * @copyright      Copyright (C) 2008 - 2020 Kunena Team. All rights reserved.
- * @license        https://www.gnu.org/copyleft/gpl.html GNU/GPL
- * @link           https://www.kunena.org
- **/
+ * @copyright   Copyright (C) 2005 - 2019 Open Source Matters, Inc. All rights reserved.
+ * @license     GNU General Public License version 2 or later; see LICENSE.txt
+ */
 
-namespace Kunena\Forum\Site;
+namespace Kunena\Forum\Site\Service;
 
-defined('_JEXEC') or die();
+defined('_JEXEC') or die;
 
-use Joomla\CMS\Component\Router\RouterBase;
+use Exception;
+use Joomla\CMS\Application\SiteApplication;
+use Joomla\CMS\Categories\CategoryFactoryInterface;
+use Joomla\CMS\Component\ComponentHelper;
+use Joomla\CMS\Component\Router\RouterView;
+use Joomla\CMS\Component\Router\RouterViewConfiguration;
+use Joomla\CMS\Component\Router\Rules\MenuRules;
+use Kunena\Forum\Libraries\Config\Config;
+use Kunena\Forum\Site\Service\KunenaNomenuRules as NomenuRules;
+use Joomla\CMS\Component\Router\Rules\StandardRules;
+use Joomla\CMS\Menu\AbstractMenu;
+use Joomla\Database\DatabaseInterface;
 use Joomla\CMS\Factory;
 use Joomla\CMS\Profiler\Profiler;
 use Kunena\Forum\Libraries\Forum\Forum;
@@ -23,12 +32,87 @@ use Kunena\Forum\Libraries\User\Helper;
 use function defined;
 
 /**
- * Routing class from com_kunena
+ * Routing class of com_kunena
  *
- * @since  6.0
+ * @since   6.0
  */
-class KunenaRouter extends RouterBase
+class Router extends RouterView
 {
+	protected $noIDs = false;
+
+	/**
+	 * The category factory
+	 *
+	 * @var CategoryFactoryInterface
+	 *
+	 * @since   6.0
+	 *
+	 */
+	private $categoryFactory;
+
+	/**
+	 * The db
+	 *
+	 * @var DatabaseInterface
+	 *
+	 * @since   6.0
+	 *
+	 */
+	private $db;
+
+	/**
+	 * Kunena Component router constructor
+	 *
+	 * @param   SiteApplication           $app              The application object
+	 * @param   AbstractMenu              $menu             The menu object to work with
+	 * @param   CategoryFactoryInterface  $categoryFactory  The category object
+	 * @param   DatabaseInterface         $db               The database object
+	 *
+	 * @since   6.0
+	 */
+	public function __construct(SiteApplication $app, AbstractMenu $menu,
+		CategoryFactoryInterface $categoryFactory, DatabaseInterface $db
+	)
+	{
+		$this->categoryFactory = $categoryFactory;
+		$this->db              = $db;
+
+		$params = ComponentHelper::getParams('com_kunena');
+		$this->noIDs = (bool) $params->get('sef_ids');
+
+		$kunena = new RouterViewConfiguration('kunena');
+		$kunena->setKey('id');
+		$this->registerView($kunena);
+
+		parent::__construct($app, $menu);
+
+		$this->attachRule(new MenuRules($this));
+		$this->attachRule(new StandardRules($this));
+		$this->attachRule(new NomenuRules($this));
+	}
+
+	/**
+	 * @return  mixed
+	 *
+	 * @since   Kunena 6.0
+	 *
+	 * @throws  Exception
+	 */
+	public static function getInstance()
+	{
+		static $instance = null;
+
+		if (!$instance)
+		{
+			if (!$instance)
+			{
+				$instance = new Router;
+				$instance->load();
+			}
+		}
+
+		return $instance;
+	}
 	/**
 	 * Build SEF URL
 	 *
@@ -49,14 +133,14 @@ class KunenaRouter extends RouterBase
 	 *
 	 * @since   Kunena 6.0
 	 *
-	 * @throws  \Exception
+	 * @throws  Exception
 	 */
 	public function build(&$query)
 	{
 		$segments = [];
 
 		// If Kunena Forum isn't installed or SEF is not enabled, do nothing
-		if (!class_exists('KunenaForum') || !Forum::isCompatible('4.0') || !Forum::installed() || !\Kunena\Forum\Libraries\Config\Config::getInstance()->sef)
+		if (!class_exists('KunenaForum') || !Forum::isCompatible('4.0') || !Forum::installed() || !Config::getInstance()->sef)
 		{
 			return $segments;
 		}
@@ -298,7 +382,7 @@ class KunenaRouter extends RouterBase
 	 *
 	 * @since   Kunena 6.0
 	 *
-	 * @throws  \Exception
+	 * @throws  Exception
 	 */
 	public function parse(&$segments)
 	{

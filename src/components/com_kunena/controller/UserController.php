@@ -10,10 +10,9 @@
  * @link            https://www.kunena.org
  **/
 
-namespace Kunena\Forum\Site\Controllers;
+namespace Kunena\Forum\Site\Controller;
 
 defined('_JEXEC') or die();
-
 
 use Exception;
 use Joomla\CMS\Component\ComponentHelper;
@@ -54,7 +53,7 @@ use function defined;
  *
  * @since   Kunena 2.0
  */
-class KunenaControllerUser extends KunenaController
+class UserController extends KunenaController
 {
 	/**
 	 * @param   bool  $cachable   cachable

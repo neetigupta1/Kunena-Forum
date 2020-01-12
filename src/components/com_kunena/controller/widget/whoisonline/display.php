@@ -22,7 +22,7 @@ use Kunena\Forum\Libraries\User\Helper;
 use function defined;
 
 /**
- * Class ComponentKunenaControllerStatisticsWhoisonlineDisplay
+ * Class ComponentStatisticsControllerWhoisonlineDisplay
  *
  * @since   Kunena 4.0
  */

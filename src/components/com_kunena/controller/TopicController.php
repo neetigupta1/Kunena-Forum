@@ -10,10 +10,9 @@
  * @link            https://www.kunena.org
  **/
 
-namespace Kunena\Forum\Site\Controllers;
+namespace Kunena\Forum\Site\Controller;
 
 defined('_JEXEC') or die();
-
 
 use Exception;
 use Joomla\CMS\Date\Date;
@@ -48,7 +47,6 @@ use Kunena\Forum\Libraries\User\Helper;
 use Joomla\Database\Exception\ExecutionFailureException;
 use Joomla\Registry\Registry;
 use Joomla\Utilities\ArrayHelper;
-
 use RuntimeException;
 use stdClass;
 use function defined;
@@ -63,7 +61,7 @@ use function defined;
  *
  * @since   Kunena 2.0
  */
-class KunenaControllerTopic extends KunenaController
+class TopicController extends KunenaController
 {
 	/**
 	 * @param   array  $config  config

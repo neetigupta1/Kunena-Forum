@@ -23,11 +23,11 @@ use Kunena\Forum\Libraries\Controller\KunenaControllerDisplay;
 use function defined;
 
 /**
- * Class ComponentKunenaControllerUserEditProfileDisplay
+ * Class ComponentUserControllerEditProfileDisplay
  *
  * @since   Kunena 4.0
  */
-class ComponentKunenaControllerUserEditProfileDisplay extends KunenaControllerDisplay
+class ComponentUserControllerEditProfileDisplay extends KunenaControllerDisplay
 {
 	/**
 	 * @var     string

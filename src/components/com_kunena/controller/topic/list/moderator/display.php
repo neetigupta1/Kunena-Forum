@@ -27,11 +27,11 @@ use Kunena\Forum\Libraries\Controller\KunenaControllerDisplay;
 use function defined;
 
 /**
- * Class ComponentKunenaControllerTopicListDisplay
+ * Class ComponentTopicControllerListDisplay
  *
  * @since   Kunena 4.0
  */
-class ComponentKunenaControllerTopicListModeratorDisplay extends KunenaControllerDisplay
+class ComponentTopicControllerListModeratorDisplay extends KunenaControllerDisplay
 {
 	/**
 	 * Prepare topic list for moderators.

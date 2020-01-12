@@ -28,11 +28,11 @@ use Kunena\Forum\Libraries\User\Helper;
 use function defined;
 
 /**
- * Class ComponentKunenaControllerCategoryIndexActionsDisplay
+ * Class ComponentCategoryControllerIndexActionsDisplay
  *
  * @since   Kunena 4.0
  */
-class ComponentKunenaControllerCategoryIndexActionsDisplay extends KunenaControllerDisplay
+class ComponentCategoryControllerIndexActionsDisplay extends KunenaControllerDisplay
 {
 	/**
 	 * @var     string

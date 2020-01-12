@@ -40,11 +40,11 @@ use stdClass;
 use function defined;
 
 /**
- * Class ComponentKunenaControllerTopicItemDisplay
+ * Class ComponentTopicControllerItemDisplay
  *
  * @since   Kunena 4.0
  */
-class ComponentKunenaControllerTopicItemDisplay extends KunenaControllerDisplay
+class ComponentTopicControllerItemDisplay extends KunenaControllerDisplay
 {
 	/**
 	 * @var     string

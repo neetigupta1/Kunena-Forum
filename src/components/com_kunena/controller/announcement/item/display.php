@@ -22,11 +22,11 @@ use Kunena\Forum\Libraries\Route\KunenaRoute;
 use function defined;
 
 /**
- * Class ComponentKunenaControllerAnnouncementItemDisplay
+ * Class ComponentAnnouncementControllerItemDisplay
  *
  * @since   Kunena 4.0
  */
-class ComponentKunenaControllerAnnouncementItemDisplay extends KunenaControllerDisplay
+class ComponentAnnouncementControllerItemDisplay extends KunenaControllerDisplay
 {
 	/**
 	 * @var     string

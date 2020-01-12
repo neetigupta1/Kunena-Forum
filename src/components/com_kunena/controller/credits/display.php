@@ -29,7 +29,7 @@ use function defined;
  *
  * @since  4.0
  */
-class ComponentKunenaControllerCreditsDisplay extends KunenaControllerDisplay
+class ComponentCreditsControllerDisplay extends KunenaControllerDisplay
 {
 	/**
 	 * @var     string

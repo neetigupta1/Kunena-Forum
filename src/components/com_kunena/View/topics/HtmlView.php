@@ -3,7 +3,7 @@
  * Kunena Component
  *
  * @package         Kunena.Site
- * @subpackage      Views
+ * @subpackage      View
  *
  * @copyright       Copyright (C) 2008 - 2020 Kunena Team. All rights reserved.
  * @license         https://www.gnu.org/copyleft/gpl.html GNU/GPL
@@ -16,13 +16,12 @@ defined('_JEXEC') or die();
 
 use Joomla\CMS\Factory;
 use Joomla\CMS\Language\Text;
+use Joomla\CMS\MVC\View\HtmlView as BaseHtmlView;
 use Joomla\CMS\Plugin\PluginHelper;
 use Kunena\Forum\Libraries\Date\KunenaDate;
 use Kunena\Forum\Libraries\Factory\KunenaFactory;
 use Kunena\Forum\Libraries\Route\KunenaRoute;
-use Kunena\Forum\Libraries\View\View;
 use Joomla\Registry\Registry;
-use Kunena\Forum\Libraries\View\View;
 use function defined;
 
 /**
@@ -30,7 +29,7 @@ use function defined;
  *
  * @since   Kunena 6.0
  */
-class html extends View
+class HtmlView extends BaseHtmlView
 {
 	/**
 	 * @param   null  $tpl  tpl

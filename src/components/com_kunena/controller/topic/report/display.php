@@ -24,11 +24,11 @@ use Kunena\Forum\Libraries\Forum\Topic\Topic;
 use function defined;
 
 /**
- * Class ComponentKunenaControllerTopicReportDisplay
+ * Class ComponentTopicControllerReportDisplay
  *
  * @since   Kunena 4.0
  */
-class ComponentKunenaControllerTopicReportDisplay extends KunenaControllerDisplay
+class ComponentTopicControllerReportDisplay extends KunenaControllerDisplay
 {
 	/**
 	 * @var     string

@@ -31,11 +31,11 @@ use Kunena\Forum\Site\Models\KunenaModelTopics;
 use function defined;
 
 /**
- * Class ComponentKunenaControllerTopicListDisplay
+ * Class ComponentTopicControllerListDisplay
  *
  * @since   Kunena 4.0
  */
-class ComponentKunenaControllerTopicListUnreadDisplay extends KunenaControllerDisplay
+class ComponentTopicControllerListUnreadDisplay extends KunenaControllerDisplay
 {
 	/**
 	 * Prepare topic list for moderators.

@@ -26,11 +26,11 @@ use Joomla\Database\Exception\ExecutionFailureException;
 use function defined;
 
 /**
- * Class ComponentKunenaControllerTopicModerateDisplay
+ * Class ComponentTopicControllerModerateDisplay
  *
  * @since   Kunena 4.0
  */
-class ComponentKunenaControllerTopicModerateDisplay extends KunenaControllerDisplay
+class ComponentTopicControllerModerateDisplay extends KunenaControllerDisplay
 {
 	/**
 	 * @var     string

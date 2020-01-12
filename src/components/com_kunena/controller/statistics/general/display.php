@@ -26,11 +26,11 @@ use Kunena\Forum\Libraries\Route\KunenaRoute;
 use function defined;
 
 /**
- * Class ComponentKunenaControllerStatisticsGeneralDisplay
+ * Class ComponentStatisticsControllerGeneralDisplay
  *
  * @since   Kunena 4.0
  */
-class ComponentKunenaControllerStatisticsGeneralDisplay extends KunenaControllerDisplay
+class ComponentStatisticsControllerGeneralDisplay extends KunenaControllerDisplay
 {
 	/**
 	 * @var     string

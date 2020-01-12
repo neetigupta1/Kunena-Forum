@@ -3,7 +3,7 @@
  * Kunena Component
  *
  * @package       Kunena.Site
- * @subpackage    Views
+ * @subpackage    View
  *
  * @copyright     Copyright (C) 2008 - 2020 Kunena Team. All rights reserved.
  * @license       https://www.gnu.org/copyleft/gpl.html GNU/GPL
@@ -18,6 +18,7 @@ use Exception;
 use Joomla\CMS\Factory;
 use Joomla\CMS\HTML\HTMLHelper;
 use Joomla\CMS\Language\Text;
+use Joomla\CMS\MVC\View\HtmlView as BaseHtmlView;
 use Joomla\CMS\Object\CMSObject;
 use Joomla\CMS\Plugin\PluginHelper;
 use Joomla\CMS\Router\Route;
@@ -34,11 +35,9 @@ use Kunena\Forum\Libraries\Pagination\Pagination;
 use Kunena\Forum\Libraries\Request\Request;
 use Kunena\Forum\Libraries\Route\KunenaRoute;
 use Kunena\Forum\Libraries\User\Helper;
-use Kunena\Forum\Libraries\View\View;
 use Joomla\Input\Input;
 use Joomla\Registry\Registry;
 use Joomla\String\StringHelper;
-use Kunena\Forum\Libraries\View\View;
 use LogicException;
 use function defined;
 
@@ -47,7 +46,7 @@ use function defined;
  *
  * @since   Kunena 6.0
  */
-class html extends View
+class HtmlView extends BaseHtmlView
 {
 	/**
 	 * @var     null

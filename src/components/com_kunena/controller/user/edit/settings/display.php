@@ -21,11 +21,11 @@ use StdClass;
 use function defined;
 
 /**
- * Class ComponentKunenaControllerUserEditSettingsDisplay
+ * Class ComponentUserControllerEditSettingsDisplay
  *
  * @since   Kunena 4.0
  */
-class ComponentKunenaControllerUserEditSettingsDisplay extends ComponentKunenaControllerUserEditDisplay
+class ComponentUserControllerEditSettingsDisplay extends ComponentUserControllerEditDisplay
 {
 	/**
 	 * @var     string

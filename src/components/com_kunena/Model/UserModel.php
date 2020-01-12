@@ -16,9 +16,9 @@ defined('_JEXEC') or die();
 
 use Joomla\CMS\Factory;
 use Joomla\CMS\Language\Text;
+use Joomla\CMS\MVC\Model\ListModel;
 use Kunena\Forum\Libraries\Error\KunenaError;
 use Kunena\Forum\Libraries\Factory\KunenaFactory;
-use Kunena\Forum\Libraries\Model\Model;
 use Kunena\Forum\Libraries\User\Helper;
 use Joomla\Database\Exception\ExecutionFailureException;
 use function defined;
@@ -28,7 +28,7 @@ use function defined;
  *
  * @since   Kunena 6.0
  */
-class KunenaModelUser extends Model
+class KunenaModelUser extends ListModel
 {
 	/**
 	 * @return  void

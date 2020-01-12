@@ -18,11 +18,11 @@ use Kunena\Forum\Libraries\Controller\KunenaControllerDisplay;
 use function defined;
 
 /**
- * Class ComponentKunenaControllerTopicItemRatingDisplay
+ * Class ComponentTopicControllerItemRatingDisplay
  *
  * @since   Kunena 5.0
  */
-class ComponentKunenaControllerTopicItemRatingDisplay extends KunenaControllerDisplay
+class ComponentTopicControllerItemRatingDisplay extends KunenaControllerDisplay
 {
 	/**
 	 * @var     string

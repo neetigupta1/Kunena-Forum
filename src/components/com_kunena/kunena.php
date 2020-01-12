@@ -13,7 +13,6 @@ namespace Kunena\Forum\Site;
 
 defined('_JEXEC') or die();
 
-
 use Exception;
 use Joomla\CMS\Factory;
 use Joomla\CMS\Language\Text;
@@ -21,7 +20,6 @@ use Joomla\CMS\Log\Log;
 use Joomla\CMS\Plugin\PluginHelper;
 use Joomla\CMS\Uri\Uri;
 use Kunena\Forum\Libraries\Config\Config;
-use Kunena\Forum\Libraries\Controller\KunenaController;
 use Kunena\Forum\Libraries\Controller\KunenaControllerApplication;
 use Kunena\Forum\Libraries\Error\KunenaError;
 use Kunena\Forum\Libraries\Forum\Forum;
@@ -29,6 +27,7 @@ use Kunena\Forum\Libraries\Factory\KunenaFactory;
 use Kunena\Forum\Libraries\Profiler\KunenaProfiler;
 use Kunena\Forum\Libraries\Route\KunenaRoute;
 use Kunena\Forum\Libraries\User\Helper;
+use Kunena\Forum\Site\Service\Router;
 use stdClass;
 use function defined;
 
@@ -72,7 +71,7 @@ if (!Config::getInstance()->access_component)
 }
 
 // Load router
-require_once KPATH_SITE . '/router.php';
+Router::getInstance();
 
 // Initialize Kunena Framework.
 Forum::setup();
@@ -100,7 +99,6 @@ if ($ksession->userid > 0)
 	}
 }
 
-// Support legacy urls (they need to be redirected).
 $app   = Factory::getApplication();
 $input = $app->input;
 $input->set('limitstart', $input->getInt('limitstart', $input->getInt('start')));
@@ -114,39 +112,9 @@ PluginHelper::importPlugin('kunena');
 // Get HMVC controller and if exists, execute it.
 $controller = KunenaControllerApplication::getInstance($view, $subview, $task, $input, $app);
 
-if ($controller)
-{
-	KunenaRoute::cacheLoad();
-	$contents = $controller->execute();
-	KunenaRoute::cacheStore();
-}
-elseif (is_file(KPATH_SITE . "/controllers/{$view}.php"))
-{
-	// Execute old MVC.
-	// Legacy support: If the content layout doesn't exist on HMVC, load and execute the old controller.
-	$controller = KunenaController::getInstance();
-	KunenaRoute::cacheLoad();
-	ob_start();
-	$controller->execute($task);
-	$contents = ob_get_clean();
-	KunenaRoute::cacheStore();
-	$controller->redirect();
-}
-else
-{
-	// Legacy URL support.
-	$uri = KunenaRoute::current(true);
-
-	if ($uri)
-	{
-		// FIXME: using wrong Itemid
-		Factory::getApplication()->redirect(KunenaRoute::_($uri, false));
-	}
-	else
-	{
-		throw new Exception("Kunena view '{$view}' not found", 404);
-	}
-}
+KunenaRoute::cacheLoad();
+$contents = $controller->execute();
+KunenaRoute::cacheStore();
 
 // Prepare and display the output.
 $params       = new stdClass;

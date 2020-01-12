@@ -30,11 +30,11 @@ use Kunena\Forum\Libraries\User\KunenaUser;
 use function defined;
 
 /**
- * Class ComponentKunenaControllerTopicListDisplay
+ * Class ComponentTopicControllerListDisplay
  *
  * @since   Kunena 4.0
  */
-abstract class ComponentKunenaControllerTopicListDisplay extends KunenaControllerDisplay
+abstract class ComponentTopicControllerListDisplay extends KunenaControllerDisplay
 {
 	/**
 	 * @var     string

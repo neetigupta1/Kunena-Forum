@@ -10,7 +10,7 @@
  * @link            https://www.kunena.org
  **/
 
-namespace Kunena\Forum\Site\Controllers;
+namespace Kunena\Forum\Site\Controller;
 
 defined('_JEXEC') or die();
 
@@ -31,7 +31,7 @@ require_once KPATH_ADMIN . '/controllers/categories.php';
  *
  * @since   Kunena 2.0
  */
-class KunenaControllerCategory extends CategoriesController
+class CategoryController extends CategoriesController
 {
 	/**
 	 * @param   array  $config  config

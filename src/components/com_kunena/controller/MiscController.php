@@ -10,10 +10,9 @@
  * @link            https://www.kunena.org
  **/
 
-namespace Kunena\Forum\Site\Controllers;
+namespace Kunena\Forum\Site\Controller;
 
 defined('_JEXEC') or die();
-
 
 use Joomla\CMS\Uri\Uri;
 use Kunena\Forum\Libraries\Controller\KunenaController;
@@ -25,7 +24,7 @@ use function defined;
  *
  * @since   Kunena 2.0
  */
-class KunenaControllerMisc extends KunenaController
+class MiscController extends KunenaController
 {
 	/**
 	 * @param   array  $config  config

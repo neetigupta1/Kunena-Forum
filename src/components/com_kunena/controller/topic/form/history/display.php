@@ -23,13 +23,13 @@ use Joomla\Registry\Registry;
 use function defined;
 
 /**
- * Class ComponentKunenaControllerTopicFormHistoryDisplay
+ * Class ComponentTopicControllerFormHistoryDisplay
  *
  * TODO: merge to another controller...
  *
  * @since   Kunena 4.0
  */
-class ComponentKunenaControllerTopicFormHistoryDisplay extends KunenaControllerDisplay
+class ComponentTopicControllerFormHistoryDisplay extends KunenaControllerDisplay
 {
 	/**
 	 * @var     string

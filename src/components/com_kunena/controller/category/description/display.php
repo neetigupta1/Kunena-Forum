@@ -23,7 +23,7 @@ use function defined;
  *
  * @since   Kunena 4.0
  */
-class ComponentKunenaControllerCategoryDescriptionDisplay extends KunenaControllerDisplay
+class ComponentCategoryControllerDescriptionDisplay extends KunenaControllerDisplay
 {
 	/**
 	 * @var     string
