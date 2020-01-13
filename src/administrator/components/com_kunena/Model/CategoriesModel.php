@@ -18,7 +18,7 @@ use Joomla\CMS\Factory;
 use Joomla\CMS\Filesystem\Folder;
 use Joomla\CMS\HTML\HTMLHelper;
 use Joomla\CMS\Language\Text;
-use Joomla\CMS\MVC\Model\AdminModel;
+use Joomla\CMS\MVC\Model\ListModel;
 use Joomla\CMS\Pagination\Pagination;
 use Joomla\CMS\Table\Table;
 use Kunena\Forum\Libraries\Access\Access;
@@ -28,14 +28,13 @@ use Kunena\Forum\Libraries\Model;
 use Kunena\Forum\Libraries\Template\Template;
 use Joomla\Registry\Registry;
 use RuntimeException;
-use function defined;
 
 /**
  * Categories Model for Kunena
  *
  * @since 2.0
  */
-class CategoriesModel extends AdminModel
+class CategoriesModel extends ListModel
 {
 	/**
 	 * @inheritDoc
@@ -419,12 +418,12 @@ class CategoriesModel extends AdminModel
 
 			if ($catid)
 			{
-				$categories   = Helper::getParents($catid, $this->getState('filter.levels') - 1, ['unpublished' => 1, 'action' => 'none']);
-				$categories[] = Helper::get($catid);
+			    $categories   = Helper::getParents($catid, $this->getState('filter.levels') - 1, ['unpublished' => 1, 'action' => 'none']);
+			    $categories[] = Helper::get($catid);
 			}
 			else
 			{
-				$orphans = Helper::getOrphaned($this->getState('filter.levels') - 1, $params);
+			    $orphans = Helper::getOrphaned($this->getState('filter.levels') - 1, $params);
 			}
 
 			$categories = array_merge($categories, Helper::getChildren($catid, $this->getState('filter.levels') - 1, $params));
@@ -516,7 +515,7 @@ class CategoriesModel extends AdminModel
 	 *
 	 * @throws  \Exception
 	 */
-	protected function populateState()
+	/*protected function populateState($ordering = null, $direction = null)
 	{
 		$this->context = 'com_kunena.admin.categories';
 
@@ -596,5 +595,5 @@ class CategoriesModel extends AdminModel
 
 		$this->setState('item.id', $catid);
 		$this->setState('item.parent_id', $parent_id);
-	}
+	}*/
 }
